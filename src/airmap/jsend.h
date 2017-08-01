@@ -25,7 +25,9 @@ static constexpr const char* message{"message"};
 
 }  // namespace key
 
+
 inline std::string stringify_error(const nlohmann::json& j) {
+
   if (j.at(key::status) == status::error)
     return j.at(key::data).dump();
   if (j.at(key::status) == status::failure)
@@ -37,10 +39,21 @@ template <typename T>
 inline Outcome<T, std::exception_ptr> to_outcome(const nlohmann::json& j) {
   using Result = Outcome<T, std::exception_ptr>;
 
-  if (j[key::status] == status::success)
-    return Result{j[jsend::key::data].get<T>()};
+  if (j.find(key::status) != j.end()) {
+  	if (j[key::status] == status::success) {
+    	return Result{j[key::data].get<T>()};
+  	}
 
-  return Result{std::make_exception_ptr(std::runtime_error{jsend::stringify_error(j)})};
+  	return Result{std::make_exception_ptr(std::runtime_error{jsend::stringify_error(j)})};
+
+  }
+  else {
+  	if (j.find(status::error) != j.end()) {
+  		return Result{std::make_exception_ptr(std::runtime_error{j.dump()})};
+  	}
+
+  	return Result{j.get<T>()};
+  }
 }
 
 }  // namespace jsend
