@@ -37,6 +37,8 @@ inline void encode(nlohmann::json& j, const Authenticator::AuthenticateWithPassw
   j["username"]   = params.username;
   j["password"]   = params.password;
   j["device"]     = params.device;
+  j["grant_type"] = params.grant_type;
+  j["scope"]      = params.scope;
 }
 
 inline void encode(nlohmann::json& j, const Authenticator::AuthenticateAnonymously::Params& params) {

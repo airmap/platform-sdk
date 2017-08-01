@@ -16,6 +16,7 @@ class Authorize : public util::cli::CommandWithFlagsAndAction {
  private:
   std::string api_key_;
   Authenticator::AuthenticateAnonymously::Params params_;
+  Authenticator::AuthenticateWithPassword::Params passParams_;
 };
 
 }  // namespace cmd

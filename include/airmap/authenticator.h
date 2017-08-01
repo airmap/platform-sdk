@@ -38,6 +38,8 @@ class Authenticator : DoNotCopyOrMove {
       std::string username;
       std::string password;
       std::string device;
+      std::string grant_type{"password"};
+      std::string scope{"openid offline_access"};
     };
 
     using Result   = Outcome<OAuthToken, std::exception_ptr>;
