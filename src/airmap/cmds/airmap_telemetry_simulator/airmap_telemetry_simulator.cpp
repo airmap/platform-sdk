@@ -47,7 +47,7 @@ std::vector<std::vector<double>> coordinates = {
 std::vector<airmap::Geometry::Coordinate> init_polygon() {
   std::vector<airmap::Geometry::Coordinate> coords;
   for (const auto& v : coordinates) {
-    coords.push_back(airmap::Geometry::Coordinate{v[0], v[1], airmap::Optional<double>{}, airmap::Optional<double>{}});
+    coords.push_back(airmap::Geometry::Coordinate{v[1], v[0], airmap::Optional<double>{}, airmap::Optional<double>{}});
   }
   return coords;
 }
