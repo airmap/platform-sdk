@@ -120,7 +120,8 @@ void airmap::rest::glib::Communicator::send_udp(const std::string& host, std::ui
                 if (socket)
                   g_object_unref(socket);
               }};
-          if (body.size() == g_socket_send_to(s.get(), sa.get(), body.c_str(), body.size(), nullptr, &error)) {
+          if (static_cast<int>(body.size()) ==
+              g_socket_send_to(s.get(), sa.get(), body.c_str(), body.size(), nullptr, &error)) {
             log_.infof(component, "successfully sent UDP packet");
           } else if (error) {
             log_.errorf(component, "error sending UDP packet: %s", error->message);

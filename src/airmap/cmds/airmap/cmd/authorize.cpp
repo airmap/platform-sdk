@@ -11,18 +11,21 @@ cmd::Authorize::Authorize()
                                      cli::Description{"authorize with the AirMap services"}} {
   flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
                       api_key_));
-  flag(cli::make_flag(cli::Name{"user-id"}, cli::Description{"user-id used for anonymous authorizing with the AirMap services"},
-                      params_.user_id));
-  flag(cli::make_flag(cli::Name{"client-id"}, cli::Description{"client-id used for authorizing with the AirMap services"},
-                      passParams_.client_id));
-  flag(cli::make_flag(cli::Name{"connection-name"}, cli::Description{"connection-name used for authorizing with the AirMap services"},
-                      passParams_.connection_name));
+  flag(cli::make_flag(cli::Name{"user-id"},
+                      cli::Description{"user-id used for paramsymous authorizing with the AirMap services"},
+                      params_.anon.user_id));
+  flag(cli::make_flag(cli::Name{"client-id"},
+                      cli::Description{"client-id used for authorizing with the AirMap services"},
+                      params_.passwd.client_id));
+  flag(cli::make_flag(cli::Name{"connection-name"},
+                      cli::Description{"connection-name used for authorizing with the AirMap services"},
+                      params_.passwd.connection_name));
   flag(cli::make_flag(cli::Name{"username"}, cli::Description{"username used for authorizing with the AirMap services"},
-                      passParams_.username));
+                      params_.passwd.username));
   flag(cli::make_flag(cli::Name{"password"}, cli::Description{"password used for authorizing with the AirMap services"},
-                      passParams_.password));
+                      params_.passwd.password));
   flag(cli::make_flag(cli::Name{"device"}, cli::Description{"device used for authorizing with the AirMap services"},
-                      passParams_.device));
+                      params_.passwd.device));
 
   action([this](const cli::Command::Context& ctxt) {
     auto result = ::airmap::Context::create(create_default_logger());
@@ -43,35 +46,31 @@ cmd::Authorize::Authorize()
 
           // if user-id parameter found, authenticate anonymously
 
-          if (params_.user_id.size()) {
-
-            auto handler = [this, &ctxt, context, client](const Authenticator::AuthenticateAnonymously::Result& result) {
+          if (params_.anon.user_id.size()) {
+            auto handler = [this, &ctxt, context,
+                            client](const Authenticator::AuthenticateAnonymously::Result& result) {
               if (result)
                 ctxt.cout << "Authenticated successfully and received id: " << result.value().id << std::endl;
               else
-                ctxt.cout << "Failed to authorize " << params_.user_id << std::endl;
+                ctxt.cout << "Failed to authorize " << params_.anon.user_id << std::endl;
 
               context->stop();
             };
 
-            client->authenticator().authenticate_anonymously(params_, handler);
+            client->authenticator().authenticate_anonymously(params_.anon, handler);
 
-          }
-
-          else {
-
-            auto handler = [this, &ctxt, context, client](const Authenticator::AuthenticateWithPassword::Result& result) {
-              if (result){
+          } else {
+            auto handler = [this, &ctxt, context,
+                            client](const Authenticator::AuthenticateWithPassword::Result& result) {
+              if (result) {
                 ctxt.cout << "Authenticated successfully and received id: " << result.value().id << std::endl;
-              }
-              else
-                ctxt.cout << "Failed to authorize " << passParams_.username << std::endl;
+              } else
+                ctxt.cout << "Failed to authorize " << params_.passwd.username << std::endl;
 
               context->stop();
             };
 
-            client->authenticator().authenticate_with_password(passParams_, handler);
-
+            client->authenticator().authenticate_with_password(params_.passwd, handler);
           }
 
         });

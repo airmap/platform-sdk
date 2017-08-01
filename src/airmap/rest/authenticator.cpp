@@ -12,7 +12,6 @@ airmap::rest::Authenticator::Authenticator(Communicator& communicator) : communi
 
 void airmap::rest::Authenticator::authenticate_with_password(const AuthenticateWithPassword::Params& params,
                                                              const AuthenticateWithPassword::Callback& cb) {
-  //throw std::runtime_error{"not implemented"};
   std::unordered_map<std::string, std::string> headers;
 
   json j;
