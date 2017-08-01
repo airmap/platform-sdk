@@ -22,7 +22,7 @@ void airmap::rest::Authenticator::authenticate_anonymously(const AuthenticateAno
   json j;
   j = params;
 
-  communicator_.post("https://api.airmap.com", "/auth/v1/anonymous/token", std::move(headers), j.dump(),
+  communicator_.post("api.airmap.com", "/auth/v1/anonymous/token", std::move(headers), j.dump(),
                      [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<AnonymousToken>(json::parse(result.value())));

@@ -26,7 +26,7 @@ class BunyanFormatter : public spdlog::formatter {
 
   void format(spdlog::details::log_msg& msg) override {
     msg.formatted.write(pattern, 0, severity_lut_.at(msg.level), msg.logger_name ? *msg.logger_name : "undefined",
-                        hostname_, pid_, airmap::iso8601::generate(airmap::Clock::local_time()), msg.raw.data());
+                        hostname_, pid_, airmap::iso8601::generate(airmap::Clock::local_time()), msg.raw.str());
   }
 
  private:

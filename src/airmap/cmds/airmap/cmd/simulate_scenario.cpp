@@ -99,7 +99,7 @@ cmd::SimulateScenario::SimulateScenario()
         Flights::CreateFlight::Parameters params;
         params.authorization = result.value().id;
         params.start_time    = Clock::universal_time();
-        params.end_time      = Clock::universal_time() + Minutes{20};
+        params.end_time      = Clock::universal_time() + Minutes{2};
 
         for (std::size_t i = 0; i < collector_->scenario().participants.size(); i++) {
           collector_->collect_authentication_for_index(i, result.value().id);
