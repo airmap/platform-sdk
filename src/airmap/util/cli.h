@@ -25,12 +25,12 @@
 
 #include <iomanip>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace airmap {
@@ -285,7 +285,7 @@ class CommandWithSubcommands : public Command {
   void help(std::ostream& out) override;
 
  private:
-  std::unordered_map<std::string, Command::Ptr> commands_;
+  std::/*unordered_*/ map<std::string, Command::Ptr> commands_;
   std::set<Flag::Ptr> flags_;
 };
 

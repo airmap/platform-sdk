@@ -31,18 +31,80 @@ inline void decode(const nlohmann::json& j, Authenticator::AnonymousToken& token
   get(token.id, j, "id_token");
 }
 
+inline void decode(const nlohmann::json& j, Authenticator::RefreshedToken& token) {
+  get(token.type, j, "token_type");
+  get(token.expires_in, j, "expires_in");
+  get(token.id, j, "id_token");
+}
+
+inline void decode(const nlohmann::json& j, Authenticator::RefreshedToken::Type& type) {
+  auto t = j.get<std::string>();
+  if (t == "Bearer")
+    type = Authenticator::RefreshedToken::Type::bearer;
+}
+
 inline void encode(nlohmann::json& j, const Authenticator::AuthenticateWithPassword::Params& params) {
   j["client_id"]  = params.client_id;
   j["connection"] = params.connection_name;
   j["username"]   = params.username;
   j["password"]   = params.password;
   j["device"]     = params.device;
-  j["grant_type"] = params.grant_type;
-  j["scope"]      = params.scope;
+
+  switch (params.grant_type) {
+    case Authenticator::GrantType::BEARER:
+      j["grant_type"] = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+      break;
+    case Authenticator::GrantType::PASSWORD:
+      j["grant_type"] = "password";
+    default:
+      break;
+  }
+
+  switch (params.scope) {
+    case Authenticator::Scope::OPEN_ID:
+      j["scope"] = "openid";
+      break;
+    case Authenticator::Scope::OPEN_ID_OFFLINE_ACCESS:
+      j["scope"] = "openid offline access";
+      break;
+    case Authenticator::Scope::ACCESS_TOKEN:
+      j["scope"] = "";
+    default:
+      break;
+  }
 }
 
 inline void encode(nlohmann::json& j, const Authenticator::AuthenticateAnonymously::Params& params) {
   j["user_id"] = params.user_id;
+}
+
+inline void encode(nlohmann::json& j, const Authenticator::RenewAuthentication::Params& params) {
+  j["client_id"] = params.client_id;
+  j["device"]    = params.device;
+  j["id_token"]  = params.id_token;
+
+  switch (params.grant_type) {
+    case Authenticator::GrantType::BEARER:
+      j["grant_type"] = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+      break;
+    case Authenticator::GrantType::PASSWORD:
+      j["grant_type"] = "password";
+    default:
+      break;
+  }
+
+  switch (params.scope) {
+    case Authenticator::Scope::OPEN_ID:
+      j["scope"] = "openid";
+      break;
+    case Authenticator::Scope::OPEN_ID_OFFLINE_ACCESS:
+      j["scope"] = "openid offline access";
+      break;
+    case Authenticator::Scope::ACCESS_TOKEN:
+      j["scope"] = "";
+    default:
+      break;
+  }
 }
 
 }  // namespace json

@@ -13,6 +13,10 @@ namespace airmap {
 
 class Authenticator : DoNotCopyOrMove {
  public:
+  enum class Scope { ACCESS_TOKEN = 0, OPEN_ID = 1, OPEN_ID_OFFLINE_ACCESS = 2, MAX_SCOPE };
+
+  enum class GrantType { PASSWORD = 0, BEARER = 1, MAX_GRANT_TYPE };
+
   struct AnonymousToken {
     std::string id;
   };
@@ -26,8 +30,9 @@ class Authenticator : DoNotCopyOrMove {
   };
 
   struct RefreshedToken {
-    OAuthToken::Type type;
-    std::chrono::seconds expires_in;
+    enum class Type { bearer };
+    Type type;
+    std::uint32_t expires_in;
     std::string id;
   };
 
@@ -38,8 +43,8 @@ class Authenticator : DoNotCopyOrMove {
       std::string username;
       std::string password;
       std::string device;
-      std::string grant_type = "password";
-      std::string scope      = "openid offline_access";
+      GrantType grant_type{GrantType::PASSWORD};
+      Scope scope{Scope::OPEN_ID_OFFLINE_ACCESS};
     };
 
     using Result   = Outcome<OAuthToken, std::exception_ptr>;
@@ -56,9 +61,13 @@ class Authenticator : DoNotCopyOrMove {
 
   struct RenewAuthentication {
     struct Params {
-      std::string user_id;
+      std::string client_id;
+      std::string device;
+      std::string id_token;
+      GrantType grant_type{GrantType::BEARER};
+      Scope scope{Scope::OPEN_ID_OFFLINE_ACCESS};
     };
-    using Result   = Outcome<AnonymousToken, std::exception_ptr>;
+    using Result   = Outcome<RefreshedToken, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
