@@ -51,13 +51,11 @@ class Communicator : public airmap::rest::Communicator,
     struct Get {};
     struct Post {};
     explicit HttpSession(const Get&, const std::shared_ptr<Logger>& logger,
-                         const std::shared_ptr<::boost::asio::io_service>& io_service,
-                         const std::shared_ptr<::boost::asio::ssl::context>& ssl_context, const std::string& host,
+                         const std::shared_ptr<::boost::asio::io_service>& io_service, const std::string& host,
                          const std::string& path, std::unordered_map<std::string, std::string>&& query,
                          std::unordered_map<std::string, std::string>&& headers, DoCallback cb);
     explicit HttpSession(const Post&, const std::shared_ptr<Logger>& logger,
-                         const std::shared_ptr<::boost::asio::io_service>& io_service,
-                         const std::shared_ptr<::boost::asio::ssl::context>& ssl_context, const std::string& host,
+                         const std::shared_ptr<::boost::asio::io_service>& io_service, const std::string& host,
                          const std::string& path, const std::string& body,
                          std::unordered_map<std::string, std::string>&& headers, DoCallback cb);
 
@@ -70,8 +68,8 @@ class Communicator : public airmap::rest::Communicator,
 
     util::FormattingLogger log;
     std::shared_ptr<::boost::asio::io_service> io_service;
-    std::shared_ptr<::boost::asio::ssl::context> ssl_context;
     ::boost::asio::ip::tcp::resolver resolver;
+    ::boost::asio::ssl::context ssl_context;
     ::boost::asio::ssl::stream<::boost::asio::ip::tcp::socket> socket;
     network::uri uri;
     ::boost::beast::http::request<::boost::beast::http::string_body> request;
@@ -104,7 +102,6 @@ class Communicator : public airmap::rest::Communicator,
 
   std::shared_ptr<::boost::asio::io_service> io_service_;
   std::shared_ptr<::boost::asio::io_service::work> keep_alive_;
-  std::shared_ptr<::boost::asio::ssl::context> ssl_context_;
 };
 
 }  // namespace boost

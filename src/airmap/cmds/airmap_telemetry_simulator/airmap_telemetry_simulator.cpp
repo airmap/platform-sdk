@@ -52,8 +52,7 @@ std::vector<airmap::Geometry::Coordinate> init_polygon() {
   return coords;
 }
 
-auto polygon = 
-    airmap::Geometry::polygon(init_polygon());
+auto polygon = airmap::Geometry::polygon(init_polygon());
 
 struct Params {
   Params()

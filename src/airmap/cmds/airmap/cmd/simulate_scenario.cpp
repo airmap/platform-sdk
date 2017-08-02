@@ -64,6 +64,8 @@ cmd::SimulateScenario::SimulateScenario()
     std::ifstream in{params_.scenario_file.get()};
     util::Scenario scenario = json::parse(in);
 
+    std::cout << "parsed " << scenario.participants.size() << " participants" << std::endl;
+
     collector_  = std::make_shared<Collector>(scenario);
     runner_     = std::make_shared<util::ScenarioSimulator::Runner>(5);
     auto result = ::airmap::Context::create(logger_);
@@ -112,8 +114,13 @@ cmd::SimulateScenario::SimulateScenario()
           params.geometry    = participant.geometry;
           client_->flights().create_flight_by_polygon(params, [this, &ctxt, i](const auto& result) {
             if (!result) {
-              logger_->error("could not create flight for polygon", component);
-              context_->stop();
+              try {
+                std::rethrow_exception(result.error());
+              } catch (const std::exception& e) {
+                logger_->error(fmt::sprintf("could not create flight for polygon: %s", e.what()).c_str(), component);
+              } catch (...) {
+                logger_->error("could not create flight for polygon", component);
+              }
               return;
             }
             logger_->info("successfully created flight for polygon", component);

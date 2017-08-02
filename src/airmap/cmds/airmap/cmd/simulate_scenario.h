@@ -8,6 +8,7 @@
 #include <airmap/optional.h>
 #include <airmap/telemetry.h>
 #include <airmap/util/cli.h>
+#include <airmap/util/formatting_logger.h>
 #include <airmap/util/scenario_simulator.h>
 
 #include <memory>
