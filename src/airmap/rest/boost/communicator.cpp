@@ -84,8 +84,8 @@ airmap::rest::boost::Communicator::HttpSession::HttpSession(const Get&, const st
                                                             DoCallback cb)
     : log{logger},
       io_service{io_service},
-      ssl_context{ssl::context::sslv23},
       resolver{*io_service},
+      ssl_context{ssl::context::sslv23},
       socket{*io_service, ssl_context},
       cb{cb} {
   ssl_context.set_default_verify_paths();
@@ -114,8 +114,8 @@ airmap::rest::boost::Communicator::HttpSession::HttpSession(const Post&, const s
                                                             DoCallback cb)
     : log{logger},
       io_service{io_service},
-      ssl_context{ssl::context::sslv23},
       resolver{*io_service},
+      ssl_context{ssl::context::sslv23},
       socket{*io_service, ssl_context},
       cb{cb} {
   ssl_context.set_default_verify_paths();
