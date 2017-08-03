@@ -2,24 +2,26 @@
 
 #include <airmap/date_time.h>
 
-#include <boost/asio.hpp>
 #include <fmt/format.h>
-#include <nlohmann/json.hpp>
 #include <spdlog/async_logger.h>
 #include <spdlog/sinks/ostream_sink.h>
+#include <boost/asio.hpp>
+#include <nlohmann/json.hpp>
 
 #include <unistd.h>
 
 #include <unordered_map>
 
 namespace ip = boost::asio::ip;
-using json = nlohmann::json;
+using json   = nlohmann::json;
 
 namespace {
 
 class BunyanFormatter : public spdlog::formatter {
  public:
-  static uint bunyan_version() { return 0; }
+  static uint bunyan_version() {
+    return 0;
+  }
 
   BunyanFormatter() : pid_{::getpid()} {
     boost::system::error_code ec;
@@ -31,13 +33,13 @@ class BunyanFormatter : public spdlog::formatter {
   void format(spdlog::details::log_msg& msg) override {
     json j;
 
-    j["v"] = bunyan_version();
-    j["level"] = severity_lut_.at(msg.level);
-    j["name"] = msg.logger_name ? *msg.logger_name : "undefined";
+    j["v"]        = bunyan_version();
+    j["level"]    = severity_lut_.at(msg.level);
+    j["name"]     = msg.logger_name ? *msg.logger_name : "undefined";
     j["hostname"] = hostname_;
-    j["pid"] = pid_;
-    j["time"] = airmap::iso8601::generate(airmap::Clock::local_time());
-    j["msg"] = msg.raw.str();
+    j["pid"]      = pid_;
+    j["time"]     = airmap::iso8601::generate(airmap::Clock::local_time());
+    j["msg"]      = msg.raw.str();
 
     msg.formatted << j.dump() << '\n';
   }
