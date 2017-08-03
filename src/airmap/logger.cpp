@@ -2,7 +2,9 @@
 
 #include <airmap/date_time.h>
 
+#include <boost/asio.hpp>
 #include <fmt/format.h>
+#include <nlohmann/json.hpp>
 #include <spdlog/async_logger.h>
 #include <spdlog/sinks/ostream_sink.h>
 
@@ -10,23 +12,34 @@
 
 #include <unordered_map>
 
+namespace ip = boost::asio::ip;
+using json = nlohmann::json;
+
 namespace {
 
 class BunyanFormatter : public spdlog::formatter {
  public:
-  static constexpr const char* pattern{
-      R"_({{"v":{},"level":"{}","name":"{}","hostname":"{}","pid":{},"time":"{}","msg":"{}"}}
-)_"};
-
-  static constexpr uint max_hostname_length{256};
+  static uint bunyan_version() { return 0; }
 
   BunyanFormatter() : pid_{::getpid()} {
-    ::gethostname(hostname_, max_hostname_length);
+    boost::system::error_code ec;
+    hostname_ = ip::host_name(ec);
+    if (ec)
+      hostname_ = "unknown";
   }
 
   void format(spdlog::details::log_msg& msg) override {
-    msg.formatted.write(pattern, 0, severity_lut_.at(msg.level), msg.logger_name ? *msg.logger_name : "undefined",
-                        hostname_, pid_, airmap::iso8601::generate(airmap::Clock::local_time()), msg.raw.str());
+    json j;
+
+    j["v"] = bunyan_version();
+    j["level"] = severity_lut_.at(msg.level);
+    j["name"] = msg.logger_name ? *msg.logger_name : "undefined";
+    j["hostname"] = hostname_;
+    j["pid"] = pid_;
+    j["time"] = airmap::iso8601::generate(airmap::Clock::local_time());
+    j["msg"] = msg.raw.str();
+
+    msg.formatted << j.dump() << '\n';
   }
 
  private:
@@ -34,7 +47,7 @@ class BunyanFormatter : public spdlog::formatter {
       {spdlog::level::trace, "trace"}, {spdlog::level::debug, "debug"}, {spdlog::level::info, "info"},
       {spdlog::level::warn, "warn"},   {spdlog::level::err, "error"},   {spdlog::level::critical, "critical"},
   };
-  char hostname_[max_hostname_length];
+  std::string hostname_;
   pid_t pid_;
 };
 

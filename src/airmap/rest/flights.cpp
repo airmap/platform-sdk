@@ -85,6 +85,8 @@ void airmap::rest::Flights::create_flight_by_polygon(const CreateFlight::Paramet
                      [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<Flight>(json::parse(result.value())));
+                       } else {
+                         cb(CreateFlight::Result{result.error()});
                        }
                      });
 }

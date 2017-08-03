@@ -188,7 +188,7 @@ void airmap::rest::boost::Communicator::HttpSession::handle_read(const ::boost::
       cb(DoResult{response.body});
       break;
     default:
-      cb(DoResult{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s", request)})});
+      cb(DoResult{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s\n%s", request, response)})});
       break;
   }
 }

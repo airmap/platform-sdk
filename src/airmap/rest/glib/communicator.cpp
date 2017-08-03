@@ -81,7 +81,7 @@ void airmap::rest::glib::Communicator::post(const std::string& host, const std::
   auto sp = shared_from_this();
   std::weak_ptr<Communicator> wp{sp};
 
-  auto uri = soup_uri_new(host.c_str());
+  auto uri = soup_uri_new(("https://" + host).c_str());
   soup_uri_set_path(uri, path.c_str());
 
   auto msg = soup_message_new("POST", soup_uri_to_string(uri, FALSE));

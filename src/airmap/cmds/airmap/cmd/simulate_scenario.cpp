@@ -64,8 +64,6 @@ cmd::SimulateScenario::SimulateScenario()
     std::ifstream in{params_.scenario_file.get()};
     util::Scenario scenario = json::parse(in);
 
-    std::cout << "parsed " << scenario.participants.size() << " participants" << std::endl;
-
     collector_  = std::make_shared<Collector>(scenario);
     runner_     = std::make_shared<util::ScenarioSimulator::Runner>(5);
     auto result = ::airmap::Context::create(logger_);
@@ -90,20 +88,20 @@ cmd::SimulateScenario::SimulateScenario()
 
       client_ = result.value();
 
-      client_->authenticator().authenticate_anonymously({"thomas@airmap.com"}, [this, &ctxt](const auto& result) {
-        if (not result) {
-          logger_->error("could not authenticate with the Airmap services", component);
-          context_->stop();
-          return;
-        }
-        logger_->info("successfully authenticated with AirMap services", component);
+      for (std::size_t i = 0; i < collector_->scenario().participants.size(); i++) {
+        client_->authenticator().authenticate_anonymously({collector_->scenario().participants.at(i).pilot.id}, [this, &ctxt, i](const auto& result) {
+          if (not result) {
+            logger_->error("could not authenticate with the Airmap services", component);
+            context_->stop();
+            return;
+          }
+          logger_->info("successfully authenticated with the AirMap services", component);
 
-        Flights::CreateFlight::Parameters params;
-        params.authorization = result.value().id;
-        params.start_time    = Clock::universal_time();
-        params.end_time      = Clock::universal_time() + Minutes{2};
+          Flights::CreateFlight::Parameters params;
+          params.authorization = result.value().id;
+          params.start_time    = Clock::universal_time();
+          params.end_time      = Clock::universal_time() + Minutes{2};
 
-        for (std::size_t i = 0; i < collector_->scenario().participants.size(); i++) {
           collector_->collect_authentication_for_index(i, result.value().id);
           const auto& participant = collector_->scenario().participants.at(i);
           const auto& polygon     = participant.geometry.details_for_polygon();
@@ -142,8 +140,8 @@ cmd::SimulateScenario::SimulateScenario()
                   }
                 });
           });
-        }
-      });
+        });
+      }
     });
 
     context_->run();
