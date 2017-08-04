@@ -7,13 +7,13 @@ namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
 
 cmd::AuthorizeAnonymous::AuthorizeAnonymous()
-    : cli::CommandWithFlagsAndAction{cli::Name{"authorize-anonymous"},
+    : cli::CommandWithFlagsAndAction{cli::Name{"authorize-anonymously"},
                                      cli::Usage{"anonymously authorize with the AirMap services"},
                                      cli::Description{"anonymously authorize with the AirMap services"}} {
   flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
                       api_key_));
   flag(cli::make_flag(cli::Name{"user-id"},
-                      cli::Description{"user-id used for anonymous authorizing with the AirMap services"},
+                      cli::Description{"user-id used for authorizing anonymously with the AirMap services"},
                       params_.user_id));
 
   action([this](const cli::Command::Context& ctxt) {
@@ -32,8 +32,6 @@ cmd::AuthorizeAnonymous::AuthorizeAnonymous()
             return;
 
           auto client = result.value();
-
-          // if user-id parameter found, authenticate anonymously
 
           auto handler = [this, &ctxt, context, client](const Authenticator::AuthenticateAnonymously::Result& result) {
             if (result)

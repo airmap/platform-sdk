@@ -1,5 +1,5 @@
-#ifndef AIRMAP_CMDS_AIRMAP_CMD_AUTHORIZE_REFERSH_H_
-#define AIRMAP_CMDS_AIRMAP_CMD_AUTHORIZE_REFERSH_H_
+#ifndef AIRMAP_CMDS_AIRMAP_CMD_AUTHORIZE_REFRESH_H_
+#define AIRMAP_CMDS_AIRMAP_CMD_AUTHORIZE_REFRESH_H_
 
 #include <airmap/authenticator.h>
 #include <airmap/util/cli.h>
@@ -23,4 +23,4 @@ class AuthorizeRefresh : public util::cli::CommandWithFlagsAndAction {
 }  // namespace cmds
 }  // namespace airmap
 
-#endif  // AIRMAP_CMDS_AIRMAP_CMD_AUTHORIZE_REFERSH_H_
+#endif  // AIRMAP_CMDS_AIRMAP_CMD_AUTHORIZE_REFRESH_H_

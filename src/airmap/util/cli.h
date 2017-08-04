@@ -285,7 +285,7 @@ class CommandWithSubcommands : public Command {
   void help(std::ostream& out) override;
 
  private:
-  std::/*unordered_*/ map<std::string, Command::Ptr> commands_;
+  std::map<std::string, Command::Ptr> commands_;
   std::set<Flag::Ptr> flags_;
 };
 

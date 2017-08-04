@@ -43,6 +43,33 @@ inline void decode(const nlohmann::json& j, Authenticator::RefreshedToken::Type&
     type = Authenticator::RefreshedToken::Type::bearer;
 }
 
+inline void encode(nlohmann::json& j, const Authenticator::GrantType& type) {
+  switch (type) {
+    case Authenticator::GrantType::bearer:
+      j["grant_type"] = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+      break;
+    case Authenticator::GrantType::password:
+      j["grant_type"] = "password";
+    default:
+      break;
+  }
+}
+
+inline void encode(nlohmann::json& j, const Authenticator::Scope& scope) {
+  switch (scope) {
+    case Authenticator::Scope::open_id:
+      j["scope"] = "openid";
+      break;
+    case Authenticator::Scope::open_id_offline_access:
+      j["scope"] = "openid offline access";
+      break;
+    case Authenticator::Scope::access_token:
+      j["scope"] = "";
+    default:
+      break;
+  }
+}
+
 inline void encode(nlohmann::json& j, const Authenticator::AuthenticateWithPassword::Params& params) {
   j["client_id"]  = params.client_id;
   j["connection"] = params.connection_name;
@@ -50,28 +77,8 @@ inline void encode(nlohmann::json& j, const Authenticator::AuthenticateWithPassw
   j["password"]   = params.password;
   j["device"]     = params.device;
 
-  switch (params.grant_type) {
-    case Authenticator::GrantType::BEARER:
-      j["grant_type"] = "urn:ietf:params:oauth:grant-type:jwt-bearer";
-      break;
-    case Authenticator::GrantType::PASSWORD:
-      j["grant_type"] = "password";
-    default:
-      break;
-  }
-
-  switch (params.scope) {
-    case Authenticator::Scope::OPEN_ID:
-      j["scope"] = "openid";
-      break;
-    case Authenticator::Scope::OPEN_ID_OFFLINE_ACCESS:
-      j["scope"] = "openid offline access";
-      break;
-    case Authenticator::Scope::ACCESS_TOKEN:
-      j["scope"] = "";
-    default:
-      break;
-  }
+  encode(j, params.grant_type);
+  encode(j, params.scope);
 }
 
 inline void encode(nlohmann::json& j, const Authenticator::AuthenticateAnonymously::Params& params) {
@@ -83,28 +90,8 @@ inline void encode(nlohmann::json& j, const Authenticator::RenewAuthentication::
   j["device"]    = params.device;
   j["id_token"]  = params.id_token;
 
-  switch (params.grant_type) {
-    case Authenticator::GrantType::BEARER:
-      j["grant_type"] = "urn:ietf:params:oauth:grant-type:jwt-bearer";
-      break;
-    case Authenticator::GrantType::PASSWORD:
-      j["grant_type"] = "password";
-    default:
-      break;
-  }
-
-  switch (params.scope) {
-    case Authenticator::Scope::OPEN_ID:
-      j["scope"] = "openid";
-      break;
-    case Authenticator::Scope::OPEN_ID_OFFLINE_ACCESS:
-      j["scope"] = "openid offline access";
-      break;
-    case Authenticator::Scope::ACCESS_TOKEN:
-      j["scope"] = "";
-    default:
-      break;
-  }
+  encode(j, params.grant_type);
+  encode(j, params.scope);
 }
 
 }  // namespace json
