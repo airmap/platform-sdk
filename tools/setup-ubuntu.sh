@@ -14,4 +14,5 @@ apt install -y \
   libcrypto++-dev \
   libsoup2.4-dev \
   libglib2.0-dev \
+  libssl-dev \
   protobuf-compiler
