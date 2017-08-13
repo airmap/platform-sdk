@@ -14,3 +14,6 @@
 [submodule "vendor/mavlink"]
 	path = vendor/mavlink
 	url = https://github.com/mavlink/c_library_v2.git
+[submodule "vendor/mqtt_client_cpp"]
+	path = vendor/mqtt_client_cpp
+	url = https://github.com/redboltz/mqtt_client_cpp.git
