@@ -29,7 +29,7 @@ class Communicator : DoNotCopyOrMove {
 
   virtual void post(const std::string& host, const std::string& path,
                     std::unordered_map<std::string, std::string>&& headers, const std::string& body, DoCallback cb) = 0;
-  virtual void send_udp(const std::string& host, std::uint16_t port, const std::string& body)                       = 0;
+  virtual void send_udp(const std::string& host, std::uint16_t port, const std::string& body) = 0;
 
   virtual void dispatch(const std::function<void()>& task) = 0;
 

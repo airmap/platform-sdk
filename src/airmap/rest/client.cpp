@@ -7,7 +7,8 @@ airmap::rest::Client::Client(const Credentials& credentials, const std::shared_p
       airspaces_{*this},
       authenticator_{*this},
       flights_{*this},
-      telemetry_{*this} {
+      telemetry_{*this},
+      traffic_{*this} {
 }
 
 airmap::Aircrafts& airmap::rest::Client::aircrafts() {
@@ -28,6 +29,10 @@ airmap::Flights& airmap::rest::Client::flights() {
 
 airmap::Telemetry& airmap::rest::Client::telemetry() {
   return telemetry_;
+}
+
+airmap::Traffic& airmap::rest::Client::traffic() {
+  return traffic_;
 }
 
 void airmap::rest::Client::get(const std::string& host, const std::string& path,

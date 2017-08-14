@@ -9,6 +9,7 @@
 #include <airmap/rest/communicator.h>
 #include <airmap/rest/flights.h>
 #include <airmap/rest/telemetry.h>
+#include <airmap/rest/traffic.h>
 
 #include <memory>
 
@@ -25,6 +26,7 @@ class Client : public airmap::Client, public airmap::rest::Communicator {
   airmap::Authenticator& authenticator() override;
   airmap::Flights& flights() override;
   airmap::Telemetry& telemetry() override;
+  airmap::Traffic& traffic() override;
 
   // From airmap::rest::Communicator
   void get(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& query,
@@ -43,6 +45,7 @@ class Client : public airmap::Client, public airmap::rest::Communicator {
   rest::Authenticator authenticator_;
   rest::Flights flights_;
   rest::Telemetry telemetry_;
+  rest::Traffic traffic_;
 };
 
 }  // namespace rest
