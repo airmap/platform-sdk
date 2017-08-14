@@ -18,8 +18,9 @@ namespace {
 using StringMap = std::unordered_map<std::string, std::string>;
 
 struct MockCommunicator : public airmap::rest::Communicator {
-  MAKE_MOCK5(connect_to_mqtt_broker, void(const std::string&, std::uint16_t, const std::string&,
-                                      const std::string&, const ConnectCallback&), override);
+  MAKE_MOCK5(connect_to_mqtt_broker,
+             void(const std::string&, std::uint16_t, const std::string&, const std::string&, const ConnectCallback&),
+             override);
   MAKE_MOCK5(delete_, void(const std::string&, const std::string&, StringMap&&, StringMap&&, DoCallback), override);
   MAKE_MOCK5(get, void(const std::string&, const std::string&, StringMap&&, StringMap&&, DoCallback), override);
   MAKE_MOCK5(patch, void(const std::string&, const std::string&, StringMap&&, const std::string&, DoCallback),

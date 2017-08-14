@@ -19,7 +19,8 @@ namespace rest {
 
 class Client : public airmap::Client, public airmap::rest::Communicator {
  public:
-  explicit Client(const Configuration& configuration, const std::shared_ptr<Logger>& logger, const std::shared_ptr<Communicator>& communicator);
+  explicit Client(const Configuration& configuration, const std::shared_ptr<Logger>& logger,
+                  const std::shared_ptr<Communicator>& communicator);
 
   // From airmap::Client
   airmap::Aircrafts& aircrafts() override;

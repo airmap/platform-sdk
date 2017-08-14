@@ -2,7 +2,8 @@
 
 #include <airmap/util/formatting_logger.h>
 
-airmap::Traffic::Monitor::FunctionalSubscriber::FunctionalSubscriber(const std::function<void(const std::vector<Update>&)>& f)
+airmap::Traffic::Monitor::FunctionalSubscriber::FunctionalSubscriber(
+    const std::function<void(const std::vector<Update>&)>& f)
     : f_{f} {
 }
 

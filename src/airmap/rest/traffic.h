@@ -17,7 +17,8 @@ class Traffic : public airmap::Traffic {
  public:
   class Monitor : public airmap::Traffic::Monitor {
    public:
-    explicit Monitor(const std::shared_ptr<Logger>& logger, const std::string& flight_id, const std::shared_ptr<mqtt::Client>& client);
+    explicit Monitor(const std::shared_ptr<Logger>& logger, const std::string& flight_id,
+                     const std::shared_ptr<mqtt::Client>& client);
 
     void subscribe(const std::shared_ptr<Subscriber>& subscriber) override;
     void unsubscribe(const std::shared_ptr<Subscriber>& subscriber) override;
@@ -35,7 +36,8 @@ class Traffic : public airmap::Traffic {
     std::uint8_t alert_subscription_id_;
   };
 
-  explicit Traffic(const std::shared_ptr<Logger>& logger, const std::string& host, std::uint16_t port, Communicator& communicator);
+  explicit Traffic(const std::shared_ptr<Logger>& logger, const std::string& host, std::uint16_t port,
+                   Communicator& communicator);
 
   void monitor(const Monitor::Params& params, const Monitor::Callback& cb) override;
 

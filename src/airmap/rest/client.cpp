@@ -1,6 +1,7 @@
 #include <airmap/rest/client.h>
 
-airmap::rest::Client::Client(const Configuration& configuration, const std::shared_ptr<Logger>& logger, const std::shared_ptr<Communicator>& communicator)
+airmap::rest::Client::Client(const Configuration& configuration, const std::shared_ptr<Logger>& logger,
+                             const std::shared_ptr<Communicator>& communicator)
     : configuration_{configuration},
       communicator_{communicator},
       aircrafts_{configuration_.host, configuration_.version, *this},
