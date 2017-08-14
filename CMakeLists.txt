@@ -7,9 +7,6 @@ find_package(Boost REQUIRED date_time program_options system)
 find_package(PkgConfig)
 find_package(Protobuf REQUIRED)
 
-pkg_check_modules(LIBSOUP REQUIRED libsoup-2.4)
-pkg_check_modules(GIO gio-2.0)
-pkg_check_modules(GIO_UNIX gio-unix-2.0)
 pkg_check_modules(OPENSSL REQUIRED openssl)
 
 # cryptopp lacks a pkgconfig setup on OS X and
@@ -38,10 +35,6 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
 
-  ${AWS_CPP_SDK_CORE_INCLUDE_DIRS}
-  ${GIO_INCLUDE_DIRS}
-  ${GIO_UNIX_INCLUDE_DIRS}
-  ${LIBSOUP_INCLUDE_DIRS}
   ${OPENSSL_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIRS})
 
@@ -180,7 +173,7 @@ set_property(TARGET airmap-server PROPERTY CXX_STANDARD 14)
 set_property(TARGET airmap PROPERTY CXX_STANDARD 14)
 set_property(TARGET airmap-telemetry-simulator PROPERTY CXX_STANDARD 14)
 
-target_link_libraries(airmap-client fmt network-uri spdlog ${Boost_LIBRARIES} ${CRYPTOPP_LIBRARIES} ${LIBSOUP_LDFLAGS} ${OPENSSL_LDFLAGS} ${PROTOBUF_LIBRARIES})
+target_link_libraries(airmap-client fmt network-uri spdlog ${Boost_LIBRARIES} ${CRYPTOPP_LIBRARIES} ${OPENSSL_LDFLAGS} ${PROTOBUF_LIBRARIES})
 target_link_libraries(airmap airmap-client )
 target_link_libraries(airmap-server airmap-client)
 target_link_libraries(airmap-telemetry-simulator airmap-client)
