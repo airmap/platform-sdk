@@ -44,6 +44,8 @@ class Communicator : public airmap::rest::Communicator,
   void stop() override;
 
   // From airmap::rest::Communicator
+  void connect_to_mqtt_broker(const std::string& host, std::uint16_t port, const std::string& username,
+                              const std::string& password, const ConnectCallback& cb) override;
   void delete_(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& query,
                std::unordered_map<std::string, std::string>&& headers, DoCallback cb) override;
   void get(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& query,

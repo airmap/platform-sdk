@@ -10,6 +10,7 @@
 #include <airmap/rest/flights.h>
 #include <airmap/rest/pilots.h>
 #include <airmap/rest/telemetry.h>
+#include <airmap/rest/traffic.h>
 
 #include <memory>
 
@@ -18,7 +19,7 @@ namespace rest {
 
 class Client : public airmap::Client, public airmap::rest::Communicator {
  public:
-  explicit Client(const Configuration& configuration, const std::shared_ptr<Communicator>& communicator);
+  explicit Client(const Configuration& configuration, const std::shared_ptr<Logger>& logger, const std::shared_ptr<Communicator>& communicator);
 
   // From airmap::Client
   airmap::Aircrafts& aircrafts() override;
@@ -27,8 +28,11 @@ class Client : public airmap::Client, public airmap::rest::Communicator {
   airmap::Flights& flights() override;
   airmap::Pilots& pilots() override;
   airmap::Telemetry& telemetry() override;
+  airmap::Traffic& traffic() override;
 
   // From airmap::rest::Communicator
+  void connect_to_mqtt_broker(const std::string& host, std::uint16_t port, const std::string& username,
+                              const std::string& password, const ConnectCallback& cb) override;
   void delete_(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& query,
                std::unordered_map<std::string, std::string>&& headers, DoCallback cb) override;
   void get(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& query,
@@ -50,6 +54,7 @@ class Client : public airmap::Client, public airmap::rest::Communicator {
   rest::Flights flights_;
   rest::Pilots pilots_;
   rest::Telemetry telemetry_;
+  rest::Traffic traffic_;
 };
 
 }  // namespace rest

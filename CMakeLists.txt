@@ -33,6 +33,7 @@ include_directories(
   vendor/mavlink
   vendor/spdlog/include
   vendor/uri/include
+  vendor/mqtt_client_cpp/include
 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
@@ -67,6 +68,7 @@ add_library(
   include/airmap/rule.h
   include/airmap/telemetry.h
   include/airmap/timestamp.h
+  include/airmap/traffic.h
 
   src/airmap/airspace.cpp
   src/airmap/client.cpp
@@ -80,6 +82,7 @@ add_library(
   src/airmap/pilots.cpp
   src/airmap/rule.cpp
   src/airmap/telemetry.cpp
+  src/airmap/traffic.cpp
 
   src/airmap/daemon.h
   src/airmap/daemon.cpp
@@ -89,8 +92,6 @@ add_library(
   src/airmap/rest/communicator.h
   src/airmap/rest/boost/communicator.h
   src/airmap/rest/boost/communicator.cpp
-  src/airmap/rest/glib/communicator.h
-  src/airmap/rest/glib/communicator.cpp
 
   src/airmap/rest/aircrafts.h
   src/airmap/rest/aircrafts.cpp
@@ -104,6 +105,8 @@ add_library(
   src/airmap/rest/pilots.cpp
   src/airmap/rest/telemetry.h
   src/airmap/rest/telemetry.cpp
+  src/airmap/rest/traffic.h
+  src/airmap/rest/traffic.cpp
 
   src/airmap/mavlink/channel.h
   src/airmap/mavlink/channel.cpp
@@ -162,7 +165,10 @@ add_executable(
   src/airmap/cmds/airmap/cmd/simulate_telemetry.h
   src/airmap/cmds/airmap/cmd/simulate_telemetry.cpp
   src/airmap/cmds/airmap/cmd/start_flight_comms.h
-  src/airmap/cmds/airmap/cmd/start_flight_comms.cpp)
+  src/airmap/cmds/airmap/cmd/start_flight_comms.cpp
+  src/airmap/cmds/airmap/cmd/subscribe_traffic.h
+  src/airmap/cmds/airmap/cmd/subscribe_traffic.cpp)
+
 
 add_executable(
   airmap-telemetry-simulator

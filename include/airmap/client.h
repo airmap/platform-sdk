@@ -19,6 +19,7 @@ class Authenticator;
 class Flights;
 class Pilots;
 class Telemetry;
+class Traffic;
 
 /// Client enables applications to use the AirMap services and APIs.
 class Client : DoNotCopyOrMove {
@@ -41,6 +42,10 @@ class Client : DoNotCopyOrMove {
       std::string host;    ///< Address of the host exposing the AirMap telemetry endpoints.
       std::uint16_t port;  ///< Port of the host exposing the AirMap telemetry endpoints.
     } telemetry;
+    struct {
+      std::string host;    ///< Address of the mqtt broker serving air traffic information.
+      std::uint16_t port;  ///< Port of the mqtt broker serving air traffic information.
+    } traffic;
     Credentials credentials;  ///< Credentials that are required to authorize access to the AirMap services.
   };
 
@@ -73,6 +78,9 @@ class Client : DoNotCopyOrMove {
 
   /// telemetry returns the Telemetry implementation provided by the client.
   virtual Telemetry& telemetry() = 0;
+
+  /// traffic returns the Traffic implementation provided by the client.
+  virtual Traffic& traffic() = 0;
 
  protected:
   Client() = default;

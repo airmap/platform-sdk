@@ -161,6 +161,16 @@ cmd::SimulateScenario::SimulateScenario()
 
                 collector_->collect_flight_id_for_index(i, result.value());
                 const auto& participant = collector_->scenario().participants.at(i);
+
+                client_->traffic().monitor(
+                    {participant.authentication.get(), participant.flight.get().id}, [this](const auto& result) {
+                      if (result) {
+                        auto monitor = result.value();
+                        monitor->subscribe(
+                            std::make_shared<Traffic::Monitor::LoggingSubscriber>(component, log_.logger()));
+                      }
+                    });
+
                 client_->flights().start_flight_communications(
                     {participant.authentication.get(), participant.flight.get().id},
                     [this, &ctxt, i](const auto& result) {

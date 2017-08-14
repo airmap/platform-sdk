@@ -3,11 +3,16 @@
 #include <iostream>
 
 airmap::Client::Configuration airmap::Client::default_production_configuration(const Credentials& credentials) {
-  return Configuration{"api.airmap.com", Version::production, {"api-udp-telemetry.airmap.com", 16060}, credentials};
+  return Configuration{"api.airmap.com",
+                       Version::production,
+                       {"api-udp-telemetry.airmap.com", 16060},
+                       {"mqtt-prod.airmap.io", 8883},
+                       credentials};
 }
 
 airmap::Client::Configuration airmap::Client::default_staging_configuration(const Credentials& credentials) {
-  return Configuration{"api.airmap.com", Version::staging, {"k8s.stage.airmap.com", 16060}, credentials};
+  return Configuration{
+      "api.airmap.com", Version::staging, {"k8s.stage.airmap.com", 16060}, {"mqtt-stage.airmap.io", 8883}, credentials};
 }
 
 airmap::Client::Configuration airmap::Client::default_configuration(Client::Version version,

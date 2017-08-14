@@ -19,6 +19,7 @@
 #include <airmap/codec/json/pilot.h>
 #include <airmap/codec/json/pilots.h>
 #include <airmap/codec/json/rule.h>
+#include <airmap/codec/json/traffic.h>
 
 namespace airmap {
 

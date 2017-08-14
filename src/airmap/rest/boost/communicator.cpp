@@ -3,14 +3,19 @@
 #include <airmap/rest/client.h>
 
 #include <boost/beast/http.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <mqtt/str_connect_return_code.hpp>
 
 #include <iostream>
 
-namespace asio = boost::asio;
-namespace http = boost::beast::http;
-namespace ssl  = boost::asio::ssl;
-using tcp      = boost::asio::ip::tcp;
-using udp      = boost::asio::ip::udp;
+namespace asio  = boost::asio;
+namespace http  = boost::beast::http;
+namespace ssl   = boost::asio::ssl;
+namespace uuids = boost::uuids;
+using tcp       = boost::asio::ip::tcp;
+using udp       = boost::asio::ip::udp;
 
 namespace {
 std::exception_ptr wrap_error_code(const boost::system::error_code& ec) {
@@ -36,7 +41,7 @@ const std::shared_ptr<::boost::asio::io_service>& airmap::rest::boost::Communica
 // From airmap::Context
 void airmap::rest::boost::Communicator::create_client_with_configuration(const Client::Configuration& configuration,
                                                                          const ClientCreateCallback& cb) {
-  cb(ClientCreateResult{std::make_shared<rest::Client>(configuration, shared_from_this())});
+  cb(ClientCreateResult{std::make_shared<rest::Client>(configuration, log_.logger(), shared_from_this())});
 }
 
 void airmap::rest::boost::Communicator::run() {
@@ -56,6 +61,38 @@ void airmap::rest::boost::Communicator::stop() {
 }
 
 // From airmap::rest::Communicator
+void airmap::rest::boost::Communicator::connect_to_mqtt_broker(const std::string& host, std::uint16_t port,
+                                                               const std::string& username, const std::string& password,
+                                                               const ConnectCallback& cb) {
+  auto client = ::mqtt::make_tls_client(*io_service_, host, std::to_string(port));
+  client->set_clean_session(true);
+  client->set_default_verify_paths();
+  client->set_client_id(uuids::to_string(uuids::random_generator()()));
+  client->set_user_name(username);
+  client->set_password(password);
+
+  client->set_connack_handler([ log = log_, host, port ](auto clean_session, auto rc) mutable {
+    log.infof(component, "finished connection to mqtt broker %s:%d: %s", host, port,
+              ::mqtt::connect_return_code_to_str(rc));
+    return rc == ::mqtt::connect_return_code::accepted;
+  });
+
+  client->set_close_handler([ log = log_, host, port ]() mutable {
+    log.infof(component, "connection to mqtt broker %s:%d was closed", host, port);
+  });
+
+  client->set_error_handler([ log = log_, host, port ](const ::boost::system::error_code& ec) mutable {
+    log.errorf(component, "error in communication with mqtt broker %s:%d: %s", host, port, ec.message());
+  });
+
+  client->connect([ sp = shared_from_this(), cb, client ](const auto& ec) {
+    if (ec) {
+      cb(ConnectResult(std::make_exception_ptr(std::runtime_error{ec.message()})));
+    } else {
+      cb(ConnectResult(client));
+    }
+  });
+}
 void airmap::rest::boost::Communicator::delete_(const std::string& host, const std::string& path,
                                                 std::unordered_map<std::string, std::string>&& query,
                                                 std::unordered_map<std::string, std::string>&& headers, DoCallback cb) {
