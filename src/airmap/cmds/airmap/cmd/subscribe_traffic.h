@@ -1,6 +1,8 @@
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_SUBSCRIBE_TRAFFIC_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_SUBSCRIBE_TRAFFIC_H_
 
+#include <airmap/client.h>
+#include <airmap/context.h>
 #include <airmap/traffic.h>
 #include <airmap/util/cli.h>
 #include <airmap/util/formatting_logger.h>
@@ -21,6 +23,9 @@ class SubscribeTraffic : public util::cli::CommandWithFlagsAndAction {
   using FlightId      = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
+  std::shared_ptr<::airmap::Context> context_;
+  std::shared_ptr<::airmap::Client> client_;
+  std::shared_ptr<::airmap::Traffic::Monitor> monitor_;
   struct {
     Optional<ApiKey> api_key;
     Optional<Authorization> authorization;

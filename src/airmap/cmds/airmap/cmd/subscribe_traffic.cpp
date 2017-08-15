@@ -11,7 +11,8 @@ constexpr const char* component{"traffic"};
 }
 
 cmd::SubscribeTraffic::SubscribeTraffic()
-    : cli::CommandWithFlagsAndAction{cli::Name{"traffic"}, cli::Usage{"Traffic Alerts and Situational Awareness"},
+    : cli::CommandWithFlagsAndAction{cli::Name{"monitor-traffic"},
+                                     cli::Usage{"Traffic Alerts and Situational Awareness"},
                                      cli::Description{"receive traffic alerts for a flight with AirMap services"}} {
   flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
                       params_.api_key));
@@ -21,7 +22,7 @@ cmd::SubscribeTraffic::SubscribeTraffic()
                       params_.flight_id));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_default_logger()};
+    log_ = util::FormattingLogger{create_default_logger(ctxt.cout)};
 
     if (!params_.api_key) {
       log_.errorf(component, "missing parameter 'api-key'");
@@ -56,36 +57,53 @@ cmd::SubscribeTraffic::SubscribeTraffic()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      ctxt.cout << "Could not acquire resources for accessing AirMap services" << std::endl;
+      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
       return 1;
     }
 
-    auto context = result.value();
+    context_ = result.value();
     auto config =
         Client::default_configuration(Client::Version::production, Client::Credentials{params_.api_key.get()});
-    context->create_client_with_configuration(
-        config, [this, &ctxt, context](const ::airmap::Context::ClientCreateResult& result) {
-          if (not result)
-            return;
 
-          auto client = result.value();
+    context_->create_client_with_configuration(config, [this](const ::airmap::Context::ClientCreateResult& result) {
+      if (!result) {
+        try {
+          std::rethrow_exception(result.error());
+        } catch (const std::exception& e) {
+          log_.errorf(component, "failed to create client: %s", e.what());
+        } catch (...) {
+          log_.errorf(component, "failed to create client");
+        }
+        context_->stop();
+        return;
+      }
 
-          auto handler = [this, &ctxt, context, client](const Traffic::Monitor::Result& result) {
-            if (result) {
-              ctxt.cout << "TBD: " << std::endl;
-            } else
-              ctxt.cout << "Failed to subscribe TBD " << std::endl;
+      client_ = result.value();
 
-            context->stop();
-          };
+      auto handler = [this](const Traffic::Monitor::Result& result) {
+        if (result) {
+          log_.infof(component, "successfully created traffic monitor");
+          monitor_ = result.value();
+          monitor_->subscribe(
+              std::make_shared<::airmap::Traffic::Monitor::LoggingSubscriber>(component, log_.logger()));
+        } else {
+          try {
+            std::rethrow_exception(result.error());
+          } catch (const std::exception& e) {
+            log_.errorf(component, "failed to create traffic monitor: %s", e.what());
+          } catch (...) {
+            log_.errorf(component, "failed to create traffic monitor");
+          }
+          context_->stop();
+          return;
+        }
+      };
 
-          client->traffic().monitor(Traffic::Monitor::Params{params_.flight_id.get(), params_.authorization.get()},
-                                    handler);
-        });
+      client_->traffic().monitor(
+          ::airmap::Traffic::Monitor::Params{params_.flight_id.get(), params_.authorization.get()}, handler);
+    });
 
-    if (result)
-      result.value()->run();
-
+    context_->run();
     return 0;
   });
 }
