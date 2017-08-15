@@ -65,6 +65,15 @@ cmd::MonitorTraffic::MonitorTraffic()
     auto config =
         Client::default_configuration(Client::Version::production, Client::Credentials{params_.api_key.get()});
 
+    log_.infof(component,
+               "client configuration:\n"
+               "  host:                %s\n"
+               "  version:             %s\n"
+               "  telemetry.host:      %s\n"
+               "  telemetry.port:      %d\n"
+               "  credentials.api_key: %s",
+               config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
+
     context_->create_client_with_configuration(config, [this](const ::airmap::Context::ClientCreateResult& result) {
       if (!result) {
         try {

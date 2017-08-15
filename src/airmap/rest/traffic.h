@@ -15,18 +15,23 @@ namespace rest {
 
 class Traffic : public airmap::Traffic {
  public:
-  class Monitor : public airmap::Traffic::Monitor {
+  class Monitor : public airmap::Traffic::Monitor, public std::enable_shared_from_this<Monitor> {
    public:
-    explicit Monitor(const std::shared_ptr<Logger>& logger, const std::string& flight_id,
-                     const std::shared_ptr<mqtt::Client>& client);
+    static std::shared_ptr<Monitor> create(const std::shared_ptr<Logger>& logger, const std::string& flight_id,
+                                           const std::shared_ptr<mqtt::Client>& client);
 
     void subscribe(const std::shared_ptr<Subscriber>& subscriber) override;
     void unsubscribe(const std::shared_ptr<Subscriber>& subscriber) override;
 
    private:
+    explicit Monitor(const std::shared_ptr<Logger>& logger, const std::string& flight_id,
+                     const std::shared_ptr<mqtt::Client>& client);
+    std::shared_ptr<Monitor> finalize();
+
     void handle_publish(const std::string& topic, const std::string& contents);
 
     util::FormattingLogger log_;
+    std::string flight_id_;
     std::shared_ptr<mqtt::Client> mqtt_client_;
     std::unique_ptr<mqtt::Client::Subscription> sa_sub_;
     std::unique_ptr<mqtt::Client::Subscription> alert_sub_;

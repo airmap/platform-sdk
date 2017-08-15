@@ -15,14 +15,30 @@ namespace {
 constexpr const char* component{"rest::Traffic::Monitor"};
 }  // namespace
 
+std::shared_ptr<airmap::rest::Traffic::Monitor> airmap::rest::Traffic::Monitor::create(
+    const std::shared_ptr<Logger>& logger, const std::string& flight_id, const std::shared_ptr<mqtt::Client>& client) {
+  return std::shared_ptr<Monitor>(new Monitor{logger, flight_id, client})->finalize();
+}
+
 airmap::rest::Traffic::Monitor::Monitor(const std::shared_ptr<Logger>& logger, const std::string& flight_id,
                                         const std::shared_ptr<mqtt::Client>& client)
-    : log_{logger}, mqtt_client_{client} {
-  auto cb  = [this](const std::string& topic, const std::string& contents) { handle_publish(topic, contents); };
+    : log_{logger}, flight_id_{flight_id}, mqtt_client_{client} {
+}
+
+std::shared_ptr<airmap::rest::Traffic::Monitor> airmap::rest::Traffic::Monitor::finalize() {
+  auto sp = shared_from_this();
+  std::weak_ptr<Monitor> wp{sp};
+
+  auto cb = [wp](const std::string& topic, const std::string& contents) {
+    if (auto sp = wp.lock())
+      sp->handle_publish(topic, contents);
+  };
   auto qos = mqtt::QualityOfService::exactly_once;
 
-  sa_sub_    = mqtt_client_->subscribe(fmt::sprintf("uav/traffic/sa/%s", flight_id), qos, cb);
-  alert_sub_ = mqtt_client_->subscribe(fmt::sprintf("uav/traffic/alert/%s", flight_id), qos, cb);
+  sa_sub_    = mqtt_client_->subscribe(fmt::sprintf("uav/traffic/sa/%s", flight_id_), qos, cb);
+  alert_sub_ = mqtt_client_->subscribe(fmt::sprintf("uav/traffic/alert/%s", flight_id_), qos, cb);
+
+  return sp;
 }
 
 void airmap::rest::Traffic::Monitor::subscribe(const std::shared_ptr<Subscriber>& subscriber) {
@@ -53,7 +69,7 @@ void airmap::rest::Traffic::monitor(const Monitor::Params& params, const Monitor
   communicator_.connect_to_mqtt_broker(
       host_, port_, params.flight_id, params.authorization, [ logger = log_.logger(), cb, params ](const auto& result) {
         if (result) {
-          cb(Monitor::Result{std::make_shared<Monitor>(logger, params.flight_id, result.value())});
+          cb(Monitor::Result{Monitor::create(logger, params.flight_id, result.value())});
         } else {
           cb(Monitor::Result{result.error()});
         }

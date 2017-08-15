@@ -54,7 +54,7 @@ std::unique_ptr<airmap::mqtt::Client::Subscription> airmap::mqtt::boost::Client:
 
   auto id  = mqtt_client_->async_subscribe(topic, translated);
   auto itt = topic_map_.emplace(topic, cb);
-  auto its = subscription_map_.emplace(id, itt);
+  subscription_map_.emplace(id, itt);
 
   std::weak_ptr<Client> wp{shared_from_this()};
   std::unique_ptr<airmap::mqtt::Client::Subscription> result{new Subscription{[wp, id]() {
@@ -77,11 +77,11 @@ void airmap::mqtt::boost::Client::handle_publish(std::uint8_t, ::boost::optional
 void airmap::mqtt::boost::Client::unsubscribe(SubscriptionId subscription_id) {
   auto it = subscription_map_.find(subscription_id);
 
-  if (it == subscription_map_.end())
-    return;
-
-  topic_map_.erase(it->second);
-  subscription_map_.erase(it);
+  if (it != subscription_map_.end()) {
+    mqtt_client_->async_unsubscribe(it->second->first);
+    topic_map_.erase(it->second);
+    subscription_map_.erase(it);
+  }
 }
 
 airmap::rest::boost::Communicator::Communicator(const std::shared_ptr<Logger>& logger)
@@ -142,32 +142,32 @@ void airmap::rest::boost::Communicator::connect_to_mqtt_broker(const std::string
   });
 
   client->set_error_handler([ log = log_, host, port ](const ::boost::system::error_code& ec) mutable {
-    log.errorf(component, "error in communication with mqtt broker %s:%d: %s", host, port, ec.message());
+    log.errorf(component, "failed to communicate with mqtt broker %s:%d: %s", host, port, ec.message());
   });
 
   client->set_suback_handler([ log = log_, host, port ](std::uint16_t packet_id,
                                                         std::vector<::boost::optional<std::uint8_t>> results) mutable {
-    log.infof(component, "received suback: %d", packet_id);
+    log.infof(component, "received suback from mqtt broker %s:%d: %d", host, port, packet_id);
     return true;
   });
 
-  client->set_puback_handler([log = log_](std::uint16_t packet_id) mutable {
-    log.infof(component, "received puback: %d", packet_id);
+  client->set_puback_handler([ log = log_, host, port ](std::uint16_t packet_id) mutable {
+    log.infof(component, "received puback from mqtt broker %s:%d: %d", host, port, packet_id);
     return true;
   });
 
-  client->set_pubrec_handler([log = log_](std::uint16_t packet_id) mutable {
-    log.infof(component, "received pubrec: %d", packet_id);
+  client->set_pubrec_handler([ log = log_, host, port ](std::uint16_t packet_id) mutable {
+    log.infof(component, "received pubrec from mqtt broker %s:%d: %d", host, port, packet_id);
     return true;
   });
 
-  client->set_pubcomp_handler([log = log_](std::uint16_t packet_id) mutable {
-    log.infof(component, "received pubcomp: %d", packet_id);
+  client->set_pubcomp_handler([ log = log_, host, port ](std::uint16_t packet_id) mutable {
+    log.infof(component, "received pubcomp from mqtt broker %s:%d: %d", host, port, packet_id);
     return true;
   });
 
-  client->connect([ log = log_, cb ](const auto& ec) mutable {
-    log.errorf(component, "failed to establish connection to broker: ", ec.message());
+  client->connect([ log = log_, host, port, cb ](const auto& ec) mutable {
+    log.errorf(component, "failed to establish connection to broker %s:%d: ", host, port, ec.message());
     cb(ConnectResult(std::make_exception_ptr(std::runtime_error{ec.message()})));
   });
 }
