@@ -32,8 +32,8 @@ class Traffic : DoNotCopyOrMove {
   class Monitor : DoNotCopyOrMove {
    public:
     struct Params {
-      std::string authorization;
       std::string flight_id;
+      std::string authorization;
     };
 
     using Result   = Outcome<std::shared_ptr<Monitor>, std::exception_ptr>;

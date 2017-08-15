@@ -7,11 +7,12 @@ namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
 
 namespace {
-constexpr const char* component{"traffic"};
+constexpr const char* component{"subscribe-traffic"};
 }
 
 cmd::SubscribeTraffic::SubscribeTraffic()
-    : cli::CommandWithFlagsAndAction{cli::Name{"traffic"}, cli::Usage{"Traffic Alerts and Situational Awareness"},
+    : cli::CommandWithFlagsAndAction{cli::Name{"subscribe-traffic"},
+                                     cli::Usage{"Traffic Alerts and Situational Awareness"},
                                      cli::Description{"receive traffic alerts for a flight with AirMap services"}} {
   flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
                       params_.api_key));
