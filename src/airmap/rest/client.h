@@ -9,6 +9,7 @@
 #include <airmap/rest/communicator.h>
 #include <airmap/rest/flights.h>
 #include <airmap/rest/pilots.h>
+#include <airmap/rest/status.h>
 #include <airmap/rest/telemetry.h>
 #include <airmap/rest/traffic.h>
 
@@ -28,6 +29,7 @@ class Client : public airmap::Client, public airmap::rest::Communicator {
   airmap::Authenticator& authenticator() override;
   airmap::Flights& flights() override;
   airmap::Pilots& pilots() override;
+  airmap::Status& status() override;
   airmap::Telemetry& telemetry() override;
   airmap::Traffic& traffic() override;
 
@@ -54,6 +56,7 @@ class Client : public airmap::Client, public airmap::rest::Communicator {
   rest::Authenticator authenticator_;
   rest::Flights flights_;
   rest::Pilots pilots_;
+  rest::Status status_;
   rest::Telemetry telemetry_;
   rest::Traffic traffic_;
 };

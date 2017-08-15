@@ -9,6 +9,7 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       authenticator_{configuration_.host, configuration_.version, *this},
       flights_{configuration_.host, configuration_.version, *this},
       pilots_{configuration_.host, configuration_.version, *this},
+      status_{configuration_.host, configuration_.version, *this},
       telemetry_{configuration_.telemetry.host, configuration_.telemetry.port, *this},
       traffic_{logger, configuration_.traffic.host, configuration_.traffic.port, *this} {
 }
@@ -31,6 +32,10 @@ airmap::Flights& airmap::rest::Client::flights() {
 
 airmap::Pilots& airmap::rest::Client::pilots() {
   return pilots_;
+}
+
+airmap::Status& airmap::rest::Client::status() {
+  return status_;
 }
 
 airmap::Telemetry& airmap::rest::Client::telemetry() {

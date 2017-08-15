@@ -59,6 +59,7 @@ add_library(
   include/airmap/pilot.h
   include/airmap/outcome.h
   include/airmap/rule.h
+  include/airmap/status.h
   include/airmap/telemetry.h
   include/airmap/timestamp.h
   include/airmap/traffic.h
@@ -96,6 +97,8 @@ add_library(
   src/airmap/rest/flights.cpp
   src/airmap/rest/pilots.h
   src/airmap/rest/pilots.cpp
+  src/airmap/rest/status.h
+  src/airmap/rest/status.cpp
   src/airmap/rest/telemetry.h
   src/airmap/rest/telemetry.cpp
   src/airmap/rest/traffic.h
@@ -151,6 +154,8 @@ add_executable(
   src/airmap/cmds/airmap/cmd/create_flight.cpp
   src/airmap/cmds/airmap/cmd/daemon.h
   src/airmap/cmds/airmap/cmd/daemon.cpp
+  src/airmap/cmds/airmap/cmd/get_status.h
+  src/airmap/cmds/airmap/cmd/get_status.cpp
   src/airmap/cmds/airmap/cmd/pilot.h
   src/airmap/cmds/airmap/cmd/pilot.cpp
   src/airmap/cmds/airmap/cmd/simulate_scenario.h

@@ -7,7 +7,7 @@ namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
 
 namespace {
-constexpr const char* component{"subscribe-traffic"};
+constexpr const char* component{"monitor-traffic"};
 }
 
 cmd::MonitorTraffic::MonitorTraffic()

@@ -18,6 +18,7 @@ class Airspaces;
 class Authenticator;
 class Flights;
 class Pilots;
+class Status;
 class Telemetry;
 class Traffic;
 
@@ -75,6 +76,9 @@ class Client : DoNotCopyOrMove {
 
   /// pilots returns the Pilots implementation provided by the client.
   virtual Pilots& pilots() = 0;
+
+  /// status returns the Status implementation provided by the client.
+  virtual Status& status() = 0;
 
   /// telemetry returns the Telemetry implementation provided by the client.
   virtual Telemetry& telemetry() = 0;
