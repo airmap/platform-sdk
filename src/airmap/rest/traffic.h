@@ -28,8 +28,8 @@ class Traffic : public airmap::Traffic {
 
     util::FormattingLogger log_;
     std::shared_ptr<mqtt::Client> mqtt_client_;
-    std::unique_ptr<mqtt::Client::Subscription> sa_subscription_;
-    std::unique_ptr<mqtt::Client::Subscription> alert_subscription_;
+    std::unique_ptr<mqtt::Client::Subscription> sa_sub_;
+    std::unique_ptr<mqtt::Client::Subscription> alert_sub_;
     std::set<std::shared_ptr<Subscriber>> subscribers_;
     std::uint8_t sa_subscription_id_;
   };

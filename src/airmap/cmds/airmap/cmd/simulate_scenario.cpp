@@ -163,7 +163,7 @@ cmd::SimulateScenario::SimulateScenario()
                 const auto& participant = collector_->scenario().participants.at(i);
 
                 client_->traffic().monitor(
-                    {participant.authentication.get(), participant.flight.get().id}, [this](const auto& result) {
+                    {participant.flight.get().id, participant.authentication.get()}, [this](const auto& result) {
                       if (result) {
                         auto monitor = result.value();
                         monitor->subscribe(

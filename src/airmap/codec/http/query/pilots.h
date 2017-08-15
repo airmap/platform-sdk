@@ -18,13 +18,13 @@ namespace query {
 inline void encode(std::unordered_map<std::string, std::string>& query,
                    const Pilots::Authenticated::Parameters& parameters) {
   if (parameters.exclude)
-    query["enhance"]  = boost::lexical_cast<std::string>(parameters.exclude.get());
+    query["enhance"] = boost::lexical_cast<std::string>(parameters.exclude.get());
   query["statistics"] = parameters.retrieve_statistics ? "true" : "false";
 }
 
 inline void encode(std::unordered_map<std::string, std::string>& query, const Pilots::ForId::Parameters& parameters) {
   if (parameters.exclude)
-    query["enhance"]  = boost::lexical_cast<std::string>(parameters.exclude.get());
+    query["enhance"] = boost::lexical_cast<std::string>(parameters.exclude.get());
   query["statistics"] = parameters.retrieve_statistics ? "true" : "false";
 }
 

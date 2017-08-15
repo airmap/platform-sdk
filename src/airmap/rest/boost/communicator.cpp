@@ -130,10 +130,11 @@ void airmap::rest::boost::Communicator::connect_to_mqtt_broker(const std::string
   client->set_user_name(username);
   client->set_password(password);
 
-  client->set_connack_handler([ log = log_, host, port ](auto clean_session, auto rc) mutable {
+  client->set_connack_handler([ log = log_, host, port, client, cb ](auto, auto rc) mutable {
     log.infof(component, "finished connection to mqtt broker %s:%d: %s", host, port,
               ::mqtt::connect_return_code_to_str(rc));
-    return rc == ::mqtt::connect_return_code::accepted;
+    cb(ConnectResult(std::make_shared<mqtt::boost::Client>(client)));
+    return true;
   });
 
   client->set_close_handler([ log = log_, host, port ]() mutable {
@@ -144,12 +145,30 @@ void airmap::rest::boost::Communicator::connect_to_mqtt_broker(const std::string
     log.errorf(component, "error in communication with mqtt broker %s:%d: %s", host, port, ec.message());
   });
 
-  client->connect([ sp = shared_from_this(), cb, client ](const auto& ec) {
-    if (ec) {
-      cb(ConnectResult(std::make_exception_ptr(std::runtime_error{ec.message()})));
-    } else {
-      cb(ConnectResult(std::make_shared<mqtt::boost::Client>(client)));
-    }
+  client->set_suback_handler([ log = log_, host, port ](std::uint16_t packet_id,
+                                                        std::vector<::boost::optional<std::uint8_t>> results) mutable {
+    log.infof(component, "received suback: %d", packet_id);
+    return true;
+  });
+
+  client->set_puback_handler([log = log_](std::uint16_t packet_id) mutable {
+    log.infof(component, "received puback: %d", packet_id);
+    return true;
+  });
+
+  client->set_pubrec_handler([log = log_](std::uint16_t packet_id) mutable {
+    log.infof(component, "received pubrec: %d", packet_id);
+    return true;
+  });
+
+  client->set_pubcomp_handler([log = log_](std::uint16_t packet_id) mutable {
+    log.infof(component, "received pubcomp: %d", packet_id);
+    return true;
+  });
+
+  client->connect([ log = log_, cb ](const auto& ec) mutable {
+    log.errorf(component, "failed to establish connection to broker: ", ec.message());
+    cb(ConnectResult(std::make_exception_ptr(std::runtime_error{ec.message()})));
   });
 }
 void airmap::rest::boost::Communicator::delete_(const std::string& host, const std::string& path,

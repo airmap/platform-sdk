@@ -18,12 +18,11 @@ constexpr const char* component{"rest::Traffic::Monitor"};
 airmap::rest::Traffic::Monitor::Monitor(const std::shared_ptr<Logger>& logger, const std::string& flight_id,
                                         const std::shared_ptr<mqtt::Client>& client)
     : log_{logger}, mqtt_client_{client} {
-  auto cb = [this](const std::string& topic, const std::string& contents) { handle_publish(topic, contents); };
+  auto cb  = [this](const std::string& topic, const std::string& contents) { handle_publish(topic, contents); };
+  auto qos = mqtt::QualityOfService::exactly_once;
 
-  sa_subscription_ =
-      mqtt_client_->subscribe(fmt::sprintf("uav/traffic/sa/%s", flight_id), mqtt::QualityOfService::exactly_once, cb);
-  alert_subscription_ = mqtt_client_->subscribe(fmt::sprintf("uav/traffic/alert/%s", flight_id),
-                                                mqtt::QualityOfService::exactly_once, cb);
+  sa_sub_    = mqtt_client_->subscribe(fmt::sprintf("uav/traffic/sa/%s", flight_id), qos, cb);
+  alert_sub_ = mqtt_client_->subscribe(fmt::sprintf("uav/traffic/alert/%s", flight_id), qos, cb);
 }
 
 void airmap::rest::Traffic::Monitor::subscribe(const std::shared_ptr<Subscriber>& subscriber) {
