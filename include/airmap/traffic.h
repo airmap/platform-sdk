@@ -13,8 +13,12 @@
 
 namespace airmap {
 
+/// Traffic provides access to the AirMap situational awareness
+/// and traffic alerts.
 class Traffic : DoNotCopyOrMove {
  public:
+  /// Update bundles together information about aerial traffic
+  /// relevant to a UAV flight.
   struct Update {
     std::string id;
     std::string aircraft_id;
@@ -29,6 +33,8 @@ class Traffic : DoNotCopyOrMove {
     DateTime timestamp;
   };
 
+  /// Monitor models handling of individual subscribers
+  /// to per-flight alerts and awareness notices.
   class Monitor : DoNotCopyOrMove {
    public:
     struct Params {
@@ -39,26 +45,41 @@ class Traffic : DoNotCopyOrMove {
     using Result   = Outcome<std::shared_ptr<Monitor>, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
 
+    /// Subscriber abstracts handling of batches of Update instances.
     class Subscriber {
      public:
+      /// handle_update is invoked when a new batch of Update instances
+      /// is available.
       virtual void handle_update(const std::vector<Update>& update) = 0;
 
      protected:
       Subscriber() = default;
     };
 
+    /// FunctionalSubscriber is a convenience class that dispatches
+    /// to a function 'f' for handling batches of Update instances.
     class FunctionalSubscriber : public Subscriber {
      public:
+      /// FunctionalSubscriber initializes a new instance with 'f'.
       explicit FunctionalSubscriber(const std::function<void(const std::vector<Update>&)>& f);
+      // From subscriber
       void handle_update(const std::vector<Update>& update) override;
 
      private:
       std::function<void(const std::vector<Update>&)> f_;
     };
 
+    /// LoggingSubscriber is a convenience class that logs incoming batches
+    /// of Update instances.
     class LoggingSubscriber : public Subscriber {
      public:
+      /// LoggingSubscriber initializes an instance with 'component', feeding
+      /// log entries to 'logger'. Please note that no change of ownership takes
+      /// place for 'component' and the lifetime of component has to exceed the
+      /// lifetime of a LoggingSubscriber instance.
       explicit LoggingSubscriber(const char* component, const std::shared_ptr<Logger>& logger);
+
+      // From Subscriber
       void handle_update(const std::vector<Update>& update) override;
 
      private:
@@ -66,7 +87,11 @@ class Traffic : DoNotCopyOrMove {
       std::shared_ptr<Logger> logger_;
     };
 
-    virtual void subscribe(const std::shared_ptr<Subscriber>& subscriber)   = 0;
+    /// subscribe registers 'subscriber' such that subsequent batches of
+    /// Update instances are delivered to 'subscriber'.
+    virtual void subscribe(const std::shared_ptr<Subscriber>& subscriber) = 0;
+
+    /// unsubscribe unregisters 'subscriber'.
     virtual void unsubscribe(const std::shared_ptr<Subscriber>& subscriber) = 0;
 
    protected:
