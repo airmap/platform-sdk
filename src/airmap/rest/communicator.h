@@ -6,8 +6,6 @@
 #include <airmap/optional.h>
 #include <airmap/outcome.h>
 
-#include <mqtt/client.hpp>
-
 #include <functional>
 #include <memory>
 #include <string>
@@ -17,9 +15,37 @@
 namespace airmap {
 namespace mqtt {
 
-using Client = ::mqtt::client<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>, boost::asio::io_service::strand>;
+/// QualityOfService models all known
+/// QoS values supported by mqtt.
+enum class QualityOfService { at_least_once, at_most_once, exactly_once };
+
+/// Client models access to an MQTT broker, and enables
+/// calling code to subscribe to topics.
+class Client : DoNotCopyOrMove {
+ public:
+  /// PublishCallback is invoked for incoming publishs.
+  /// @param topic the topic of the publish
+  /// @param contents the contents of the publish
+  using PublishCallback = std::function<void(const std::string&, const std::string&)>;
+
+  /// An instance of Subscription models an individual subscription to a
+  /// topic. Deleting the instance removes the specific subscription.
+  class Subscription : DoNotCopyOrMove {
+   protected:
+    Subscription() = default;
+  };
+
+  /// subscribe subscribes the caller to 'topic', with 'qos', invoking cb
+  /// for incoming publishs of 'topic'.
+  virtual std::unique_ptr<Subscription> subscribe(const std::string& topic, QualityOfService qos,
+                                                  PublishCallback cb) = 0;
+
+ protected:
+  Client() = default;
+};
 
 }  // namespace mqtt
+
 namespace rest {
 
 class Communicator : DoNotCopyOrMove {

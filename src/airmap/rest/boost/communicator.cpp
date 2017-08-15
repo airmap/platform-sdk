@@ -25,6 +25,65 @@ std::exception_ptr wrap_error_code(const boost::system::error_code& ec) {
 constexpr const char* component{"rest::boost::Communicator"};
 }  // namespace
 
+airmap::mqtt::boost::Client::Subscription::Subscription(Unsubscriber unsubscriber) : unsubscriber_{unsubscriber} {
+}
+
+airmap::mqtt::boost::Client::Subscription::~Subscription() {
+  unsubscriber_();
+}
+
+airmap::mqtt::boost::Client::Client(const std::shared_ptr<TlsClient>& mqtt_client) : mqtt_client_{mqtt_client} {
+}
+
+std::unique_ptr<airmap::mqtt::Client::Subscription> airmap::mqtt::boost::Client::subscribe(const std::string& topic,
+                                                                                           QualityOfService qos,
+                                                                                           PublishCallback cb) {
+  auto translated = ::mqtt::qos::exactly_once;
+
+  switch (qos) {
+    case QualityOfService::at_least_once:
+      translated = ::mqtt::qos::at_least_once;
+      break;
+    case QualityOfService::at_most_once:
+      translated = ::mqtt::qos::at_most_once;
+      break;
+    case QualityOfService::exactly_once:
+      translated = ::mqtt::qos::exactly_once;
+      break;
+  }
+
+  auto id  = mqtt_client_->async_subscribe(topic, translated);
+  auto itt = topic_map_.emplace(topic, cb);
+  auto its = subscription_map_.emplace(id, itt);
+
+  std::weak_ptr<Client> wp{shared_from_this()};
+  std::unique_ptr<airmap::mqtt::Client::Subscription> result{new Subscription{[wp, id]() {
+    if (auto sp = wp.lock()) {
+      sp->unsubscribe(id);
+    }
+  }}};
+  return result;
+}
+
+void airmap::mqtt::boost::Client::handle_publish(std::uint8_t, ::boost::optional<std::uint16_t>, std::string topic,
+                                                 std::string contents) {
+  auto range = topic_map_.equal_range(topic);
+
+  for (auto it = range.first; it != range.second; ++it) {
+    it->second(topic, contents);
+  }
+}
+
+void airmap::mqtt::boost::Client::unsubscribe(SubscriptionId subscription_id) {
+  auto it = subscription_map_.find(subscription_id);
+
+  if (it == subscription_map_.end())
+    return;
+
+  topic_map_.erase(it->second);
+  subscription_map_.erase(it);
+}
+
 airmap::rest::boost::Communicator::Communicator(const std::shared_ptr<Logger>& logger)
     : log_{logger},
       io_service_{std::make_shared<asio::io_service>()},
@@ -89,7 +148,7 @@ void airmap::rest::boost::Communicator::connect_to_mqtt_broker(const std::string
     if (ec) {
       cb(ConnectResult(std::make_exception_ptr(std::runtime_error{ec.message()})));
     } else {
-      cb(ConnectResult(client));
+      cb(ConnectResult(std::make_shared<mqtt::boost::Client>(client)));
     }
   });
 }
