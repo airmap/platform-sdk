@@ -1,4 +1,4 @@
-#include <airmap/cmds/airmap/cmd/subscribe_traffic.h>
+#include <airmap/cmds/airmap/cmd/monitor_traffic.h>
 
 #include <airmap/client.h>
 #include <airmap/context.h>
@@ -7,10 +7,10 @@ namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
 
 namespace {
-constexpr const char* component{"traffic"};
+constexpr const char* component{"subscribe-traffic"};
 }
 
-cmd::SubscribeTraffic::SubscribeTraffic()
+cmd::MonitorTraffic::MonitorTraffic()
     : cli::CommandWithFlagsAndAction{cli::Name{"monitor-traffic"},
                                      cli::Usage{"Traffic Alerts and Situational Awareness"},
                                      cli::Description{"receive traffic alerts for a flight with AirMap services"}} {

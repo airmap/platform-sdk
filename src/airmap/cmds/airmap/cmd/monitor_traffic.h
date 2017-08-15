@@ -1,5 +1,5 @@
-#ifndef AIRMAP_CMDS_AIRMAP_CMD_SUBSCRIBE_TRAFFIC_H_
-#define AIRMAP_CMDS_AIRMAP_CMD_SUBSCRIBE_TRAFFIC_H_
+#ifndef AIRMAP_CMDS_AIRMAP_CMD_MONITOR_TRAFFIC_H_
+#define AIRMAP_CMDS_AIRMAP_CMD_MONITOR_TRAFFIC_H_
 
 #include <airmap/client.h>
 #include <airmap/context.h>
@@ -13,9 +13,9 @@ namespace cmds {
 namespace airmap {
 namespace cmd {
 
-class SubscribeTraffic : public util::cli::CommandWithFlagsAndAction {
+class MonitorTraffic : public util::cli::CommandWithFlagsAndAction {
  public:
-  SubscribeTraffic();
+  MonitorTraffic();
 
  private:
   using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
@@ -38,4 +38,4 @@ class SubscribeTraffic : public util::cli::CommandWithFlagsAndAction {
 }  // namespace cmds
 }  // namespace airmap
 
-#endif  // AIRMAP_CMDS_AIRMAP_CMD_SUBSCRIBE_TRAFFIC_H_
+#endif  // AIRMAP_CMDS_AIRMAP_CMD_MONITOR_TRAFFIC_H_
