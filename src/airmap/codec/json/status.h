@@ -18,7 +18,7 @@ namespace json {
 // TBD - figure out status result schema
 
 inline void decode(const nlohmann::json& j, Status::StatusResult& result) {
-  get(result.data, j, "TBD");
+  get(result.TBD, j, "advisory_color");
 }
 
 }  // namespace json

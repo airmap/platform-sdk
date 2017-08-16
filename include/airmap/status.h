@@ -29,11 +29,11 @@ class Status : DoNotCopyOrMove {
       Airspace::Type types = Airspace::Type::all;
       Optional<Airspace::Type> ignored_types;
       bool weather = true;
-      DateTime datetime;
+      Optional<DateTime> datetime;
       Optional<Geometry> geometry;
       Optional<int> buffer = 100;
     };
-    using Result   = Outcome<Status, std::exception_ptr>;
+    using Result   = Outcome<StatusResult, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 

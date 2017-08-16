@@ -13,15 +13,11 @@ using json = nlohmann::json;
 namespace {
 
 // TBD - figure out status result schema
-void print_status(std::ostream& out, const airmap::Status& status) {
-  out << "Status: " << std::endl
-      << status.TBD << std::endl;
-}
 
 constexpr const char* component{"get-status"};
 }  // namespace
 
-cmd::CreateFlight::CreateFlight()
+cmd::GetStatus::GetStatus()
     : cli::CommandWithFlagsAndAction{cli::Name{"get-status"},
                                      cli::Usage{"checks flight status with the airmap services"},
                                      cli::Description{"checks flight status with the airmap services"}} {
@@ -77,7 +73,7 @@ cmd::CreateFlight::CreateFlight()
 
           auto handler = [this, &ctxt, context, client](const Status::GetStatus::Result& result) {
             if (result)
-              print_status(ctxt.cout, result.value());
+              log_.infof(component, "received status: %s\n", result.value().TBD);
             else
               log_.errorf(component, "Failed to get status");
             context->stop();
