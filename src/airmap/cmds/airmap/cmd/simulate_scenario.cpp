@@ -32,6 +32,11 @@ void cmd::SimulateScenario::Collector::collect_flight_id_for_index(std::size_t i
   scenario_.participants.at(index).flight = flight;
 }
 
+void cmd::SimulateScenario::Collector::collect_traffic_monitor_for_index(
+    std::size_t index, const std::shared_ptr<Traffic::Monitor>& monitor) {
+  scenario_.participants.at(index).monitor = monitor;
+}
+
 bool cmd::SimulateScenario::Collector::collect_key_for_index(std::size_t index, const std::string& key) {
   scenario_.participants.at(index).encryption_key = key;
   return scenario_.participants.size() == ++key_counter_;
@@ -162,14 +167,25 @@ cmd::SimulateScenario::SimulateScenario()
                 collector_->collect_flight_id_for_index(i, result.value());
                 const auto& participant = collector_->scenario().participants.at(i);
 
-                client_->traffic().monitor(
-                    {participant.flight.get().id, participant.authentication.get()}, [this](const auto& result) {
-                      if (result) {
-                        auto monitor = result.value();
-                        monitor->subscribe(
-                            std::make_shared<Traffic::Monitor::LoggingSubscriber>(component, log_.logger()));
-                      }
-                    });
+                client_->traffic().monitor({participant.flight.get().id, participant.authentication.get()}, [
+                  this, i, id = participant.flight.get().id
+                ](const auto& result) {
+                  if (result) {
+                    log_.infof(component, "successfully started monitoring traffic for flight: %s", id);
+                    auto monitor = result.value();
+                    monitor->subscribe(std::make_shared<Traffic::Monitor::LoggingSubscriber>(component, log_.logger()));
+                    collector_->collect_traffic_monitor_for_index(i, monitor);
+                  } else {
+                    try {
+                      std::rethrow_exception(result.error());
+                    } catch (const std::exception& e) {
+                      log_.errorf(component, "could not start monitoring traffic for flight %s: %s", id, e.what());
+                    } catch (...) {
+                      log_.errorf(component, "could not start monitoring traffic for flight %s", id);
+                    }
+                    context_->stop();
+                  }
+                });
 
                 client_->flights().start_flight_communications(
                     {participant.authentication.get(), participant.flight.get().id},

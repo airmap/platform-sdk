@@ -9,6 +9,7 @@
 #include <airmap/logger.h>
 #include <airmap/optional.h>
 #include <airmap/pilot.h>
+#include <airmap/traffic.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/telemetry_simulator.h>
 
@@ -32,6 +33,7 @@ struct Scenario {
 
     Optional<std::string> authentication;
     Optional<Flight> flight;
+    Optional<std::shared_ptr<Traffic::Monitor>> monitor;
     Optional<std::string> encryption_key;
   };
 

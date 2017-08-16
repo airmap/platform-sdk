@@ -12,15 +12,39 @@ namespace json {
 
 inline void decode(const nlohmann::json& j, Traffic::Update& update) {
   get(update.id, j, "id");
-  get(update.aircraft_id, j, "aircraft_id");
+  get(update.aircraft_id, j["properties"], "aircraft_id");
   get(update.direction, j, "direction");
-  get(update.latitude, j, "latitude");
-  get(update.longitude, j, "longitude");
-  get(update.altitude, j, "altitude");
-  get(update.ground_speed, j, "ground_speed_kts");
-  get(update.heading, j, "true_heading");
-  get(update.timestamp, j, "recorded");
-  get(update.timestamp, j, "timestamp");
+
+  {
+    // The fun begins here. Actual values are not numbers in the json
+    // but rather encoded as string to address an issue with floating
+    // point resolution. For that, we grab numeric values as strings and
+    // convert them to floating point after that.
+    std::string numeric_value_as_string;
+
+    get(numeric_value_as_string, j, "latitude");
+    update.latitude = boost::lexical_cast<double>(numeric_value_as_string);
+
+    get(numeric_value_as_string, j, "longitude");
+    update.longitude = boost::lexical_cast<double>(numeric_value_as_string);
+
+    get(numeric_value_as_string, j, "altitude");
+    update.altitude = boost::lexical_cast<double>(numeric_value_as_string);
+
+    get(numeric_value_as_string, j, "ground_speed_kts");
+    update.ground_speed = boost::lexical_cast<double>(numeric_value_as_string);
+
+    get(numeric_value_as_string, j, "true_heading");
+    update.heading = boost::lexical_cast<double>(numeric_value_as_string);
+  }
+
+  std::string tss;
+  get(tss, j, "recorded_time");
+  update.recorded = from_seconds_since_epoch(Seconds{boost::lexical_cast<std::int64_t>(tss)});
+
+  std::int64_t ts;
+  get(ts, j, "timestamp");
+  update.timestamp = from_milliseconds_since_epoch(Milliseconds{ts});
 
   update.altitude *= 0.3048;
   update.ground_speed *= 0.514444;

@@ -8,6 +8,7 @@
 #include <airmap/logger.h>
 #include <airmap/optional.h>
 #include <airmap/telemetry.h>
+#include <airmap/traffic.h>
 #include <airmap/util/cli.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/scenario_simulator.h>
@@ -35,6 +36,7 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
     explicit Collector(const util::Scenario& scenario);
     void collect_authentication_for_index(std::size_t index, const std::string& authentication);
     void collect_flight_id_for_index(std::size_t index, const Flight& flight);
+    void collect_traffic_monitor_for_index(std::size_t index, const std::shared_ptr<Traffic::Monitor>& monitor);
     bool collect_key_for_index(std::size_t index, const std::string& key);
     const util::Scenario& scenario() const;
 
