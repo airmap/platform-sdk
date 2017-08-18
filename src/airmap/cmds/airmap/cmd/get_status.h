@@ -2,9 +2,9 @@
 #define AIRMAP_CMDS_AIRMAP_CMD_GET_STATUS_H_
 
 #include <airmap/client.h>
-#include <airmap/status.h>
 #include <airmap/logger.h>
 #include <airmap/optional.h>
+#include <airmap/status.h>
 #include <airmap/util/cli.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/tagged_string.h>
@@ -19,7 +19,7 @@ class GetStatus : public util::cli::CommandWithFlagsAndAction {
   GetStatus();
 
  private:
-  using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using ApiKey = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};

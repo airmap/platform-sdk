@@ -16,7 +16,8 @@ namespace codec {
 namespace http {
 namespace query {
 
-inline void encode(std::unordered_map<std::string, std::string>& query, const Status::GetStatus::Parameters& parameters) {
+inline void encode(std::unordered_map<std::string, std::string>& query,
+                   const Status::GetStatus::Parameters& parameters) {
   if (parameters.latitude)
     query["latitude"] = boost::lexical_cast<std::string>(parameters.latitude);
   if (parameters.longitude)

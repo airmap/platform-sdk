@@ -5,14 +5,14 @@
 #include <airmap/context.h>
 #include <airmap/date_time.h>
 
+#include <iostream>
+
 namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
 
 using json = nlohmann::json;
 
 namespace {
-
-// TBD - figure out status result schema
 
 constexpr const char* component{"get-status"};
 }  // namespace
@@ -21,14 +21,13 @@ cmd::GetStatus::GetStatus()
     : cli::CommandWithFlagsAndAction{cli::Name{"get-status"},
                                      cli::Usage{"checks flight status with the airmap services"},
                                      cli::Description{"checks flight status with the airmap services"}} {
-
   flag(cli::make_flag(cli::Name{"version"}, cli::Description{"work against this version of the AirMap services"},
                       version_));
   flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
                       api_key_));
   flag(cli::make_flag(cli::Name{"latitude"}, cli::Description{"latitude of take-off point"}, params_.latitude));
   flag(cli::make_flag(cli::Name{"longitude"}, cli::Description{"longitude of take-off point"}, params_.longitude));
-    flag(cli::make_flag(cli::Name{"weather"}, cli::Description{"report weather conditions"}, params_.weather));
+  flag(cli::make_flag(cli::Name{"weather"}, cli::Description{"report weather conditions"}, params_.weather));
   flag(cli::make_flag(cli::Name{"buffer"}, cli::Description{"radius of flight zone centered around the take-off point"},
                       params_.buffer));
 
@@ -72,9 +71,14 @@ cmd::GetStatus::GetStatus()
           auto client = result.value();
 
           auto handler = [this, &ctxt, context, client](const Status::GetStatus::Result& result) {
-            if (result)
-              log_.infof(component, "received status: %s\n", result.value().TBD);
-            else
+            if (result) {
+              log_.infof(component, "received status with max_safe_distance: %d and advisory_color: %s\n",
+                         result.value().max_safe_distance, result.value().advisory_color);
+              // TBD - make proper test and log
+              for (const auto a : result.value().advisories) {
+                std::cout << "Name: " << a.airspace.name() << std::endl << "Color: " << a.color << std::endl;
+              }
+            } else
               log_.errorf(component, "Failed to get status");
             context->stop();
           };
