@@ -5,7 +5,12 @@
 #include <airmap/mavlink/vehicle.h>
 #include <airmap/util/formatting_logger.h>
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Waddress-of-packed-member"
+#pragma clang diagnostic ignored "-Wnested-anon-types"
+#pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
 #include <standard/mavlink.h>
+#pragma clang diagnostic pop
 
 #include <memory>
 #include <unordered_map>

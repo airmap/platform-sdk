@@ -3,13 +3,7 @@
 #include <termios.h>
 
 namespace {
-
-std::exception_ptr wrap_error_code(const ::boost::system::error_code& ec) {
-  return std::make_exception_ptr(std::runtime_error{ec.message()});
-}
-
 constexpr const char* component{"airmap::mavlink::SerialChannel"};
-
 }  // namespace
 
 airmap::mavlink::boost::SerialChannel::SerialChannel(const std::shared_ptr<Logger>& logger,

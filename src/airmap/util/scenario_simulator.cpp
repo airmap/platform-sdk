@@ -20,7 +20,6 @@ airmap::util::ScenarioSimulator::Runner::~Runner() {
 
 void airmap::util::ScenarioSimulator::Runner::start(const std::shared_ptr<ScenarioSimulator>& simulator,
                                                     const std::shared_ptr<Client>& client) {
-  std::cout << simulator << std::endl;
   if (!running_.exchange(true)) {
     worker_ = std::thread{[this, simulator, client]() {
       simulator->start();
@@ -68,8 +67,8 @@ void airmap::util::ScenarioSimulator::update(
   for (std::size_t i = 0; i < scenario_.participants.size(); i++) {
     const auto& participant = scenario_.participants.at(i);
     auto new_state          = state_.at(i).update(now);
-    log_.infof(component, "updating participant %s on %s: (%f, %f)", participant.pilot.user_name,
-               participant.aircraft.id, new_state.latitude, new_state.longitude);
+    log_.debugf(component, "updating participant %s on %s: (%f, %f)", participant.pilot.user_name,
+                participant.aircraft.id, new_state.latitude, new_state.longitude);
 
     enumerator(now, participant, new_state);
   }

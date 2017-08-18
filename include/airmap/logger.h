@@ -13,7 +13,10 @@ namespace airmap {
 class Logger : DoNotCopyOrMove {
  public:
   /// Severity enumerates all known levels of severity
-  enum class Severity { info, error };
+  enum class Severity { debug, info, error };
+
+  /// debug logs a message from component with Severity::debug.
+  void debug(const char* message, const char* component);
 
   /// info logs a message from component with Severity::info.
   void info(const char* message, const char* component);
@@ -30,9 +33,16 @@ class Logger : DoNotCopyOrMove {
   Logger() = default;
 };
 
+/// operator< returns true iff the numeric value of lhs < rhs.
+bool operator<(Logger::Severity lhs, Logger::Severity rhs);
+
 /// create_default_logger returns a Logger implementation writing
 /// log messages to 'out'.
 std::shared_ptr<Logger> create_default_logger(std::ostream& out = std::cerr);
+
+/// create_filtering_logger returns a logger that filters out log entries
+/// with a severity smaller than the configurated severity.
+std::shared_ptr<Logger> create_filtering_logger(Logger::Severity severity, const std::shared_ptr<Logger>& logger);
 
 /// create_null_logger returns a logger that does the equivalent of
 /// > /dev/null.

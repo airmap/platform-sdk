@@ -68,6 +68,11 @@ class SizeConstrainedString {
       throw std::logic_error{"Max size exceeded " + std::to_string(max)};
   }
 
+  SizeConstrainedString(const char* c) : s{c} {
+    if (s.size() > max)
+      throw std::logic_error{"Max size exceeded " + std::to_string(max)};
+  }
+
   const std::string& as_string() const {
     return s;
   }

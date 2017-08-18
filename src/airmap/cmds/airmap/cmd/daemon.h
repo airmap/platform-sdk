@@ -19,19 +19,23 @@ class Daemon : public util::cli::CommandWithFlagsAndAction {
 
  private:
   using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using Host          = util::TaggedString<util::tags::MustNotBeEmpty>;
   using UserId        = util::TaggedString<util::tags::MustNotBeEmpty>;
   using AircraftId    = util::TaggedString<util::tags::MustNotBeEmpty>;
   using SerialDevice  = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using UdpEndpointIp = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using TcpEndpointIp = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_;
+
   Optional<ApiKey> api_key_;
   Optional<UserId> user_id_;
   Optional<AircraftId> aircraft_id_;
   Optional<SerialDevice> serial_device_;
-  Optional<UdpEndpointIp> udp_endpoint_ip_;
-  Optional<std::uint16_t> udp_endpoint_port_;
+  Optional<Host> telemetry_host_;
+  Optional<std::uint16_t> telemetry_port_;
+  Optional<TcpEndpointIp> tcp_endpoint_ip_;
+  Optional<std::uint16_t> tcp_endpoint_port_;
 };
 
 }  // namespace cmd

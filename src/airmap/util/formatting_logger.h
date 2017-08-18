@@ -14,6 +14,11 @@ class FormattingLogger {
   }
 
   template <typename... Args>
+  void debugf(const char* component, const char* format, Args... args) {
+    logger_->debug(fmt::sprintf(format, std::forward<Args>(args)...).c_str(), component);
+  }
+
+  template <typename... Args>
   void infof(const char* component, const char* format, Args... args) {
     logger_->info(fmt::sprintf(format, std::forward<Args>(args)...).c_str(), component);
   }

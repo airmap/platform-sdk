@@ -118,8 +118,8 @@ add_library(
   src/airmap/mavlink/vehicle_tracker.cpp
   src/airmap/mavlink/boost/serial_channel.h
   src/airmap/mavlink/boost/serial_channel.cpp
-  src/airmap/mavlink/boost/udp_channel.h
-  src/airmap/mavlink/boost/udp_channel.cpp
+  src/airmap/mavlink/boost/tcp_channel.h
+  src/airmap/mavlink/boost/tcp_channel.cpp
 
   src/airmap/util/cheap_ruler.h
   src/airmap/util/cheap_ruler.cpp

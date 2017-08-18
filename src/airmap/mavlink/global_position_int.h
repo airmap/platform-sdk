@@ -1,7 +1,12 @@
 #ifndef AIRMAP_MAVLINK_GLOBAL_POSITION_INT_H_
 #define AIRMAP_MAVLINK_GLOBAL_POSITION_INT_H_
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Waddress-of-packed-member"
+#pragma clang diagnostic ignored "-Wnested-anon-types"
+#pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
 #include <standard/mavlink.h>
+#pragma clang diagnostic pop
 
 #include <iosfwd>
 

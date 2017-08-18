@@ -16,4 +16,5 @@
 	url = https://github.com/mavlink/c_library_v2.git
 [submodule "vendor/mqtt_client_cpp"]
 	path = vendor/mqtt_client_cpp
-	url = https://github.com/redboltz/mqtt_client_cpp.git
+	url = https://github.com/airmap/mqtt_client_cpp.git
+	branch = 58c3017f6f8201627434fe1e8143bef5691fd66f

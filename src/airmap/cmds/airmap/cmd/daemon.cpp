@@ -2,7 +2,7 @@
 
 #include <airmap/daemon.h>
 #include <airmap/mavlink/boost/serial_channel.h>
-#include <airmap/mavlink/boost/udp_channel.h>
+#include <airmap/mavlink/boost/tcp_channel.h>
 #include <airmap/rest/boost/communicator.h>
 
 namespace cli = airmap::util::cli;
@@ -24,11 +24,13 @@ cmd::Daemon::Daemon()
   flag(cli::make_flag(cli::Name{"aircraft-id"}, cli::Description{"id of the device the daemon runs on"}, aircraft_id_));
   flag(cli::make_flag(cli::Name{"serial-device"}, cli::Description{"the device file to read mavlink messages from"},
                       serial_device_));
-  flag(cli::make_flag(cli::Name{"udp-endpoint-ip"},
-                      cli::Description{"the ip of the UDP endpoint to read mavlink messages from"}, udp_endpoint_ip_));
-  flag(cli::make_flag(cli::Name{"udp-endpoint-port"},
-                      cli::Description{"the port of the UDP endpoint to read mavlink messages from"},
-                      udp_endpoint_port_));
+  flag(cli::make_flag(cli::Name{"telemetry-host"}, cli::Description{"telemetry host address"}, telemetry_host_));
+  flag(cli::make_flag(cli::Name{"telemetry-port"}, cli::Description{"telemetry host port"}, telemetry_port_));
+  flag(cli::make_flag(cli::Name{"tcp-endpoint-ip"},
+                      cli::Description{"the ip of the tcp endpoint to read mavlink messages from"}, tcp_endpoint_ip_));
+  flag(cli::make_flag(cli::Name{"tcp-endpoint-port"},
+                      cli::Description{"the port of the tcp endpoint to read mavlink messages from"},
+                      tcp_endpoint_port_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_default_logger(ctxt.cout)};
@@ -63,16 +65,21 @@ cmd::Daemon::Daemon()
       return 1;
     }
 
-    bool has_valid_serial_device = serial_device_ && serial_device_.get().validate();
-    bool has_valid_udp_endpoint  = udp_endpoint_ip_ && udp_endpoint_ip_.get().validate() && udp_endpoint_port_;
-
-    if (!(has_valid_serial_device || has_valid_udp_endpoint)) {
-      log_.errorf(component, "neither a valid serial port nor a valid udp endpoint was specified");
+    if (telemetry_host_ && !telemetry_host_.get().validate()) {
+      log_.errorf(component, "parameter 'telemetry-host' must not be empty");
       return 1;
     }
 
-    if (has_valid_serial_device && has_valid_udp_endpoint) {
-      log_.errorf(component, "both a serial port and a udp endpoint were specified");
+    bool has_valid_serial_device = serial_device_ && serial_device_.get().validate();
+    bool has_valid_tcp_endpoint  = tcp_endpoint_ip_ && tcp_endpoint_ip_.get().validate() && tcp_endpoint_port_;
+
+    if (!(has_valid_serial_device || has_valid_tcp_endpoint)) {
+      log_.errorf(component, "neither a valid serial port nor a valid tcp endpoint was specified");
+      return 1;
+    }
+
+    if (has_valid_serial_device && has_valid_tcp_endpoint) {
+      log_.errorf(component, "both a serial port and a tcp endpoint were specified");
       return 1;
     }
 
@@ -83,12 +90,17 @@ cmd::Daemon::Daemon()
     if (has_valid_serial_device)
       channel = std::make_shared<mavlink::boost::SerialChannel>(log_.logger(), communicator->io_service(),
                                                                 serial_device_.get());
-    if (has_valid_udp_endpoint)
-      channel = std::make_shared<mavlink::boost::UdpChannel>(
-          log_.logger(), communicator->io_service(), boost::asio::ip::address::from_string(udp_endpoint_ip_.get()),
-          udp_endpoint_port_.get());
+    if (has_valid_tcp_endpoint)
+      channel = std::make_shared<mavlink::boost::TcpChannel>(
+          log_.logger(), communicator->io_service(), boost::asio::ip::address::from_string(tcp_endpoint_ip_.get()),
+          tcp_endpoint_port_.get());
 
     auto config = Client::default_configuration(version_, Client::Credentials{api_key_.get()});
+
+    if (telemetry_host_)
+      config.telemetry.host = telemetry_host_.get();
+    if (telemetry_port_)
+      config.telemetry.port = telemetry_port_.get();
 
     log_.infof(component,
                "client configuration:\n"

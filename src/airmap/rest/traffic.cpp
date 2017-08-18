@@ -50,11 +50,7 @@ void airmap::rest::Traffic::Monitor::unsubscribe(const std::shared_ptr<Subscribe
 }
 
 void airmap::rest::Traffic::Monitor::handle_publish(const std::string& topic, const std::string& contents) {
-  log_.infof(component, "received publish for topic %s", topic);
-
-  json j                     = json::parse(contents);
-  std::vector<Update> update = j["traffic"];
-
+  std::vector<Update> update = json::parse(contents)["traffic"];
   for (const auto& subscriber : subscribers_) {
     subscriber->handle_update(update);
   }

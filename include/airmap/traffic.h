@@ -22,12 +22,12 @@ class Traffic : DoNotCopyOrMove {
   struct Update {
     std::string id;
     std::string aircraft_id;
-    std::string direction;
     double latitude;
     double longitude;
     double altitude;
     double ground_speed;
     double heading;
+    double direction;
 
     DateTime recorded;
     DateTime timestamp;

@@ -2,11 +2,23 @@
 
 namespace {
 constexpr const char* format{"%Y-%m-%dT%H:%M:%sZ"};
+const airmap::DateTime epoch = boost::posix_time::time_from_string("1970-01-01 00:00:00.000");
 }  // namespace
 
 std::uint64_t airmap::milliseconds_since_epoch(const DateTime& dt) {
-  static const DateTime epoch = boost::posix_time::time_from_string("1970-01-01 00:00:00.000");
   return (dt - epoch).total_milliseconds();
+}
+
+airmap::DateTime airmap::from_seconds_since_epoch(const Seconds& s) {
+  return epoch + s;
+}
+
+airmap::DateTime airmap::from_milliseconds_since_epoch(const Milliseconds& ms) {
+  return epoch + ms;
+}
+
+airmap::DateTime airmap::from_microseconds_since_epoch(const Microseconds& us) {
+  return epoch + us;
 }
 
 airmap::DateTime airmap::iso8601::parse(const std::string& s) {

@@ -1,5 +1,11 @@
 #include <airmap/daemon.h>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+
+namespace uuids = boost::uuids;
+
 namespace {
 constexpr const char* component{"airmap::Daemon"};
 }  // namespace
@@ -120,7 +126,7 @@ void airmap::Daemon::TelemetrySubmitter::request_authorization() {
     return;
   }
 
-  Authenticator::AuthenticateAnonymously::Params params{user_id_};
+  Authenticator::AuthenticateAnonymously::Params params{uuids::to_string(uuids::random_generator()())};
   client_->authenticator().authenticate_anonymously(params, [sp = shared_from_this()](const auto& result) {
     if (result) {
       sp->handle_request_authorization_finished(result.value().id);
@@ -137,6 +143,7 @@ void airmap::Daemon::TelemetrySubmitter::request_authorization() {
 }
 
 void airmap::Daemon::TelemetrySubmitter::handle_request_authorization_finished(const std::string& authorization) {
+  log_.infof(component, "successfully requested authorization from AirMap services");
   authorization_ = authorization;
   request_create_flight();
 }
@@ -173,6 +180,7 @@ void airmap::Daemon::TelemetrySubmitter::request_create_flight() {
 }
 
 void airmap::Daemon::TelemetrySubmitter::handle_request_create_flight_finished(const Flight& flight) {
+  log_.infof(component, "successfully created flight: %s", flight.id);
   flight_ = flight;
   request_start_flight_comms();
 }
@@ -201,6 +209,7 @@ void airmap::Daemon::TelemetrySubmitter::request_start_flight_comms() {
 }
 
 void airmap::Daemon::TelemetrySubmitter::handle_request_start_flight_comms_finished(const std::string& key) {
+  log_.infof(component, "successfully started flight comms: %s", key);
   encryption_key_ = key;
 }
 
