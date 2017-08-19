@@ -36,7 +36,7 @@ void airmap::rest::Status::get_status_by_point(const GetStatus::Parameters& para
   communicator_.get(host_, version_to_path(version_, "/status/%s/point"), std::move(query), std::move(headers),
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
-                        cb(jsend::to_outcome<Info>(json::parse(result.value())));
+                        cb(jsend::to_outcome<Report>(json::parse(result.value())));
                       }
                     });
 }
@@ -48,7 +48,7 @@ void airmap::rest::Status::get_status_by_path(const GetStatus::Parameters& param
   communicator_.get(host_, version_to_path(version_, "/status/%s/path"), std::move(query), std::move(headers),
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
-                        cb(jsend::to_outcome<Info>(json::parse(result.value())));
+                        cb(jsend::to_outcome<Report>(json::parse(result.value())));
                       }
                     });
 }
@@ -61,7 +61,7 @@ void airmap::rest::Status::get_status_by_polygon(const GetStatus::Parameters& pa
   communicator_.get(host_, version_to_path(version_, "/status/%s/polygon"), std::move(query), std::move(headers),
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
-                        cb(jsend::to_outcome<Info>(json::parse(result.value())));
+                        cb(jsend::to_outcome<Report>(json::parse(result.value())));
                       } else {
                         cb(GetStatus::Result{result.error()});
                       }

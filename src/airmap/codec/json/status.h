@@ -10,17 +10,31 @@
 #include <airmap/codec/json/get.h>
 #include <airmap/codec/json/optional.h>
 
+#include <iostream>
+
 #include <string>
 
 namespace airmap {
 namespace codec {
 namespace json {
 
-inline void decode(const nlohmann::json& j, Status::Info& result) {
-  get(result.max_safe_distance, j, "max_safe_distance");
-  get(result.advisory_color, j, "advisory_color");
-  if (j.count("advisories") > 0)
-    get(result.advisories, j, "advisories");
+inline void decode(const nlohmann::json& j, Status::Color& color) {
+  const auto& color_string = j.get<std::string>();
+
+  if (color_string == "green")
+    color = Status::Color::green;
+  else if (color_string == "yellow")
+    color = Status::Color::yellow;
+  else if (color_string == "orange")
+    color = Status::Color::orange;
+  else if (color_string == "red")
+    color = Status::Color::red;
+}
+
+inline void decode(const nlohmann::json& j, Status::Report& report) {
+  get(report.max_safe_distance, j, "max_safe_distance");
+  get(report.advisory_color, j, "advisory_color");
+  get(report.advisories, j, "advisories");
 }
 
 inline void decode(const nlohmann::json& j, Status::Advisory& advisory) {

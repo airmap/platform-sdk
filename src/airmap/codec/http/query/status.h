@@ -23,19 +23,15 @@ inline void encode(std::unordered_map<std::string, std::string>& query,
   if (parameters.longitude)
     query["longitude"] = boost::lexical_cast<std::string>(parameters.longitude);
   if (parameters.types != Airspace::Type::invalid) {
-    std::ostringstream oss;
-    oss << ((parameters.types & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
-    query["types"] = oss.str();
+    query["types"] = boost::lexical_cast<std::string>((parameters.types & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
   }
   if (parameters.ignored_types && parameters.ignored_types.get() != Airspace::Type::invalid) {
-    std::ostringstream oss;
-    oss << ((parameters.ignored_types.get() & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
-    query["ignored_types"] = oss.str();
+    query["ignored_types"] = boost::lexical_cast<std::string>((parameters.ignored_types.get() & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
   }
   if (parameters.weather)
     query["weather"] = parameters.weather ? "true" : "false";
-  if (parameters.datetime)
-    query["datetime"] = iso8601::generate(parameters.datetime.get());
+  if (parameters.flight_date_time)
+    query["datetime"] = iso8601::generate(parameters.flight_date_time.get());
   if (parameters.geometry) {
     nlohmann::json geometry;
     geometry          = parameters.geometry.get();

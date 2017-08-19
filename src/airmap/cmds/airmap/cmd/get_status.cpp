@@ -19,8 +19,8 @@ constexpr const char* component{"get-status"};
 
 cmd::GetStatus::GetStatus()
     : cli::CommandWithFlagsAndAction{cli::Name{"get-status"},
-                                     cli::Usage{"checks flight status with the airmap services"},
-                                     cli::Description{"checks flight status with the airmap services"}} {
+                                     cli::Usage{"checks flight status with the AirMap services"},
+                                     cli::Description{"checks flight status with the AirMap services"}} {
   flag(cli::make_flag(cli::Name{"version"}, cli::Description{"work against this version of the AirMap services"},
                       version_));
   flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
@@ -73,13 +73,22 @@ cmd::GetStatus::GetStatus()
           auto handler = [this, &ctxt, context, client](const Status::GetStatus::Result& result) {
             if (result) {
               log_.infof(component, "received status with max_safe_distance: %d and advisory_color: %s\n",
-                         result.value().max_safe_distance, result.value().advisory_color);
+                         result.value().max_safe_distance, Status::get_color_string(result.value().advisory_color));
               // TBD - make proper test and log
               for (const auto a : result.value().advisories) {
-                std::cout << "Name: " << a.airspace.name() << std::endl << "Color: " << a.color << std::endl;
+                std::cout << "Name: " << a.airspace.name() << std::endl << "Color: " << Status::get_color_string(a.color) << std::endl;
               }
-            } else
-              log_.errorf(component, "Failed to get status");
+            } else {
+              try {
+                std::rethrow_exception(result.error());
+              } catch (const std::exception& e) {
+                log_.errorf(component, "failed to get flight status: %s", e.what());
+              } catch (...) {
+                log_.errorf(component, "failed to get flight status");
+              }
+              context->stop();
+              return;
+            }
             context->stop();
           };
 

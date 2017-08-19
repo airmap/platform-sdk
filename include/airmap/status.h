@@ -17,14 +17,16 @@ namespace airmap {
 
 class Status : DoNotCopyOrMove {
  public:
+  enum class Color { green = 0, yellow = 1, orange = 2, red = 3 };  
+
   struct Advisory {
     Airspace airspace;
-    std::string color;
+    Color color;
   };
 
-  struct Info {
-    int max_safe_distance;
-    std::string advisory_color;
+  struct Report {
+    std::uint64_t max_safe_distance;
+    Color advisory_color;
     std::vector<Advisory> advisories;
   };
 
@@ -35,11 +37,11 @@ class Status : DoNotCopyOrMove {
       Airspace::Type types = Airspace::Type::all;
       Optional<Airspace::Type> ignored_types;
       bool weather = true;
-      Optional<DateTime> datetime;
+      Optional<DateTime> flight_date_time;
       Optional<Geometry> geometry;
       Optional<int> buffer = 100;
     };
-    using Result   = Outcome<Info, std::exception_ptr>;
+    using Result   = Outcome<Report, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
@@ -54,6 +56,21 @@ class Status : DoNotCopyOrMove {
   /// get_status searches flight advisories for 'parameters' and reports
   /// results back to 'cb'.
   virtual void get_status_by_polygon(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) = 0;
+
+  static const std::string get_color_string(const Color color) {
+    switch(color) {
+      case Color::green:
+        return "green";
+      case Color::yellow:
+        return "yellow";
+      case Color::orange:
+        return "orange";
+      case Color::red:
+        return "red";
+      default:
+        return "";
+    }
+  }
 
  protected:
   Status() = default;
