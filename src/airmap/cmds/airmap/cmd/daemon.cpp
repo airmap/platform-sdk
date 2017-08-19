@@ -12,28 +12,21 @@ namespace {
 constexpr const char* component{"daemon"};
 }
 
-cmd::Daemon::Daemon()
-    : cli::CommandWithFlagsAndAction{cli::Name{"daemon"}, cli::Usage{"runs the airmap daemon"},
-                                     cli::Description{"runs the airmap daemon"}} {
-  flag(cli::make_flag(cli::Name{"version"}, cli::Description{"work against this version of the AirMap services"},
-                      version_));
-  flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
-                      api_key_));
-  flag(cli::make_flag(cli::Name{"user-id"}, cli::Description{"user-id for authenticating with the AirMap services"},
-                      user_id_));
-  flag(cli::make_flag(cli::Name{"aircraft-id"}, cli::Description{"id of the device the daemon runs on"}, aircraft_id_));
-  flag(cli::make_flag(cli::Name{"serial-device"}, cli::Description{"the device file to read mavlink messages from"},
-                      serial_device_));
-  flag(cli::make_flag(cli::Name{"telemetry-host"}, cli::Description{"telemetry host address"}, telemetry_host_));
-  flag(cli::make_flag(cli::Name{"telemetry-port"}, cli::Description{"telemetry host port"}, telemetry_port_));
-  flag(cli::make_flag(cli::Name{"tcp-endpoint-ip"},
-                      cli::Description{"the ip of the tcp endpoint to read mavlink messages from"}, tcp_endpoint_ip_));
-  flag(cli::make_flag(cli::Name{"tcp-endpoint-port"},
-                      cli::Description{"the port of the tcp endpoint to read mavlink messages from"},
+cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airmap daemon", "runs the airmap daemon"} {
+  flag(flags::version(version_));
+  flag(flags::log_level(log_level_));
+  flag(flags::api_key(api_key_));
+  flag(flags::user_id(user_id_));
+  flag(flags::telemetry_host(telemetry_host_));
+  flag(flags::telemetry_port(telemetry_port_));
+  flag(cli::make_flag("aircraft-id", "id of the device the daemon runs on", aircraft_id_));
+  flag(cli::make_flag("serial-device", "the device file to read mavlink messages from", serial_device_));
+  flag(cli::make_flag("tcp-endpoint-ip", "the ip of the tcp endpoint to read mavlink messages from", tcp_endpoint_ip_));
+  flag(cli::make_flag("tcp-endpoint-port", "the port of the tcp endpoint to read mavlink messages from",
                       tcp_endpoint_port_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_default_logger(ctxt.cout)};
+    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
 
     if (!api_key_) {
       log_.errorf(component, "missing parameter 'api-key'");

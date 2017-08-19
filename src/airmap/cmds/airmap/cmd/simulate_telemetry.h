@@ -1,6 +1,8 @@
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_SIMULATE_TELEMETRY_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_SIMULATE_TELEMETRY_H_
 
+#include <airmap/cmds/airmap/cmd/flags.h>
+
 #include <airmap/client.h>
 #include <airmap/flight.h>
 #include <airmap/flights.h>
@@ -21,21 +23,18 @@ class SimulateTelemetry : public util::cli::CommandWithFlagsAndAction {
   SimulateTelemetry();
 
  private:
-  using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using Authorization = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using Host          = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using EncryptionKey = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using GeometryFile  = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   struct {
     Client::Version version{Client::Version::production};
+    Logger::Severity log_level{Logger::Severity::info};
     Optional<ApiKey> api_key;
     Optional<Authorization> authorization;
-    Optional<Host> host;
+    Optional<TelemetryHost> host;
     Optional<std::uint16_t> port;
     std::uint16_t frequency{5};
-    Flight flight{};
+    Optional<FlightId> flight_id;
     Optional<EncryptionKey> encryption_key{EncryptionKey{"MDAwMDExMTEyMjIyMzMzMzQ0NDQ1NTU1NjY2Njc3Nzc="}};
     Optional<GeometryFile> geometry_file;
   } params_;

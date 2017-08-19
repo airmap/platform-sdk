@@ -137,7 +137,8 @@ class TypedFlag : public Flag {
  public:
   typedef std::shared_ptr<TypedFlag<T>> Ptr;
 
-  TypedFlag(const Name& name, const Description& description) : Flag{name, description} {
+  TypedFlag(const Name& name, const Description& description, const Optional<T>& value = Optional<T>{})
+      : Flag{name, description}, value_{value} {
   }
 
   /// @brief value installs the given value in the flag.

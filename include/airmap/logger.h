@@ -13,7 +13,7 @@ namespace airmap {
 class Logger : DoNotCopyOrMove {
  public:
   /// Severity enumerates all known levels of severity
-  enum class Severity { debug, info, error };
+  enum class Severity { debug = 0, info = 1, error = 2 };
 
   /// debug logs a message from component with Severity::debug.
   void debug(const char* message, const char* component);
@@ -35,6 +35,9 @@ class Logger : DoNotCopyOrMove {
 
 /// operator< returns true iff the numeric value of lhs < rhs.
 bool operator<(Logger::Severity lhs, Logger::Severity rhs);
+
+/// operator>> parses severity from in.
+std::istream& operator>>(std::istream& in, Logger::Severity& severity);
 
 /// create_default_logger returns a Logger implementation writing
 /// log messages to 'out'.

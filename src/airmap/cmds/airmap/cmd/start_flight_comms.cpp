@@ -19,20 +19,16 @@ constexpr const char* component{"start-flight-comms"};
 }
 
 cmd::StartFlightComms::StartFlightComms()
-    : cli::CommandWithFlagsAndAction{cli::Name{"start-flight-comms"},
-                                     cli::Usage{"prepare flight for injection of telemetry data"},
-                                     cli::Description{"prepare flight for injection of telemetry data"}} {
-  flag(cli::make_flag(cli::Name{"version"}, cli::Description{"work against this version of the AirMap services"},
-                      params_.version));
-  flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
-                      params_.api_key));
-  flag(cli::make_flag(cli::Name{"authorization"},
-                      cli::Description{"token used for authorizing with the AirMap services"}, params_.authorization));
-  flag(cli::make_flag(cli::Name{"flight-id"}, cli::Description{"telemetry is sent for this flight id"},
-                      params_.flight_id));
+    : cli::CommandWithFlagsAndAction{"start-flight-comms", "prepare flight for injection of telemetry data",
+                                     "prepare flight for injection of telemetry data"} {
+  flag(flags::version(params_.version));
+  flag(flags::log_level(params_.log_level));
+  flag(flags::api_key(params_.api_key));
+  flag(flags::authorization(params_.authorization));
+  flag(flags::flight_id(params_.flight_id));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_default_logger(ctxt.cout)};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
 
     if (!params_.api_key) {
       log_.errorf(component, "missing parameter 'api-key'");

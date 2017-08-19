@@ -122,6 +122,21 @@ bool airmap::operator<(Logger::Severity lhs, Logger::Severity rhs) {
   return static_cast<UT>(lhs) < static_cast<UT>(rhs);
 }
 
+std::istream& airmap::operator>>(std::istream& in, Logger::Severity& severity) {
+  std::string s;
+  in >> s;
+
+  if (s == "debug") {
+    severity = Logger::Severity::debug;
+  } else if (s == "info") {
+    severity = Logger::Severity::info;
+  } else if (s == "error") {
+    severity = Logger::Severity::error;
+  }
+
+  return in;
+}
+
 std::shared_ptr<airmap::Logger> airmap::create_default_logger(std::ostream& out) {
   return std::make_shared<DefaultLogger>(out);
 }

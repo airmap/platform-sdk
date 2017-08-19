@@ -31,28 +31,21 @@ constexpr const char* component{"telemetry-simulator"};
 }  // namespace
 
 cmd::SimulateTelemetry::SimulateTelemetry()
-    : cli::CommandWithFlagsAndAction{cli::Name{"simulate-telemetry"},
-                                     cli::Usage{"inject artificial telemetry data for a given flight"},
-                                     cli::Description{"inject artificial telemetry data for a given flight"}} {
-  flag(cli::make_flag(cli::Name{"version"}, cli::Description{"work against this version of the AirMap services"},
-                      params_.version));
-  flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
-                      params_.api_key));
-  flag(cli::make_flag(cli::Name{"authorization"},
-                      cli::Description{"token used for authorizing with the AirMap services"}, params_.authorization));
-  flag(cli::make_flag(cli::Name{"encryption-key"}, cli::Description{"key used for encrypting telemetry messages"},
-                      params_.encryption_key));
-  flag(cli::make_flag(cli::Name{"host"}, cli::Description{"telemetry host address"}, params_.host));
-  flag(cli::make_flag(cli::Name{"port"}, cli::Description{"telemetry host port"}, params_.port));
-  flag(cli::make_flag(cli::Name{"frequency"}, cli::Description{"telemetry is sent with `FREQUENCY` Hz"},
-                      params_.frequency));
-  flag(cli::make_flag(cli::Name{"flight-id"}, cli::Description{"telemetry is sent for this flight id"},
-                      params_.flight.id));
-  flag(cli::make_flag(cli::Name{"geometry-file"}, cli::Description{"use the polygon defined in this geojson file"},
-                      params_.geometry_file));
+    : cli::CommandWithFlagsAndAction{"simulate-telemetry", "inject artificial telemetry data for a given flight",
+                                     "inject artificial telemetry data for a given flight"} {
+  flag(flags::version(params_.version));
+  flag(flags::log_level(params_.log_level));
+  flag(flags::api_key(params_.api_key));
+  flag(flags::authorization(params_.authorization));
+  flag(flags::encryption_key(params_.encryption_key));
+  flag(flags::telemetry_host(params_.host));
+  flag(flags::telemetry_port(params_.port));
+  flag(flags::flight_id(params_.flight_id));
+  flag(cli::make_flag("frequency", "telemetry is sent with `FREQUENCY` Hz", params_.frequency));
+  flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", params_.geometry_file));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_default_logger(ctxt.cout)};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
 
     if (!params_.api_key) {
       log_.errorf(component, "missing parameter 'api-key'");
@@ -89,6 +82,16 @@ cmd::SimulateTelemetry::SimulateTelemetry()
       return 1;
     }
 
+    if (!params_.flight_id) {
+      log_.errorf(component, "missing parameter 'flight-id'");
+      return 1;
+    }
+
+    if (!params_.flight_id.get().validate()) {
+      log_.errorf(component, "parameter 'flight-id' must not be empty");
+      return 1;
+    }
+
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
@@ -115,7 +118,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
                "  flight-id:           %s\n"
                "  enc-key:             %s",
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key,
-               params_.frequency, params_.flight.id, params_.encryption_key);
+               params_.frequency, params_.flight_id, params_.encryption_key);
 
     auto geometry = polygon;
 
@@ -136,6 +139,9 @@ cmd::SimulateTelemetry::SimulateTelemetry()
           auto client = result.value();
 
           std::thread submitter{[this, &ctxt, geometry, context, client]() {
+            Flight flight;
+            flight.id = params_.flight_id.get();
+
             util::TelemetrySimulator simulator{geometry.details_for_polygon()};
 
             while (true) {
@@ -144,7 +150,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
               log_.infof(component, "Submitting update for position (%f,%f)", data.latitude, data.longitude);
 
               client->telemetry().submit_updates(
-                  params_.flight, params_.encryption_key.get(),
+                  flight, params_.encryption_key.get(),
                   {Telemetry::Update{Telemetry::Position{milliseconds_since_epoch(Clock::universal_time()),
                                                          data.latitude, data.longitude, 100, 100, 2}}});
               std::this_thread::sleep_for(std::chrono::milliseconds{1000 / params_.frequency});

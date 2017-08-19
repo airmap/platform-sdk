@@ -1,6 +1,8 @@
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_SIMULATE_SCENARIO_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_SIMULATE_SCENARIO_H_
 
+#include <airmap/cmds/airmap/cmd/flags.h>
+
 #include <airmap/client.h>
 #include <airmap/context.h>
 #include <airmap/flight.h>
@@ -27,8 +29,6 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
   SimulateScenario();
 
  private:
-  using ApiKey       = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using Host         = util::TaggedString<util::tags::MustNotBeEmpty>;
   using ScenarioFile = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   class Collector {
@@ -47,8 +47,9 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
 
   struct {
     Client::Version version{Client::Version::production};
+    Logger::Severity log_level{Logger::Severity::info};
     Optional<ApiKey> api_key;
-    Optional<Host> host;
+    Optional<TelemetryHost> host;
     Optional<std::uint16_t> port;
     Optional<ScenarioFile> scenario_file;
   } params_;

@@ -25,7 +25,7 @@ class FormattingLogger {
 
   template <typename... Args>
   void errorf(const char* component, const char* format, Args... args) {
-    logger_->info(fmt::sprintf(format, std::forward<Args>(args)...).c_str(), component);
+    logger_->error(fmt::sprintf(format, std::forward<Args>(args)...).c_str(), component);
   }
 
   const std::shared_ptr<Logger>& logger() const {

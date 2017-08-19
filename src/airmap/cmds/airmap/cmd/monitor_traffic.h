@@ -1,6 +1,8 @@
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_MONITOR_TRAFFIC_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_MONITOR_TRAFFIC_H_
 
+#include <airmap/cmds/airmap/cmd/flags.h>
+
 #include <airmap/client.h>
 #include <airmap/context.h>
 #include <airmap/traffic.h>
@@ -18,15 +20,12 @@ class MonitorTraffic : public util::cli::CommandWithFlagsAndAction {
   MonitorTraffic();
 
  private:
-  using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using Authorization = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using FlightId      = util::TaggedString<util::tags::MustNotBeEmpty>;
-
   util::FormattingLogger log_{create_null_logger()};
   std::shared_ptr<::airmap::Context> context_;
   std::shared_ptr<::airmap::Client> client_;
   std::shared_ptr<::airmap::Traffic::Monitor> monitor_;
   struct {
+    Logger::Severity log_level{Logger::Severity::info};
     Optional<ApiKey> api_key;
     Optional<Authorization> authorization;
     Optional<FlightId> flight_id;

@@ -154,6 +154,8 @@ add_executable(
   src/airmap/cmds/airmap/cmd/create_flight.cpp
   src/airmap/cmds/airmap/cmd/daemon.h
   src/airmap/cmds/airmap/cmd/daemon.cpp
+  src/airmap/cmds/airmap/cmd/flags.h
+  src/airmap/cmds/airmap/cmd/flags.cpp
   src/airmap/cmds/airmap/cmd/get_status.h
   src/airmap/cmds/airmap/cmd/get_status.cpp
   src/airmap/cmds/airmap/cmd/pilot.h

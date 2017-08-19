@@ -3,9 +3,11 @@
 
 #include <airmap/authenticator.h>
 #include <airmap/client.h>
+
+#include <airmap/cmds/airmap/cmd/flags.h>
+
 #include <airmap/util/cli.h>
 #include <airmap/util/formatting_logger.h>
-#include <airmap/util/tagged_string.h>
 
 namespace airmap {
 namespace cmds {
@@ -17,12 +19,10 @@ class AuthorizeAnonymous : public util::cli::CommandWithFlagsAndAction {
   AuthorizeAnonymous();
 
  private:
-  using ApiKey = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using UserId = util::TaggedString<util::tags::MustNotBeEmpty>;
-
   util::FormattingLogger log_{create_null_logger()};
   struct {
     Client::Version version{Client::Version::production};
+    Logger::Severity log_level{Logger::Severity::info};
     Optional<ApiKey> api_key;
     Optional<UserId> user_id;
   } params_;

@@ -11,23 +11,19 @@ constexpr const char* component{"authorize-password"};
 }
 
 cmd::AuthorizePassword::AuthorizePassword()
-    : cli::CommandWithFlagsAndAction{cli::Name{"authorize-password"}, cli::Usage{"authorize with the AirMap services"},
-                                     cli::Description{"authorize with the AirMap services"}} {
-  flag(cli::make_flag(cli::Name{"version"}, cli::Description{"work against this version of the AirMap services"},
-                      params_.version));
-  flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
-                      params_.api_key));
-  flag(cli::make_flag(cli::Name{"client-id"},
-                      cli::Description{"client-id used for authorizing with the AirMap services"}, params_.client_id));
-  flag(cli::make_flag(cli::Name{"username"}, cli::Description{"username used for authorizing with the AirMap services"},
-                      params_.username));
-  flag(cli::make_flag(cli::Name{"password"}, cli::Description{"password used for authorizing with the AirMap services"},
-                      params_.password));
-  flag(cli::make_flag(cli::Name{"device"}, cli::Description{"device used for authorizing with the AirMap services"},
-                      params_.device));
+    : cli::CommandWithFlagsAndAction{"authorize-password", "authorize with the AirMap services",
+                                     "authorize with the AirMap services"} {
+  flag(flags::version(params_.version));
+  flag(flags::log_level(params_.log_level));
+  flag(flags::api_key(params_.api_key));
+  flag(flags::client_id(params_.client_id));
+
+  flag(cli::make_flag("username", "username used for authorizing with the AirMap services", params_.username));
+  flag(cli::make_flag("password", "password used for authorizing with the AirMap services", params_.password));
+  flag(cli::make_flag("device", "device used for authorizing with the AirMap services", params_.device));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_default_logger(ctxt.cout)};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
 
     if (!params_.api_key) {
       log_.errorf(component, "missing parameter 'api-key'");

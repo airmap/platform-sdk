@@ -47,21 +47,18 @@ const airmap::util::Scenario& cmd::SimulateScenario::Collector::scenario() const
 }
 
 cmd::SimulateScenario::SimulateScenario()
-    : cli::CommandWithFlagsAndAction{
-          cli::Name{"simulate-scenario"},
-          cli::Usage{"simulate multiple vehicles carrying out missions and submitting telemetry"},
-          cli::Description{"simulate multiple vehicles carrying out missions and submitting telemetry"}} {
-  flag(cli::make_flag(cli::Name{"version"}, cli::Description{"work against this version of the AirMap services"},
-                      params_.version));
-  flag(cli::make_flag(cli::Name{"api-key"}, cli::Description{"api-key for authenticating with the AirMap services"},
-                      params_.api_key));
-  flag(cli::make_flag(cli::Name{"host"}, cli::Description{"telemetry host address"}, params_.host));
-  flag(cli::make_flag(cli::Name{"port"}, cli::Description{"telemetry host port"}, params_.port));
-  flag(cli::make_flag(cli::Name{"scenario-file"}, cli::Description{"use the scenario defined in this json file"},
-                      params_.scenario_file));
+    : cli::CommandWithFlagsAndAction{"simulate-scenario",
+                                     "simulate multiple vehicles carrying out missions and submitting telemetry",
+                                     "simulate multiple vehicles carrying out missions and submitting telemetry"} {
+  flag(flags::version(params_.version));
+  flag(flags::log_level(params_.log_level));
+  flag(flags::api_key(params_.api_key));
+  flag(flags::telemetry_host(params_.host));
+  flag(flags::telemetry_port(params_.port));
+  flag(cli::make_flag("scenario-file", "use the scenario defined in this json file", params_.scenario_file));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_default_logger(ctxt.cout)};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
 
     if (!params_.api_key) {
       log_.errorf(component, "missing parameter 'api-key'");

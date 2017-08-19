@@ -1,6 +1,8 @@
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_CREATE_FLIGHT_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_CREATE_FLIGHT_H_
 
+#include <airmap/cmds/airmap/cmd/flags.h>
+
 #include <airmap/client.h>
 #include <airmap/flights.h>
 #include <airmap/logger.h>
@@ -19,12 +21,11 @@ class CreateFlight : public util::cli::CommandWithFlagsAndAction {
   CreateFlight();
 
  private:
-  using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using Authorization = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using GeometryFile  = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
+  Logger::Severity log_level_{Logger::Severity::info};
   Optional<ApiKey> api_key_;
   Optional<Authorization> authorization_;
   Optional<GeometryFile> geometry_file_;
