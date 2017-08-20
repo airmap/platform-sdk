@@ -93,7 +93,7 @@ cmd::GetStatus::GetStatus()
 
           auto handler = [this, &ctxt, context, client](const Status::GetStatus::Result& result) {
             if (result) {
-              log_.infof(component, "received status with max-safe-distance: %d and advisory-color: %s\n",
+              log_.infof(component, "successfully received status with max-safe-distance: %d and advisory-color: %s\n",
                          result.value().max_safe_distance, result.value().advisory_color);
               print_status(ctxt.cout, result.value());
             } else {
