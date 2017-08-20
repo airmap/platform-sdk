@@ -4,9 +4,6 @@
 #include <airmap/codec.h>
 #include <airmap/context.h>
 #include <airmap/date_time.h>
-#include <airmap/airspace.h>
-
-#include <iostream>
 
 namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
@@ -25,7 +22,10 @@ void print_status(std::ostream& out, const airmap::Status::Report& report) {
     out << "    Name:            " << a.airspace.name() << std::endl
         << "    Color:           " << airmap::Status::get_color_string(a.color) << std::endl;
   }
- 
+  out << "  Weather:           " << std::endl
+      << "    condition:       " << report.weather.condition << std::endl
+      << "    temperature:     " << report.weather.temperature << std::endl
+      << "    wind-speed:      " << report.weather.wind.speed << std::endl;
 }
 
 constexpr const char* component{"get-status"};
@@ -34,7 +34,6 @@ constexpr const char* component{"get-status"};
 cmd::GetStatus::GetStatus()
     : cli::CommandWithFlagsAndAction{"get-status", "checks flight status with the AirMap services",
                                      "checks flight status with the AirMap services"} {
-                                      
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::api_key(api_key_));

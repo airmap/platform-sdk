@@ -73,11 +73,6 @@ cmd::CreateFlight::CreateFlight()
 
     params_.authorization = authorization_.get();
 
-    if (!geometry_file_) {
-      log_.errorf(component, "missing parameter 'geometry-file'");
-      return 1;
-    }
-
     if (geometry_file_) {
       std::ifstream in{geometry_file_.get()};
       if (!in) {

@@ -24,22 +24,47 @@ class Status : DoNotCopyOrMove {
     Color color;
   };
 
+  // TBD
+  // enum class WeatherCondition {
+  // };
+
+  // TBD
+  // enum class WeatherIcon { 
+  // };
+
+  struct Wind {
+    std::uint32_t heading = 0;
+    std::uint32_t speed   = 0;
+    std::uint32_t gusting = 0;
+  };
+    
+  struct Weather {
+    std::string condition;
+    std::string icon;
+    Wind wind;
+    float humidity = 0.0;
+    std::uint32_t visibility = 0;
+    std::uint32_t precipitation = 0;
+    std::int32_t  temperature = 0;
+  };
+
   struct Report {
-    std::uint64_t max_safe_distance;
+    std::uint32_t max_safe_distance = 0;
     Color advisory_color;
     std::vector<Advisory> advisories;
+    Weather weather;
   };
 
   struct GetStatus {
     struct Parameters {
       float latitude;
       float longitude;
-      Airspace::Type types = Airspace::Type::all;
+      Optional<Airspace::Type> types;
       Optional<Airspace::Type> ignored_types;
-      bool weather = true;
+      Optional<bool> weather;
       Optional<DateTime> flight_date_time;
       Optional<Geometry> geometry;
-      Optional<int> buffer = 100;
+      Optional<std::uint32_t> buffer;
     };
     using Result   = Outcome<Report, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
@@ -70,7 +95,24 @@ class Status : DoNotCopyOrMove {
       default:
         return "";
     }
-  }
+  };
+
+// TBD
+/*
+  static const std::string get_weather_condition_string(const WeatherCondition condition) {
+    switch (condition) {
+      default:
+        return "";
+    }
+  };
+
+  static const std::string get_weather_icon_string(const WeatherIcon icon) {
+    switch (icon) {
+      default:
+        return "";
+    }
+  };
+*/
 
  protected:
   Status() = default;
