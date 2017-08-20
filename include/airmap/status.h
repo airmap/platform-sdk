@@ -29,7 +29,7 @@ class Status : DoNotCopyOrMove {
   // };
 
   // TBD
-  // enum class WeatherIcon { 
+  // enum class WeatherIcon {
   // };
 
   struct Wind {
@@ -37,15 +37,15 @@ class Status : DoNotCopyOrMove {
     std::uint32_t speed   = 0;
     std::uint32_t gusting = 0;
   };
-    
+
   struct Weather {
     std::string condition;
     std::string icon;
     Wind wind;
-    float humidity = 0.0;
-    std::uint32_t visibility = 0;
+    float humidity              = 0.0;
+    std::uint32_t visibility    = 0;
     std::uint32_t precipitation = 0;
-    std::int32_t  temperature = 0;
+    std::int32_t temperature    = 0;
   };
 
   struct Report {
@@ -97,22 +97,22 @@ class Status : DoNotCopyOrMove {
     }
   };
 
-// TBD
-/*
-  static const std::string get_weather_condition_string(const WeatherCondition condition) {
-    switch (condition) {
-      default:
-        return "";
-    }
-  };
+  // TBD
+  /*
+    static const std::string get_weather_condition_string(const WeatherCondition condition) {
+      switch (condition) {
+        default:
+          return "";
+      }
+    };
 
-  static const std::string get_weather_icon_string(const WeatherIcon icon) {
-    switch (icon) {
-      default:
-        return "";
-    }
-  };
-*/
+    static const std::string get_weather_icon_string(const WeatherIcon icon) {
+      switch (icon) {
+        default:
+          return "";
+      }
+    };
+  */
 
  protected:
   Status() = default;

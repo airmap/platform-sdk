@@ -13,7 +13,6 @@ using json = nlohmann::json;
 namespace {
 
 void print_status(std::ostream& out, const airmap::Status::Report& report) {
-  
   out << "Received status:     " << std::endl
       << "  max-safe-distance: " << report.max_safe_distance << std::endl
       << "  advisory-color:    " << airmap::Status::get_color_string(report.advisory_color) << std::endl
@@ -112,9 +111,9 @@ cmd::GetStatus::GetStatus()
             context->stop();
           };
 
-          if (!params_.geometry) 
+          if (!params_.geometry)
             client->status().get_status_by_point(params_, handler);
-          else 
+          else
             client->status().get_status_by_polygon(params_, handler);
         });
 
