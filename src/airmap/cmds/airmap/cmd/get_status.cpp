@@ -15,11 +15,10 @@ namespace {
 void print_status(std::ostream& out, const airmap::Status::Report& report) {
   out << "Received status:     " << std::endl
       << "  max-safe-distance: " << report.max_safe_distance << std::endl
-      << "  advisory-color:    " << airmap::Status::get_color_string(report.advisory_color) << std::endl
+      << "  advisory-color:    " << report.advisory_color << std::endl
       << "  Advisories:        " << std::endl;
   for (const auto& a : report.advisories) {
-    out << "    Name:            " << a.airspace.name() << std::endl
-        << "    Color:           " << airmap::Status::get_color_string(a.color) << std::endl;
+    out << "    Name:            " << a.airspace.name() << std::endl << "    Color:           " << a.color << std::endl;
   }
   out << "  Weather:           " << std::endl
       << "    condition:       " << report.weather.condition << std::endl
@@ -95,7 +94,7 @@ cmd::GetStatus::GetStatus()
           auto handler = [this, &ctxt, context, client](const Status::GetStatus::Result& result) {
             if (result) {
               log_.infof(component, "received status with max-safe-distance: %d and advisory-color: %s\n",
-                         result.value().max_safe_distance, Status::get_color_string(result.value().advisory_color));
+                         result.value().max_safe_distance, result.value().advisory_color);
               print_status(ctxt.cout, result.value());
             } else {
               try {

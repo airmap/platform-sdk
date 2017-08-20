@@ -75,6 +75,7 @@ add_library(
   src/airmap/logger.cpp
   src/airmap/pilots.cpp
   src/airmap/rule.cpp
+  src/airmap/status.cpp
   src/airmap/telemetry.cpp
   src/airmap/traffic.cpp
 

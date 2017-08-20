@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
@@ -23,14 +24,6 @@ class Status : DoNotCopyOrMove {
     Airspace airspace;
     Color color;
   };
-
-  // TBD
-  // enum class WeatherCondition {
-  // };
-
-  // TBD
-  // enum class WeatherIcon {
-  // };
 
   struct Wind {
     std::uint32_t heading = 0;
@@ -82,41 +75,12 @@ class Status : DoNotCopyOrMove {
   /// results back to 'cb'.
   virtual void get_status_by_polygon(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) = 0;
 
-  static const std::string get_color_string(const Color color) {
-    switch (color) {
-      case Color::green:
-        return "green";
-      case Color::yellow:
-        return "yellow";
-      case Color::orange:
-        return "orange";
-      case Color::red:
-        return "red";
-      default:
-        return "";
-    }
-  };
-
-  // TBD
-  /*
-    static const std::string get_weather_condition_string(const WeatherCondition condition) {
-      switch (condition) {
-        default:
-          return "";
-      }
-    };
-
-    static const std::string get_weather_icon_string(const WeatherIcon icon) {
-      switch (icon) {
-        default:
-          return "";
-      }
-    };
-  */
-
  protected:
   Status() = default;
 };
+
+std::ostream& operator<<(std::ostream& out, Status::Color color);
+std::istream& operator>>(std::istream& in, Status::Color& color);
 
 }  // namespace airmap
 
