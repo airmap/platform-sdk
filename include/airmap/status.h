@@ -17,7 +17,7 @@ namespace airmap {
 
 class Status : DoNotCopyOrMove {
  public:
-  enum class Color { green = 0, yellow = 1, orange = 2, red = 3 };  
+  enum class Color { green = 0, yellow = 1, orange = 2, red = 3 };
 
   struct Advisory {
     Airspace airspace;
@@ -58,7 +58,7 @@ class Status : DoNotCopyOrMove {
   virtual void get_status_by_polygon(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) = 0;
 
   static const std::string get_color_string(const Color color) {
-    switch(color) {
+    switch (color) {
       case Color::green:
         return "green";
       case Color::yellow:

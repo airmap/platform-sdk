@@ -11,6 +11,8 @@
 #include <sstream>
 #include <unordered_map>
 
+#include <iostream>
+
 namespace airmap {
 namespace codec {
 namespace http {
@@ -23,10 +25,12 @@ inline void encode(std::unordered_map<std::string, std::string>& query,
   if (parameters.longitude)
     query["longitude"] = boost::lexical_cast<std::string>(parameters.longitude);
   if (parameters.types != Airspace::Type::invalid) {
-    query["types"] = boost::lexical_cast<std::string>((parameters.types & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
+    query["types"] =
+        boost::lexical_cast<std::string>((parameters.types & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
   }
   if (parameters.ignored_types && parameters.ignored_types.get() != Airspace::Type::invalid) {
-    query["ignored_types"] = boost::lexical_cast<std::string>((parameters.ignored_types.get() & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
+    query["ignored_types"] = boost::lexical_cast<std::string>(
+        (parameters.ignored_types.get() & ~Airspace::Type::emergency) & ~Airspace::Type::fire);
   }
   if (parameters.weather)
     query["weather"] = parameters.weather ? "true" : "false";

@@ -1,6 +1,8 @@
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_GET_STATUS_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_GET_STATUS_H_
 
+#include <airmap/cmds/airmap/cmd/flags.h>
+
 #include <airmap/client.h>
 #include <airmap/logger.h>
 #include <airmap/optional.h>
@@ -19,11 +21,13 @@ class GetStatus : public util::cli::CommandWithFlagsAndAction {
   GetStatus();
 
  private:
-  using ApiKey = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
+  Logger::Severity log_level_{Logger::Severity::info};
   Optional<ApiKey> api_key_;
+  Optional<GeometryFile> geometry_file_;
   Status::GetStatus::Parameters params_;
 };
 
