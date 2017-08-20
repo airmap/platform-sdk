@@ -17,16 +17,8 @@ namespace codec {
 namespace json {
 
 inline void decode(const nlohmann::json& j, Status::Color& color) {
-  const auto& color_string = j.get<std::string>();
-
-  if (color_string == "green")
-    color = Status::Color::green;
-  else if (color_string == "yellow")
-    color = Status::Color::yellow;
-  else if (color_string == "orange")
-    color = Status::Color::orange;
-  else if (color_string == "red")
-    color = Status::Color::red;
+  std::stringstream ss{j.get<std::string>()};
+  ss >> color;
 }
 
 inline void decode(const nlohmann::json& j, Status::Report& report) {
