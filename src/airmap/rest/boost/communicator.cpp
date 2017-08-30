@@ -455,9 +455,23 @@ void airmap::rest::boost::Communicator::HttpSession::handle_read(const ::boost::
     return;
   }
 
-  switch (response.base().result()) {
-    case http::status::ok:
+  auto sc = response.base().result();
+
+  switch (http::to_status_class(sc)) {
+    case http::status_class::informational:
+      log.debugf(component, "received informational http response: %s", sc);
+      break;
+    case http::status_class::successful:
       cb(DoResult{response.body});
+      break;
+    case http::status_class::redirection:
+      log.debugf(component, "received redirection http response: %s", sc);
+      break;
+    case http::status_class::client_error:
+    case http::status_class::server_error:
+      // TODO(tvoss): We should think about introducing an http::ClientError and
+      // http::ServerError, both inheriting std::runtime_error.
+      cb(DoResult{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s - %s\n%s", sc, request, response)})});
       break;
     default:
       cb(DoResult{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s\n%s", request, response)})});
