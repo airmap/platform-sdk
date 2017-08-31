@@ -39,6 +39,8 @@ void airmap::rest::Authenticator::authenticate_with_password(const AuthenticateW
                      [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<OAuthToken>(json::parse(result.value())));
+                       } else {
+                         cb(AuthenticateWithPassword::Result{result.error()});
                        }
                      });
 }
@@ -54,6 +56,8 @@ void airmap::rest::Authenticator::authenticate_anonymously(const AuthenticateAno
                      [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<AnonymousToken>(json::parse(result.value())));
+                       } else {
+                         cb(AuthenticateAnonymously::Result{result.error()});
                        }
                      });
 }
@@ -69,6 +73,8 @@ void airmap::rest::Authenticator::renew_authentication(const RenewAuthentication
                      [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<RefreshedToken>(json::parse(result.value())));
+                       } else {
+                         cb(RenewAuthentication::Result{result.error()});
                        }
                      });
 }

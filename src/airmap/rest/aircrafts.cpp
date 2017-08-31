@@ -37,6 +37,8 @@ void airmap::rest::Aircrafts::manufacturers(const Manufacturers::Parameters& par
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<std::vector<Aircraft::Manufacturer>>(json::parse(result.value())));
+                      } else {
+                        cb(Manufacturers::Result{result.error()});
                       }
                     });
 }
@@ -49,6 +51,8 @@ void airmap::rest::Aircrafts::models(const Models::Parameters& parameters, const
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<std::vector<Aircraft>>(json::parse(result.value())));
+                      } else {
+                        cb(Models::Result{result.error()});
                       }
                     });
 }
@@ -60,6 +64,8 @@ void airmap::rest::Aircrafts::model_for_id(const ModelForId::Parameters& paramet
                     std::move(headers), [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<Aircraft>(json::parse(result.value())));
+                      } else {
+                        cb(ModelForId::Result{result.error()});
                       }
                     });
 }

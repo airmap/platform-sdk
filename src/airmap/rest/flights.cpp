@@ -40,6 +40,8 @@ void airmap::rest::Flights::search(const Search::Parameters& parameters, const S
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<std::vector<Flight>>(json::parse(result.value())));
+                      } else {
+                        cb(Search::Result{result.error()});
                       }
                     });
 }
@@ -55,6 +57,8 @@ void airmap::rest::Flights::for_id(const ForId::Parameters& parameters, const Fo
                     std::move(headers), [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<Flight>(json::parse(result.value())));
+                      } else {
+                        cb(ForId::Result{result.error()});
                       }
                     });
 }
@@ -71,6 +75,8 @@ void airmap::rest::Flights::create_flight_by_point(const CreateFlight::Parameter
                      [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<Flight>(json::parse(result.value())));
+                       } else {
+                         cb(CreateFlight::Result{result.error()});
                        }
                      });
 }
@@ -87,6 +93,8 @@ void airmap::rest::Flights::create_flight_by_path(const CreateFlight::Parameters
                      [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<Flight>(json::parse(result.value())));
+                       } else {
+                         cb(CreateFlight::Result{result.error()});
                        }
                      });
 }
@@ -117,6 +125,8 @@ void airmap::rest::Flights::end_flight(const EndFlight::Parameters& parameters, 
                      std::string{}, [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<EndFlight::Response>(json::parse(result.value())));
+                       } else {
+                         cb(EndFlight::Result{result.error()});
                        }
                      });
 }
@@ -130,6 +140,8 @@ void airmap::rest::Flights::delete_flight(const DeleteFlight::Parameters& parame
                      std::string{}, [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<DeleteFlight::Response>(json::parse(result.value())));
+                       } else {
+                         cb(DeleteFlight::Result{result.error()});
                        }
                      });
 }
@@ -143,6 +155,8 @@ void airmap::rest::Flights::start_flight_communications(const StartFlightCommuni
                      std::string{}, [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<StartFlightCommunications::Response>(json::parse(result.value())));
+                       } else {
+                         cb(StartFlightCommunications::Result{result.error()});
                        }
                      });
 }
@@ -156,6 +170,8 @@ void airmap::rest::Flights::end_flight_communications(const EndFlightCommunicati
                      std::string{}, [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<EndFlightCommunications::Response>(json::parse(result.value())));
+                       } else {
+                         cb(EndFlightCommunications::Result{result.error()});
                        }
                      });
 }

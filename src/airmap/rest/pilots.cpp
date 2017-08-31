@@ -42,7 +42,6 @@ void airmap::rest::Pilots::authenticated(const Authenticated::Parameters& parame
                       } else {
                         cb(Authenticated::Result{result.error()});
                       }
-
                     });
 }
 
@@ -56,6 +55,8 @@ void airmap::rest::Pilots::for_id(const ForId::Parameters& parameters, const For
                     std::move(headers), [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<Pilot>(json::parse(result.value())));
+                      } else {
+                        cb(ForId::Result{result.error()});
                       }
                     });
 }
@@ -70,6 +71,8 @@ void airmap::rest::Pilots::update_for_id(const UpdateForId::Parameters& paramete
                       [cb](const Communicator::DoResult& result) {
                         if (result) {
                           cb(jsend::to_outcome<Pilot>(json::parse(result.value())));
+                        } else {
+                          cb(UpdateForId::Result{result.error()});
                         }
                       });
 }
@@ -83,6 +86,8 @@ void airmap::rest::Pilots::start_verify_pilot_phone_for_id(const StartVerifyPilo
                      std::move(headers), std::string{}, [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<StartVerifyPilotPhoneForId::Empty>(json::parse(result.value())));
+                       } else {
+                         cb(StartVerifyPilotPhoneForId::Result{result.error()});
                        }
                      });
 }
@@ -98,6 +103,8 @@ void airmap::rest::Pilots::finish_verify_pilot_phone_for_id(const FinishVerifyPi
                      std::move(headers), j.dump(), [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<FinishVerifyPilotPhoneForId::Empty>(json::parse(result.value())));
+                       } else {
+                         cb(FinishVerifyPilotPhoneForId::Result{result.error()});
                        }
                      });
 }
@@ -110,6 +117,8 @@ void airmap::rest::Pilots::aircrafts(const Aircrafts::Parameters& parameters, co
                     std::move(headers), [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<std::vector<Pilot::Aircraft>>(json::parse(result.value())));
+                      } else {
+                        cb(Aircrafts::Result{result.error()});
                       }
                     });
 }
@@ -124,6 +133,8 @@ void airmap::rest::Pilots::add_aircraft(const AddAircraft::Parameters& parameter
                      j.dump(), [cb](const Communicator::DoResult& result) {
                        if (result) {
                          cb(jsend::to_outcome<Pilot::Aircraft>(json::parse(result.value())));
+                       } else {
+                         cb(AddAircraft::Result{result.error()});
                        }
                      });
 }
@@ -138,6 +149,8 @@ void airmap::rest::Pilots::delete_aircraft(const DeleteAircraft::Parameters& par
                         std::move(query), std::move(headers), [cb](const Communicator::DoResult& result) {
                           if (result) {
                             cb(jsend::to_outcome<DeleteAircraft::Empty>(json::parse(result.value())));
+                          } else {
+                            cb(DeleteAircraft::Result{result.error()});
                           }
                         });
 }
@@ -154,6 +167,8 @@ void airmap::rest::Pilots::update_aircraft(const UpdateAircraft::Parameters& par
                       std::move(headers), j.dump(), [cb](const Communicator::DoResult& result) {
                         if (result) {
                           cb(jsend::to_outcome<UpdateAircraft::Empty>(json::parse(result.value())));
+                        } else {
+                          cb(UpdateAircraft::Result{result.error()});
                         }
                       });
 }

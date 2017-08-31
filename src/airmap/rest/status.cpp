@@ -37,6 +37,8 @@ void airmap::rest::Status::get_status_by_point(const GetStatus::Parameters& para
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<Report>(json::parse(result.value())));
+                      } else {
+                        cb(GetStatus::Result{result.error()});
                       }
                     });
 }
@@ -49,6 +51,8 @@ void airmap::rest::Status::get_status_by_path(const GetStatus::Parameters& param
                     [cb](const Communicator::DoResult& result) {
                       if (result) {
                         cb(jsend::to_outcome<Report>(json::parse(result.value())));
+                      } else {
+                        cb(GetStatus::Result{result.error()});
                       }
                     });
 }
