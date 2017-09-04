@@ -11,7 +11,6 @@ apt install -y \
   libboost-program-options1.63-dev \
   libboost-system1.63-dev \
   libprotobuf-dev \
-  libcrypto++-dev \
   libssl-dev \
   pkg-config \
   protobuf-compiler

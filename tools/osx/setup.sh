@@ -7,7 +7,6 @@ brew update
 brew install \
   cmake \
   boost \
-  cryptopp \
   pkgconfig \
   protobuf \
   openssl || true

@@ -4,11 +4,14 @@
 
 #include "telemetry.pb.h"
 
-#include <cryptopp/aes.h>
-#include <cryptopp/base64.h>
-#include <cryptopp/ccm.h>
-#include <cryptopp/filters.h>
-#include <cryptopp/osrng.h>
+#include <boost/beast/core/detail/base64.hpp>
+#include <fmt/printf.h>
+
+#include <openssl/conf.h>
+#include <openssl/crypto.h>
+#include <openssl/err.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
 
 #include <arpa/inet.h>
 
@@ -16,6 +19,8 @@
 
 #include <cstdint>
 #include <sstream>
+
+namespace base64 = boost::beast::detail::base64;
 
 namespace {
 
@@ -48,12 +53,80 @@ class Buffer {
 };
 
 namespace telemetry {
+
 constexpr std::uint8_t encryption_type{1};
+
 }  // namespace telemetry
 }  // namespace
 
-airmap::rest::Telemetry::Telemetry(const std::string& host, std::uint16_t port, Communicator& communicator)
-    : host_{host}, port_{port}, communicator_{communicator} {
+const uint airmap::rest::detail::AES256Encryptor::block_size_in_bytes = 16;
+const uint airmap::rest::detail::AES256Encryptor::key_size_in_bytes   = 32;
+
+airmap::rest::detail::OpenSSLAES256Encryptor::OpenSSLAES256Encryptor() {
+  ERR_load_crypto_strings();
+  OpenSSL_add_all_algorithms();
+  OPENSSL_config(NULL);
+  CRYPTO_malloc_init();
+  // A word on seeding the PRNG used by SSL. On all the platforms we
+  // care about, the PRNG is transparently seeded by using underlying
+  // platform facilities, e.g., /dev/urandom on Posix-like platforms.
+  // For that, we do not explicitly seed here and instead let OpenSSL
+  // tell us loudly if not enough entropy is available.
+}
+
+std::pair<std::string, std::string> airmap::rest::detail::OpenSSLAES256Encryptor::encrypt(const std::string& message,
+                                                                                          const std::string& key) {
+  auto decoded_key = boost::beast::detail::base64_decode(key);
+
+  std::shared_ptr<EVP_CIPHER_CTX> ctx{EVP_CIPHER_CTX_new(), ::EVP_CIPHER_CTX_free};
+  if (not ctx) {
+    throw std::runtime_error{"failed to create encryption context"};
+  }
+
+  std::string iv(block_size_in_bytes, 0);
+  if (RAND_bytes(reinterpret_cast<unsigned char*>(&iv[0]), iv.size()) != 1) {
+    // We are very vocal about an error here. RAND_bytes reproting an
+    // error indicates insufficient entropy to create a cryptographically
+    // strong blob of bytes. Better safe than sorry and bail out.
+    throw std::runtime_error{ERR_error_string(ERR_get_error(), nullptr)};
+  }
+
+  if (EVP_EncryptInit_ex(ctx.get(), EVP_aes_256_cbc(), nullptr,
+                         reinterpret_cast<const unsigned char*>(decoded_key.data()),
+                         reinterpret_cast<const unsigned char*>(iv.data())) != 1) {
+    throw std::runtime_error{"failed to initialize encryption context"};
+  }
+
+  const auto payload_size = static_cast<int>(message.size());
+  auto payload_data       = reinterpret_cast<const unsigned char*>(message.data());
+
+  std::string cipher(payload_size + block_size_in_bytes, '0');
+
+  const auto cipher_size = static_cast<int>(cipher.size());
+  auto cipher_data_begin = reinterpret_cast<unsigned char*>(&cipher[0]);
+  auto cipher_data       = cipher_data_begin;
+  auto available         = cipher_size;
+
+  if (EVP_EncryptUpdate(ctx.get(), cipher_data, &available, payload_data, payload_size) != 1) {
+    throw std::runtime_error{"failed to update encryption context for data"};
+  }
+
+  cipher_data = cipher_data + available;
+  available   = cipher_size - available;
+
+  if (EVP_EncryptFinal_ex(ctx.get(), cipher_data, &available) != 1) {
+    throw std::runtime_error{"failed to finalize encryption"};
+  }
+
+  cipher_data = cipher_data + available;
+
+  return std::make_pair(std::string{cipher.begin(), cipher.begin() + std::distance(cipher_data_begin, cipher_data)},
+                        iv);
+}
+
+airmap::rest::Telemetry::Telemetry(const std::shared_ptr<detail::AES256Encryptor>& encryptor, const std::string& host,
+                                   std::uint16_t port, Communicator& communicator)
+    : host_{host}, port_{port}, communicator_{communicator}, encryptor_{encryptor} {
 }
 
 void airmap::rest::Telemetry::submit_updates(const Flight& flight, const std::string& key,
@@ -115,21 +188,7 @@ void airmap::rest::Telemetry::submit_updates(const Flight& flight, const std::st
     }
   }
 
-  std::string cipher;
-
-  using byte = unsigned char;
-
-  std::vector<std::uint8_t> iv(16, 0);
-  rng_.GenerateBlock(iv.data(), iv.size());
-
-  std::string decoded_key;
-  CryptoPP::StringSource decoder(key, true, new CryptoPP::Base64Decoder(new CryptoPP::StringSink(decoded_key)));
-
-  CryptoPP::CBC_Mode<CryptoPP::AES>::Encryption enc;
-  enc.SetKeyWithIV(reinterpret_cast<const byte*>(decoded_key.c_str()), decoded_key.size(), iv.data());
-
-  CryptoPP::StringSource s(payload.get(), true,
-                           new CryptoPP::StreamTransformationFilter(enc, new CryptoPP::StringSink(cipher)));
+  auto pair = encryptor_->encrypt(payload.get(), key);
 
   Buffer packet;
   communicator_.send_udp(host_, port_,
@@ -137,7 +196,7 @@ void airmap::rest::Telemetry::submit_updates(const Flight& flight, const std::st
                              .add<std::uint8_t>(flight.id.size())
                              .add(flight.id)
                              .add<std::uint8_t>(::telemetry::encryption_type)
-                             .add(iv)
-                             .add(cipher)
+                             .add(pair.second)
+                             .add(pair.first)
                              .get());
 }

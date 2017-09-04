@@ -10,7 +10,8 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       flights_{configuration_.host, configuration_.version, *this},
       pilots_{configuration_.host, configuration_.version, *this},
       status_{configuration_.host, configuration_.version, *this},
-      telemetry_{configuration_.telemetry.host, configuration_.telemetry.port, *this},
+      telemetry_{std::make_shared<detail::OpenSSLAES256Encryptor>(), configuration_.telemetry.host,
+                 configuration_.telemetry.port, *this},
       traffic_{logger, configuration_.traffic.host, configuration_.traffic.port, *this} {
 }
 
