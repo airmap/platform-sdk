@@ -26,7 +26,7 @@ class AES256Encryptor : public DoNotCopyOrMove {
 class OpenSSLAES256Encryptor : public AES256Encryptor {
  public:
   static const bool is_openssl_initialized;
-  
+
   OpenSSLAES256Encryptor();
   std::string create_shared_secret() override;
   std::string encrypt(const std::string& message, const std::string& key, const std::string& iv) override;

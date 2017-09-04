@@ -76,8 +76,8 @@ constexpr std::uint8_t encryption_type{1};
 }  // namespace telemetry
 }  // namespace
 
-const uint airmap::rest::detail::AES256Encryptor::block_size_in_bytes = 16;
-const uint airmap::rest::detail::AES256Encryptor::key_size_in_bytes   = 32;
+const uint airmap::rest::detail::AES256Encryptor::block_size_in_bytes           = 16;
+const uint airmap::rest::detail::AES256Encryptor::key_size_in_bytes             = 32;
 const bool airmap::rest::detail::OpenSSLAES256Encryptor::is_openssl_initialized = openssl::init_once();
 
 airmap::rest::detail::OpenSSLAES256Encryptor::OpenSSLAES256Encryptor() {
