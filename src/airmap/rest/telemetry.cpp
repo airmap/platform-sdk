@@ -24,6 +24,23 @@ namespace base64 = boost::beast::detail::base64;
 
 namespace {
 
+namespace openssl {
+
+bool init_once() {
+  ERR_load_crypto_strings();
+  OpenSSL_add_all_algorithms();
+  OPENSSL_config(NULL);
+  CRYPTO_malloc_init();
+  // A word on seeding the PRNG used by SSL. On all the platforms we
+  // care about, the PRNG is transparently seeded by using underlying
+  // platform facilities, e.g., /dev/urandom on Posix-like platforms.
+  // For that, we do not explicitly seed here and instead let OpenSSL
+  // tell us loudly if not enough entropy is available.
+  return true;
+}
+
+}  // namespace openssl
+
 class Buffer {
  public:
   template <typename T>
@@ -61,17 +78,9 @@ constexpr std::uint8_t encryption_type{1};
 
 const uint airmap::rest::detail::AES256Encryptor::block_size_in_bytes = 16;
 const uint airmap::rest::detail::AES256Encryptor::key_size_in_bytes   = 32;
+const bool airmap::rest::detail::OpenSSLAES256Encryptor::is_openssl_initialized = openssl::init_once();
 
 airmap::rest::detail::OpenSSLAES256Encryptor::OpenSSLAES256Encryptor() {
-  ERR_load_crypto_strings();
-  OpenSSL_add_all_algorithms();
-  OPENSSL_config(NULL);
-  CRYPTO_malloc_init();
-  // A word on seeding the PRNG used by SSL. On all the platforms we
-  // care about, the PRNG is transparently seeded by using underlying
-  // platform facilities, e.g., /dev/urandom on Posix-like platforms.
-  // For that, we do not explicitly seed here and instead let OpenSSL
-  // tell us loudly if not enough entropy is available.
 }
 
 std::string airmap::rest::detail::OpenSSLAES256Encryptor::create_shared_secret() {
