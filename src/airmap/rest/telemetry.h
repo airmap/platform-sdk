@@ -16,7 +16,8 @@ class AES256Encryptor : public DoNotCopyOrMove {
   static const uint block_size_in_bytes;
   static const uint key_size_in_bytes;
 
-  virtual std::pair<std::string, std::string> encrypt(const std::string& message, const std::string& key) = 0;
+  virtual std::string create_shared_secret()                                                             = 0;
+  virtual std::string encrypt(const std::string& message, const std::string& key, const std::string& iv) = 0;
 
  protected:
   AES256Encryptor() = default;
@@ -25,7 +26,8 @@ class AES256Encryptor : public DoNotCopyOrMove {
 class OpenSSLAES256Encryptor : public AES256Encryptor {
  public:
   OpenSSLAES256Encryptor();
-  std::pair<std::string, std::string> encrypt(const std::string& message, const std::string& key) override;
+  std::string create_shared_secret() override;
+  std::string encrypt(const std::string& message, const std::string& key, const std::string& iv) override;
 };
 
 }  // namespace detail

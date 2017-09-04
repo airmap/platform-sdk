@@ -4,8 +4,8 @@
 
 #include "telemetry.pb.h"
 
-#include <boost/beast/core/detail/base64.hpp>
 #include <fmt/printf.h>
+#include <boost/beast/core/detail/base64.hpp>
 
 #include <openssl/conf.h>
 #include <openssl/crypto.h>
@@ -74,21 +74,24 @@ airmap::rest::detail::OpenSSLAES256Encryptor::OpenSSLAES256Encryptor() {
   // tell us loudly if not enough entropy is available.
 }
 
-std::pair<std::string, std::string> airmap::rest::detail::OpenSSLAES256Encryptor::encrypt(const std::string& message,
-                                                                                          const std::string& key) {
-  auto decoded_key = boost::beast::detail::base64_decode(key);
-
-  std::shared_ptr<EVP_CIPHER_CTX> ctx{EVP_CIPHER_CTX_new(), ::EVP_CIPHER_CTX_free};
-  if (not ctx) {
-    throw std::runtime_error{"failed to create encryption context"};
-  }
-
+std::string airmap::rest::detail::OpenSSLAES256Encryptor::create_shared_secret() {
   std::string iv(block_size_in_bytes, 0);
   if (RAND_bytes(reinterpret_cast<unsigned char*>(&iv[0]), iv.size()) != 1) {
     // We are very vocal about an error here. RAND_bytes reproting an
     // error indicates insufficient entropy to create a cryptographically
     // strong blob of bytes. Better safe than sorry and bail out.
     throw std::runtime_error{ERR_error_string(ERR_get_error(), nullptr)};
+  }
+  return iv;
+}
+
+std::string airmap::rest::detail::OpenSSLAES256Encryptor::encrypt(const std::string& message, const std::string& key,
+                                                                  const std::string& iv) {
+  auto decoded_key = boost::beast::detail::base64_decode(key);
+
+  std::shared_ptr<EVP_CIPHER_CTX> ctx{EVP_CIPHER_CTX_new(), ::EVP_CIPHER_CTX_free};
+  if (not ctx) {
+    throw std::runtime_error{"failed to create encryption context"};
   }
 
   if (EVP_EncryptInit_ex(ctx.get(), EVP_aes_256_cbc(), nullptr,
@@ -120,8 +123,7 @@ std::pair<std::string, std::string> airmap::rest::detail::OpenSSLAES256Encryptor
 
   cipher_data = cipher_data + available;
 
-  return std::make_pair(std::string{cipher.begin(), cipher.begin() + std::distance(cipher_data_begin, cipher_data)},
-                        iv);
+  return std::string{cipher.begin(), cipher.begin() + std::distance(cipher_data_begin, cipher_data)};
 }
 
 airmap::rest::Telemetry::Telemetry(const std::shared_ptr<detail::AES256Encryptor>& encryptor, const std::string& host,
@@ -188,7 +190,8 @@ void airmap::rest::Telemetry::submit_updates(const Flight& flight, const std::st
     }
   }
 
-  auto pair = encryptor_->encrypt(payload.get(), key);
+  auto iv  = encryptor_->create_shared_secret();
+  auto msg = encryptor_->encrypt(payload.get(), key, iv);
 
   Buffer packet;
   communicator_.send_udp(host_, port_,
@@ -196,7 +199,7 @@ void airmap::rest::Telemetry::submit_updates(const Flight& flight, const std::st
                              .add<std::uint8_t>(flight.id.size())
                              .add(flight.id)
                              .add<std::uint8_t>(::telemetry::encryption_type)
-                             .add(pair.second)
-                             .add(pair.first)
+                             .add(iv)
+                             .add(msg)
                              .get());
 }
