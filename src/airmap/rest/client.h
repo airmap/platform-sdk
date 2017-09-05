@@ -2,11 +2,14 @@
 #define AIRMAP_REST_CLIENT_H_
 
 #include <airmap/client.h>
+#include <airmap/context.h>
+
+#include <airmap/net/http/requester_with_api_key.h>
+#include <airmap/net/mqtt/broker.h>
 
 #include <airmap/rest/aircrafts.h>
 #include <airmap/rest/airspaces.h>
 #include <airmap/rest/authenticator.h>
-#include <airmap/rest/communicator.h>
 #include <airmap/rest/flights.h>
 #include <airmap/rest/pilots.h>
 #include <airmap/rest/status.h>
@@ -18,10 +21,13 @@
 namespace airmap {
 namespace rest {
 
-class Client : public airmap::Client, public airmap::rest::Communicator {
+class Client : public airmap::Client {
  public:
-  explicit Client(const Configuration& configuration, const std::shared_ptr<Logger>& logger,
-                  const std::shared_ptr<Communicator>& communicator);
+  explicit Client(const Configuration& configuration, const std::shared_ptr<Context>& parent,
+                  const std::shared_ptr<net::udp::Sender>& sender,
+                  const std::shared_ptr<net::http::Requester>& airmap_requester,
+                  const std::shared_ptr<net::http::Requester>& sso_requester,
+                  const std::shared_ptr<net::mqtt::Broker>& broker);
 
   // From airmap::Client
   airmap::Aircrafts& aircrafts() override;
@@ -33,23 +39,15 @@ class Client : public airmap::Client, public airmap::rest::Communicator {
   airmap::Telemetry& telemetry() override;
   airmap::Traffic& traffic() override;
 
-  // From airmap::rest::Communicator
-  void connect_to_mqtt_broker(const std::string& host, std::uint16_t port, const std::string& username,
-                              const std::string& password, const ConnectCallback& cb) override;
-  void delete_(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& query,
-               std::unordered_map<std::string, std::string>&& headers, DoCallback cb) override;
-  void get(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& query,
-           std::unordered_map<std::string, std::string>&& headers, DoCallback cb) override;
-  void post(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& headers,
-            const std::string& body, DoCallback cb) override;
-  void patch(const std::string& host, const std::string& path, std::unordered_map<std::string, std::string>&& headers,
-             const std::string& body, DoCallback cb) override;
-  void send_udp(const std::string& host, std::uint16_t port, const std::string& body) override;
-  void dispatch(const std::function<void()>& task) override;
-
  private:
   Configuration configuration_;
-  std::shared_ptr<rest::Communicator> communicator_;
+  std::shared_ptr<Context> parent_;
+  std::shared_ptr<net::udp::Sender> udp_sender_;
+  struct {
+    std::shared_ptr<net::http::Requester> airmap_requester;
+    std::shared_ptr<net::http::Requester> sso_requester;
+  } http_;
+  std::shared_ptr<net::mqtt::Broker> mqtt_broker_;
 
   rest::Aircrafts aircrafts_;
   rest::Airspaces airspaces_;

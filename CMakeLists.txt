@@ -82,6 +82,9 @@ add_library(
   src/airmap/daemon.h
   src/airmap/daemon.cpp
 
+  src/airmap/boost/context.h
+  src/airmap/boost/context.cpp
+
   src/airmap/codec/http/query/aircrafts.h
   src/airmap/codec/http/query/aircrafts.cpp
   src/airmap/codec/http/query/airspaces.h
@@ -119,11 +122,27 @@ add_library(
   src/airmap/codec/json/status.cpp
   src/airmap/codec/json/traffic.h
   src/airmap/codec/json/traffic.cpp
+
+  src/airmap/net/http/requester.h
+  src/airmap/net/http/requester_with_api_key.h
+  src/airmap/net/http/requester_with_api_key.cpp
+  src/airmap/net/http/boost/request.h
+  src/airmap/net/http/boost/request.cpp
+  src/airmap/net/http/boost/requester.h
+  src/airmap/net/http/boost/requester.cpp
+  
+  src/airmap/net/mqtt/client.h
+  src/airmap/net/mqtt/boost/broker.h
+  src/airmap/net/mqtt/boost/broker.cpp
+  src/airmap/net/mqtt/boost/client.h
+  src/airmap/net/mqtt/boost/client.cpp
+
+  src/airmap/net/udp/sender.h
+  src/airmap/net/udp/boost/sender.h
+  src/airmap/net/udp/boost/sender.cpp
+
   src/airmap/rest/client.h
   src/airmap/rest/client.cpp
-  src/airmap/rest/communicator.h
-  src/airmap/rest/boost/communicator.h
-  src/airmap/rest/boost/communicator.cpp
 
   src/airmap/rest/aircrafts.h
   src/airmap/rest/aircrafts.cpp

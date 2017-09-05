@@ -3,7 +3,7 @@
 
 #include <airmap/telemetry.h>
 
-#include <airmap/rest/communicator.h>
+#include <airmap/net/udp/sender.h>
 
 #include <cryptopp/osrng.h>
 
@@ -14,15 +14,13 @@ namespace rest {
 
 class Telemetry : public airmap::Telemetry {
  public:
-  explicit Telemetry(const std::string& host, std::uint16_t port, Communicator& communicator);
+  explicit Telemetry(const std::shared_ptr<net::udp::Sender>& sender);
 
   void submit_updates(const Flight& flight, const std::string& key,
                       const std::initializer_list<Update>& updates) override;
 
  private:
-  std::string host_;
-  std::uint16_t port_;
-  Communicator& communicator_;
+  std::shared_ptr<net::udp::Sender> sender_;
   CryptoPP::AutoSeededRandomPool rng_;
 };
 

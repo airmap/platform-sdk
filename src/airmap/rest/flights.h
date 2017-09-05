@@ -1,16 +1,16 @@
 #ifndef AIRMAP_REST_FLIGHTS_H_
 #define AIRMAP_REST_FLIGHTS_H_
 
+#include <airmap/client.h>
 #include <airmap/flights.h>
-
-#include <airmap/rest/communicator.h>
+#include <airmap/net/http/requester.h>
 
 namespace airmap {
 namespace rest {
 
 class Flights : public airmap::Flights {
  public:
-  explicit Flights(const std::string& host, Client::Version version, Communicator& communicator);
+  explicit Flights(Client::Version version, const std::shared_ptr<net::http::Requester>& requester);
 
   void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
@@ -25,9 +25,8 @@ class Flights : public airmap::Flights {
                                          const EndFlightCommunications::Callback& cb) override;
 
  private:
-  std::string host_;
   Client::Version version_;
-  Communicator& communicator_;
+  std::shared_ptr<net::http::Requester> requester_;
 };
 
 }  // namespace rest

@@ -2,15 +2,16 @@
 #define AIRMAP_REST_AUTHENTICATOR_H_
 
 #include <airmap/authenticator.h>
-
-#include <airmap/rest/communicator.h>
+#include <airmap/client.h>
+#include <airmap/net/http/requester.h>
 
 namespace airmap {
 namespace rest {
 
 class Authenticator : public airmap::Authenticator {
  public:
-  explicit Authenticator(const std::string& host, Client::Version version, Communicator& communicator);
+  explicit Authenticator(Client::Version version, const std::shared_ptr<net::http::Requester>& airmap_requester,
+                         const std::shared_ptr<net::http::Requester>& sso_requester);
 
   void authenticate_with_password(const AuthenticateWithPassword::Params& params,
                                   const AuthenticateWithPassword::Callback& cb) override;
@@ -22,9 +23,9 @@ class Authenticator : public airmap::Authenticator {
                             const RenewAuthentication::Callback& cb) override;
 
  private:
-  std::string host_;
   Client::Version version_;
-  Communicator& communicator_;
+  std::shared_ptr<net::http::Requester> airmap_requester_;
+  std::shared_ptr<net::http::Requester> sso_requester_;
 };
 
 }  // namespace rest

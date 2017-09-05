@@ -24,8 +24,10 @@ std::string version_to_path(airmap::Client::Version version, const char* pattern
 
 }  // namespace
 
-airmap::rest::Authenticator::Authenticator(const std::string& host, Client::Version version, Communicator& communicator)
-    : host_{host}, version_{version}, communicator_{communicator} {
+airmap::rest::Authenticator::Authenticator(Client::Version version,
+                                           const std::shared_ptr<net::http::Requester>& airmap_requester,
+                                           const std::shared_ptr<net::http::Requester>& sso_requester)
+    : version_{version}, airmap_requester_{airmap_requester}, sso_requester_{sso_requester} {
 }
 
 void airmap::rest::Authenticator::authenticate_with_password(const AuthenticateWithPassword::Params& params,
@@ -35,14 +37,13 @@ void airmap::rest::Authenticator::authenticate_with_password(const AuthenticateW
   json j;
   j = params;
 
-  communicator_.post("sso.airmap.io", "/oauth/ro", std::move(headers), j.dump(),
-                     [cb](const Communicator::DoResult& result) {
-                       if (result) {
-                         cb(jsend::to_outcome<OAuthToken>(json::parse(result.value())));
-                       } else {
-                         cb(AuthenticateWithPassword::Result{result.error()});
-                       }
-                     });
+  sso_requester_->post("/oauth/ro", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
+    if (result) {
+      cb(jsend::to_outcome<OAuthToken>(json::parse(result.value().body)));
+    } else {
+      cb(AuthenticateWithPassword::Result{result.error()});
+    }
+  });
 }
 
 void airmap::rest::Authenticator::authenticate_anonymously(const AuthenticateAnonymously::Params& params,
@@ -52,14 +53,14 @@ void airmap::rest::Authenticator::authenticate_anonymously(const AuthenticateAno
   json j;
   j = params;
 
-  communicator_.post(host_, version_to_path(version_, "/auth/%s/anonymous/token"), std::move(headers), j.dump(),
-                     [cb](const Communicator::DoResult& result) {
-                       if (result) {
-                         cb(jsend::to_outcome<AnonymousToken>(json::parse(result.value())));
-                       } else {
-                         cb(AuthenticateAnonymously::Result{result.error()});
-                       }
-                     });
+  airmap_requester_->post(version_to_path(version_, "/auth/%s/anonymous/token"), std::move(headers), j.dump(),
+                          [cb](const net::http::Requester::Result& result) {
+                            if (result) {
+                              cb(jsend::to_outcome<AnonymousToken>(json::parse(result.value().body)));
+                            } else {
+                              cb(AuthenticateAnonymously::Result{result.error()});
+                            }
+                          });
 }
 
 void airmap::rest::Authenticator::renew_authentication(const RenewAuthentication::Params& params,
@@ -69,12 +70,11 @@ void airmap::rest::Authenticator::renew_authentication(const RenewAuthentication
   json j;
   j = params;
 
-  communicator_.post("sso.airmap.io", "/delegation", std::move(headers), j.dump(),
-                     [cb](const Communicator::DoResult& result) {
-                       if (result) {
-                         cb(jsend::to_outcome<RefreshedToken>(json::parse(result.value())));
-                       } else {
-                         cb(RenewAuthentication::Result{result.error()});
-                       }
-                     });
+  sso_requester_->post("/delegation", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
+    if (result) {
+      cb(jsend::to_outcome<RefreshedToken>(json::parse(result.value().body)));
+    } else {
+      cb(RenewAuthentication::Result{result.error()});
+    }
+  });
 }

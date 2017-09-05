@@ -24,8 +24,8 @@ std::string version_to_path(airmap::Client::Version version, const char* pattern
 
 }  // namespace
 
-airmap::rest::Aircrafts::Aircrafts(const std::string& host, Client::Version version, Communicator& communicator)
-    : host_{host}, version_{version}, communicator_{communicator} {
+airmap::rest::Aircrafts::Aircrafts(Client::Version version, const std::shared_ptr<net::http::Requester>& requester)
+    : version_{version}, requester_{requester} {
 }
 
 void airmap::rest::Aircrafts::manufacturers(const Manufacturers::Parameters& parameters,
@@ -33,39 +33,39 @@ void airmap::rest::Aircrafts::manufacturers(const Manufacturers::Parameters& par
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  communicator_.get(host_, version_to_path(version_, "/aircraft/%s/manufacturer"), std::move(query), std::move(headers),
-                    [cb](const Communicator::DoResult& result) {
-                      if (result) {
-                        cb(jsend::to_outcome<std::vector<Aircraft::Manufacturer>>(json::parse(result.value())));
-                      } else {
-                        cb(Manufacturers::Result{result.error()});
-                      }
-                    });
+  requester_->get(version_to_path(version_, "/aircraft/%s/manufacturer"), std::move(query), std::move(headers),
+                  [cb](const net::http::Requester::Result& result) {
+                    if (result) {
+                      cb(jsend::to_outcome<std::vector<Aircraft::Manufacturer>>(json::parse(result.value().body)));
+                    } else {
+                      cb(Manufacturers::Result{result.error()});
+                    }
+                  });
 }
 
 void airmap::rest::Aircrafts::models(const Models::Parameters& parameters, const Models::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  communicator_.get(host_, version_to_path(version_, "/aircraft/%s/model"), std::move(query), std::move(headers),
-                    [cb](const Communicator::DoResult& result) {
-                      if (result) {
-                        cb(jsend::to_outcome<std::vector<Aircraft>>(json::parse(result.value())));
-                      } else {
-                        cb(Models::Result{result.error()});
-                      }
-                    });
+  requester_->get(version_to_path(version_, "/aircraft/%s/model"), std::move(query), std::move(headers),
+                  [cb](const net::http::Requester::Result& result) {
+                    if (result) {
+                      cb(jsend::to_outcome<std::vector<Aircraft>>(json::parse(result.value().body)));
+                    } else {
+                      cb(Models::Result{result.error()});
+                    }
+                  });
 }
 
 void airmap::rest::Aircrafts::model_for_id(const ModelForId::Parameters& parameters, const ModelForId::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
 
-  communicator_.get(host_, version_to_path(version_, "/aircraft/%s/model/%s", parameters.id), std::move(query),
-                    std::move(headers), [cb](const Communicator::DoResult& result) {
-                      if (result) {
-                        cb(jsend::to_outcome<Aircraft>(json::parse(result.value())));
-                      } else {
-                        cb(ModelForId::Result{result.error()});
-                      }
-                    });
+  requester_->get(version_to_path(version_, "/aircraft/%s/model/%s", parameters.id), std::move(query),
+                  std::move(headers), [cb](const net::http::Requester::Result& result) {
+                    if (result) {
+                      cb(jsend::to_outcome<Aircraft>(json::parse(result.value().body)));
+                    } else {
+                      cb(ModelForId::Result{result.error()});
+                    }
+                  });
 }

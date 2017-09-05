@@ -1,8 +1,9 @@
 #define CATCH_CONFIG_MAIN
 
+#include <airmap/net/http/requester.h>
+
 #include <airmap/rest/aircrafts.h>
 #include <airmap/rest/airspaces.h>
-#include <airmap/rest/communicator.h>
 #include <airmap/rest/flights.h>
 #include <airmap/rest/pilots.h>
 
@@ -17,17 +18,11 @@ namespace {
 
 using StringMap = std::unordered_map<std::string, std::string>;
 
-struct MockCommunicator : public airmap::rest::Communicator {
-  MAKE_MOCK5(connect_to_mqtt_broker,
-             void(const std::string&, std::uint16_t, const std::string&, const std::string&, const ConnectCallback&),
-             override);
-  MAKE_MOCK5(delete_, void(const std::string&, const std::string&, StringMap&&, StringMap&&, DoCallback), override);
-  MAKE_MOCK5(get, void(const std::string&, const std::string&, StringMap&&, StringMap&&, DoCallback), override);
-  MAKE_MOCK5(patch, void(const std::string&, const std::string&, StringMap&&, const std::string&, DoCallback),
-             override);
-  MAKE_MOCK5(post, void(const std::string&, const std::string&, StringMap&&, const std::string&, DoCallback), override);
-  MAKE_MOCK3(send_udp, void(const std::string&, std::uint16_t, const std::string&), override);
-  MAKE_MOCK1(dispatch, void(const std::function<void()>&), override);
+struct MockHttpRequester : public airmap::net::http::Requester {
+  MAKE_MOCK4(delete_, void(const std::string&, StringMap&&, StringMap&&, Callback), override);
+  MAKE_MOCK4(get, void(const std::string&, StringMap&&, StringMap&&, Callback), override);
+  MAKE_MOCK4(patch, void(const std::string&, StringMap&&, const std::string&, Callback), override);
+  MAKE_MOCK4(post, void(const std::string&, StringMap&&, const std::string&, Callback), override);
 };
 
 constexpr const char* host{"api.airmap.test.com"};
@@ -44,12 +39,11 @@ TEST_CASE("rest") {
       StringMap query;
       airmap::codec::http::query::encode(query, parameters);
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/aircraft/v2/manufacturer"),
-                       mock::eq<StringMap>(query), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/aircraft/v2/manufacturer"), mock::eq<StringMap>(query),
+                                   ANY(StringMap), ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Aircrafts aircrafts{host, version, communicator};
+      airmap::rest::Aircrafts aircrafts{version, requester};
       aircrafts.manufacturers(parameters, [](const airmap::Aircrafts::Manufacturers::Result&) {});
     }
 
@@ -58,12 +52,11 @@ TEST_CASE("rest") {
       StringMap query;
       airmap::codec::http::query::encode(query, parameters);
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/aircraft/v2/model"),
-                       mock::eq<StringMap>(query), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/aircraft/v2/model"), mock::eq<StringMap>(query),
+                                   ANY(StringMap), ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Aircrafts aircrafts{host, version, communicator};
+      airmap::rest::Aircrafts aircrafts{version, requester};
       aircrafts.models(parameters, [](const airmap::Aircrafts::Models::Result&) {});
     }
 
@@ -71,12 +64,11 @@ TEST_CASE("rest") {
       airmap::Aircrafts::ModelForId::Parameters parameters;
       parameters.id = "42";
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/aircraft/v2/model/" + parameters.id),
-                       ANY(StringMap), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/aircraft/v2/model/" + parameters.id), ANY(StringMap),
+                                   ANY(StringMap), ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Aircrafts aircrafts{host, version, communicator};
+      airmap::rest::Aircrafts aircrafts{version, requester};
       aircrafts.model_for_id(parameters, [](const airmap::Aircrafts::ModelForId::Result&) {});
     }
   }
@@ -87,24 +79,22 @@ TEST_CASE("rest") {
       StringMap query;
       airmap::codec::http::query::encode(query, parameters);
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/airspace/v2/search"),
-                       mock::eq<StringMap>(query), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/airspace/v2/search"), mock::eq<StringMap>(query),
+                                   ANY(StringMap), ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Airspaces airspaces{host, version, communicator};
+      airmap::rest::Airspaces airspaces{version, requester};
       airspaces.search(parameters, [](const airmap::Airspaces::Search::Result&) {});
     }
     SECTION("for id issues get request with correct parameters") {
       airmap::Airspaces::ForIds::Parameters parameters;
       parameters.id = "42";
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/airspace/v2/" + parameters.id),
-                       ANY(StringMap), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/airspace/v2/" + parameters.id), ANY(StringMap),
+                                   ANY(StringMap), ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Airspaces airspaces{host, version, communicator};
+      airmap::rest::Airspaces airspaces{version, requester};
       airspaces.for_ids(parameters, [](const airmap::Airspaces::ForIds::Result&) {});
     }
   }
@@ -115,23 +105,22 @@ TEST_CASE("rest") {
       StringMap query;
       airmap::codec::http::query::encode(query, parameters);
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/flight/v2"), mock::eq<StringMap>(query),
-                       ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/flight/v2"), mock::eq<StringMap>(query), ANY(StringMap),
+                                   ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Flights flights{host, version, communicator};
+      airmap::rest::Flights flights{version, requester};
       flights.search(parameters, [](const airmap::Flights::Search::Result&) {});
     }
     SECTION("for id issues get request with correct parameters") {
       airmap::Flights::ForId::Parameters parameters;
       parameters.id = "flight|abc";
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator, get(mock::eq<std::string>(host), mock::eq<std::string>("/flight/v2/" + parameters.id),
-                                     ANY(StringMap), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/flight/v2/" + parameters.id), ANY(StringMap), ANY(StringMap),
+                                   ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Flights flights{host, version, communicator};
+      airmap::rest::Flights flights{version, requester};
       flights.for_id(parameters, [](const airmap::Flights::ForId::Result&) {});
     }
   }
@@ -143,12 +132,11 @@ TEST_CASE("rest") {
       StringMap query;
       airmap::codec::http::query::encode(query, parameters);
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/pilot/v2/profile"),
-                       mock::eq<StringMap>(query), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/pilot/v2/profile"), mock::eq<StringMap>(query),
+                                   ANY(StringMap), ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Pilots pilots{host, version, communicator};
+      airmap::rest::Pilots pilots{version, requester};
       pilots.authenticated(parameters, [](const auto&) {});
     }
     SECTION("for_id issues get request with correct parameters") {
@@ -157,12 +145,11 @@ TEST_CASE("rest") {
       StringMap query;
       airmap::codec::http::query::encode(query, parameters);
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/pilot/v2/test"), mock::eq<StringMap>(query),
-                       ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/pilot/v2/test"), mock::eq<StringMap>(query), ANY(StringMap),
+                                   ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Pilots pilots{host, version, communicator};
+      airmap::rest::Pilots pilots{version, requester};
       pilots.for_id(parameters, [](const auto&) {});
     }
     SECTION("aircrafts issues get request with correct parameters") {
@@ -170,12 +157,11 @@ TEST_CASE("rest") {
       parameters.id = "test";
       StringMap query;
 
-      MockCommunicator communicator;
-      REQUIRE_CALL(communicator,
-                   get(mock::eq<std::string>(host), mock::eq<std::string>("/pilot/v2/test/aircraft"),
-                       mock::eq<StringMap>(query), ANY(StringMap), ANY(airmap::rest::Communicator::DoCallback)));
+      auto requester = std::make_shared<MockHttpRequester>();
+      REQUIRE_CALL(*requester, get(mock::eq<std::string>("/pilot/v2/test/aircraft"), mock::eq<StringMap>(query),
+                                   ANY(StringMap), ANY(airmap::net::http::Requester::Callback)));
 
-      airmap::rest::Pilots pilots{host, version, communicator};
+      airmap::rest::Pilots pilots{version, requester};
       pilots.aircrafts(parameters, [](const auto&) {});
     }
   }

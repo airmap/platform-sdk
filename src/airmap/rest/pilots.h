@@ -1,17 +1,17 @@
 #ifndef AIRMAP_REST_PILOTS_H_
 #define AIRMAP_REST_PILOTS_H_
 
-#include <airmap/client.h>
 #include <airmap/pilots.h>
 
-#include <airmap/rest/communicator.h>
+#include <airmap/client.h>
+#include <airmap/net/http/requester.h>
 
 namespace airmap {
 namespace rest {
 
 class Pilots : public airmap::Pilots {
  public:
-  explicit Pilots(const std::string& host, Client::Version version, Communicator& communicator);
+  explicit Pilots(Client::Version version, const std::shared_ptr<net::http::Requester>& requester);
 
   void authenticated(const Authenticated::Parameters& parameters, const Authenticated::Callback& cb) override;
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
@@ -26,9 +26,8 @@ class Pilots : public airmap::Pilots {
   void update_aircraft(const UpdateAircraft::Parameters& parameters, const UpdateAircraft::Callback& cb) override;
 
  private:
-  std::string host_;
   Client::Version version_;
-  Communicator& communicator_;
+  std::shared_ptr<net::http::Requester> requester_;
 };
 
 }  // namespace rest

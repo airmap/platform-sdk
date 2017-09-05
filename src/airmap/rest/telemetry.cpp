@@ -52,8 +52,7 @@ constexpr std::uint8_t encryption_type{1};
 }  // namespace telemetry
 }  // namespace
 
-airmap::rest::Telemetry::Telemetry(const std::string& host, std::uint16_t port, Communicator& communicator)
-    : host_{host}, port_{port}, communicator_{communicator} {
+airmap::rest::Telemetry::Telemetry(const std::shared_ptr<net::udp::Sender>& sender) : sender_{sender} {
 }
 
 void airmap::rest::Telemetry::submit_updates(const Flight& flight, const std::string& key,
@@ -132,12 +131,12 @@ void airmap::rest::Telemetry::submit_updates(const Flight& flight, const std::st
                            new CryptoPP::StreamTransformationFilter(enc, new CryptoPP::StringSink(cipher)));
 
   Buffer packet;
-  communicator_.send_udp(host_, port_,
-                         packet.add<std::uint32_t>(htonl(counter++))
-                             .add<std::uint8_t>(flight.id.size())
-                             .add(flight.id)
-                             .add<std::uint8_t>(::telemetry::encryption_type)
-                             .add(iv)
-                             .add(cipher)
-                             .get());
+  sender_->send(packet.add<std::uint32_t>(htonl(counter++))
+                    .add<std::uint8_t>(flight.id.size())
+                    .add(flight.id)
+                    .add<std::uint8_t>(::telemetry::encryption_type)
+                    .add(iv)
+                    .add(cipher)
+                    .get(),
+                [](const auto&) {});
 }

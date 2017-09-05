@@ -1,9 +1,9 @@
 #include <airmap/cmds/airmap/cmd/daemon.h>
 
+#include <airmap/boost/context.h>
 #include <airmap/daemon.h>
 #include <airmap/mavlink/boost/serial_channel.h>
 #include <airmap/mavlink/boost/tcp_channel.h>
-#include <airmap/rest/boost/communicator.h>
 
 #include <signal.h>
 
@@ -78,16 +78,16 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
       return 1;
     }
 
-    auto communicator = std::make_shared<rest::boost::Communicator>(log_.logger());
+    auto context = boost::Context::create(log_.logger());
 
     std::shared_ptr<mavlink::Channel> channel;
 
     if (has_valid_serial_device)
-      channel = std::make_shared<mavlink::boost::SerialChannel>(log_.logger(), communicator->io_service(),
-                                                                serial_device_.get());
+      channel =
+          std::make_shared<mavlink::boost::SerialChannel>(log_.logger(), context->io_service(), serial_device_.get());
     if (has_valid_tcp_endpoint)
       channel = std::make_shared<mavlink::boost::TcpChannel>(
-          log_.logger(), communicator->io_service(), boost::asio::ip::address::from_string(tcp_endpoint_ip_.get()),
+          log_.logger(), context->io_service(), ::boost::asio::ip::address::from_string(tcp_endpoint_ip_.get()),
           tcp_endpoint_port_.get());
 
     auto config = Client::default_configuration(version_, Client::Credentials{api_key_.get()});
@@ -106,8 +106,8 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
                "  credentials.api_key: %s",
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
-    communicator->create_client_with_configuration(
-        config, [this, communicator, channel](const ::airmap::Context::ClientCreateResult& result) {
+    context->create_client_with_configuration(
+        config, [this, context, channel](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
             try {
               std::rethrow_exception(result.error());
@@ -116,7 +116,7 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
             } catch (...) {
               log_.errorf(component, "failed to create client");
             }
-            communicator->stop(::airmap::Context::ReturnCode::error);
+            context->stop(::airmap::Context::ReturnCode::error);
             return;
           }
 
@@ -126,11 +126,11 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
           ::airmap::Daemon::create(configuration)->start();
         });
 
-    return communicator->exec({SIGINT, SIGQUIT},
-                              [this, communicator](int sig) {
-                                log_.infof(component, "received [%s], shutting down", ::strsignal(sig));
-                                communicator->stop(::airmap::Context::ReturnCode::success);
-                              }) == ::airmap::Context::ReturnCode::success
+    return context->exec({SIGINT, SIGQUIT},
+                         [this, context](int sig) {
+                           log_.infof(component, "received [%s], shutting down", ::strsignal(sig));
+                           context->stop(::airmap::Context::ReturnCode::success);
+                         }) == ::airmap::Context::ReturnCode::success
                ? 0
                : 1;
   });

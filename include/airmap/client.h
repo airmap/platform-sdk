@@ -40,6 +40,10 @@ class Client : DoNotCopyOrMove {
     std::string host;  ///< Address of the host exposing the AirMap services.
     Version version;   ///< The version of the AirMap services that should be used.
     struct {
+      std::string host;    ///< Address of the host exposing the sso service.
+      std::uint16_t port;  ///< Port on the host exposing the sso service.
+    } sso;
+    struct {
       std::string host;    ///< Address of the host exposing the AirMap telemetry endpoints.
       std::uint16_t port;  ///< Port of the host exposing the AirMap telemetry endpoints.
     } telemetry;

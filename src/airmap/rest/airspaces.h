@@ -2,27 +2,22 @@
 #define AIRMAP_REST_AIRSPACES_H_
 
 #include <airmap/airspaces.h>
-
-#include <airmap/rest/communicator.h>
+#include <airmap/client.h>
+#include <airmap/net/http/requester.h>
 
 namespace airmap {
 namespace rest {
 
 class Airspaces : public airmap::Airspaces {
  public:
-  explicit Airspaces(const std::string& host, Client::Version version, Communicator& communicator);
-  Airspaces(const Airspaces&) = delete;
-  Airspaces(Airspaces&&)      = delete;
-  Airspaces& operator=(const Airspaces&) = delete;
-  Airspaces& operator=(Airspaces&&) = delete;
+  explicit Airspaces(Client::Version version, const std::shared_ptr<net::http::Requester>& requester);
 
   void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
   void for_ids(const ForIds::Parameters& parameters, const ForIds::Callback& cb) override;
 
  private:
-  std::string host_;
   Client::Version version_;
-  Communicator& communicator_;
+  std::shared_ptr<net::http::Requester> requester_;
 };
 
 }  // namespace rest
