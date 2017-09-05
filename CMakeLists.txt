@@ -9,10 +9,6 @@ find_package(Protobuf REQUIRED)
 
 pkg_check_modules(OPENSSL REQUIRED openssl)
 
-# cryptopp lacks a pkgconfig setup on OS X and
-# we will likely have to adjust the brew formula
-set(CRYPTOPP_LIBRARIES cryptopp)
-
 # All vendored dependencies should be listed here
 add_subdirectory(vendor/fmt EXCLUDE_FROM_ALL)
 add_subdirectory(vendor/spdlog EXCLUDE_FROM_ALL)
@@ -237,7 +233,7 @@ set_property(TARGET airmap-server PROPERTY CXX_STANDARD 14)
 set_property(TARGET airmap PROPERTY CXX_STANDARD 14)
 set_property(TARGET airmap-telemetry-simulator PROPERTY CXX_STANDARD 14)
 
-target_link_libraries(airmap-client fmt network-uri spdlog ${Boost_LIBRARIES} ${CRYPTOPP_LIBRARIES} ${OPENSSL_LDFLAGS} ${PROTOBUF_LIBRARIES})
+target_link_libraries(airmap-client fmt network-uri spdlog ${Boost_LIBRARIES} ${OPENSSL_LDFLAGS} ${PROTOBUF_LIBRARIES})
 target_link_libraries(airmap airmap-client )
 target_link_libraries(airmap-server airmap-client)
 target_link_libraries(airmap-telemetry-simulator airmap-client)

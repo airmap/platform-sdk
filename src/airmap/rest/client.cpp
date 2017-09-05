@@ -18,7 +18,7 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       flights_{configuration_.version, http_.airmap_requester},
       pilots_{configuration_.version, http_.airmap_requester},
       status_{configuration_.version, http_.airmap_requester},
-      telemetry_{udp_sender_},
+      telemetry_{std::make_shared<detail::OpenSSLAES256Encryptor>(), udp_sender_},
       traffic_{mqtt_broker_} {
 }
 

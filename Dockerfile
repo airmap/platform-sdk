@@ -8,7 +8,7 @@ RUN tools/ubuntu/setup.dev.sh
 RUN mkdir build
 WORKDIR build
 RUN cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-RUN make -j
+RUN make
 RUN make install
 WORKDIR /usr/src/app
 RUN tools/ubuntu/cleanup.dev.sh

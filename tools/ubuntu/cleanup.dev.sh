@@ -12,7 +12,6 @@ apt remove -y \
   libboost-program-options1.63-dev \
   libboost-system1.63-dev \
   libprotobuf-dev \
-  libcrypto++-dev \
   libssl-dev \
   pkg-config \
   protobuf-compiler
@@ -25,7 +24,6 @@ apt install -y \
   libboost-program-options1.63.0 \
   libboost-system1.63.0 \
   libprotobuf10 \
-  libcrypto++6 \
   libssl1.0.0
 
 # And remove all cached debian packages
