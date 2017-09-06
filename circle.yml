@@ -1,0 +1,13 @@
+machine:
+  services:
+    - docker
+
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init --recursive # use submodules
+
+compile:
+  override:
+    - tools/ubuntu/build-docker-image.sh
+    - tools/alpine/build-docker-image.sh
