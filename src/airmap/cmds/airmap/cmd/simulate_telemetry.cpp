@@ -116,7 +116,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
                "  telemetry.host:      %s\n"
                "  telemetry.port:      %d\n"
                "  credentials.api_key: %s\n"
-               "  frequency:           %f\n"
+               "  frequency:           %d\n"
                "  flight-id:           %s\n"
                "  enc-key:             %s",
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key,
