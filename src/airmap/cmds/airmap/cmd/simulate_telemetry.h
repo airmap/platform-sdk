@@ -35,7 +35,7 @@ class SimulateTelemetry : public util::cli::CommandWithFlagsAndAction {
     Optional<std::uint16_t> port;
     std::uint16_t frequency{5};
     Optional<FlightId> flight_id;
-    Optional<EncryptionKey> encryption_key{EncryptionKey{"MDAwMDExMTEyMjIyMzMzMzQ0NDQ1NTU1NjY2Njc3Nzc="}};
+    Optional<EncryptionKey> encryption_key;
     Optional<GeometryFile> geometry_file;
   } params_;
 };
