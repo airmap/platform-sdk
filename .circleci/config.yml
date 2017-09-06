@@ -1,0 +1,16 @@
+version: 2
+jobs:
+   build:
+     docker:
+       - image: ubuntu:17.04
+     steps:
+       - checkout
+       - run:
+         command: |
+           git submodule update --init --recursive
+           tools/ubuntu/setup.dev.sh
+           mkdir build
+           cd build
+           cmake ..
+           make
+       - setup_remote_docker
