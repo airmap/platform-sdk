@@ -11,3 +11,7 @@ compile:
   override:
     - tools/ubuntu/build-docker-image.sh
     - tools/alpine/build-docker-image.sh
+
+test:
+  override:
+    - echo "not implemented"
