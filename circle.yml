@@ -9,8 +9,8 @@ checkout:
 
 compile:
   override:
-    - tools/ubuntu/build-docker-image.sh
-    - tools/alpine/build-docker-image.sh
+    - sudo docker build --force-rm=true -t airmapd:latest -f Dockerfile.alpine .
+    - sudo docker build --force-rm=true -t airmapd:latest -f Dockerfile.ubuntu .
 
 test:
   override:
