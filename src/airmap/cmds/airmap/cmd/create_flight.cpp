@@ -92,8 +92,10 @@ cmd::CreateFlight::CreateFlight()
       return 1;
     }
 
-    auto context = result.value();
-    auto config  = Client::default_configuration(version_, Client::Credentials{api_key_.get()});
+    auto context        = result.value();
+    auto credentials    = Credentials{};
+    credentials.api_key = api_key_.get();
+    auto config         = Client::default_configuration(version_, credentials);
 
     log_.infof(component,
                "client configuration:\n"

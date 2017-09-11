@@ -116,6 +116,7 @@ add_library(
   src/airmap/jsend.h
   src/airmap/jsend.cpp
   src/airmap/logger.cpp
+  src/airmap/paths.cpp
   src/airmap/pilots.cpp
   src/airmap/rule.cpp
   src/airmap/status.cpp
@@ -149,6 +150,8 @@ add_library(
   src/airmap/codec/json/chrono.cpp
   src/airmap/codec/json/client.h
   src/airmap/codec/json/client.cpp
+  src/airmap/codec/json/credentials.h
+  src/airmap/codec/json/credentials.cpp
   src/airmap/codec/json/date_time.h
   src/airmap/codec/json/date_time.cpp
   src/airmap/codec/json/flight.h

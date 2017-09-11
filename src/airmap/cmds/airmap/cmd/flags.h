@@ -17,6 +17,7 @@ namespace cmd {
 using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
 using Authorization = util::TaggedString<util::tags::MustNotBeEmpty>;
 using ClientId      = util::TaggedString<util::tags::MustNotBeEmpty>;
+using ConfigFile    = util::TaggedString<util::tags::MustNotBeEmpty>;
 using EncryptionKey = util::TaggedString<util::tags::MustNotBeEmpty>;
 using FlightId      = util::TaggedString<util::tags::MustNotBeEmpty>;
 using TelemetryHost = util::TaggedString<util::tags::MustNotBeEmpty>;
@@ -26,6 +27,7 @@ namespace flags {
 std::shared_ptr<util::cli::Flag> api_key(Optional<ApiKey>& api_key);
 std::shared_ptr<util::cli::Flag> authorization(Optional<Authorization>& authorization);
 std::shared_ptr<util::cli::Flag> client_id(Optional<ClientId>& client_id);
+std::shared_ptr<util::cli::Flag> config_file(Optional<ConfigFile>& config_file);
 std::shared_ptr<util::cli::Flag> encryption_key(Optional<EncryptionKey>& key);
 std::shared_ptr<util::cli::Flag> flight_id(Optional<FlightId>& flight_id);
 std::shared_ptr<util::cli::Flag> log_level(Logger::Severity& severity);

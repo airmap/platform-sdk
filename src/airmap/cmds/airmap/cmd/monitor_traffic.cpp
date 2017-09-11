@@ -60,9 +60,10 @@ cmd::MonitorTraffic::MonitorTraffic()
       return 1;
     }
 
-    context_ = result.value();
-    auto config =
-        Client::default_configuration(Client::Version::production, Client::Credentials{params_.api_key.get()});
+    context_            = result.value();
+    auto credentials    = Credentials{};
+    credentials.api_key = params_.api_key.get();
+    auto config         = Client::default_configuration(Client::Version::production, credentials);
 
     log_.infof(component,
                "client configuration:\n"

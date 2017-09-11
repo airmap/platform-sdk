@@ -1,7 +1,9 @@
 #ifndef AIRMAP_CLIENT_H_
 #define AIRMAP_CLIENT_H_
 
+#include <airmap/credentials.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/optional.h>
 #include <airmap/outcome.h>
 
 #include <cstdint>
@@ -27,12 +29,6 @@ class Client : DoNotCopyOrMove {
  public:
   /// Version enumerates all known versions available to clients.
   enum class Version { production, staging };
-
-  /// Credentials bundles up all credentials required
-  /// to use the AirMap SDK and APIs.
-  struct Credentials {
-    std::string api_key;
-  };
 
   /// Configuration bundles up parameters enabling
   /// customization of a Client implementation behavior.

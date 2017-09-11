@@ -90,7 +90,9 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
           log_.logger(), context->io_service(), ::boost::asio::ip::address::from_string(tcp_endpoint_ip_.get()),
           tcp_endpoint_port_.get());
 
-    auto config = Client::default_configuration(version_, Client::Credentials{api_key_.get()});
+    auto credentials    = Credentials{};
+    credentials.api_key = api_key_.get();
+    auto config         = Client::default_configuration(version_, credentials);
 
     if (telemetry_host_)
       config.telemetry.host = telemetry_host_.get();

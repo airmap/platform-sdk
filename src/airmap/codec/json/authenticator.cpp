@@ -72,10 +72,10 @@ void airmap::codec::json::encode(nlohmann::json& j, const Authenticator::Connect
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Authenticator::AuthenticateWithPassword::Params& params) {
-  j["client_id"] = params.client_id;
-  j["username"]  = params.username;
-  j["password"]  = params.password;
-  j["device"]    = params.device;
+  j["username"]  = params.oauth.username;
+  j["password"]  = params.oauth.password;
+  j["client_id"] = params.oauth.client_id;
+  j["device"]    = params.oauth.device_id;
 
   encode(j, params.grant_type);
   encode(j, params.scope);
@@ -83,7 +83,7 @@ void airmap::codec::json::encode(nlohmann::json& j, const Authenticator::Authent
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Authenticator::AuthenticateAnonymously::Params& params) {
-  j["user_id"] = params.user_id;
+  j["user_id"] = params.id;
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Authenticator::RenewAuthentication::Params& params) {

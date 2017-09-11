@@ -12,6 +12,7 @@
 #include <airmap/codec/json/authenticator.h>
 #include <airmap/codec/json/chrono.h>
 #include <airmap/codec/json/client.h>
+#include <airmap/codec/json/credentials.h>
 #include <airmap/codec/json/date_time.h>
 #include <airmap/codec/json/flight.h>
 #include <airmap/codec/json/flights.h>

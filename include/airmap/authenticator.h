@@ -1,6 +1,7 @@
 #ifndef AIRMAP_AUTHENTICATOR_H_
 #define AIRMAP_AUTHENTICATOR_H_
 
+#include <airmap/credentials.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/outcome.h>
 
@@ -40,10 +41,7 @@ class Authenticator : DoNotCopyOrMove {
 
   struct AuthenticateWithPassword {
     struct Params {
-      std::string client_id;
-      std::string username;
-      std::string password;
-      std::string device;
+      Credentials::OAuth oauth;
       GrantType grant_type{GrantType::password};
       Scope scope{Scope::open_id_offline_access};
       Connection connection{Connection::username_password_authentication};
@@ -54,9 +52,7 @@ class Authenticator : DoNotCopyOrMove {
   };
 
   struct AuthenticateAnonymously {
-    struct Params {
-      std::string user_id;
-    };
+    using Params   = Credentials::Anonymous;
     using Result   = Outcome<AnonymousToken, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };

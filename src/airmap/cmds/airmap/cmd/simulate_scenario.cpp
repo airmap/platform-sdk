@@ -3,6 +3,7 @@
 #include <airmap/client.h>
 #include <airmap/codec.h>
 #include <airmap/context.h>
+#include <airmap/paths.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/scenario_simulator.h>
 #include <airmap/util/telemetry_simulator.h>
@@ -83,7 +84,7 @@ cmd::SimulateScenario::SimulateScenario()
                                      "simulate multiple vehicles carrying out missions and submitting telemetry"} {
   flag(flags::version(params_.version));
   flag(flags::log_level(params_.log_level));
-  flag(flags::api_key(params_.api_key));
+  flag(flags::config_file(params_.config_file));
   flag(flags::telemetry_host(params_.host));
   flag(flags::telemetry_port(params_.port));
   flag(cli::make_flag("scenario-file", "use the scenario defined in this json file", params_.scenario_file));
@@ -91,14 +92,8 @@ cmd::SimulateScenario::SimulateScenario()
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
 
-    if (!params_.api_key) {
-      log_.errorf(component, "missing parameter 'api-key'");
-      return 1;
-    }
-
-    if (!params_.api_key.get().validate()) {
-      log_.errorf(component, "parameter 'api-key' for accessing AirMap services must not be empty");
-      return 1;
+    if (!params_.config_file) {
+      params_.config_file = ConfigFile{paths::config_file(params_.version).string()};
     }
 
     if (params_.host && !params_.host.get().validate()) {
@@ -127,8 +122,14 @@ cmd::SimulateScenario::SimulateScenario()
       return 1;
     }
 
-    context_    = result.value();
-    auto config = Client::default_configuration(params_.version, Client::Credentials{params_.api_key.get()});
+    context_ = result.value();
+
+    std::ifstream config_file{params_.config_file.get()};
+    if (!config_file) {
+      log_.errorf(component, "failed to open config file %s for reading", params_.config_file.get());
+      return 1;
+    }
+    auto config = Client::load_configuration_from_json(config_file);
 
     if (params_.host)
       config.telemetry.host = params_.host.get();
@@ -181,10 +182,10 @@ cmd::SimulateScenario::SimulateScenario()
 void cmd::SimulateScenario::request_authentication_for(util::Scenario::Participants::iterator participant) {
   if (participant->user) {
     Authenticator::AuthenticateWithPassword::Params params;
-    params.client_id = participant->user.get().client_id;
-    params.username  = participant->user.get().username;
-    params.password  = participant->user.get().password;
-    params.device    = device_name;
+    params.oauth.client_id = participant->user.get().client_id;
+    params.oauth.username  = participant->user.get().username;
+    params.oauth.password  = participant->user.get().password;
+    params.oauth.device_id = device_name;
     client_->authenticator().authenticate_with_password(
         params, std::bind(&SimulateScenario::handle_authenticated_with_password_result_for, this, participant, ph::_1));
   } else {

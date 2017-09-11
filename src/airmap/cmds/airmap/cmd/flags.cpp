@@ -15,6 +15,10 @@ std::shared_ptr<cli::Flag> flags::client_id(Optional<ClientId>& client_id) {
   return cli::make_flag("client-id", "id of client", client_id);
 }
 
+std::shared_ptr<cli::Flag> flags::config_file(Optional<ConfigFile>& config_file) {
+  return cli::make_flag("config-file", "airmap configuration file", config_file);
+}
+
 std::shared_ptr<cli::Flag> flags::encryption_key(Optional<EncryptionKey>& key) {
   return cli::make_flag("encryption-key", "encryption key for telemetry encryption", key);
 }
