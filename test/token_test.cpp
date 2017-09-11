@@ -73,4 +73,32 @@ TEST_CASE("airmap::Token") {
       REQUIRE(type == airmap::Token::Type::refreshed);
     }
   }
+  SECTION("Token::Type::oauth is correctly parsed from JSON") {
+    auto json =
+        R"_({"type": "oauth", "oauth": {"refresh_token": "refresh_token","id_token": "id_token","access_token": "access_token","token_type": "bearer"}})_";
+    std::stringstream ss{json};
+    auto token = airmap::Token::load_from_json(ss);
+    REQUIRE(token.type() == airmap::Token::Type::oauth);
+    REQUIRE(token.oauth().refresh == "refresh_token");
+    REQUIRE(token.oauth().access == "access_token");
+    REQUIRE(token.oauth().id == "id_token");
+    REQUIRE(token.oauth().type == airmap::Token::OAuth::Type::bearer);
+  }
+  SECTION("Token::Type::refreshed is correctly parsed from JSON") {
+    auto json =
+        R"_({"type": "refreshed", "refreshed": {"id_token": "id_token","expires_in": 42,"token_type": "bearer"}})_";
+    std::stringstream ss{json};
+    auto token = airmap::Token::load_from_json(ss);
+    REQUIRE(token.type() == airmap::Token::Type::refreshed);
+    REQUIRE(token.refreshed().expires_in.count() == 42);
+    REQUIRE(token.refreshed().id == "id_token");
+    REQUIRE(token.refreshed().type == airmap::Token::Refreshed::Type::bearer);
+  }
+  SECTION("Token::Type::anonymous is correctly parsed from JSON") {
+    auto json = R"_({"type": "anonymous", "anonymous": {"id_token": "id_token"}})_";
+    std::stringstream ss{json};
+    auto token = airmap::Token::load_from_json(ss);
+    REQUIRE(token.type() == airmap::Token::Type::anonymous);
+    REQUIRE(token.anonymous().id == "id_token");
+  }
 }
