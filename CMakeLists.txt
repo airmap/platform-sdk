@@ -121,6 +121,7 @@ add_library(
   src/airmap/rule.cpp
   src/airmap/status.cpp
   src/airmap/telemetry.cpp
+  src/airmap/token.cpp
   src/airmap/traffic.cpp
 
   src/airmap/daemon.h
@@ -168,6 +169,8 @@ add_library(
   src/airmap/codec/json/rule.cpp
   src/airmap/codec/json/status.h
   src/airmap/codec/json/status.cpp
+  src/airmap/codec/json/token.h
+  src/airmap/codec/json/token.cpp
   src/airmap/codec/json/traffic.h
   src/airmap/codec/json/traffic.cpp
 
@@ -274,6 +277,8 @@ add_executable(
   src/airmap/cmds/airmap/cmd/flags.cpp
   src/airmap/cmds/airmap/cmd/get_status.h
   src/airmap/cmds/airmap/cmd/get_status.cpp
+  src/airmap/cmds/airmap/cmd/login.h
+  src/airmap/cmds/airmap/cmd/login.cpp
   src/airmap/cmds/airmap/cmd/pilot.h
   src/airmap/cmds/airmap/cmd/pilot.cpp
   src/airmap/cmds/airmap/cmd/simulate_scenario.h

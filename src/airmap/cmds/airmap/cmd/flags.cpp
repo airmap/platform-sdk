@@ -39,6 +39,10 @@ std::shared_ptr<cli::Flag> flags::telemetry_port(Optional<std::uint16_t>& port) 
   return cli::make_flag("telemetry-port", "telemetry host port", port);
 }
 
+std::shared_ptr<cli::Flag> flags::token_file(Optional<TokenFile>& token_file) {
+  return cli::make_flag("token-file", "airmap token file", token_file);
+}
+
 std::shared_ptr<cli::Flag> flags::user_id(Optional<UserId>& user_id) {
   return cli::make_flag("user-id", "user-id for authenticating with the AirMap services", user_id);
 }

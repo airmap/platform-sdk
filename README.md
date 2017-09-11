@@ -50,6 +50,40 @@ docker run -v $(PWD):/airmapd -it ubuntu:17.04 bash
 tools/ubuntu/setup.dev.sh
 ```
 
+## Configuration
+
+The main configuration of the `airmap` executable lives in the file `~/.config/airmap/${AIRMAP_SERVICE_VERSION}/config.json` (on UNIX-like platforms, including macOS). The file has the following structure:
+```
+{
+    "host": "api.airmap.com",
+    "version": "production",
+    "sso": {
+      "host": "sso.airmap.io",
+      "port": 443
+    },
+    "telemetry": {
+      "host": "api-udp-telemetry.airmap.com",
+      "port": 16060
+    },
+    "traffic": {
+      "host": "mqtt-prod.airmap.io",
+      "port": 8883
+    },
+    "credentials": {
+      "api-key": "your api key should go here"
+      "oauth": {
+        "oauth": {
+          "client-id": "your client id should go here",
+          "device-id": "your device id should go here, or generate one with uuid-gen",
+          "username": "your AirMap username should go here",
+          "password": "your AirMap password should go here"
+        }
+      }
+    }
+  }
+```
+Users should replace `${AIRMAP_SERVICE_VERSION}` with `production`.
+
 ## Running `airmapd` on Intel Aero
 
 Please refer to https://airmap.atlassian.net/wiki/spaces/AIRMAP/pages/69992501/Intel+Aero for Intel Aero setup instructions.
@@ -77,25 +111,19 @@ Once the image is loaded, create the file `/lib/systemd/system/airmapd.service` 
 Description=The AirMap on-vehicle service
 
 [Service]
-EnvironmentFile=/etc/airmapd.env
-ExecStart=/usr/bin/docker run airmapd:latest \
-  --api-key=${AIRMAPD_API_KEY}\
-  --user-id=${AIRMAPD_USER_ID}\
-  --aircraft-id=${AIRMAPD_AIRCRAFT_ID}\
-  --telemetry-host=api.k8s.stage.airmap.com\
-  --telemetry-port=32003\
-  --tcp-endpoint-ip=172.17.0.1\
-  --tcp-endpoint-port=5760
+ExecStart=/usr/bin/docker run \
+  -v ~/.config/airmap:/root/.config \
+  airmapd:latest \
+    --aircraft-id=${AIRMAPD_AIRCRAFT_ID}\
+    --telemetry-host=api.k8s.stage.airmap.com\
+    --telemetry-port=32003\
+    --tcp-endpoint-ip=172.17.0.1\
+    --tcp-endpoint-port=5760
 
 [Install]
 WantedBy=multi-user.target
 ```
-Create the file `/etc/airmapd.env` with the following contents:
-```
-AIRMAPD_API_KEY=YOUR_API_KEY
-AIRMAPD_USER_ID=YOUR_USER_ID
-AIRMAPD_AIRCRAFT_ID=YOUR_AIRCRAFT_ID
-```
+Create the file `~/.config/airmap/production/config.json` following the description of its format given before.
 Run `systemctl daemon-reload && systemctl enable airmapd` and reboot the vehicle. Check the output of the service with:
 ```
 journalctl -f -u airmapd

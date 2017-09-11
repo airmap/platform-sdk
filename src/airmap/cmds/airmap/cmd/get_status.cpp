@@ -4,6 +4,7 @@
 #include <airmap/codec.h>
 #include <airmap/context.h>
 #include <airmap/date_time.h>
+#include <airmap/paths.h>
 
 #include <signal.h>
 
@@ -38,7 +39,7 @@ cmd::GetStatus::GetStatus()
                                      "checks flight status with the AirMap services"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
-  flag(flags::api_key(api_key_));
+  flag(flags::config_file(config_file_));
   flag(cli::make_flag("latitude", "latitude of take-off point", params_.latitude));
   flag(cli::make_flag("longitude", "longitude of take-off point", params_.longitude));
   flag(cli::make_flag("weather", "report weather conditions", params_.weather));
@@ -49,13 +50,13 @@ cmd::GetStatus::GetStatus()
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
 
-    if (!api_key_) {
-      log_.errorf(component, "missing parameter 'api-key'");
-      return 1;
+    if (!config_file_) {
+      config_file_ = ConfigFile{paths::config_file(version_).string()};
     }
 
-    if (!api_key_.get().validate()) {
-      log_.errorf(component, "parameter 'api-key' for accessing AirMap services must not be empty");
+    std::ifstream in_config{config_file_.get()};
+    if (!in_config) {
+      log_.errorf(component, "failed to open configuration file %s for reading", config_file_);
       return 1;
     }
 
@@ -76,10 +77,8 @@ cmd::GetStatus::GetStatus()
       return 1;
     }
 
-    auto context        = result.value();
-    auto credentials    = Credentials{};
-    credentials.api_key = api_key_.get();
-    auto config         = Client::default_configuration(version_, credentials);
+    auto context = result.value();
+    auto config  = Client::load_configuration_from_json(in_config);
 
     log_.infof(component,
                "client configuration:\n"

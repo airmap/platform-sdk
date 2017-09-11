@@ -39,7 +39,7 @@ void airmap::rest::Authenticator::authenticate_with_password(const AuthenticateW
 
   sso_requester_->post("/oauth/ro", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
     if (result) {
-      cb(jsend::to_outcome<OAuthToken>(json::parse(result.value().body)));
+      cb(jsend::to_outcome<Token::OAuth>(json::parse(result.value().body)));
     } else {
       cb(AuthenticateWithPassword::Result{result.error()});
     }
@@ -56,7 +56,7 @@ void airmap::rest::Authenticator::authenticate_anonymously(const AuthenticateAno
   airmap_requester_->post(version_to_path(version_, "/auth/%s/anonymous/token"), std::move(headers), j.dump(),
                           [cb](const net::http::Requester::Result& result) {
                             if (result) {
-                              cb(jsend::to_outcome<AnonymousToken>(json::parse(result.value().body)));
+                              cb(jsend::to_outcome<Token::Anonymous>(json::parse(result.value().body)));
                             } else {
                               cb(AuthenticateAnonymously::Result{result.error()});
                             }
@@ -72,7 +72,7 @@ void airmap::rest::Authenticator::renew_authentication(const RenewAuthentication
 
   sso_requester_->post("/delegation", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
     if (result) {
-      cb(jsend::to_outcome<RefreshedToken>(json::parse(result.value().body)));
+      cb(jsend::to_outcome<Token::Refreshed>(json::parse(result.value().body)));
     } else {
       cb(RenewAuthentication::Result{result.error()});
     }

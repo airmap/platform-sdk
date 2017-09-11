@@ -26,7 +26,7 @@ class GetStatus : public util::cli::CommandWithFlagsAndAction {
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
-  Required<ApiKey> api_key_;
+  Required<ConfigFile> config_file_;
   Optional<GeometryFile> geometry_file_;
   Status::GetStatus::Parameters params_;
 };

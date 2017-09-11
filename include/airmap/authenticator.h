@@ -4,6 +4,7 @@
 #include <airmap/credentials.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/outcome.h>
+#include <airmap/token.h>
 
 #include <chrono>
 #include <functional>
@@ -24,21 +25,6 @@ class Authenticator : DoNotCopyOrMove {
     std::string id;
   };
 
-  struct OAuthToken {
-    enum class Type { bearer };
-    Type type;
-    std::string refresh;
-    std::string id;
-    std::string access;
-  };
-
-  struct RefreshedToken {
-    enum class Type { bearer };
-    Type type;
-    std::chrono::seconds expires_in;
-    std::string id;
-  };
-
   struct AuthenticateWithPassword {
     struct Params {
       Credentials::OAuth oauth;
@@ -47,13 +33,13 @@ class Authenticator : DoNotCopyOrMove {
       Connection connection{Connection::username_password_authentication};
     };
 
-    using Result   = Outcome<OAuthToken, std::exception_ptr>;
+    using Result   = Outcome<Token::OAuth, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
   struct AuthenticateAnonymously {
     using Params   = Credentials::Anonymous;
-    using Result   = Outcome<AnonymousToken, std::exception_ptr>;
+    using Result   = Outcome<Token::Anonymous, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
@@ -64,7 +50,7 @@ class Authenticator : DoNotCopyOrMove {
       GrantType grant_type{GrantType::bearer};
       Scope scope{Scope::open_id};
     };
-    using Result   = Outcome<RefreshedToken, std::exception_ptr>;
+    using Result   = Outcome<Token::Refreshed, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 

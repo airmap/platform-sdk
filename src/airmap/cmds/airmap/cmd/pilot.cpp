@@ -4,6 +4,7 @@
 #include <airmap/codec.h>
 #include <airmap/context.h>
 #include <airmap/date_time.h>
+#include <airmap/paths.h>
 
 #include <signal.h>
 
@@ -68,32 +69,34 @@ cmd::Pilot::Pilot()
                                      "queries information about a pilot"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
-  flag(flags::api_key(api_key_));
-  flag(flags::authorization(authorization_));
+  flag(flags::config_file(config_file_));
+  flag(flags::token_file(token_file_));
   flag(cli::make_flag("pilot-id", "id of pilot", pilot_id_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
 
-    if (!api_key_) {
-      log_.errorf(component, "missing parameter 'api-key'");
+    if (!config_file_) {
+      config_file_ = ConfigFile{paths::config_file(version_).string()};
+    }
+
+    if (!token_file_) {
+      token_file_ = TokenFile{paths::token_file(version_).string()};
+    }
+
+    std::ifstream in_config{config_file_.get()};
+    if (!in_config) {
+      log_.errorf(component, "failed to open configuration file %s for reading", config_file_);
       return 1;
     }
 
-    if (!api_key_.get().validate()) {
-      log_.errorf(component, "parameter 'api-key' for accessing AirMap services must not be empty");
+    std::ifstream in_token{token_file_.get()};
+    if (!in_token) {
+      log_.errorf(component, "failed to open token file %s for reading", token_file_);
       return 1;
     }
 
-    if (!authorization_) {
-      log_.errorf(component, "missing parameter 'authorization'");
-      return 1;
-    }
-
-    if (!authorization_.get().validate()) {
-      log_.errorf(component, "parameter 'authorization' for accessing AirMap services must not be empty");
-      return 1;
-    }
+    token_ = Token::load_from_json(in_token);
 
     if (pilot_id_ && !pilot_id_.get().validate()) {
       log_.errorf(component, "parameter 'pilot-id' must not be empty");
@@ -106,10 +109,8 @@ cmd::Pilot::Pilot()
       return 1;
     }
 
-    context_            = result.value();
-    auto credentials    = Credentials{};
-    credentials.api_key = api_key_.get();
-    auto config         = Client::default_configuration(version_, credentials);
+    context_    = result.value();
+    auto config = Client::load_configuration_from_json(in_config);
 
     log_.infof(component,
                "client configuration:\n"
@@ -137,12 +138,12 @@ cmd::Pilot::Pilot()
 
       if (pilot_id_) {
         Pilots::ForId::Parameters params;
-        params.authorization       = authorization_.get();
+        params.authorization       = token_.get().id();
         params.retrieve_statistics = true;
         client_->pilots().for_id(params, std::bind(&Pilot::handle_for_id_pilot_result, this, std::placeholders::_1));
       } else {
         Pilots::Authenticated::Parameters params;
-        params.authorization       = authorization_.get();
+        params.authorization       = token_.get().id();
         params.retrieve_statistics = true;
         client_->pilots().authenticated(
             params, std::bind(&Pilot::handle_authenticated_pilot_result, this, std::placeholders::_1));
@@ -164,7 +165,7 @@ void cmd::Pilot::handle_authenticated_pilot_result(const Pilots::Authenticated::
     log_.infof(component, "successfully queried pilot profile for authenticated user");
     Pilots::Aircrafts::Parameters params;
     params.id            = result.value().id;
-    params.authorization = authorization_.get();
+    params.authorization = token_.get().id();
 
     client_->pilots().aircrafts(
         params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1));
@@ -185,7 +186,7 @@ void cmd::Pilot::handle_for_id_pilot_result(const Pilots::ForId::Result& result)
     log_.infof(component, "successfully queried pilot profile for id");
     Pilots::Aircrafts::Parameters params;
     params.id            = result.value().id;
-    params.authorization = authorization_.get();
+    params.authorization = token_.get().id();
 
     client_->pilots().aircrafts(
         params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1));

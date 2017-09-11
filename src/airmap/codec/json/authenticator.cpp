@@ -5,35 +5,6 @@
 #include <airmap/codec/json/get.h>
 #include <airmap/codec/json/optional.h>
 
-void airmap::codec::json::decode(const nlohmann::json& j, Authenticator::OAuthToken& token) {
-  get(token.refresh, j, "refresh_token");
-  get(token.id, j, "id_token");
-  get(token.access, j, "access_token");
-  get(token.type, j, "token_type");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, Authenticator::OAuthToken::Type& type) {
-  auto t = j.get<std::string>();
-  if (t == "bearer")
-    type = Authenticator::OAuthToken::Type::bearer;
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, Authenticator::AnonymousToken& token) {
-  get(token.id, j, "id_token");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, Authenticator::RefreshedToken& token) {
-  get(token.type, j, "token_type");
-  get(token.expires_in, j, "expires_in");
-  get(token.id, j, "id_token");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, Authenticator::RefreshedToken::Type& type) {
-  auto t = j.get<std::string>();
-  if (t == "Bearer")
-    type = Authenticator::RefreshedToken::Type::bearer;
-}
-
 void airmap::codec::json::encode(nlohmann::json& j, const Authenticator::GrantType& type) {
   switch (type) {
     case Authenticator::GrantType::bearer:

@@ -6,9 +6,9 @@
 namespace airmap {
 namespace platform {
 
-using Path = boost::filesystem::path;
-using boost::filesystem::current_path;
-using boost::filesystem::initial_path;
+using Path = ::boost::filesystem::path;
+using ::boost::filesystem::current_path;
+using ::boost::filesystem::initial_path;
 
 }  // namespace platform
 }  // namespace airmap
