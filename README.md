@@ -70,14 +70,12 @@ The main configuration of the `airmap` executable lives in the file `~/.config/a
       "port": 8883
     },
     "credentials": {
-      "api-key": "your api key should go here"
+      "api-key": "your api key should go here",
       "oauth": {
-        "oauth": {
-          "client-id": "your client id should go here",
-          "device-id": "your device id should go here, or generate one with uuid-gen",
-          "username": "your AirMap username should go here",
-          "password": "your AirMap password should go here"
-        }
+        "client-id": "your client id should go here",
+        "device-id": "your device id should go here, or generate one with uuid-gen",
+        "username": "your AirMap username should go here",
+        "password": "your AirMap password should go here"
       }
     }
   }
