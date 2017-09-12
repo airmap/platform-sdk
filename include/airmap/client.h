@@ -65,6 +65,7 @@ class Client : DoNotCopyOrMove {
   /// load_configuration_from_json loads a configuration from 'in', assuming the following
   /// JSON format:
   ///
+  /// @code{.json}
   /// {
   ///   "host": "api.airmap.com",
   ///   "version": "production",
@@ -79,11 +80,21 @@ class Client : DoNotCopyOrMove {
   ///   "traffic": {
   ///     "host": "mqtt-prod.airmap.io",
   ///     "port": 8883
-  ///   },
-  ///   "credentials": {
-  ///     "api-key": ""
-  ///   }
+  ///    },
+  ///    "credentials": {
+  ///      "api-key": "your api key should go here",
+  ///      "oauth": {
+  ///        "client-id": "your client id should go here",
+  ///        "device-id": "your device id should go here, or generate one with uuid-gen",
+  ///        "username": "your AirMap username should go here",
+  ///        "password": "your AirMap password should go here"
+  ///      },
+  ///      "anonymous": {
+  ///        "id": "some id"
+  ///      }
+  ///    }
   /// }
+  /// @endcode
   static Configuration load_configuration_from_json(std::istream& in);
 
   /// authenticator returns the Authenticator implementation provided by the client.
