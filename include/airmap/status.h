@@ -50,8 +50,8 @@ class Status : DoNotCopyOrMove {
 
   struct GetStatus {
     struct Parameters {
-      float latitude;
-      float longitude;
+      Required<float> latitude;
+      Required<float> longitude;
       Optional<Airspace::Type> types;
       Optional<Airspace::Type> ignored_types;
       Optional<bool> weather;

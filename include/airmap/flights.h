@@ -49,8 +49,8 @@ class Flights : DoNotCopyOrMove {
   struct CreateFlight {
     struct Parameters {
       std::string authorization;
-      float latitude;
-      float longitude;
+      Required<float> latitude;
+      Required<float> longitude;
       float max_altitude = 121.;
       std::string aircraft_id;
       DateTime start_time;

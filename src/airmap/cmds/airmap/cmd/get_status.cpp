@@ -70,6 +70,16 @@ cmd::GetStatus::GetStatus()
       params_.geometry  = geometry;
     }
 
+    if (!params_.latitude) {
+      log_.errorf(component, "missing parameter 'latitude'");
+      return 1;
+    }
+
+    if (!params_.longitude) {
+      log_.errorf(component, "missing parameter 'longitude'");
+      return 1;
+    }
+
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
