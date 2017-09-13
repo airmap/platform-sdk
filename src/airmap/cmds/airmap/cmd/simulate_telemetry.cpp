@@ -3,6 +3,7 @@
 #include <airmap/client.h>
 #include <airmap/codec.h>
 #include <airmap/context.h>
+#include <airmap/paths.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/telemetry_simulator.h>
 
@@ -37,8 +38,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
                                      "inject artificial telemetry data for a given flight"} {
   flag(flags::version(params_.version));
   flag(flags::log_level(params_.log_level));
-  flag(flags::api_key(params_.api_key));
-  flag(flags::authorization(params_.authorization));
+  flag(flags::config_file(params_.config_file));
   flag(flags::encryption_key(params_.encryption_key));
   flag(flags::telemetry_host(params_.host));
   flag(flags::telemetry_port(params_.port));
@@ -49,23 +49,13 @@ cmd::SimulateTelemetry::SimulateTelemetry()
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
 
-    if (!params_.api_key) {
-      log_.errorf(component, "missing parameter 'api-key'");
-      return 1;
+    if (!params_.config_file) {
+      params_.config_file = ConfigFile{paths::config_file(params_.version).string()};
     }
 
-    if (!params_.api_key.get().validate()) {
-      log_.errorf(component, "parameter 'api-key' for accessing AirMap services must not be empty");
-      return 1;
-    }
-
-    if (!params_.authorization) {
-      log_.errorf(component, "missing parameter 'authorization'");
-      return 1;
-    }
-
-    if (!params_.authorization.get().validate()) {
-      log_.errorf(component, "parameter 'authorization' for accessing AirMap services must not be empty");
+    std::ifstream in_config{params_.config_file.get()};
+    if (!in_config) {
+      log_.errorf(component, "failed to open configuration file %s for reading", params_.config_file);
       return 1;
     }
 
@@ -102,7 +92,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
     }
 
     auto context = result.value();
-    auto config  = Client::default_configuration(params_.version, Client::Credentials{params_.api_key.get()});
+    auto config  = Client::load_configuration_from_json(in_config);
 
     if (params_.host)
       config.telemetry.host = params_.host.get();

@@ -8,6 +8,7 @@
 #include <airmap/logger.h>
 #include <airmap/optional.h>
 #include <airmap/pilots.h>
+#include <airmap/token.h>
 #include <airmap/util/cli.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/tagged_string.h>
@@ -28,14 +29,15 @@ class Pilot : public util::cli::CommandWithFlagsAndAction {
   void handle_for_id_pilot_result(const Pilots::ForId::Result& result);
   void handle_aircrafts_result(const ::airmap::Pilot& pilot, const Pilots::Aircrafts::Result& result);
 
-  std::shared_ptr<::airmap::Context> context_;
-  std::shared_ptr<::airmap::Client> client_;
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
-  Required<ApiKey> api_key_;
-  Required<Authorization> authorization_;
-  Required<PilotId> pilot_id_;
+  std::shared_ptr<::airmap::Context> context_;
+  std::shared_ptr<::airmap::Client> client_;
+  Required<ConfigFile> config_file_;
+  Required<TokenFile> token_file_;
+  Optional<Token> token_;
+  Optional<PilotId> pilot_id_;
 };
 
 }  // namespace cmd

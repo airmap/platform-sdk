@@ -5,6 +5,7 @@
 
 #include <airmap/client.h>
 #include <airmap/context.h>
+#include <airmap/token.h>
 #include <airmap/traffic.h>
 #include <airmap/util/cli.h>
 #include <airmap/util/formatting_logger.h>
@@ -26,8 +27,8 @@ class MonitorTraffic : public util::cli::CommandWithFlagsAndAction {
   std::shared_ptr<::airmap::Traffic::Monitor> monitor_;
   struct {
     Logger::Severity log_level{Logger::Severity::info};
-    Required<ApiKey> api_key;
-    Required<Authorization> authorization;
+    Required<ConfigFile> config_file;
+    Required<TokenFile> token_file;
     Required<FlightId> flight_id;
   } params_;
 };

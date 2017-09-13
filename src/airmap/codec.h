@@ -12,6 +12,7 @@
 #include <airmap/codec/json/authenticator.h>
 #include <airmap/codec/json/chrono.h>
 #include <airmap/codec/json/client.h>
+#include <airmap/codec/json/credentials.h>
 #include <airmap/codec/json/date_time.h>
 #include <airmap/codec/json/flight.h>
 #include <airmap/codec/json/flights.h>
@@ -22,6 +23,7 @@
 #include <airmap/codec/json/pilots.h>
 #include <airmap/codec/json/rule.h>
 #include <airmap/codec/json/status.h>
+#include <airmap/codec/json/token.h>
 #include <airmap/codec/json/traffic.h>
 
 namespace airmap {

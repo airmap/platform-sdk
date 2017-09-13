@@ -84,8 +84,10 @@ cmd::AuthorizePassword::AuthorizePassword()
       return 1;
     }
 
-    auto context = result.value();
-    auto config  = Client::default_configuration(params_.version, Client::Credentials{params_.api_key.get()});
+    auto context        = result.value();
+    auto credentials    = Credentials{};
+    credentials.api_key = params_.api_key.get();
+    auto config         = Client::default_configuration(params_.version, credentials);
 
     log_.infof(component,
                "client configuration:\n"

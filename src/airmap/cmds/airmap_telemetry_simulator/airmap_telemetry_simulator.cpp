@@ -109,8 +109,11 @@ int main(int argc, char** argv) {
     ::setenv("AIRMAP_TELEMETRY_HOST", params.host.c_str(), 1);
     ::setenv("AIRMAP_TELEMETRY_PORT", boost::lexical_cast<std::string>(params.port).c_str(), 1);
 
+    auto credentials    = airmap::Credentials{};
+    credentials.api_key = params.api_key;
+
     context->create_client_with_configuration(
-        airmap::Client::default_production_configuration(airmap::Client::Credentials{params.api_key}),
+        airmap::Client::default_production_configuration(credentials),
         [](const airmap::Context::ClientCreateResult& result) {
           if (!result) {
             return;

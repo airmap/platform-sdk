@@ -27,8 +27,7 @@ class Daemon : public util::cli::CommandWithFlagsAndAction {
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
-  Required<ApiKey> api_key_;
-  Required<UserId> user_id_;
+  Required<ConfigFile> config_file_;
   Required<AircraftId> aircraft_id_;
   Required<SerialDevice> serial_device_;
   Required<TelemetryHost> telemetry_host_;

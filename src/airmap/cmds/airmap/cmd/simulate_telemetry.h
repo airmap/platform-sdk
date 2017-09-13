@@ -29,8 +29,7 @@ class SimulateTelemetry : public util::cli::CommandWithFlagsAndAction {
   struct {
     Client::Version version{Client::Version::production};
     Logger::Severity log_level{Logger::Severity::info};
-    Required<ApiKey> api_key;
-    Required<Authorization> authorization;
+    Required<ConfigFile> config_file;
     Required<TelemetryHost> host;
     Required<std::uint16_t> port;
     std::uint16_t frequency{5};

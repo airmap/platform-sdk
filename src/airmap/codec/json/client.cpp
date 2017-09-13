@@ -12,7 +12,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Client::Configuration&
   get(configuration.telemetry.port, j["telemetry"], "port");
   get(configuration.traffic.host, j["traffic"], "host");
   get(configuration.traffic.port, j["traffic"], "port");
-  get(configuration.credentials.api_key, j["credentials"], "api-key");
+  get(configuration.credentials, j, "credentials");
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Client::Version& version) {

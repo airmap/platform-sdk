@@ -4,6 +4,7 @@
 #include <airmap/daemon.h>
 #include <airmap/mavlink/boost/serial_channel.h>
 #include <airmap/mavlink/boost/tcp_channel.h>
+#include <airmap/paths.h>
 
 #include <signal.h>
 
@@ -17,8 +18,7 @@ constexpr const char* component{"daemon"};
 cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airmap daemon", "runs the airmap daemon"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
-  flag(flags::api_key(api_key_));
-  flag(flags::user_id(user_id_));
+  flag(flags::config_file(config_file_));
   flag(flags::telemetry_host(telemetry_host_));
   flag(flags::telemetry_port(telemetry_port_));
   flag(cli::make_flag("aircraft-id", "id of the device the daemon runs on", aircraft_id_));
@@ -30,23 +30,13 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
 
-    if (!api_key_) {
-      log_.errorf(component, "missing parameter 'api-key'");
-      return 1;
+    if (!config_file_) {
+      config_file_ = ConfigFile{paths::config_file(version_).string()};
     }
 
-    if (!api_key_.get().validate()) {
-      log_.errorf(component, "parameter 'api-key' for accessing AirMap services must not be empty");
-      return 1;
-    }
-
-    if (!user_id_) {
-      log_.errorf(component, "missing parameter 'user-id'");
-      return 1;
-    }
-
-    if (!user_id_.get().validate()) {
-      log_.errorf(component, "parameter 'user-id' for accessing AirMap services must not be empty");
+    std::ifstream in_config{config_file_.get()};
+    if (!in_config) {
+      log_.errorf(component, "failed to open configuration file %s for reading", config_file_);
       return 1;
     }
 
@@ -79,6 +69,12 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
     }
 
     auto context = boost::Context::create(log_.logger());
+    auto config  = Client::load_configuration_from_json(in_config);
+
+    if (!config.credentials.oauth) {
+      log_.errorf(component, "oauth credentials are missing from configuration");
+      return 1;
+    }
 
     std::shared_ptr<mavlink::Channel> channel;
 
@@ -89,8 +85,6 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
       channel = std::make_shared<mavlink::boost::TcpChannel>(
           log_.logger(), context->io_service(), ::boost::asio::ip::address::from_string(tcp_endpoint_ip_.get()),
           tcp_endpoint_port_.get());
-
-    auto config = Client::default_configuration(version_, Client::Credentials{api_key_.get()});
 
     if (telemetry_host_)
       config.telemetry.host = telemetry_host_.get();
@@ -107,7 +101,7 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
     context->create_client_with_configuration(
-        config, [this, context, channel](const ::airmap::Context::ClientCreateResult& result) {
+        config, [this, context, config, channel](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
             try {
               std::rethrow_exception(result.error());
@@ -120,8 +114,12 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
             return;
           }
 
-          ::airmap::Daemon::Configuration configuration{api_key_.get(), user_id_.get(), aircraft_id_.get(),
-                                                        log_.logger(),  channel,        result.value()};
+          ::airmap::Daemon::Configuration configuration{config.credentials.api_key,
+                                                        config.credentials.oauth.get().username,
+                                                        aircraft_id_.get(),
+                                                        log_.logger(),
+                                                        channel,
+                                                        result.value()};
 
           ::airmap::Daemon::create(configuration)->start();
         });

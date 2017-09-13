@@ -153,6 +153,11 @@ void cli::CommandWithSubcommands::help(std::ostream& out) {
 
 int cli::CommandWithSubcommands::run(const cli::Command::Context& ctxt) {
   // Check if the command is valid:
+  if (ctxt.args.empty()) {
+    help(ctxt.cout);
+    return EXIT_FAILURE;
+  }
+
   if (commands_.find(ctxt.args[0]) == commands_.end()) {
     ctxt.cout << std::endl << "airmap: invalid command -- " << ctxt.args[0] << std::endl << std::endl;
     help(ctxt.cout);
