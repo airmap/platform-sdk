@@ -15,6 +15,7 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       aircrafts_{configuration_.version, http_.airmap_requester},
       airspaces_{configuration_.version, http_.airmap_requester},
       authenticator_{configuration_.version, http_.airmap_requester, http_.sso_requester},
+      flight_plans_{configuration_.version, http_.airmap_requester},
       flights_{configuration_.version, http_.airmap_requester},
       pilots_{configuration_.version, http_.airmap_requester},
       status_{configuration_.version, http_.airmap_requester},
@@ -32,6 +33,10 @@ airmap::Airspaces& airmap::rest::Client::airspaces() {
 
 airmap::Authenticator& airmap::rest::Client::authenticator() {
   return authenticator_;
+}
+
+airmap::FlightPlans& airmap::rest::Client::flight_plans() {
+  return flight_plans_;
 }
 
 airmap::Flights& airmap::rest::Client::flights() {

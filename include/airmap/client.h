@@ -18,6 +18,7 @@ namespace airmap {
 class Aircrafts;
 class Airspaces;
 class Authenticator;
+class FlightPlans;
 class Flights;
 class Pilots;
 class Status;
@@ -38,15 +39,15 @@ class Client : DoNotCopyOrMove {
     struct {
       std::string host;    ///< Address of the host exposing the sso service.
       std::uint16_t port;  ///< Port on the host exposing the sso service.
-    } sso; ///< The SSO endpoint used for the authenticating with the AirMap services.
+    } sso;                 ///< The SSO endpoint used for the authenticating with the AirMap services.
     struct {
       std::string host;    ///< Address of the host exposing the AirMap telemetry endpoints.
       std::uint16_t port;  ///< Port of the host exposing the AirMap telemetry endpoints.
-    } telemetry; ///< The telemetry submission endpoint.
+    } telemetry;           ///< The telemetry submission endpoint.
     struct {
-      std::string host;    ///< Address of the mqtt broker serving air traffic information.
-      std::uint16_t port;  ///< Port of the mqtt broker serving air traffic information.
-    } traffic; ///< The traffic endpoint.
+      std::string host;       ///< Address of the mqtt broker serving air traffic information.
+      std::uint16_t port;     ///< Port of the mqtt broker serving air traffic information.
+    } traffic;                ///< The traffic endpoint.
     Credentials credentials;  ///< Credentials that are required to authorize access to the AirMap services.
   };
 
@@ -105,6 +106,9 @@ class Client : DoNotCopyOrMove {
 
   /// airspaces returns the Airspaces implementation provided by the client.
   virtual Airspaces& airspaces() = 0;
+
+  /// flight_plans returns the FlightPlans implementation provided by the client.
+  virtual FlightPlans& flight_plans() = 0;
 
   /// flights returns the Flights implementation provided by the client.
   virtual Flights& flights() = 0;

@@ -106,6 +106,10 @@ add_library(
   codec/json/credentials.cpp
   codec/json/date_time.h
   codec/json/date_time.cpp
+  codec/json/flight_plan.h
+  codec/json/flight_plan.cpp
+  codec/json/flight_plans.h
+  codec/json/flight_plans.cpp
   codec/json/flight.h
   codec/json/flight.cpp
   codec/json/flights.h
@@ -154,6 +158,8 @@ add_library(
   rest/airspaces.cpp
   rest/authenticator.h
   rest/authenticator.cpp
+  rest/flight_plans.h
+  rest/flight_plans.cpp
   rest/flights.h
   rest/flights.cpp
   rest/pilots.h
