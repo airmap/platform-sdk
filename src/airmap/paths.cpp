@@ -28,3 +28,7 @@ airmap::platform::Path airmap::paths::config_file(Client::Version version) {
 airmap::platform::Path airmap::paths::token_file(Client::Version version) {
   return config_dir(version) / "token.json";
 }
+
+airmap::platform::Path airmap::paths::refresh_file(Client::Version version) {
+  return config_dir(version) / "refresh.token";
+}

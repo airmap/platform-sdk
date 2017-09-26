@@ -38,15 +38,15 @@ class Client : DoNotCopyOrMove {
     struct {
       std::string host;    ///< Address of the host exposing the sso service.
       std::uint16_t port;  ///< Port on the host exposing the sso service.
-    } sso; ///< The SSO endpoint used for the authenticating with the AirMap services.
+    } sso;                 ///< The SSO endpoint used for the authenticating with the AirMap services.
     struct {
       std::string host;    ///< Address of the host exposing the AirMap telemetry endpoints.
       std::uint16_t port;  ///< Port of the host exposing the AirMap telemetry endpoints.
-    } telemetry; ///< The telemetry submission endpoint.
+    } telemetry;           ///< The telemetry submission endpoint.
     struct {
-      std::string host;    ///< Address of the mqtt broker serving air traffic information.
-      std::uint16_t port;  ///< Port of the mqtt broker serving air traffic information.
-    } traffic; ///< The traffic endpoint.
+      std::string host;       ///< Address of the mqtt broker serving air traffic information.
+      std::uint16_t port;     ///< Port of the mqtt broker serving air traffic information.
+    } traffic;                ///< The traffic endpoint.
     Credentials credentials;  ///< Credentials that are required to authorize access to the AirMap services.
   };
 

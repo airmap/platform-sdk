@@ -1,6 +1,8 @@
 #ifndef AIRMAP_TOKEN_H_
 #define AIRMAP_TOKEN_H_
 
+#include <airmap/timestamp.h>
+
 #include <chrono>
 #include <iosfwd>
 #include <string>
@@ -20,7 +22,8 @@ class Token {
 
   /// Anonymous models a token for an anonymous authentication with the AirMap services.
   struct Anonymous {
-    std::string id;  ///< The authentication id.
+    std::string id;       ///< The authentication id.
+    Timestamp timestamp;  ///< The time at which the token was generated.
   };
 
   /// OAuth models a token for an authentication with OAuth credentials with the AirMap services.
@@ -30,6 +33,7 @@ class Token {
     std::string refresh;  ///< The refresh token for subsequent renewal requests.
     std::string id;       ///< The id token.
     std::string access;   ///< The access token.
+    Timestamp timestamp;  ///< The time at which the token was generated.
   };
 
   /// Refreshed models a token for a refreshed authentication with OAuth credentials with the AirMap services.
@@ -38,6 +42,7 @@ class Token {
     Type type;                        ///< The type of the Refreshed token.
     std::chrono::seconds expires_in;  ///< The token expires in 'expires_in' seconds.
     std::string id;                   ///< The id token.
+    Timestamp timestamp;              ///< The time at which the token was generated.
   };
 
   /// load_from_json reads a Token instance from the input stream 'in'.

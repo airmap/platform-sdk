@@ -20,6 +20,7 @@ using ClientId      = util::TaggedString<util::tags::MustNotBeEmpty>;
 using ConfigFile    = util::TaggedString<util::tags::MustNotBeEmpty>;
 using EncryptionKey = util::TaggedString<util::tags::MustNotBeEmpty>;
 using FlightId      = util::TaggedString<util::tags::MustNotBeEmpty>;
+using RefreshFile   = util::TaggedString<util::tags::MustNotBeEmpty>;
 using TelemetryHost = util::TaggedString<util::tags::MustNotBeEmpty>;
 using TokenFile     = util::TaggedString<util::tags::MustNotBeEmpty>;
 using UserId        = util::TaggedString<util::tags::MustNotBeEmpty>;
@@ -35,6 +36,7 @@ std::shared_ptr<util::cli::Flag> log_level(Logger::Severity& severity);
 std::shared_ptr<util::cli::Flag> telemetry_host(Optional<TelemetryHost>& host);
 std::shared_ptr<util::cli::Flag> telemetry_port(Optional<std::uint16_t>& port);
 std::shared_ptr<util::cli::Flag> token_file(Optional<TokenFile>& token_file);
+std::shared_ptr<util::cli::Flag> refresh_file(Optional<RefreshFile>& refresh_file);
 std::shared_ptr<util::cli::Flag> user_id(Optional<UserId>& user_id);
 std::shared_ptr<util::cli::Flag> version(Client::Version& version);
 }  // namespace flags

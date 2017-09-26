@@ -10,6 +10,7 @@ namespace paths {
 platform::Path config_dir(Client::Version version);
 platform::Path config_file(Client::Version version);
 platform::Path token_file(Client::Version version);
+platform::Path refresh_file(Client::Version version);
 
 }  // namespace paths
 }  // namespace airmap

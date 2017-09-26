@@ -2,6 +2,7 @@
 
 #include <airmap/codec.h>
 #include <airmap/codec/json/get.h>
+#include <airmap/timestamp.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -37,6 +38,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Token::OAuth& token) {
   get(token.id, j, "id_token");
   get(token.access, j, "access_token");
   get(token.type, j, "token_type");
+  token.timestamp = Clock::local_time();
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Token::OAuth::Type& type) {
@@ -47,12 +49,14 @@ void airmap::codec::json::decode(const nlohmann::json& j, Token::OAuth::Type& ty
 
 void airmap::codec::json::decode(const nlohmann::json& j, Token::Anonymous& token) {
   get(token.id, j, "id_token");
+  token.timestamp = Clock::local_time();
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Token::Refreshed& token) {
   get(token.type, j, "token_type");
   get(token.expires_in, j, "expires_in");
   get(token.id, j, "id_token");
+  token.timestamp = Clock::local_time();
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Token::Refreshed::Type& type) {
@@ -89,6 +93,7 @@ void airmap::codec::json::encode(nlohmann::json& j, const Token::OAuth& token) {
   j["id_token"]      = token.id;
   j["access_token"]  = token.access;
   j["token_type"]    = token.type;
+  j["timestamp"]     = token.timestamp;
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Token::OAuth::Type& type) {
@@ -97,13 +102,15 @@ void airmap::codec::json::encode(nlohmann::json& j, const Token::OAuth::Type& ty
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Token::Anonymous& token) {
-  j["id_token"] = token.id;
+  j["id_token"]  = token.id;
+  j["timestamp"] = token.timestamp;
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Token::Refreshed& token) {
   j["token_type"] = token.type;
   j["expires_in"] = token.expires_in.count();
   j["id_token"]   = token.id;
+  j["timestamp"]  = token.timestamp;
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Token::Refreshed::Type& type) {

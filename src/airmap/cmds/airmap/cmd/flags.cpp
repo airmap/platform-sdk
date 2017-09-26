@@ -31,6 +31,10 @@ std::shared_ptr<cli::Flag> flags::log_level(Logger::Severity& severity) {
   return cli::make_flag("log-level", "log message with severity >= log-level", severity);
 }
 
+std::shared_ptr<cli::Flag> flags::refresh_file(Optional<RefreshFile>& refresh_file) {
+  return cli::make_flag("refresh-file", "airmap refresh file", refresh_file);
+}
+
 std::shared_ptr<cli::Flag> flags::telemetry_host(Optional<TelemetryHost>& host) {
   return cli::make_flag("telemetry-host", "telemetry host address", host);
 }
