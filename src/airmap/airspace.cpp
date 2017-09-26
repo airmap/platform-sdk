@@ -469,7 +469,8 @@ bool airmap::operator==(const Airspace::SpecialUseAirspace &lhs, const Airspace:
   return lhs.type == rhs.type;
 }
 
-bool airmap::operator==(const Airspace::TemporaryFlightRestriction &lhs, const Airspace::TemporaryFlightRestriction &rhs) {
+bool airmap::operator==(const Airspace::TemporaryFlightRestriction &lhs,
+                        const Airspace::TemporaryFlightRestriction &rhs) {
   return lhs.url == rhs.url && lhs.type == rhs.type && lhs.reason == rhs.reason;
 }
 

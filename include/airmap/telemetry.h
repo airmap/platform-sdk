@@ -43,8 +43,8 @@ class Telemetry : DoNotCopyOrMove {
 
   /// Barometer describes the timestamped atmospheric pressurce conditions.
   struct Barometer {
-    std::uint64_t timestamp; ///< Ingestion timestamp of the update.
-    float pressure; ///< The atmospheric pressure measurement in [Pa].
+    std::uint64_t timestamp;  ///< Ingestion timestamp of the update.
+    float pressure;           ///< The atmospheric pressure measurement in [Pa].
   };
 
   /// @cond
@@ -60,10 +60,10 @@ class Telemetry : DoNotCopyOrMove {
    public:
     /// Type enumerates all known update types.
     enum class Type : std::uint8_t {
-      position = 1, ///< The update contains a Position instance.
-      speed = 2, ///< The update contains a Speed instance.
-      attitude = 3, ///< The update contains an Attitude instance.
-      barometer = 4 ///< The update contains a Barometer instance.
+      position  = 1,  ///< The update contains a Position instance.
+      speed     = 2,  ///< The update contains a Speed instance.
+      attitude  = 3,  ///< The update contains an Attitude instance.
+      barometer = 4   ///< The update contains a Barometer instance.
     };
 
     /// Update initializes a new instance with 'position'.

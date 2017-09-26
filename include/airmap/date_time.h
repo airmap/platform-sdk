@@ -11,7 +11,7 @@
 namespace airmap {
 
 /// Clock marks the reference for time measurements.
-using Clock        = boost::posix_time::microsec_clock;
+using Clock = boost::posix_time::microsec_clock;
 /// DateTime marks a specific point in time, in reference to Clock.
 using DateTime     = boost::posix_time::ptime;
 using Hours        = boost::posix_time::hours;
