@@ -3,6 +3,7 @@
 `airmapd` is the representation of AirMap's services on the client side, ranging from desktop machines running a ground-control station to drones featuring a companion computer. From a high-level point of view, `airmapd`
  - exposes the AirMap services to client applications
  - constitutes a representation of AirMap on drones, taking on mission control and data acquisition tasks
+
 The following diagrams illustrate both perspectives:
 
 ![desktop perspective](doc/images/desktop-perspective.png)
