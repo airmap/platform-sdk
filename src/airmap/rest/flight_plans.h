@@ -15,7 +15,7 @@ class FlightPlans : public airmap::FlightPlans {
 
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
   void create_by_point(const Create::Parameters& parameters, const Create::Callback& cb) override;
-  void create_flight_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) override;
+  void create_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) override;
   void update(const Update::Parameters& parameters, const Update::Callback& cb) override;
   void delete_(const Delete::Parameters& parameters, const Delete::Callback& cb) override;
   void render_briefing(const RenderBriefing::Parameters& parameters, const RenderBriefing::Callback& cb) override;

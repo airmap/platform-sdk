@@ -122,7 +122,7 @@ class FlightPlans : DoNotCopyOrMove {
 
   /// create_by_polygon creates a flight plan for 'parameters' and reports
   /// results back to 'cb'.
-  virtual void create_flight_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) = 0;
+  virtual void create_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) = 0;
 
   /// update updates a flight plan identified by 'parameters' and reports
   /// results back to 'cb'.

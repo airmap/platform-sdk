@@ -32,7 +32,7 @@ void airmap::rest::FlightPlans::for_id(const ForId::Parameters& parameters, cons
   std::unordered_map<std::string, std::string> query, headers;
 
   if (parameters.authorization)
-    headers["Authorization"] = fmt::sprintf("Bearer %1%", parameters.authorization.get());
+    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
 
   requester_->get(version_to_path(version_, "/flight/%s/plan/%s", parameters.id), std::move(query), std::move(headers),
                   [cb](const net::http::Requester::Result& result) {
@@ -47,7 +47,7 @@ void airmap::rest::FlightPlans::for_id(const ForId::Parameters& parameters, cons
 void airmap::rest::FlightPlans::create_by_point(const Create::Parameters& parameters, const Create::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
   if (parameters.authorization) {
-    headers["Authorization"] = fmt::sprintf("Bearer %1%", parameters.authorization.get());
+    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
   };
 
   json j;
@@ -63,11 +63,11 @@ void airmap::rest::FlightPlans::create_by_point(const Create::Parameters& parame
                    });
 }
 
-void airmap::rest::FlightPlans::create_flight_by_polygon(const Create::Parameters& parameters,
+void airmap::rest::FlightPlans::create_by_polygon(const Create::Parameters& parameters,
                                                          const Create::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
   if (parameters.authorization) {
-    headers["Authorization"] = fmt::sprintf("Bearer %1%", parameters.authorization.get());
+    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
   };
 
   json j;
@@ -86,7 +86,7 @@ void airmap::rest::FlightPlans::create_flight_by_polygon(const Create::Parameter
 void airmap::rest::FlightPlans::update(const Update::Parameters& parameters, const Update::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
   if (parameters.authorization) {
-    headers["Authorization"] = fmt::sprintf("Bearer %1%", parameters.authorization.get());
+    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
   };
 
   json j;
@@ -106,7 +106,7 @@ void airmap::rest::FlightPlans::delete_(const Delete::Parameters& parameters, co
   std::unordered_map<std::string, std::string> query, headers;
 
   if (parameters.authorization)
-    headers["Authorization"] = fmt::sprintf("Bearer %1%", parameters.authorization.get());
+    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
 
   requester_->delete_(version_to_path(version_, "/flight/%s/plan/%s", parameters.id), std::move(query),
                       std::move(headers), [cb](const net::http::Requester::Result& result) {
@@ -123,7 +123,7 @@ void airmap::rest::FlightPlans::render_briefing(const RenderBriefing::Parameters
   std::unordered_map<std::string, std::string> query, headers;
 
   if (parameters.authorization)
-    headers["Authorization"] = fmt::sprintf("Bearer %1%", parameters.authorization.get());
+    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
 
   requester_->get(version_to_path(version_, "/flight/%s/plan/%s/briefing", parameters.id), std::move(query), std::move(headers),
                   [cb](const net::http::Requester::Result& result) {
@@ -139,7 +139,7 @@ void airmap::rest::FlightPlans::render_briefing(const RenderBriefing::Parameters
 void airmap::rest::FlightPlans::submit(const Submit::Parameters& parameters, const Submit::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
   if (parameters.authorization) {
-    headers["Authorization"] = fmt::sprintf("Bearer %1%", parameters.authorization.get());
+    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
   };
 
   requester_->post(version_to_path(version_, "/flight/%s/plan/%s/submit", parameters.id), std::move(headers),
