@@ -6,6 +6,7 @@
 #include <airmap/cmds/airmap/cmd/monitor_mids.h>
 #include <airmap/cmds/airmap/cmd/monitor_traffic.h>
 #include <airmap/cmds/airmap/cmd/pilot.h>
+#include <airmap/cmds/airmap/cmd/plan_flight.h>
 #include <airmap/cmds/airmap/cmd/simulate_scenario.h>
 #include <airmap/cmds/airmap/cmd/simulate_telemetry.h>
 #include <airmap/cmds/airmap/cmd/start_flight_comms.h>
@@ -32,6 +33,7 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::MonitorMids>());
     cmd_.command(std::make_shared<cmd::MonitorTraffic>());
     cmd_.command(std::make_shared<cmd::Pilot>());
+    cmd_.command(std::make_shared<cmd::PlanFlight>());
     cmd_.command(std::make_shared<cmd::StartFlightComms>());
     cmd_.command(std::make_shared<cmd::SimulateScenario>());
     cmd_.command(std::make_shared<cmd::SimulateTelemetry>());

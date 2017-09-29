@@ -228,6 +228,8 @@ add_executable(
   cmds/airmap/cmd/login.cpp
   cmds/airmap/cmd/pilot.h
   cmds/airmap/cmd/pilot.cpp
+  cmds/airmap/cmd/plan_flight.h
+  cmds/airmap/cmd/plan_flight.cpp
   cmds/airmap/cmd/simulate_scenario.h
   cmds/airmap/cmd/simulate_scenario.cpp
   cmds/airmap/cmd/simulate_telemetry.h
