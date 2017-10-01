@@ -3,7 +3,6 @@
 
 #include <airmap/date_time.h>
 #include <airmap/geometry.h>
-#include <airmap/optional.h>
 #include <airmap/pilot.h>
 
 #include <cstdint>
@@ -14,7 +13,7 @@ namespace airmap {
 struct FlightPlan {
   using Id = std::string;
 
-  Optional<Id> id;           ///< The unique identifier of a flight in the context of AirMap.
+  Id id;                     ///< The unique identifier of a flight in the context of AirMap.
   Pilot pilot;               ///< The pilot responsible for the flight.
   Pilot::Aircraft aircraft;  ///< The aircraft conducting the flight.
   float latitude;            ///< The latitude component of the takeoff point in [°].

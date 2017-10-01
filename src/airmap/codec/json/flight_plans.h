@@ -13,6 +13,8 @@ namespace codec {
 namespace json {
 
 void decode(const nlohmann::json& j, FlightPlans::Delete::Response& r);
+void decode(const nlohmann::json& j, FlightPlans::Create::Parameters& p);
+void encode(nlohmann::json& j, const FlightPlans::Create::Parameters& p);
 
 }  // namespace json
 }  // namespace codec

@@ -35,8 +35,17 @@ class FlightPlans : DoNotCopyOrMove {
   struct Create {
     /// Parameters bundles up input parameters.
     struct Parameters {
-      Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
-      FlightPlan flight_plan;  ///< The details of the plan that should be created with the AirMap services.
+      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
+      Pilot pilot;                ///< The pilot responsible for the flight.
+      Pilot::Aircraft aircraft;   ///< The aircraft conducting the flight.
+      float latitude;             ///< The latitude component of the takeoff point in [°].
+      float longitude;            ///< The longitude component of the takeoff point in [°].
+      float max_altitude;         ///< The maximum altitude over the entire flight in [m].
+      float min_altitude;         ///< The minimum altitude over the entire flight in [m].
+      float buffer;               ///< The buffer in [m] around the geometry.
+      Geometry geometry;          ///< The geometry describing the flight.
+      DateTime start_time;        ///< Point in time when the flight will start/was started.
+      DateTime end_time;          ///< Point in time when the fligth will end.
     };
 
     /// Result models the outcome of calling FlightPlans::create_by_polygon.
@@ -88,7 +97,7 @@ class FlightPlans : DoNotCopyOrMove {
     /// Parameters bundles up input parameters.
     struct Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
-      FlightPlan::Id id;          ///< Id of the flight plan that should be rendered as a briefing.
+      FlightPlan::Id id;                    ///< Id of the flight plan that should be rendered as a briefing.
     };
     /// Result models the outcome of calling FlightPlans::submit.
     using Result = Outcome<FlightPlan, std::exception_ptr>;
@@ -103,7 +112,7 @@ class FlightPlans : DoNotCopyOrMove {
     /// Parameters bundles up input parameters.
     struct Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
-      FlightPlan::Id id;          ///< Id of the flight plan that should be submitted.
+      FlightPlan::Id id;                    ///< Id of the flight plan that should be submitted.
     };
     /// Result models the outcome of calling FlightPlans::submit.
     using Result = Outcome<FlightPlan, std::exception_ptr>;
