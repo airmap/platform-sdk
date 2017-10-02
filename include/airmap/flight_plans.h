@@ -100,7 +100,7 @@ class FlightPlans : DoNotCopyOrMove {
       FlightPlan::Id id;                    ///< Id of the flight plan that should be rendered as a briefing.
     };
     /// Result models the outcome of calling FlightPlans::submit.
-    using Result = Outcome<FlightPlan, std::exception_ptr>;
+    using Result = Outcome<FlightPlan::Briefing, std::exception_ptr>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to FlightPlans::submit finishes.
     using Callback = std::function<void(const Result&)>;

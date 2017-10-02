@@ -1,4 +1,4 @@
-#include <airmap/cmds/airmap/cmd/plan_flight.h>
+#include <airmap/cmds/airmap/cmd/submit_flight.h>
 
 #include <airmap/client.h>
 #include <airmap/codec.h>
@@ -14,17 +14,17 @@ namespace cmd = airmap::cmds::airmap::cmd;
 using json = nlohmann::json;
 
 namespace {
-constexpr const char* component{"plan-flight"};
+constexpr const char* component{"submit-flight"};
 }  // namespace
 
-cmd::PlanFlight::PlanFlight()
-    : cli::CommandWithFlagsAndAction{"plan-flight", "creates a flight plan with the AirMap services",
-                                     "creates a flight plan and registers it with the AirMap services"} {
+cmd::SubmitFlight::SubmitFlight()
+    : cli::CommandWithFlagsAndAction{"submit-flight", "submits a flight plan for validation/authorization",
+                                     "submits a flight plan for validation/authorization"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
   flag(flags::token_file(token_file_));
-  flag(cli::make_flag("plan", "flight plan file", plan_file_));
+  flag(cli::make_flag("id", "flight plan id", flight_plan_id_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
@@ -51,20 +51,13 @@ cmd::PlanFlight::PlanFlight()
       return 1;
     }
 
-    if (!plan_file_ || !plan_file_.get().validate()) {
-      log_.errorf(component, "missing parameter 'plan'");
+    if (!flight_plan_id_ || !flight_plan_id_.get().validate()) {
+      log_.errorf(component, "missing parameter 'id'");
       return 1;
     }
 
-    std::ifstream plan_in{plan_file_.get()};
-    if (!plan_in) {
-      log_.errorf(component, "failed to open %s for reading", plan_file_.get());
-      return 1;
-    }
-    parameters_               = json::parse(plan_in);
     parameters_.authorization = Token::load_from_json(in_token).id();
-    parameters_.start_time    = Clock::universal_time();
-    parameters_.end_time      = Clock::universal_time() + Minutes{5};
+    parameters_.id            = flight_plan_id_.get();
     auto result               = ::airmap::Context::create(log_.logger());
 
     if (!result) {
@@ -102,7 +95,7 @@ cmd::PlanFlight::PlanFlight()
           auto handler = [this, &ctxt, context, client](const auto& result) {
             if (result) {
               log_.infof(component,
-                         "successfully created flight plan:\n"
+                         "successfully submitted flight plan:\n"
                          "  id:                %s\n"
                          "  pilot.id:          %s\n"
                          "  aircraft.id:       %s\n"
@@ -122,15 +115,15 @@ cmd::PlanFlight::PlanFlight()
               try {
                 std::rethrow_exception(result.error());
               } catch (const std::exception& e) {
-                log_.errorf(component, "failed to create flight: %s", e.what());
+                log_.errorf(component, "failed to submit flight plan: %s", e.what());
               } catch (...) {
-                log_.errorf(component, "failed to create flight");
+                log_.errorf(component, "failed to submit flight plan");
               }
               context->stop(::airmap::Context::ReturnCode::error);
             }
           };
 
-          client->flight_plans().create_by_polygon(parameters_, handler);
+          client->flight_plans().submit(parameters_, handler);
         });
 
     return context->exec({SIGINT, SIGQUIT},

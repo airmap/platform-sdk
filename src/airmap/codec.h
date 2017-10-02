@@ -14,9 +14,9 @@
 #include <airmap/codec/json/client.h>
 #include <airmap/codec/json/credentials.h>
 #include <airmap/codec/json/date_time.h>
+#include <airmap/codec/json/flight.h>
 #include <airmap/codec/json/flight_plan.h>
 #include <airmap/codec/json/flight_plans.h>
-#include <airmap/codec/json/flight.h>
 #include <airmap/codec/json/flights.h>
 #include <airmap/codec/json/geometry.h>
 #include <airmap/codec/json/get.h>

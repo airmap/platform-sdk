@@ -85,8 +85,8 @@ void airmap::rest::FlightPlans::update(const Update::Parameters& parameters, con
   json j;
   j = parameters.flight_plan;
 
-  requester_->patch(version_to_path(version_, "/flight/%s/plan/%s", parameters.flight_plan.id),
-                    std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
+  requester_->patch(version_to_path(version_, "/flight/%s/plan/%s", parameters.flight_plan.id), std::move(headers),
+                    j.dump(), [cb](const net::http::Requester::Result& result) {
                       if (result) {
                         cb(jsend::to_outcome<FlightPlan>(json::parse(result.value().body)));
                       } else {
@@ -121,8 +121,7 @@ void airmap::rest::FlightPlans::render_briefing(const RenderBriefing::Parameters
   requester_->get(version_to_path(version_, "/flight/%s/plan/%s/briefing", parameters.id), std::move(query),
                   std::move(headers), [cb](const net::http::Requester::Result& result) {
                     if (result) {
-                      // cb(jsend::to_outcome<FlightPlan>(json::parse(result.value().body)));
-                      std::cout << result.value().body << std::endl;
+                      cb(jsend::to_outcome<FlightPlan::Briefing>(json::parse(result.value().body)));
                     } else {
                       cb(RenderBriefing::Result{result.error()});
                     }

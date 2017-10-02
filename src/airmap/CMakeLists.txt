@@ -63,6 +63,7 @@ add_library(
   context.cpp
   credentials.cpp
   date_time.cpp
+  flight_plan.cpp
   geometry.cpp
   jsend.h
   jsend.cpp
@@ -230,12 +231,16 @@ add_executable(
   cmds/airmap/cmd/pilot.cpp
   cmds/airmap/cmd/plan_flight.h
   cmds/airmap/cmd/plan_flight.cpp
+  cmds/airmap/cmd/render_briefing.h
+  cmds/airmap/cmd/render_briefing.cpp
   cmds/airmap/cmd/simulate_scenario.h
   cmds/airmap/cmd/simulate_scenario.cpp
   cmds/airmap/cmd/simulate_telemetry.h
   cmds/airmap/cmd/simulate_telemetry.cpp
   cmds/airmap/cmd/start_flight_comms.h
   cmds/airmap/cmd/start_flight_comms.cpp
+  cmds/airmap/cmd/submit_flight.h
+  cmds/airmap/cmd/submit_flight.cpp
   cmds/airmap/cmd/monitor_mids.h
   cmds/airmap/cmd/monitor_mids.cpp
   cmds/airmap/cmd/monitor_traffic.h
