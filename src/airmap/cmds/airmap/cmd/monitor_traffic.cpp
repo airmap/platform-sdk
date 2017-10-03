@@ -18,7 +18,7 @@ cmd::MonitorTraffic::MonitorTraffic()
                                      "receive traffic alerts for a flight with AirMap services"} {
   flag(flags::log_level(params_.log_level));
   flag(flags::config_file(params_.config_file));
-  flag(flags::token_file(params_.token_file));
+  flag(flags::oauth_token_file(params_.oauth_token_file));
   flag(flags::flight_id(params_.flight_id));
 
   action([this](const cli::Command::Context& ctxt) {
@@ -28,8 +28,8 @@ cmd::MonitorTraffic::MonitorTraffic()
       params_.config_file = ConfigFile{paths::config_file(Client::Version::production).string()};
     }
 
-    if (!params_.token_file) {
-      params_.token_file = TokenFile{paths::token_file(Client::Version::production).string()};
+    if (!params_.oauth_token_file) {
+      params_.oauth_token_file = OAuthTokenFile{paths::oauth_token_file(Client::Version::production).string()};
     }
 
     std::ifstream in_config{params_.config_file.get()};
@@ -38,9 +38,9 @@ cmd::MonitorTraffic::MonitorTraffic()
       return 1;
     }
 
-    std::ifstream in_token{params_.token_file.get()};
+    std::ifstream in_token{params_.oauth_token_file.get()};
     if (!in_token) {
-      log_.errorf(component, "failed to open token file %s for reading", params_.token_file);
+      log_.errorf(component, "failed to open oauth token file %s for reading", params_.oauth_token_file);
       return 1;
     }
 

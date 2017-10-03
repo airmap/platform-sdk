@@ -35,7 +35,7 @@ class Pilot : public util::cli::CommandWithFlagsAndAction {
   std::shared_ptr<::airmap::Context> context_;
   std::shared_ptr<::airmap::Client> client_;
   Required<ConfigFile> config_file_;
-  Required<TokenFile> token_file_;
+  Required<OAuthTokenFile> oauth_token_file_;
   Optional<Token> token_;
   Optional<PilotId> pilot_id_;
 };

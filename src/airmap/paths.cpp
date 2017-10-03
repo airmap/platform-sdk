@@ -21,14 +21,22 @@ airmap::platform::Path airmap::paths::config_dir(Client::Version version) {
   throw std::logic_error{"should not reach here"};
 }
 
+airmap::platform::Path airmap::paths::token_dir(Client::Version version) {
+  return config_dir(version) / "token";
+}
+
 airmap::platform::Path airmap::paths::config_file(Client::Version version) {
   return config_dir(version) / "config.json";
 }
 
-airmap::platform::Path airmap::paths::token_file(Client::Version version) {
-  return config_dir(version) / "token.json";
+airmap::platform::Path airmap::paths::anonymous_token_file(Client::Version version) {
+  return token_dir(version) / "anonymous.json";
 }
 
-airmap::platform::Path airmap::paths::refresh_file(Client::Version version) {
-  return config_dir(version) / "refresh.token";
+airmap::platform::Path airmap::paths::oauth_token_file(Client::Version version) {
+  return token_dir(version) / "oauth.json";
+}
+
+airmap::platform::Path airmap::paths::refreshed_token_file(Client::Version version) {
+  return token_dir(version) / "refreshed.json";
 }

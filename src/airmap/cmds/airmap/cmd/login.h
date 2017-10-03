@@ -24,7 +24,7 @@ class Login : public util::cli::CommandWithFlagsAndAction {
   Login();
 
  private:
-  void renew_authentication(const Credentials& credentials, const std::string& token);
+  void renew_authentication(const Credentials& credentials, const Token& token);
   void request_authentication(const Credentials& credentials);
   void handle_result_for_authentication_with_password(const Authenticator::AuthenticateWithPassword::Result& result);
   void handle_result_for_anonymous_authentication(const Authenticator::AuthenticateAnonymously::Result& result);
@@ -34,8 +34,9 @@ class Login : public util::cli::CommandWithFlagsAndAction {
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Optional<ConfigFile> config_file_;
-  Optional<TokenFile> token_file_;
-  Optional<RefreshFile> refresh_file_;
+  Optional<AnonymousTokenFile> anonymous_token_file_;
+  Optional<OAuthTokenFile> oauth_token_file_;
+  Optional<RefreshedTokenFile> refreshed_token_file_;
   bool renew_{false};
   std::shared_ptr<::airmap::Context> context_;
   std::shared_ptr<Client> client_;

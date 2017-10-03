@@ -39,7 +39,7 @@ cmd::CreateFlight::CreateFlight()
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
-  flag(flags::token_file(token_file_));
+  flag(flags::oauth_token_file(oauth_token_file_));
   flag(cli::make_flag("latitude", "latitude of take-off point", params_.latitude));
   flag(cli::make_flag("longitude", "longitude of take-off point", params_.longitude));
   flag(cli::make_flag("max-altitude", "maximum altitude reached during flight", params_.max_altitude));
@@ -58,8 +58,8 @@ cmd::CreateFlight::CreateFlight()
       config_file_ = ConfigFile{paths::config_file(version_).string()};
     }
 
-    if (!token_file_) {
-      token_file_ = TokenFile{paths::token_file(version_).string()};
+    if (!oauth_token_file_) {
+      oauth_token_file_ = OAuthTokenFile{paths::oauth_token_file(version_).string()};
     }
 
     std::ifstream in_config{config_file_.get()};
@@ -70,9 +70,9 @@ cmd::CreateFlight::CreateFlight()
 
     auto config = Client::load_configuration_from_json(in_config);
 
-    std::ifstream in_token{token_file_.get()};
+    std::ifstream in_token{oauth_token_file_.get()};
     if (!in_token) {
-      log_.errorf(component, "failed to open token file %s for reading", token_file_);
+      log_.errorf(component, "failed to open token file %s for reading", oauth_token_file_);
       return 1;
     }
 

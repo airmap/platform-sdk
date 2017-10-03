@@ -3,6 +3,10 @@
 namespace cli   = airmap::util::cli;
 namespace flags = airmap::cmds::airmap::cmd::flags;
 
+std::shared_ptr<cli::Flag> flags::anonymous_token_file(Optional<AnonymousTokenFile>& anonymous_token_file) {
+  return cli::make_flag("ranonymous-token-file", "airmap anonymous token file", anonymous_token_file);
+}
+
 std::shared_ptr<cli::Flag> flags::api_key(Optional<ApiKey>& api_key) {
   return cli::make_flag("api-key", "api-key for authenticating with the AirMap services", api_key);
 }
@@ -31,8 +35,12 @@ std::shared_ptr<cli::Flag> flags::log_level(Logger::Severity& severity) {
   return cli::make_flag("log-level", "log message with severity >= log-level", severity);
 }
 
-std::shared_ptr<cli::Flag> flags::refresh_file(Optional<RefreshFile>& refresh_file) {
-  return cli::make_flag("refresh-file", "airmap refresh file", refresh_file);
+std::shared_ptr<cli::Flag> flags::oauth_token_file(Optional<OAuthTokenFile>& oauth_token_file) {
+  return cli::make_flag("oauth-token-file", "airmap oauth token file", oauth_token_file);
+}
+
+std::shared_ptr<cli::Flag> flags::refreshed_token_file(Optional<RefreshedTokenFile>& refreshed_token_file) {
+  return cli::make_flag("refreshed-token-file", "airmap refreshed token file", refreshed_token_file);
 }
 
 std::shared_ptr<cli::Flag> flags::telemetry_host(Optional<TelemetryHost>& host) {
@@ -41,10 +49,6 @@ std::shared_ptr<cli::Flag> flags::telemetry_host(Optional<TelemetryHost>& host) 
 
 std::shared_ptr<cli::Flag> flags::telemetry_port(Optional<std::uint16_t>& port) {
   return cli::make_flag("telemetry-port", "telemetry host port", port);
-}
-
-std::shared_ptr<cli::Flag> flags::token_file(Optional<TokenFile>& token_file) {
-  return cli::make_flag("token-file", "airmap token file", token_file);
 }
 
 std::shared_ptr<cli::Flag> flags::user_id(Optional<UserId>& user_id) {

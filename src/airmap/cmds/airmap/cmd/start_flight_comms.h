@@ -26,7 +26,7 @@ class StartFlightComms : public util::cli::CommandWithFlagsAndAction {
     Client::Version version{Client::Version::production};
     Logger::Severity log_level{Logger::Severity::info};
     Required<ConfigFile> config_file;
-    Required<TokenFile> token_file;
+    Required<OAuthTokenFile> oauth_token_file;
     Required<FlightId> flight_id;
   } params_;
 };

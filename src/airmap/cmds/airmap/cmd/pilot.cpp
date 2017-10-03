@@ -70,7 +70,7 @@ cmd::Pilot::Pilot()
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
-  flag(flags::token_file(token_file_));
+  flag(flags::oauth_token_file(oauth_token_file_));
   flag(cli::make_flag("pilot-id", "id of pilot", pilot_id_));
 
   action([this](const cli::Command::Context& ctxt) {
@@ -80,8 +80,8 @@ cmd::Pilot::Pilot()
       config_file_ = ConfigFile{paths::config_file(version_).string()};
     }
 
-    if (!token_file_) {
-      token_file_ = TokenFile{paths::token_file(version_).string()};
+    if (!oauth_token_file_) {
+      oauth_token_file_ = OAuthTokenFile{paths::oauth_token_file(version_).string()};
     }
 
     std::ifstream in_config{config_file_.get()};
@@ -90,9 +90,9 @@ cmd::Pilot::Pilot()
       return 1;
     }
 
-    std::ifstream in_token{token_file_.get()};
+    std::ifstream in_token{oauth_token_file_.get()};
     if (!in_token) {
-      log_.errorf(component, "failed to open token file %s for reading", token_file_);
+      log_.errorf(component, "failed to open oauth token file %s for reading", oauth_token_file_);
       return 1;
     }
 

@@ -37,6 +37,9 @@ cmd::Init::Init()
       if (!platform::exists(paths::config_dir(version_)))
         platform::create_directories(paths::config_dir(version_));
 
+      if (!platform::exists(paths::token_dir(version_)))
+        platform::create_directories(paths::token_dir(version_));
+
       // This scope ensures that the config_file is properly written to disk prior
       // to invoking the user's editor on the file.
       std::ofstream config_file{config_file_.get()};
