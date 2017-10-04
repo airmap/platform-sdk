@@ -114,8 +114,8 @@ cmd::PlanFlight::PlanFlight()
                          "  start time:        %s\n"
                          "  end time:          %s",
                          result.value().id, result.value().pilot.id, result.value().aircraft.id,
-                         result.value().latitude, result.value().longitude, result.value().max_altitude,
-                         result.value().min_altitude, result.value().buffer,
+                         result.value().takeoff.latitude, result.value().takeoff.longitude, result.value().altitude.max,
+                         result.value().altitude.min, result.value().buffer,
                          iso8601::generate(result.value().start_time), iso8601::generate(result.value().end_time));
               context->stop();
             } else {

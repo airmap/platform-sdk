@@ -9,10 +9,10 @@
 
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan& p) {
   get(p.id, j, "id");
-  get(p.latitude, j, "takeoff_latitude");
-  get(p.longitude, j, "takeoff_longitude");
-  get(p.max_altitude, j, "max_altitude_agl");
-  get(p.min_altitude, j, "min_altitude_agl");
+  get(p.takeoff.latitude, j, "takeoff_latitude");
+  get(p.takeoff.longitude, j, "takeoff_longitude");
+  get(p.altitude.max, j, "max_altitude_agl");
+  get(p.altitude.min, j, "min_altitude_agl");
   get(p.geometry, j, "geometry");
   get(p.start_time, j, "start_time");
   get(p.end_time, j, "end_time");
@@ -23,10 +23,10 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan& p) {
 
 void airmap::codec::json::encode(nlohmann::json& j, const FlightPlan& p) {
   j["id"]                = p.id;
-  j["takeoff_latitude"]  = p.latitude;
-  j["takeoff_longitude"] = p.longitude;
-  j["max_altitude_agl"]  = p.max_altitude;
-  j["min_altitude_agl"]  = p.min_altitude;
+  j["takeoff_latitude"]  = p.takeoff.latitude;
+  j["takeoff_longitude"] = p.takeoff.longitude;
+  j["max_altitude_agl"]  = p.altitude.max;
+  j["min_altitude_agl"]  = p.altitude.min;
   j["geometry"]          = p.geometry;
   j["start_time"]        = p.start_time;
   j["end_time"]          = p.end_time;
