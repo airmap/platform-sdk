@@ -6,9 +6,12 @@
 #include <airmap/cmds/airmap/cmd/monitor_mids.h>
 #include <airmap/cmds/airmap/cmd/monitor_traffic.h>
 #include <airmap/cmds/airmap/cmd/pilot.h>
+#include <airmap/cmds/airmap/cmd/plan_flight.h>
+#include <airmap/cmds/airmap/cmd/render_briefing.h>
 #include <airmap/cmds/airmap/cmd/simulate_scenario.h>
 #include <airmap/cmds/airmap/cmd/simulate_telemetry.h>
 #include <airmap/cmds/airmap/cmd/start_flight_comms.h>
+#include <airmap/cmds/airmap/cmd/submit_flight.h>
 #include <airmap/cmds/airmap/cmd/version.h>
 
 #include <airmap/do_not_copy_or_move.h>
@@ -32,9 +35,12 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::MonitorMids>());
     cmd_.command(std::make_shared<cmd::MonitorTraffic>());
     cmd_.command(std::make_shared<cmd::Pilot>());
+    cmd_.command(std::make_shared<cmd::PlanFlight>());
+    cmd_.command(std::make_shared<cmd::RenderBriefing>());
     cmd_.command(std::make_shared<cmd::StartFlightComms>());
     cmd_.command(std::make_shared<cmd::SimulateScenario>());
     cmd_.command(std::make_shared<cmd::SimulateTelemetry>());
+    cmd_.command(std::make_shared<cmd::SubmitFlight>());
     cmd_.command(std::make_shared<cmd::Version>());
   }
 

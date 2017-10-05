@@ -7,6 +7,7 @@
 #include <airmap/outcome.h>
 
 #include <functional>
+#include <iosfwd>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -20,16 +21,23 @@ class Traffic : DoNotCopyOrMove {
   /// Update bundles together information about aerial traffic
   /// relevant to a UAV flight.
   struct Update {
-    std::string id;           ///< The unique id of the underlying track in the context of AirMap.
-    std::string aircraft_id;  ///< The 'other' aircraft's id.
-    double latitude;          ///< The latitude of the other aircraft in [°].
-    double longitude;         ///< The longitude of the other aircraft in [°].
-    double altitude;          ///< The altitude of the other aircraft in [m].
-    double ground_speed;      ///< The speed over ground of the other aircraft in [m/s].
-    double heading;           ///< The heading of the other aircraft in [°].
-    double direction;         ///< The direction of the other aircraft in relation to the current aircraft in [°].
-    DateTime recorded;        ///< The time when the datum triggering the udpate was recorded.
-    DateTime timestamp;       ///< The time when the update was generated.
+    /// Type enumerates all known types of Traffic::Update.
+    enum class Type {
+      unknown,                ///< Marks the unknown type.
+      situational_awareness,  ///< Marks updates that provide planning information to operators and vehicles.
+      alert                   ///< Marks updates about aircrafts that are likely to collide with the current aircraft.
+    };
+
+    std::string id;            ///< The unique id of the underlying track in the context of AirMap.
+    std::string aircraft_id;   ///< The 'other' aircraft's id.
+    double latitude;           ///< The latitude of the other aircraft in [°].
+    double longitude;          ///< The longitude of the other aircraft in [°].
+    double altitude;           ///< The altitude of the other aircraft in [m].
+    double ground_speed;       ///< The speed over ground of the other aircraft in [m/s].
+    double heading;            ///< The heading of the other aircraft in [°].
+    double direction;          ///< The direction of the other aircraft in relation to the current aircraft in [°].
+    DateTime recorded;         ///< The time when the datum triggering the udpate was recorded.
+    DateTime timestamp;        ///< The time when the update was generated.
   };
 
   /// Monitor models handling of individual subscribers
@@ -53,7 +61,7 @@ class Traffic : DoNotCopyOrMove {
      public:
       /// handle_update is invoked when a new batch of Update instances
       /// is available.
-      virtual void handle_update(const std::vector<Update>& update) = 0;
+      virtual void handle_update(Update::Type type, const std::vector<Update>& update) = 0;
 
      protected:
       Subscriber() = default;
@@ -64,12 +72,12 @@ class Traffic : DoNotCopyOrMove {
     class FunctionalSubscriber : public Subscriber {
      public:
       /// FunctionalSubscriber initializes a new instance with 'f'.
-      explicit FunctionalSubscriber(const std::function<void(const std::vector<Update>&)>& f);
+      explicit FunctionalSubscriber(const std::function<void(Update::Type, const std::vector<Update>&)>& f);
       // From subscriber
-      void handle_update(const std::vector<Update>& update) override;
+      void handle_update(Update::Type type, const std::vector<Update>& update) override;
 
      private:
-      std::function<void(const std::vector<Update>&)> f_;
+      std::function<void(Update::Type, const std::vector<Update>&)> f_;
     };
 
     /// LoggingSubscriber is a convenience class that logs incoming batches
@@ -83,7 +91,7 @@ class Traffic : DoNotCopyOrMove {
       explicit LoggingSubscriber(const char* component, const std::shared_ptr<Logger>& logger);
 
       // From Subscriber
-      void handle_update(const std::vector<Update>& update) override;
+      void handle_update(Update::Type type, const std::vector<Update>& update) override;
 
      private:
       const char* component_;
@@ -110,6 +118,9 @@ class Traffic : DoNotCopyOrMove {
   Traffic() = default;
   /// @endcond
 };
+
+/// operator<< inserts a textual representation of type into out.
+std::ostream& operator<<(std::ostream& out, Traffic::Update::Type type);
 
 }  // namespace airmap
 

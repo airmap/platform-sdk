@@ -63,6 +63,7 @@ add_library(
   context.cpp
   credentials.cpp
   date_time.cpp
+  flight_plan.cpp
   geometry.cpp
   jsend.h
   jsend.cpp
@@ -106,6 +107,10 @@ add_library(
   codec/json/credentials.cpp
   codec/json/date_time.h
   codec/json/date_time.cpp
+  codec/json/flight_plan.h
+  codec/json/flight_plan.cpp
+  codec/json/flight_plans.h
+  codec/json/flight_plans.cpp
   codec/json/flight.h
   codec/json/flight.cpp
   codec/json/flights.h
@@ -154,6 +159,8 @@ add_library(
   rest/airspaces.cpp
   rest/authenticator.h
   rest/authenticator.cpp
+  rest/flight_plans.h
+  rest/flight_plans.cpp
   rest/flights.h
   rest/flights.cpp
   rest/pilots.h
@@ -222,12 +229,18 @@ add_executable(
   cmds/airmap/cmd/login.cpp
   cmds/airmap/cmd/pilot.h
   cmds/airmap/cmd/pilot.cpp
+  cmds/airmap/cmd/plan_flight.h
+  cmds/airmap/cmd/plan_flight.cpp
+  cmds/airmap/cmd/render_briefing.h
+  cmds/airmap/cmd/render_briefing.cpp
   cmds/airmap/cmd/simulate_scenario.h
   cmds/airmap/cmd/simulate_scenario.cpp
   cmds/airmap/cmd/simulate_telemetry.h
   cmds/airmap/cmd/simulate_telemetry.cpp
   cmds/airmap/cmd/start_flight_comms.h
   cmds/airmap/cmd/start_flight_comms.cpp
+  cmds/airmap/cmd/submit_flight.h
+  cmds/airmap/cmd/submit_flight.cpp
   cmds/airmap/cmd/monitor_mids.h
   cmds/airmap/cmd/monitor_mids.cpp
   cmds/airmap/cmd/monitor_traffic.h

@@ -50,8 +50,17 @@ void airmap::rest::Traffic::Monitor::unsubscribe(const std::shared_ptr<Subscribe
 
 void airmap::rest::Traffic::Monitor::handle_publish(const std::string& topic, const std::string& contents) {
   std::vector<Update> update = json::parse(contents)["traffic"];
+
+  Traffic::Update::Type type{Traffic::Update::Type::unknown};
+
+  if (topic.find("uav/traffic/sa") == 0) {
+    type = Traffic::Update::Type::situational_awareness;
+  } else if (topic.find("uav/traffic/alert") == 0) {
+    type = Traffic::Update::Type::alert;
+  }
+
   for (const auto& subscriber : subscribers_) {
-    subscriber->handle_update(update);
+    subscriber->handle_update(type, update);
   }
 }
 

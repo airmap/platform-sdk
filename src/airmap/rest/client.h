@@ -10,6 +10,7 @@
 #include <airmap/rest/aircrafts.h>
 #include <airmap/rest/airspaces.h>
 #include <airmap/rest/authenticator.h>
+#include <airmap/rest/flight_plans.h>
 #include <airmap/rest/flights.h>
 #include <airmap/rest/pilots.h>
 #include <airmap/rest/status.h>
@@ -33,6 +34,7 @@ class Client : public airmap::Client {
   airmap::Aircrafts& aircrafts() override;
   airmap::Airspaces& airspaces() override;
   airmap::Authenticator& authenticator() override;
+  airmap::FlightPlans& flight_plans() override;
   airmap::Flights& flights() override;
   airmap::Pilots& pilots() override;
   airmap::Status& status() override;
@@ -52,6 +54,7 @@ class Client : public airmap::Client {
   rest::Aircrafts aircrafts_;
   rest::Airspaces airspaces_;
   rest::Authenticator authenticator_;
+  rest::FlightPlans flight_plans_;
   rest::Flights flights_;
   rest::Pilots pilots_;
   rest::Status status_;
