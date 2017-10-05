@@ -125,10 +125,6 @@ class FlightPlans : DoNotCopyOrMove {
   /// a flight plan identified by a UUID and reports back results to 'cb'.
   virtual void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) = 0;
 
-  /// create_by_point creates a flight plan for 'parameters' and reports
-  /// results back to 'cb'.
-  virtual void create_by_point(const Create::Parameters& parameters, const Create::Callback& cb) = 0;
-
   /// create_by_polygon creates a flight plan for 'parameters' and reports
   /// results back to 'cb'.
   virtual void create_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) = 0;

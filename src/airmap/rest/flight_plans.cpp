@@ -44,22 +44,6 @@ void airmap::rest::FlightPlans::for_id(const ForId::Parameters& parameters, cons
                   });
 }
 
-void airmap::rest::FlightPlans::create_by_point(const Create::Parameters& parameters, const Create::Callback& cb) {
-  std::unordered_map<std::string, std::string> headers;
-  headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization);
-
-  json j = parameters;
-
-  requester_->post(version_to_path(version_, "/flight/%s/plan"), std::move(headers), j.dump(),
-                   [cb](const net::http::Requester::Result& result) {
-                     if (result) {
-                       cb(jsend::to_outcome<FlightPlan>(json::parse(result.value().body)));
-                     } else {
-                       cb(Create::Result{result.error()});
-                     }
-                   });
-}
-
 void airmap::rest::FlightPlans::create_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
   headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization);
