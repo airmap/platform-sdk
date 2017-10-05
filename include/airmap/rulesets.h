@@ -12,9 +12,10 @@
 
 namespace airmap {
 
+/// RuleSets provides functionality for managing contextual airspace.
 class RuleSets : DoNotCopyOrMove {
  public:
-  struct ForGeometry {
+  struct Search {
     struct Parameters {
       Geometry geometry;
     };
@@ -53,7 +54,7 @@ class RuleSets : DoNotCopyOrMove {
     using Callback = std::function<void(const Result&)>;
   };
 
-  virtual void for_geometry(const ForGeometry::Parameters& parameters, const ForGeometry::Callback& cb) = 0;
+  virtual void search(const Search::Parameters& parameters, const Search::Callback& cb) = 0;
 
   virtual void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) = 0;
 
