@@ -129,7 +129,7 @@ struct FlightPlan {
   struct {
     float max;          ///< The maximum altitude over the entire flight in [m].
     float min;          ///< The minimum altitude over the entire flight in [m].
-  } altitude;           ///< The altitude range of the flight in [m].
+  } altitude_agl;           ///< The altitude range of the flight in [m] above ground level.
   float buffer;         ///< The buffer in [m] around the geometry.
   Geometry geometry;    ///< The geometry describing the flight.
   DateTime start_time;  ///< Point in time when the flight will start/was started.
