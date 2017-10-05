@@ -14,17 +14,20 @@ namespace cmds {
 namespace airmap {
 namespace cmd {
 
-using ApiKey        = util::TaggedString<util::tags::MustNotBeEmpty>;
-using Authorization = util::TaggedString<util::tags::MustNotBeEmpty>;
-using ClientId      = util::TaggedString<util::tags::MustNotBeEmpty>;
-using ConfigFile    = util::TaggedString<util::tags::MustNotBeEmpty>;
-using EncryptionKey = util::TaggedString<util::tags::MustNotBeEmpty>;
-using FlightId      = util::TaggedString<util::tags::MustNotBeEmpty>;
-using TelemetryHost = util::TaggedString<util::tags::MustNotBeEmpty>;
-using TokenFile     = util::TaggedString<util::tags::MustNotBeEmpty>;
-using UserId        = util::TaggedString<util::tags::MustNotBeEmpty>;
+using AnonymousTokenFile = util::TaggedString<util::tags::MustNotBeEmpty>;
+using ApiKey             = util::TaggedString<util::tags::MustNotBeEmpty>;
+using Authorization      = util::TaggedString<util::tags::MustNotBeEmpty>;
+using ClientId           = util::TaggedString<util::tags::MustNotBeEmpty>;
+using ConfigFile         = util::TaggedString<util::tags::MustNotBeEmpty>;
+using EncryptionKey      = util::TaggedString<util::tags::MustNotBeEmpty>;
+using FlightId           = util::TaggedString<util::tags::MustNotBeEmpty>;
+using OAuthTokenFile     = util::TaggedString<util::tags::MustNotBeEmpty>;
+using RefreshedTokenFile = util::TaggedString<util::tags::MustNotBeEmpty>;
+using TelemetryHost      = util::TaggedString<util::tags::MustNotBeEmpty>;
+using UserId             = util::TaggedString<util::tags::MustNotBeEmpty>;
 
 namespace flags {
+std::shared_ptr<util::cli::Flag> anonymous_token_file(Optional<AnonymousTokenFile>& anonymous_token_file);
 std::shared_ptr<util::cli::Flag> api_key(Optional<ApiKey>& api_key);
 std::shared_ptr<util::cli::Flag> authorization(Optional<Authorization>& authorization);
 std::shared_ptr<util::cli::Flag> client_id(Optional<ClientId>& client_id);
@@ -32,9 +35,10 @@ std::shared_ptr<util::cli::Flag> config_file(Optional<ConfigFile>& config_file);
 std::shared_ptr<util::cli::Flag> encryption_key(Optional<EncryptionKey>& key);
 std::shared_ptr<util::cli::Flag> flight_id(Optional<FlightId>& flight_id);
 std::shared_ptr<util::cli::Flag> log_level(Logger::Severity& severity);
+std::shared_ptr<util::cli::Flag> oauth_token_file(Optional<OAuthTokenFile>& oauth_token_file);
+std::shared_ptr<util::cli::Flag> refreshed_token_file(Optional<RefreshedTokenFile>& refreshed_token_file);
 std::shared_ptr<util::cli::Flag> telemetry_host(Optional<TelemetryHost>& host);
 std::shared_ptr<util::cli::Flag> telemetry_port(Optional<std::uint16_t>& port);
-std::shared_ptr<util::cli::Flag> token_file(Optional<TokenFile>& token_file);
 std::shared_ptr<util::cli::Flag> user_id(Optional<UserId>& user_id);
 std::shared_ptr<util::cli::Flag> version(Client::Version& version);
 }  // namespace flags

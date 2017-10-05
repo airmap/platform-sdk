@@ -28,7 +28,7 @@ class MonitorTraffic : public util::cli::CommandWithFlagsAndAction {
   struct {
     Logger::Severity log_level{Logger::Severity::info};
     Required<ConfigFile> config_file;
-    Required<TokenFile> token_file;
+    Required<OAuthTokenFile> oauth_token_file;
     Required<FlightId> flight_id;
   } params_;
 };

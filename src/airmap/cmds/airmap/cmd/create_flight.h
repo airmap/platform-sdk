@@ -27,7 +27,7 @@ class CreateFlight : public util::cli::CommandWithFlagsAndAction {
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Optional<ConfigFile> config_file_;
-  Optional<TokenFile> token_file_;
+  Optional<OAuthTokenFile> oauth_token_file_;
   Optional<GeometryFile> geometry_file_;
   Flights::CreateFlight::Parameters params_;
 };

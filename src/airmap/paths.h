@@ -8,8 +8,11 @@ namespace airmap {
 namespace paths {
 
 platform::Path config_dir(Client::Version version);
+platform::Path token_dir(Client::Version version);
 platform::Path config_file(Client::Version version);
-platform::Path token_file(Client::Version version);
+platform::Path anonymous_token_file(Client::Version version);
+platform::Path oauth_token_file(Client::Version version);
+platform::Path refreshed_token_file(Client::Version version);
 
 }  // namespace paths
 }  // namespace airmap
