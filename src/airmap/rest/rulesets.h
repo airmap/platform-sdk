@@ -15,6 +15,8 @@ class RuleSets : public airmap::RuleSets {
 
   void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
+  void get_rules(const GetRules::Parameters& parameters, const GetRules::Callback& cb) = 0;
+  void evaluate_rules(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
 
  private:
   Client::Version version_;

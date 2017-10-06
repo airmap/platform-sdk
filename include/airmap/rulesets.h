@@ -35,18 +35,18 @@ class RuleSets : DoNotCopyOrMove {
 
   struct GetRules {
     struct Parameters {
-      std::string rulesets;
+      Optional<std::string> rulesets;
     };
 
     using Result = Outcome<std::vector<RuleSet>, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
-  struct EvaluateRules {
+  struct Evaluation {
     struct Parameters {
       Geometry geometry;
       // TBD - list of features
-      Feature flight_features;
+      Optional<Feature> flight_features;
       std::string rulesets;
     };
 
@@ -60,7 +60,7 @@ class RuleSets : DoNotCopyOrMove {
 
   virtual void get_rules(const GetRules::Parameters& parameters, const GetRules::Callback& cb) = 0;
 
-  virtual void evaluate_rules(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) = 0;
+  virtual void evaluate_rules(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
 
  protected:
   /// @cond
