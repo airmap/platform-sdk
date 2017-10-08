@@ -6,7 +6,7 @@
 #include <airmap/codec/json/optional.h>
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet& ruleset) {
-  //ruleset.result = j.dump();
+  // ruleset.result = j.dump();
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::vector<RuleSet>& v) {

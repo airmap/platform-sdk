@@ -2,9 +2,9 @@
 #define AIRMAP_RULESETS_H_
 
 #include <airmap/do_not_copy_or_move.h>
-#include <airmap/ruleset.h>
-#include <airmap/outcome.h>
 #include <airmap/geometry.h>
+#include <airmap/outcome.h>
+#include <airmap/ruleset.h>
 
 #include <cstdint>
 #include <functional>
@@ -20,7 +20,7 @@ class RuleSets : DoNotCopyOrMove {
       Geometry geometry;
     };
 
-    using Result = Outcome<std::vector<RuleSet>, std::exception_ptr>;
+    using Result   = Outcome<std::vector<RuleSet>, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
@@ -30,7 +30,7 @@ class RuleSets : DoNotCopyOrMove {
       Id id;
     };
 
-    using Result = Outcome<RuleSet, std::exception_ptr>;
+    using Result   = Outcome<RuleSet, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
@@ -39,7 +39,7 @@ class RuleSets : DoNotCopyOrMove {
       Optional<std::string> rulesets;
     };
 
-    using Result = Outcome<std::vector<RuleSet>, std::exception_ptr>;
+    using Result   = Outcome<std::vector<RuleSet>, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
@@ -51,7 +51,7 @@ class RuleSets : DoNotCopyOrMove {
       std::string rulesets;
     };
 
-    using Result = Outcome<RuleSet, std::exception_ptr>;
+    using Result   = Outcome<RuleSet, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 
