@@ -19,4 +19,5 @@ struct RuleSet {
 
 };  // namespace airmap
 
+}
 #endif  // AIRMAP_RULESET_H_

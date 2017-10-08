@@ -17,7 +17,7 @@ class RuleSets : DoNotCopyOrMove {
  public:
   struct Search {
     struct Parameters {
-      Geometry geometry;
+      Optional<Geometry> geometry;
     };
 
     using Result   = Outcome<std::vector<RuleSet>, std::exception_ptr>;
@@ -45,10 +45,10 @@ class RuleSets : DoNotCopyOrMove {
 
   struct Evaluation {
     struct Parameters {
-      Geometry geometry;
+      Optional<Geometry> geometry;
       // TBD - list of features
       Optional<std::string> flight_features;
-      std::string rulesets;
+      Optional<std::string> rulesets;
     };
 
     using Result   = Outcome<RuleSet, std::exception_ptr>;
