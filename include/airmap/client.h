@@ -21,7 +21,7 @@ class Authenticator;
 class FlightPlans;
 class Flights;
 class Pilots;
-class Rulesets;
+class RuleSets;
 class Status;
 class Telemetry;
 class Traffic;
@@ -118,7 +118,7 @@ class Client : DoNotCopyOrMove {
   virtual Pilots& pilots() = 0;
 
   /// rulesets returns the RuleSets implementation provided by the client.
-  virtual Rulesets& rulesets() = 0;
+  virtual RuleSets& rulesets() = 0;
 
   /// status returns the Status implementation provided by the client.
   virtual Status& status() = 0;
