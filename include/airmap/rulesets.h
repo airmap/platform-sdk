@@ -17,7 +17,7 @@ class RuleSets : DoNotCopyOrMove {
  public:
   struct Search {
     struct Parameters {
-      Optional<Geometry> geometry;
+      Required<Geometry> geometry;
     };
 
     using Result   = Outcome<std::vector<RuleSet>, std::exception_ptr>;
@@ -25,9 +25,8 @@ class RuleSets : DoNotCopyOrMove {
   };
 
   struct ForId {
-    using Id = std::string;
     struct Parameters {
-      Id id;
+      RuleSet::Id id;
     };
 
     using Result   = Outcome<RuleSet, std::exception_ptr>;
@@ -45,10 +44,10 @@ class RuleSets : DoNotCopyOrMove {
 
   struct Evaluation {
     struct Parameters {
-      Optional<Geometry> geometry;
-      // TBD - list of features
+      Required<Geometry> geometry;
+      // TBD - key value pairs from predicate_feature.code
       Optional<std::string> flight_features;
-      Optional<std::string> rulesets;
+      Required<std::string> rulesets;
     };
 
     using Result   = Outcome<RuleSet, std::exception_ptr>;
@@ -61,7 +60,7 @@ class RuleSets : DoNotCopyOrMove {
 
   virtual void get_rules(const GetRules::Parameters& parameters, const GetRules::Callback& cb) = 0;
 
-  virtual void evaluate_rules(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
+  virtual void evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
 
  protected:
   /// @cond

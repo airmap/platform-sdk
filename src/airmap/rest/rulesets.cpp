@@ -35,7 +35,7 @@ void airmap::rest::RuleSets::search(const Search::Parameters& parameters, const 
   requester_->get(version_to_path(version_, "/rules/%s"), std::move(query), std::move(headers),
                   [cb](const net::http::Requester::Result& result) {
                     if (result) {
-                      cb(jsend::to_outcome<RuleSet>(json::parse(result.value().body)));
+                      cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
                     } else {
                       cb(Search::Result{result.error()});
                     }
@@ -48,7 +48,7 @@ void airmap::rest::RuleSets::for_id(const ForId::Parameters& parameters, const F
   requester_->get(version_to_path(version_, "/rules/%s/%s", parameters.id), std::move(query), std::move(headers),
                   [cb](const net::http::Requester::Result& result) {
                     if (result) {
-                      cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
+                      cb(jsend::to_outcome<RuleSet>(json::parse(result.value().body)));
                     } else {
                       cb(ForId::Result{result.error()});
                     }
@@ -64,12 +64,12 @@ void airmap::rest::RuleSets::get_rules(const GetRules::Parameters& parameters, c
                     if (result) {
                       cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
                     } else {
-                      cb(Search::Result{result.error()});
+                      cb(GetRules::Result{result.error()});
                     }
                   });
 }
 
-void airmap::rest::RuleSets::evaluate_rules(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) {
+void airmap::rest::RuleSets::evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
@@ -78,7 +78,7 @@ void airmap::rest::RuleSets::evaluate_rules(const Evaluation::Parameters& parame
                     if (result) {
                       cb(jsend::to_outcome<RuleSet>(json::parse(result.value().body)));
                     } else {
-                      cb(Search::Result{result.error()});
+                      cb(Evaluation::Result{result.error()});
                     }
                   });
 }
