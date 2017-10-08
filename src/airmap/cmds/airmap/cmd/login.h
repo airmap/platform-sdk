@@ -28,7 +28,8 @@ class Login : public util::cli::CommandWithFlagsAndAction {
   void request_authentication(const Credentials& credentials);
   void handle_result_for_authentication_with_password(const Authenticator::AuthenticateWithPassword::Result& result);
   void handle_result_for_anonymous_authentication(const Authenticator::AuthenticateAnonymously::Result& result);
-  void handle_result_for_renewed_authentication(const Authenticator::RenewAuthentication::Result& result);
+  void handle_result_for_renewed_authentication(const Authenticator::RenewAuthentication::Result& result,
+                                                const Token& previous_token);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};

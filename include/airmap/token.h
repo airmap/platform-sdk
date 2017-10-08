@@ -1,6 +1,8 @@
 #ifndef AIRMAP_TOKEN_H_
 #define AIRMAP_TOKEN_H_
 
+#include <airmap/optional.h>
+
 #include <chrono>
 #include <iosfwd>
 #include <string>
@@ -34,10 +36,10 @@ class Token {
 
   /// Refreshed models a token for a refreshed authentication with OAuth credentials with the AirMap services.
   struct Refreshed {
-    enum class Type { bearer };
-    Type type;                        ///< The type of the Refreshed token.
+    OAuth::Type type;                 ///< The type of the Refreshed token.
     std::chrono::seconds expires_in;  ///< The token expires in 'expires_in' seconds.
     std::string id;                   ///< The id token.
+    Optional<OAuth> original_token;   ///< The original token used for renewal.
   };
 
   /// load_from_json reads a Token instance from the input stream 'in'.
@@ -65,10 +67,16 @@ class Token {
   const std::string& id() const;
   /// anonymous returns the details for a Type::anonymous Token instance.
   const Anonymous& anonymous() const;
+  /// anonymous returns the details for a Type::anonymous Token instance.
+  Anonymous& anonymous();
   /// oauth returns the details for a Type::oauth Token instance.
   const OAuth& oauth() const;
+  /// oauth returns the details for a Type::oauth Token instance.
+  OAuth& oauth();
   /// refreshed returns the details for a Type::refreshed Token instance.
   const Refreshed& refreshed() const;
+  /// refreshed returns the details for a Type::refreshed Token instance.
+  Refreshed& refreshed();
 
  private:
   union Data {
@@ -101,8 +109,6 @@ bool operator==(const Token::OAuth& lhs, const Token::OAuth& rhs);
 bool operator==(Token::OAuth::Type lhs, Token::OAuth::Type rhs);
 /// operator== returns true iff lhs equals rhs.
 bool operator==(const Token::Refreshed& lhs, const Token::Refreshed& rhs);
-/// operator== returns true iff lhs equals rhs.
-bool operator==(Token::Refreshed::Type lhs, Token::Refreshed::Type rhs);
 
 }  // namespace airmap
 

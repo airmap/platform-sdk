@@ -46,6 +46,7 @@ class FlightPlans : DoNotCopyOrMove {
       Geometry geometry;          ///< The geometry describing the flight.
       DateTime start_time;        ///< Point in time when the flight will start/was started.
       DateTime end_time;          ///< Point in time when the fligth will end.
+      std::vector<FlightPlan::Briefing::RuleSet::Id> rulesets;  ///< RuleSets that apply to this flight plan.
     };
 
     /// Result models the outcome of calling FlightPlans::create_by_polygon.

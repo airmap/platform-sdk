@@ -97,13 +97,13 @@ cmd::RenderBriefing::RenderBriefing()
               log_.infof(component,
                          "successfully rendered flight brief:\n"
                          "  created at:       %s\n"
-                         "  advisory status:\n"
-                         "    color:          %s\n"
                          "  # rulesets:       %d\n"
                          "  # validations:    %d\n"
-                         "  # authorizations: %d",
-                         result.value().created_at, result.value().airspace.color, result.value().rulesets.size(),
-                         result.value().validations.size(), result.value().authorizations.size());
+                         "  # authorizations: %d\n"
+                         "  advisory status:\n"
+                         "    color:          %s\n",
+                         result.value().created_at, result.value().rulesets.size(), result.value().validations.size(),
+                         result.value().authorizations.size(), result.value().airspace.color);
               context->stop();
             } else {
               try {

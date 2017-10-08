@@ -107,8 +107,8 @@ cmd::SubmitFlight::SubmitFlight()
                          "  start time:        %s\n"
                          "  end time:          %s",
                          result.value().id, result.value().pilot.id, result.value().aircraft.id,
-                         result.value().takeoff.latitude, result.value().takeoff.longitude, result.value().altitude_agl.max,
-                         result.value().altitude_agl.min, result.value().buffer,
+                         result.value().takeoff.latitude, result.value().takeoff.longitude,
+                         result.value().altitude_agl.max, result.value().altitude_agl.min, result.value().buffer,
                          iso8601::generate(result.value().start_time), iso8601::generate(result.value().end_time));
               context->stop();
             } else {

@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE(refreshed_is_correctly_parsed_from_json) {
   BOOST_TEST(token.type() == airmap::Token::Type::refreshed);
   BOOST_TEST(token.refreshed().expires_in.count() == 42);
   BOOST_TEST(token.refreshed().id == "id_token");
-  BOOST_TEST(token.refreshed().type == airmap::Token::Refreshed::Type::bearer);
+  BOOST_TEST(token.refreshed().type == airmap::Token::OAuth::Type::bearer);
 }
 
 BOOST_AUTO_TEST_CASE(anonymous_is_correctly_parsed_from_json) {

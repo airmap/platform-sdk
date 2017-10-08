@@ -68,11 +68,23 @@ const airmap::Token::Anonymous& airmap::Token::anonymous() const {
   return data_.anonymous;
 }
 
+airmap::Token::Anonymous& airmap::Token::anonymous() {
+  return data_.anonymous;
+}
+
 const airmap::Token::OAuth& airmap::Token::oauth() const {
   return data_.oauth;
 }
 
+airmap::Token::OAuth& airmap::Token::oauth() {
+  return data_.oauth;
+}
+
 const airmap::Token::Refreshed& airmap::Token::refreshed() const {
+  return data_.refreshed;
+}
+
+airmap::Token::Refreshed& airmap::Token::refreshed() {
   return data_.refreshed;
 }
 
@@ -187,9 +199,4 @@ bool airmap::operator==(Token::OAuth::Type lhs, Token::OAuth::Type rhs) {
 
 bool airmap::operator==(const Token::Refreshed& lhs, const Token::Refreshed& rhs) {
   return lhs.type == rhs.type && lhs.expires_in == rhs.expires_in && lhs.id == rhs.id;
-}
-
-bool airmap::operator==(Token::Refreshed::Type lhs, Token::Refreshed::Type rhs) {
-  using UT = typename std::underlying_type<Token::Refreshed::Type>::type;
-  return static_cast<UT>(lhs) == static_cast<UT>(rhs);
 }

@@ -41,7 +41,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Token::OAuth& token) {
 
 void airmap::codec::json::decode(const nlohmann::json& j, Token::OAuth::Type& type) {
   auto t = j.get<std::string>();
-  if (t == "bearer")
+  if (t == "bearer" || t == "Bearer")
     type = Token::OAuth::Type::bearer;
 }
 
@@ -53,13 +53,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Token::Refreshed& toke
   get(token.type, j, "token_type");
   get(token.expires_in, j, "expires_in");
   get(token.id, j, "id_token");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, Token::Refreshed::Type& type) {
-  auto t = j.get<std::string>();
-
-  if (t == "Bearer")
-    type = Token::Refreshed::Type::bearer;
+  get(token.original_token, j, "original_token");
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Token& token) {
@@ -104,9 +98,6 @@ void airmap::codec::json::encode(nlohmann::json& j, const Token::Refreshed& toke
   j["token_type"] = token.type;
   j["expires_in"] = token.expires_in.count();
   j["id_token"]   = token.id;
-}
-
-void airmap::codec::json::encode(nlohmann::json& j, const Token::Refreshed::Type& type) {
-  if (type == Token::Refreshed::Type::bearer)
-    j = "Bearer";
+  if (token.original_token)
+    j["original_token"] = token.original_token.get();
 }

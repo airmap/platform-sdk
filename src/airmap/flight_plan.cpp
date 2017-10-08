@@ -32,6 +32,42 @@ std::istream& airmap::operator>>(std::istream& in, FlightPlan::Briefing::RuleSet
   return in;
 }
 
+std::ostream& airmap::operator<<(std::ostream& out, FlightPlan::Briefing::RuleSet::Rule::Status status) {
+  switch (status) {
+    case FlightPlan::Briefing::RuleSet::Rule::Status::unknown:
+      return out << "unknown";
+    case FlightPlan::Briefing::RuleSet::Rule::Status::conflicting:
+      return out << "conflicting";
+    case FlightPlan::Briefing::RuleSet::Rule::Status::not_conflicting:
+      return out << "not_conflicting";
+    case FlightPlan::Briefing::RuleSet::Rule::Status::missing_info:
+      return out << "missing_info";
+    case FlightPlan::Briefing::RuleSet::Rule::Status::informational:
+      return out << "informational";
+  }
+
+  return out;
+}
+
+std::istream& airmap::operator>>(std::istream& in, FlightPlan::Briefing::RuleSet::Rule::Status& status) {
+  std::string s;
+  in >> s;
+
+  if (s == "conflicting") {
+    status = FlightPlan::Briefing::RuleSet::Rule::Status::conflicting;
+  } else if (s == "not_conflicting") {
+    status = FlightPlan::Briefing::RuleSet::Rule::Status::not_conflicting;
+  } else if (s == "missing_info") {
+    status = FlightPlan::Briefing::RuleSet::Rule::Status::missing_info;
+  } else if (s == "informational" || s == "informational_rules") {
+    status = FlightPlan::Briefing::RuleSet::Rule::Status::informational;
+  } else {
+    status = FlightPlan::Briefing::RuleSet::Rule::Status::unknown;
+  }
+
+  return in;
+}
+
 std::ostream& airmap::operator<<(std::ostream& out, FlightPlan::Briefing::Jurisdiction::Region region) {
   switch (region) {
     case FlightPlan::Briefing::Jurisdiction::Region::national:

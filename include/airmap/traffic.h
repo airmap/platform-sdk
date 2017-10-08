@@ -28,16 +28,16 @@ class Traffic : DoNotCopyOrMove {
       alert                   ///< Marks updates about aircrafts that are likely to collide with the current aircraft.
     };
 
-    std::string id;            ///< The unique id of the underlying track in the context of AirMap.
-    std::string aircraft_id;   ///< The 'other' aircraft's id.
-    double latitude;           ///< The latitude of the other aircraft in [°].
-    double longitude;          ///< The longitude of the other aircraft in [°].
-    double altitude;           ///< The altitude of the other aircraft in [m].
-    double ground_speed;       ///< The speed over ground of the other aircraft in [m/s].
-    double heading;            ///< The heading of the other aircraft in [°].
-    double direction;          ///< The direction of the other aircraft in relation to the current aircraft in [°].
-    DateTime recorded;         ///< The time when the datum triggering the udpate was recorded.
-    DateTime timestamp;        ///< The time when the update was generated.
+    std::string id;           ///< The unique id of the underlying track in the context of AirMap.
+    std::string aircraft_id;  ///< The 'other' aircraft's id.
+    double latitude;          ///< The latitude of the other aircraft in [°].
+    double longitude;         ///< The longitude of the other aircraft in [°].
+    double altitude;          ///< The altitude of the other aircraft in [m].
+    double ground_speed;      ///< The speed over ground of the other aircraft in [m/s].
+    double heading;           ///< The heading of the other aircraft in [°].
+    double direction;         ///< The direction of the other aircraft in relation to the current aircraft in [°].
+    DateTime recorded;        ///< The time when the datum triggering the udpate was recorded.
+    DateTime timestamp;       ///< The time when the update was generated.
   };
 
   /// Monitor models handling of individual subscribers

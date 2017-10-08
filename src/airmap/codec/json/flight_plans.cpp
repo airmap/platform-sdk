@@ -22,6 +22,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlans::Create::P
   get(p.pilot.id, j, "pilot_id");
   get(p.aircraft.id, j, "aircraft_id");
   get(p.buffer, j, "buffer");
+  get(p.rulesets, j, "rulesets");
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const FlightPlans::Create::Parameters& p) {
@@ -35,4 +36,7 @@ void airmap::codec::json::encode(nlohmann::json& j, const FlightPlans::Create::P
   j["pilot_id"]          = p.pilot.id;
   j["aircraft_id"]       = p.aircraft.id;
   j["buffer"]            = p.buffer;
+
+  for (const auto& id : p.rulesets)
+    j["rulesets"].push_back(id);
 }

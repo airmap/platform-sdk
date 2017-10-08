@@ -9,11 +9,11 @@
 void airmap::codec::json::decode(const nlohmann::json& j, Airspace& airspace) {
   airspace.set_id(j["id"].get<std::string>());
 
-  if (j.count("name") > 0)
+  if (j.count("name") > 0 && !j["name"].is_null())
     airspace.set_name(j["name"].get<std::string>());
-  if (j.count("country") > 0)
+  if (j.count("country") > 0 && !j["country"].is_null())
     airspace.set_country(j["country"].get<std::string>());
-  if (j.count("state") > 0)
+  if (j.count("state") > 0 && !j["state"].is_null())
     airspace.set_state(j["state"].get<std::string>());
   if (j.count("city") > 0 && !j["city"].is_null())
     airspace.set_city(j["city"].get<std::string>());
