@@ -18,6 +18,7 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       flight_plans_{configuration_.version, http_.airmap_requester},
       flights_{configuration_.version, http_.airmap_requester},
       pilots_{configuration_.version, http_.airmap_requester},
+      rulesets_{configuration_.version, http_.airmap_requester},
       status_{configuration_.version, http_.airmap_requester},
       telemetry_{std::make_shared<detail::OpenSSLAES256Encryptor>(), udp_sender_},
       traffic_{mqtt_broker_} {
@@ -45,6 +46,10 @@ airmap::Flights& airmap::rest::Client::flights() {
 
 airmap::Pilots& airmap::rest::Client::pilots() {
   return pilots_;
+}
+
+airmap::RuleSets& airmap::rest::Client::rulesets() {
+  return rulesets_;
 }
 
 airmap::Status& airmap::rest::Client::status() {

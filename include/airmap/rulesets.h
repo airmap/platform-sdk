@@ -25,6 +25,7 @@ class RuleSets : DoNotCopyOrMove {
   };
 
   struct ForId {
+    using Id = std::string;
     struct Parameters {
       Id id;
     };
@@ -46,7 +47,7 @@ class RuleSets : DoNotCopyOrMove {
     struct Parameters {
       Geometry geometry;
       // TBD - list of features
-      Optional<Feature> flight_features;
+      Optional<std::string> flight_features;
       std::string rulesets;
     };
 

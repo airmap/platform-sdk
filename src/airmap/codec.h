@@ -5,6 +5,7 @@
 #include <airmap/codec/http/query/airspaces.h>
 #include <airmap/codec/http/query/flights.h>
 #include <airmap/codec/http/query/pilots.h>
+#include <airmap/codec/http/query/rulesets.h>
 #include <airmap/codec/http/query/status.h>
 
 #include <airmap/codec/json/aircraft.h>
@@ -24,6 +25,7 @@
 #include <airmap/codec/json/pilot.h>
 #include <airmap/codec/json/pilots.h>
 #include <airmap/codec/json/rule.h>
+#include <airmap/codec/json/ruleset.h>
 #include <airmap/codec/json/status.h>
 #include <airmap/codec/json/token.h>
 #include <airmap/codec/json/traffic.h>

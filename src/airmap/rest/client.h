@@ -13,6 +13,7 @@
 #include <airmap/rest/flight_plans.h>
 #include <airmap/rest/flights.h>
 #include <airmap/rest/pilots.h>
+#include <airmap/rest/rulesets.h>
 #include <airmap/rest/status.h>
 #include <airmap/rest/telemetry.h>
 #include <airmap/rest/traffic.h>
@@ -37,6 +38,7 @@ class Client : public airmap::Client {
   airmap::FlightPlans& flight_plans() override;
   airmap::Flights& flights() override;
   airmap::Pilots& pilots() override;
+  airmap::RuleSets& rulesets() override;
   airmap::Status& status() override;
   airmap::Telemetry& telemetry() override;
   airmap::Traffic& traffic() override;
@@ -57,6 +59,7 @@ class Client : public airmap::Client {
   rest::FlightPlans flight_plans_;
   rest::Flights flights_;
   rest::Pilots pilots_;
+  rest::RuleSets rulesets_;
   rest::Status status_;
   rest::Telemetry telemetry_;
   rest::Traffic traffic_;

@@ -52,6 +52,8 @@ add_library(
   ${CMAKE_SOURCE_DIR}/include/airmap/pilot.h
   ${CMAKE_SOURCE_DIR}/include/airmap/outcome.h
   ${CMAKE_SOURCE_DIR}/include/airmap/rule.h
+  ${CMAKE_SOURCE_DIR}/include/airmap/ruleset.h
+  ${CMAKE_SOURCE_DIR}/include/airmap/rulesets.h
   ${CMAKE_SOURCE_DIR}/include/airmap/status.h
   ${CMAKE_SOURCE_DIR}/include/airmap/telemetry.h
   ${CMAKE_SOURCE_DIR}/include/airmap/timestamp.h
@@ -90,6 +92,8 @@ add_library(
   codec/http/query/flights.cpp
   codec/http/query/pilots.h
   codec/http/query/pilots.cpp
+  codec/http/query/rulesets.h
+  codec/http/query/rulesets.cpp
   codec/http/query/status.h
   codec/http/query/status.cpp
 
@@ -123,6 +127,8 @@ add_library(
   codec/json/pilots.cpp
   codec/json/rule.h
   codec/json/rule.cpp
+  codec/json/ruleset.h
+  codec/json/ruleset.cpp
   codec/json/status.h
   codec/json/status.cpp
   codec/json/token.h
@@ -165,6 +171,8 @@ add_library(
   rest/flights.cpp
   rest/pilots.h
   rest/pilots.cpp
+  rest/rulesets.h
+  rest/rulesets.cpp
   rest/status.h
   rest/status.cpp
   rest/telemetry.h

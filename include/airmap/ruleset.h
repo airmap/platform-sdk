@@ -17,6 +17,6 @@ struct RuleSet {
   // TBD - define schema for result
   std::string result;
 
-}  // namespace airmap
+};  // namespace airmap
 
 #endif  // AIRMAP_RULESET_H_
