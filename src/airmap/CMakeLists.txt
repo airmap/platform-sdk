@@ -227,8 +227,12 @@ add_executable(
   cmds/airmap/cmd/create_flight.cpp
   cmds/airmap/cmd/daemon.h
   cmds/airmap/cmd/daemon.cpp
+  cmds/airmap/cmd/evaluate_rulesets.h  
+  cmds/airmap/cmd/evaluate_rulesets.cpp  
   cmds/airmap/cmd/flags.h
   cmds/airmap/cmd/flags.cpp
+  cmds/airmap/cmd/get_rules.h
+  cmds/airmap/cmd/get_rules.cpp
   cmds/airmap/cmd/get_status.h
   cmds/airmap/cmd/get_status.cpp
   cmds/airmap/cmd/init.h
@@ -241,6 +245,8 @@ add_executable(
   cmds/airmap/cmd/plan_flight.cpp
   cmds/airmap/cmd/render_briefing.h
   cmds/airmap/cmd/render_briefing.cpp
+  cmds/airmap/cmd/search_rulesets.h  
+  cmds/airmap/cmd/search_rulesets.cpp  
   cmds/airmap/cmd/simulate_scenario.h
   cmds/airmap/cmd/simulate_scenario.cpp
   cmds/airmap/cmd/simulate_telemetry.h
