@@ -65,6 +65,10 @@ class RuleSets : DoNotCopyOrMove {
  protected:
   /// @cond
   RuleSets() = default;
+
+
+
+
   /// @endcond
 };
 

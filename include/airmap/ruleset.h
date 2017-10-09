@@ -10,6 +10,7 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace airmap {
 
@@ -76,7 +77,15 @@ struct RuleSet {
   bool is_default;
   std::vector<std::string> airspace_types;  ///< The layers that a RuleSet instance applies to.
   std::vector<Rule> rules;          ///< The individual rules in the set.
-};
+
+  };
+
+  std::ostream& operator<<(std::ostream& out, RuleSet::Jurisdiction::Region region);
+  std::istream& operator>>(std::istream& in, RuleSet::Jurisdiction::Region& region);
+  std::ostream& operator<<(std::ostream& out, RuleSet::SelectionType type);
+  std::istream& operator>>(std::istream& in, RuleSet::SelectionType& type);
+  std::ostream& operator<<(std::ostream& out, RuleSet::Rule::Status status);
+  std::istream& operator>>(std::istream& in, RuleSet::Rule::Status& status);
 
 }
 #endif  // AIRMAP_RULESET_H_
