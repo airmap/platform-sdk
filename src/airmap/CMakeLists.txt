@@ -243,10 +243,10 @@ add_executable(
   cmds/airmap/cmd/pilot.cpp
   cmds/airmap/cmd/plan_flight.h
   cmds/airmap/cmd/plan_flight.cpp
+  cmds/airmap/cmd/query_rulesets.h  
+  cmds/airmap/cmd/query_rulesets.cpp  
   cmds/airmap/cmd/render_briefing.h
   cmds/airmap/cmd/render_briefing.cpp
-  cmds/airmap/cmd/search_rulesets.h  
-  cmds/airmap/cmd/search_rulesets.cpp  
   cmds/airmap/cmd/simulate_scenario.h
   cmds/airmap/cmd/simulate_scenario.cpp
   cmds/airmap/cmd/simulate_telemetry.h
