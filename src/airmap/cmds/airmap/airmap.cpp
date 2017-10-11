@@ -32,7 +32,7 @@ class Airmap : airmap::DoNotCopyOrMove {
              cli::Description{"interacts with AirMap services"}} {
     cmd_.command(std::make_shared<cmd::CreateFlight>());
     cmd_.command(std::make_shared<cmd::Daemon>());
-    cmd_.command(std::make_shared<cmd::GetRules>());
+    cmd_.command(std::make_shared<cmd::FetchRules>());
     cmd_.command(std::make_shared<cmd::GetStatus>());
     cmd_.command(std::make_shared<cmd::EvaluateRulesets>());
     cmd_.command(std::make_shared<cmd::Init>());

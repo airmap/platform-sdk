@@ -16,20 +16,20 @@ namespace cmds {
 namespace airmap {
 namespace cmd {
 
-class GetRules : public util::cli::CommandWithFlagsAndAction {
+class FetchRules : public util::cli::CommandWithFlagsAndAction {
  public:
-  GetRules();
+  FetchRules();
 
  private:
  	
-  //using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using Rulesets = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
-  Optional<std::string> rulesets_;
-  RuleSets::GetRules::Parameters params_;
+  Optional<Rulesets> rulesets_;
+  RuleSets::FetchRules::Parameters params_;
   
 };
 

@@ -55,7 +55,7 @@ void airmap::rest::RuleSets::for_id(const ForId::Parameters& parameters, const F
                   });
 }
 
-void airmap::rest::RuleSets::get_rules(const GetRules::Parameters& parameters, const GetRules::Callback& cb) {
+void airmap::rest::RuleSets::get_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
@@ -64,7 +64,7 @@ void airmap::rest::RuleSets::get_rules(const GetRules::Parameters& parameters, c
                     if (result) {
                       cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
                     } else {
-                      cb(GetRules::Result{result.error()});
+                      cb(FetchRules::Result{result.error()});
                     }
                   });
 }

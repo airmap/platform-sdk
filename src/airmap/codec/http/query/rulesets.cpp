@@ -18,7 +18,7 @@ void airmap::codec::http::query::encode(std::unordered_map<std::string, std::str
 }
 
 void airmap::codec::http::query::encode(std::unordered_map<std::string, std::string>& query,
-                                        const RuleSets::GetRules::Parameters& parameters) {
+                                        const RuleSets::FetchRules::Parameters& parameters) {
   if (parameters.rulesets)
     query["rulesets"] = parameters.rulesets.get();
 }
