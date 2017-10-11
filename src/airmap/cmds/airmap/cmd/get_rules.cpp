@@ -15,17 +15,16 @@ using json = nlohmann::json;
 
 namespace {
 
-constexpr const char* component{"get-rules"};
+constexpr const char* component{"fetch-rules"};
 }  // namespace
 
 cmd::GetRules::GetRules()
-    : cli::CommandWithFlagsAndAction{"get-rules", "",
-                                     ""} {
+    : cli::CommandWithFlagsAndAction{"fetch-rules", "fetches the rules that apply to the rulesets as well as the corresponding flight_features",
+                                     "fetches the rules that apply to the rulesets as well as the corresponding flight_features"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
-  //flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
-  // TBD
+  flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
@@ -39,7 +38,6 @@ cmd::GetRules::GetRules()
       log_.errorf(component, "failed to open configuration file %s for reading", config_file_);
       return 1;
     }
-
 
     auto result = ::airmap::Context::create(log_.logger());
 
@@ -78,15 +76,15 @@ cmd::GetRules::GetRules()
 
           auto handler = [this, &ctxt, context, client](const RuleSets::GetRules::Result& result) {
             if (result) {
-              log_.infof(component, "TBD\n");
+              log_.infof(component, "succesfully obtained rules for list of rulesets\n");
               context->stop();
             } else {
               try {
                 std::rethrow_exception(result.error());
               } catch (const std::exception& e) {
-                log_.errorf(component, "failed to get rules: %s", e.what());
+                log_.errorf(component, "failed to fetch rules: %s", e.what());
               } catch (...) {
-                log_.errorf(component, "failed to get rules");
+                log_.errorf(component, "failed to fetch rules");
               }
               context->stop(::airmap::Context::ReturnCode::error);
               return;

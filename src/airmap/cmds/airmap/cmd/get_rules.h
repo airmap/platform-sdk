@@ -21,14 +21,13 @@ class GetRules : public util::cli::CommandWithFlagsAndAction {
   GetRules();
 
  private:
- 	
-  //using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using Rulesets = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
-  Optional<std::string> rulesets_;
+  Optional<Rulesets> rulesets_;
   RuleSets::GetRules::Parameters params_;
   
 };
