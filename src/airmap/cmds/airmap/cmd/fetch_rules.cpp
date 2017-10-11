@@ -1,4 +1,4 @@
-#include <airmap/cmds/airmap/cmd/get_rules.h>
+#include <airmap/cmds/airmap/cmd/fetch_rules.h>
 
 #include <airmap/client.h>
 #include <airmap/codec.h>
@@ -93,7 +93,7 @@ cmd::FetchRules::FetchRules()
 
           params_.rulesets = rulesets_.get();
 
-          client->rulesets().get_rules(params_, handler);
+          client->rulesets().fetch_rules(params_, handler);
 
         });
 

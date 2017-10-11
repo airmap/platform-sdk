@@ -55,7 +55,7 @@ void airmap::rest::RuleSets::for_id(const ForId::Parameters& parameters, const F
                   });
 }
 
-void airmap::rest::RuleSets::get_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) {
+void airmap::rest::RuleSets::fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 

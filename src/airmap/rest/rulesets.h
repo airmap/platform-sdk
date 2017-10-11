@@ -15,7 +15,7 @@ class RuleSets : public airmap::RuleSets {
 
   void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
-  void get_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) override;
+  void fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) override;
   void evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) override;
 
  private:

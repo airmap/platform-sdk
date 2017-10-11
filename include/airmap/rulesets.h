@@ -58,7 +58,7 @@ class RuleSets : DoNotCopyOrMove {
 
   virtual void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) = 0;
 
-  virtual void get_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) = 0;
+  virtual void fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) = 0;
 
   virtual void evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
 

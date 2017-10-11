@@ -1,5 +1,5 @@
-#ifndef AIRMAP_CMDS_AIRMAP_CMD_GET_RULES_H_
-#define AIRMAP_CMDS_AIRMAP_CMD_GET_RULES_H_
+#ifndef AIRMAP_CMDS_AIRMAP_CMD_FETCH_RULES_H_
+#define AIRMAP_CMDS_AIRMAP_CMD_FETCH_RULES_H_
 
 #include <airmap/cmds/airmap/cmd/flags.h>
 
@@ -37,4 +37,4 @@ class FetchRules : public util::cli::CommandWithFlagsAndAction {
 }  // namespace cmds
 }  // namespace airmap
 
-#endif // AIRMAP_CMDS_AIRMAP_CMD_GET_RULES_H_
+#endif // AIRMAP_CMDS_AIRMAP_CMD_FETCH_RULES_H_
