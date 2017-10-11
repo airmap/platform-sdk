@@ -24,7 +24,7 @@ cmd::FetchRules::FetchRules()
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
-  flag(cli::make_flag("rulesets", "use the polygon defined in this geojson file", rulesets_));
+  flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
@@ -38,7 +38,6 @@ cmd::FetchRules::FetchRules()
       log_.errorf(component, "failed to open configuration file %s for reading", config_file_);
       return 1;
     }
-
 
     auto result = ::airmap::Context::create(log_.logger());
 

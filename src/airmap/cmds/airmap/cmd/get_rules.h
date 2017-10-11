@@ -21,7 +21,6 @@ class FetchRules : public util::cli::CommandWithFlagsAndAction {
   FetchRules();
 
  private:
- 	
   using Rulesets = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
