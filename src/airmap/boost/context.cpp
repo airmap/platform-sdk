@@ -96,6 +96,18 @@ void airmap::boost::Context::stop(ReturnCode rc) {
   io_service_->stop();
 }
 
+void airmap::boost::Context::schedule_in(const Microseconds& wait_for, const std::function<void()>& functor) {
+  auto timer = std::make_shared<::boost::asio::deadline_timer>(*io_service_);
+  timer->expires_from_now(wait_for);
+  timer->async_wait([this, timer, functor](const auto& error) {
+    if (error) {
+      log_.errorf(component, "error waiting for timer: %s", error.message());
+    } else {
+      functor();
+    }
+  });
+}
+
 void airmap::boost::Context::dispatch(const std::function<void()>& task) {
   io_service_->dispatch(task);
 }

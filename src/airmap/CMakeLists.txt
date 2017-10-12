@@ -259,6 +259,10 @@ add_executable(
   cmds/airmap/cmd/monitor_mids.cpp
   cmds/airmap/cmd/monitor_traffic.h
   cmds/airmap/cmd/monitor_traffic.cpp
+  cmds/airmap/cmd/test.h
+  cmds/airmap/cmd/test.cpp
+  cmds/airmap/cmd/test/laanc.phoenix.h
+  cmds/airmap/cmd/test/laanc.phoenix.cpp
   cmds/airmap/cmd/version.h
   cmds/airmap/cmd/version.cpp
 

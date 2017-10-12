@@ -43,6 +43,55 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing& 
   get(b.authorizations, j, "authorizations");
 }
 
+void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Feature& f) {
+  get(f.id, j, "id");
+  get(f.code, j, "code");
+  get(f.name, j, "flight_feature");
+  get(f.description, j, "description");
+  get(f.status, j, "status");
+  get(f.type, j, "input_type");
+  get(f.measurement, j, "measurement_type");
+  get(f.unit, j, "measurement_unit");
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Feature::Type& f) {
+  f = boost::lexical_cast<FlightPlan::Briefing::Feature::Type>(j.get<std::string>());
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Feature::Measurement& m) {
+  m = boost::lexical_cast<FlightPlan::Briefing::Feature::Measurement>(j.get<std::string>());
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Feature::Unit& u) {
+  u = boost::lexical_cast<FlightPlan::Briefing::Feature::Unit>(j.get<std::string>());
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Feature::Value& v) {
+  switch (j.type()) {
+    case nlohmann::json::value_t::boolean:
+      v = FlightPlan::Briefing::Feature::Value{j.get<bool>()};
+      break;
+    case nlohmann::json::value_t::string:
+      v = FlightPlan::Briefing::Feature::Value{j.get<std::string>()};
+      break;
+    case nlohmann::json::value_t::number_integer:
+    case nlohmann::json::value_t::number_unsigned:
+    case nlohmann::json::value_t::number_float:
+      v = FlightPlan::Briefing::Feature::Value{j.get<double>()};
+      break;
+    default:
+      v = FlightPlan::Briefing::Feature::Value{};
+      break;
+  }
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, std::vector<FlightPlan::Briefing::Feature>& v) {
+  for (auto element : j) {
+    v.push_back(FlightPlan::Briefing::Feature{});
+    v.back() = element;
+  }
+}
+
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::RuleSet& r) {
   get(r.id, j, "id");
   get(r.type, j, "type");
@@ -59,6 +108,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::
   get(r.description, j, "description");
   get(r.status, j, "status");
   get(r.display_order, j, "display_order");
+  get(r.features, j, "flight_features");
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::vector<FlightPlan::Briefing::RuleSet::Rule>& v) {
@@ -154,5 +204,21 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::
 void airmap::codec::json::encode(nlohmann::json& j, const std::vector<FlightPlan::Briefing::RuleSet::Id>& v) {
   for (const auto& id : v) {
     j.push_back(id);
+  }
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const FlightPlan::Briefing::Feature::Value& v) {
+  switch (v.type()) {
+    case FlightPlan::Briefing::Feature::Type::boolean:
+      j = v.boolean();
+      break;
+    case FlightPlan::Briefing::Feature::Type::floating_point:
+      j = v.floating_point();
+      break;
+    case FlightPlan::Briefing::Feature::Type::string:
+      j = v.string();
+      break;
+    default:
+      break;
   }
 }

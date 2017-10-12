@@ -23,7 +23,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Airspace& airspace) {
     airspace.set_related_geometries(j["related_geometry"].get<std::vector<Geometry>>());
   if (j.count("rules") > 0)
     airspace.set_rules(j["rules"].get<std::vector<Rule>>());
-  if (j.count("last_updated") > 0)
+  if (j.count("last_updated") > 0 && !j["last_updated"].is_null())
     airspace.set_last_updated(iso8601::parse(j["last_updated"].get<std::string>()));
   if (j.count("type") > 0) {
     switch (j["type"].get<Airspace::Type>()) {

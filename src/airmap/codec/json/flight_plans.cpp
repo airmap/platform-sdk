@@ -23,6 +23,14 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlans::Create::P
   get(p.aircraft.id, j, "aircraft_id");
   get(p.buffer, j, "buffer");
   get(p.rulesets, j, "rulesets");
+  if (j.count("flight_features") > 0) {
+    auto ff = j["flight_features"];
+
+    for (auto it = ff.begin(); it != ff.end(); ++it) {
+      FlightPlan::Briefing::Feature::Value value = it.value();
+      p.features.emplace(it.key(), value);
+    }
+  }
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const FlightPlans::Create::Parameters& p) {
@@ -39,4 +47,8 @@ void airmap::codec::json::encode(nlohmann::json& j, const FlightPlans::Create::P
 
   for (const auto& id : p.rulesets)
     j["rulesets"].push_back(id);
+
+  for (const auto& pair : p.features) {
+    j["flight_features"][pair.first] = pair.second;
+  }
 }

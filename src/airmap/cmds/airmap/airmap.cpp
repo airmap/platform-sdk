@@ -15,6 +15,7 @@
 #include <airmap/cmds/airmap/cmd/simulate_telemetry.h>
 #include <airmap/cmds/airmap/cmd/start_flight_comms.h>
 #include <airmap/cmds/airmap/cmd/submit_flight.h>
+#include <airmap/cmds/airmap/cmd/test.h>
 #include <airmap/cmds/airmap/cmd/version.h>
 
 #include <airmap/do_not_copy_or_move.h>
@@ -47,6 +48,7 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::SimulateScenario>());
     cmd_.command(std::make_shared<cmd::SimulateTelemetry>());
     cmd_.command(std::make_shared<cmd::SubmitFlight>());
+    cmd_.command(std::make_shared<cmd::Test>());
     cmd_.command(std::make_shared<cmd::Version>());
   }
 

@@ -2,6 +2,7 @@
 #define AIRMAP_CONTEXT_H_
 
 #include <airmap/client.h>
+#include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/logger.h>
 #include <airmap/outcome.h>
@@ -57,6 +58,9 @@ class Context : DoNotCopyOrMove {
   /// stop requests an instance to shut down its operation and return from
   /// run.
   virtual void stop(ReturnCode rc = ReturnCode::success) = 0;
+
+  /// schedule_in schedules execution of 'functor' in 'wait_for' [us].
+  virtual void schedule_in(const Microseconds& wait_for, const std::function<void()>& functor) = 0;
 
  protected:
   /// @cond

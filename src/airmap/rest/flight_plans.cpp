@@ -105,6 +105,8 @@ void airmap::rest::FlightPlans::render_briefing(const RenderBriefing::Parameters
   requester_->get(version_to_path(version_, "/flight/%s/plan/%s/briefing", parameters.id), std::move(query),
                   std::move(headers), [cb](const net::http::Requester::Result& result) {
                     if (result) {
+                      auto j = json::parse(result.value().body);
+                      std::cout << j.dump(2) << std::endl;
                       cb(jsend::to_outcome<FlightPlan::Briefing>(json::parse(result.value().body)));
                     } else {
                       cb(RenderBriefing::Result{result.error()});

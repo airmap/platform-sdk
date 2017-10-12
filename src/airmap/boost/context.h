@@ -33,7 +33,7 @@ class Context : public airmap::Context, public std::enable_shared_from_this<Cont
   ReturnCode exec(const SignalSet& signal_set, const SignalHandler& signal_handler) override;
   ReturnCode run() override;
   void stop(ReturnCode rc) override;
-
+  void schedule_in(const Microseconds& wait_for, const std::function<void()>& functor) override;
   void dispatch(const std::function<void()>& task);
 
  private:
