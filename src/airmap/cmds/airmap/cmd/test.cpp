@@ -22,6 +22,9 @@ cmd::Test::Test() : cli::CommandWithFlagsAndAction{"test", "executes runtime tes
   flag(cli::make_flag("test-suite", "test suite name", test_suite_));
 
   test_suite_registry_[test::laanc::PhoenixZoo::name] = []() { return std::make_shared<test::laanc::PhoenixZoo>(); };
+  test_suite_registry_[test::laanc::PhoenixManual::name] = []() {
+    return std::make_shared<test::laanc::PhoenixManual>();
+  };
   test_suite_registry_[test::laanc::PhoenixSchwegg::name] = []() {
     return std::make_shared<test::laanc::PhoenixSchwegg>();
   };

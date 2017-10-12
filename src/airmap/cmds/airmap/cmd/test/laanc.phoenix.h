@@ -67,6 +67,14 @@ class PhoenixZoo : public Suite {
   FlightPlans::Create::Parameters parameters() override;
 };
 
+class PhoenixManual : public Suite {
+ public:
+  static constexpr const char* name{"laanc.phoenix.manual"};
+
+ private:
+  FlightPlans::Create::Parameters parameters() override;
+};
+
 class PhoenixSchwegg : public Suite {
  public:
   static constexpr const char* name{"laanc.phoenix.schwegg"};

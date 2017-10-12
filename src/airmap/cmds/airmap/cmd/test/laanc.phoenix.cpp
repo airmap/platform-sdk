@@ -272,6 +272,69 @@ void laanc::Suite::handle_delete_flight_finished(const Flights::DeleteFlight::Re
   }
 }
 
+airmap::FlightPlans::Create::Parameters laanc::PhoenixManual::parameters() {
+  static constexpr const char* json          = R"_(
+    {
+        "takeoff_longitude": -118.364180570977,
+        "takeoff_latitude": 34.0168307437243,
+        "max_altitude_agl": 100,
+        "min_altitude_agl": 1,
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -112.10620880126953,
+                33.431011556740536
+              ],
+              [
+                -112.1000289916992,
+                33.42793141281223
+              ],
+              [
+                -112.09402084350586,
+                33.42914915719729
+              ],
+              [
+                -112.09917068481445,
+                33.431011556740536
+              ],
+              [
+                -112.10620880126953,
+                33.431011556740536
+              ]
+            ]
+          ]
+        },
+        "buffer": 100,
+        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "flight_features": {
+          "environment_visibility": 5000.0,
+          "flight_max_speed": 3.0,
+          "flight_vlos": true,
+          "flight_authorized": false,
+          "flight_carries_property_for_hire": false,
+          "flight_crosses_us_state_border": false,
+          "pilot_first_name": "Thomas",
+          "pilot_last_name": "Voß",
+          "pilot_phone_number": "+491621074430",
+          "pilot_in_command_part107_cert": true,
+          "uav_nav_lights": true,
+          "uav_preflight_check": true,
+          "uav_registered": true,
+          "uav_weight" : 1.0
+        }
+    }
+  )_";
+  FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
+  parameters.authorization                   = token_.id();
+  parameters.pilot                           = pilot_.get();
+  parameters.aircraft                        = aircraft_.get();
+  parameters.start_time                      = DateTime(Clock::universal_time().date())+Hours{40};
+  parameters.end_time                        = parameters.start_time + Minutes{5};
+  return parameters;
+}
+
 airmap::FlightPlans::Create::Parameters laanc::PhoenixZoo::parameters() {
   static constexpr const char* json          = R"_(
     {
