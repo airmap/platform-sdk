@@ -15,7 +15,7 @@ struct Flight {
   using Id = std::string;
 
   Id id;                                    ///< The unique identifier of a flight in the context of AirMap.
-  Optional<FlightPlan::Id> flight_plan_id;  ///< The flight plan corresponding to thes flight.
+  Optional<FlightPlan::Id> flight_plan_id;  ///< The flight plan corresponding to this flight.
   Pilot pilot;                              ///< The pilot responsible for the flight.
   Pilot::Aircraft aircraft;                 ///< The aircraft conducting the flight.
   float latitude;                           ///< The latitude component of the takeoff point in [°].
