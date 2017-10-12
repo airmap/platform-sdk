@@ -116,6 +116,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, RuleSet& r) {
   get(r.short_name, j, "short_name");
   get(r.description, j, "description");
   get(r.is_default, j, "default");
+  get(r.jurisdiction, j, "jurisdiction");
   get(r.airspace_types, j, "airspace_types");
   get(r.rules, j, "rules");
 }
@@ -169,8 +170,6 @@ void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Jurisdiction&
   get(jd.name, j, "name");
   get(jd.region, j, "region");
 }
-
-
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Jurisdiction::Region& r) {
   r = boost::lexical_cast<RuleSet::Jurisdiction::Region>(j.get<std::string>());

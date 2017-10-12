@@ -75,6 +75,7 @@ struct RuleSet {
   std::string short_name;  ///< The human-readable short name.
   std::string description;     ///< The human readable description.
   bool is_default;
+  Jurisdiction jurisdiction;
   std::vector<std::string> airspace_types;  ///< The layers that a RuleSet instance applies to.
   std::vector<Rule> rules;          ///< The individual rules in the set.
 

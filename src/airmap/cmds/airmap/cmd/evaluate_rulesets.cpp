@@ -19,8 +19,12 @@ constexpr const char* component{"evaluate-rulesets"};
 
 void print_rules(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
   for (const auto& r : v) {
+    out << std::endl;
     out << "    id:           " << r.id << std::endl;
+    out << "    # rules:      " << r.rules.size() << std::endl;
+    // TBD - print rules
   }
+  out << std::endl;
 }
 
 }  // namespace

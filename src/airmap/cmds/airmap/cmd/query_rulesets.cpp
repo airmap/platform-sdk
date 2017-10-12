@@ -19,8 +19,19 @@ constexpr const char* component{"query-rulesets"};
 
 std::string print_ruleset(const airmap::RuleSet& r) {
   return fmt::sprintf(
-    "    id:           %s\n",
-    r.id
+    "    id:             %s\n"
+    "    name:           %s\n"
+    "    short_name:     %s\n"
+    "    selection_type: %s\n"
+    "    description:    %s\n"
+    "    default:        %s\n"
+    "    jurisdiction:\n"
+    "       id:          %s\n"
+    "       name:        %s\n"
+    "       region:      %s\n"
+    "    # rules:        %s\n",
+    r.id, r.name, r.short_name, r.selection_type, r.description, r.is_default, r.jurisdiction.id, r.jurisdiction.name, r.jurisdiction.region, r.rules.size()
+    // TBD - print rules
   );
 }
 
