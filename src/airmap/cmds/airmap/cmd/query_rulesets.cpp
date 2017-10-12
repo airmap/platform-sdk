@@ -67,6 +67,11 @@ cmd::QueryRulesets::QueryRulesets()
       return 1;
     }
 
+    if (!ruleset_id_ && !geometry_file_) {
+      log_.errorf(component, "missing parameter 'ruleset-id' or 'geometry-file'");
+      return 1;
+    }
+
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
@@ -116,10 +121,6 @@ cmd::QueryRulesets::QueryRulesets()
             RuleSets::Search::Parameters params;
             params.geometry = geometry;
             client_->rulesets().search(params, std::bind(&QueryRulesets::handle_ruleset_search_result, this, std::placeholders::_1));
-          } else {
-              log_.errorf(component, "missing parameter 'ruleset-id' or 'geometry-file'");
-              context_->stop(::airmap::Context::ReturnCode::error);
-              return;
           }
         });
 
