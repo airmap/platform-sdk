@@ -40,6 +40,9 @@ class Suite : public Test::Suite {
   void rerender_briefing();
   void handle_rerender_briefing_finished(const FlightPlans::RenderBriefing::Result& result);
 
+  void render_final_briefing();
+  void handle_render_final_briefing_finished(const FlightPlans::RenderBriefing::Result& result);
+
   void delete_flight_plan();
   void handle_delete_flight_plan_finished(const FlightPlans::Delete::Result& result);
 

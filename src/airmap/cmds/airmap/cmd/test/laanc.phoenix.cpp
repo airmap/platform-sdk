@@ -151,13 +151,12 @@ void laanc::Suite::submit_flight_plan() {
 
 void laanc::Suite::handle_submit_flight_plan_finished(const FlightPlans::Submit::Result& result) {
   if (result) {
-    static const Microseconds timeout{5 * 1000 * 1000};
-
     if (result.value().flight_id) {
       log_.infof(component, "successfully submitted flight plan and received flight id");
       log_.infof(component, "scheduling rendering of flight plan");
+
       flight_id_ = result.value().flight_id;
-      context_->schedule_in(timeout, [this]() { rerender_briefing(); });
+      rerender_briefing();
     } else {
       log_.errorf(component, "successfully submitted flight plan but did not receive flight id");
       context_->stop(::airmap::Context::ReturnCode::error);
@@ -185,8 +184,9 @@ void laanc::Suite::rerender_briefing() {
 
 void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBriefing::Result& result) {
   if (result) {
+    static const Microseconds timeout{5 * 1000 * 1000};
     log_.infof(component, "successfully rerendered flight briefing");
-    delete_flight_plan();
+    context_->schedule_in(timeout, [this]() { render_final_briefing(); });
   } else {
     try {
       std::rethrow_exception(result.error());
@@ -194,6 +194,31 @@ void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBr
       log_.errorf(component, "failed to rerender flight briefing: %s", e.what());
     } catch (...) {
       log_.errorf(component, "failed to rerender flight briefing");
+    }
+    context_->stop(::airmap::Context::ReturnCode::error);
+  }
+}
+
+void laanc::Suite::render_final_briefing() {
+  FlightPlans::RenderBriefing::Parameters parameters;
+  parameters.id            = flight_plan_.get().id;
+  parameters.authorization = token_.id();
+
+  client_->flight_plans().render_briefing(parameters,
+                                          std::bind(&Suite::handle_render_final_briefing_finished, this, ph::_1));
+}
+
+void laanc::Suite::handle_render_final_briefing_finished(const FlightPlans::RenderBriefing::Result& result) {
+  if (result) {
+    log_.infof(component, "successfully render final flight briefing");
+    delete_flight_plan();
+  } else {
+    try {
+      std::rethrow_exception(result.error());
+    } catch (const std::exception& e) {
+      log_.errorf(component, "failed to render final flight briefing: %s", e.what());
+    } catch (...) {
+      log_.errorf(component, "failed to render final flight briefing");
     }
     context_->stop(::airmap::Context::ReturnCode::error);
   }
