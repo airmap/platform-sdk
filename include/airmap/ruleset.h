@@ -26,6 +26,7 @@ struct RuleSet {
       informational     ///< The rule is of informational nature.
     };
 
+    // TBD - use flight feature struct from flight_plan.h
     struct FlightFeature {
     	std::string flight_feature;
     	std::string description;

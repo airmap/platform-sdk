@@ -45,7 +45,7 @@ class RuleSets : DoNotCopyOrMove {
   struct Evaluation {
     struct Parameters {
       Required<Geometry> geometry;
-      // TBD - key value pairs from predicate_feature.code
+      // TBD - use flight feature unordered map from flight_plan.h
       Optional<std::string> flight_features;
       Required<std::string> rulesets;
     };
