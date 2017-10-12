@@ -76,7 +76,7 @@ void airmap::rest::RuleSets::evaluate_rulesets(const Evaluation::Parameters& par
   requester_->get(version_to_path(version_, "/rules/%s/evaluation"), std::move(query), std::move(headers),
                   [cb](const net::http::Requester::Result& result) {
                     if (result) {
-                      cb(jsend::to_outcome<RuleSet>(json::parse(result.value().body)));
+                      cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
                     } else {
                       cb(Evaluation::Result{result.error()});
                     }

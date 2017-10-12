@@ -16,6 +16,13 @@ using json = nlohmann::json;
 namespace {
 
 constexpr const char* component{"fetch-rules"};
+
+void print_rulesets(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
+  for (const auto& r : v) {
+    out << "    id:           " << r.id << std::endl;
+  }
+}
+
 }  // namespace
 
 cmd::FetchRules::FetchRules()
@@ -77,6 +84,7 @@ cmd::FetchRules::FetchRules()
           auto handler = [this, &ctxt, context, client](const RuleSets::FetchRules::Result& result) {
             if (result) {
               log_.infof(component, "succesfully obtained rules for list of rulesets\n");
+              print_rulesets(ctxt.cout, result.value());
               context->stop();
             } else {
               try {

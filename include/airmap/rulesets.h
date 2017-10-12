@@ -50,7 +50,7 @@ class RuleSets : DoNotCopyOrMove {
       Required<std::string> rulesets;
     };
 
-    using Result   = Outcome<RuleSet, std::exception_ptr>;
+    using Result   = Outcome<std::vector<RuleSet>, std::exception_ptr>;
     using Callback = std::function<void(const Result&)>;
   };
 

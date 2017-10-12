@@ -16,16 +16,23 @@ using json = nlohmann::json;
 namespace {
 
 constexpr const char* component{"evaluate-rulesets"};
+
+void print_rules(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
+  for (const auto& r : v) {
+    out << "    id:           " << r.id << std::endl;
+  }
+}
+
 }  // namespace
 
 cmd::EvaluateRulesets::EvaluateRulesets()
-    : cli::CommandWithFlagsAndAction{"evaluate-rulesets", "",
-                                     ""} {
+    : cli::CommandWithFlagsAndAction{"evaluate-rulesets", "evalute rulesets and return a list of rules matching results",
+                                     "evalute rulesets and return a list of rules matching results"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
   flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
-  // TBD add flags here
+  flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
 
 
   action([this](const cli::Command::Context& ctxt) {
@@ -41,6 +48,13 @@ cmd::EvaluateRulesets::EvaluateRulesets()
       return 1;
     }
 
+    if (!rulesets_) {
+      log_.errorf(component, "missing parameter 'rulesets'");
+      return 1;
+    }
+
+    params_.rulesets = rulesets_.get();
+
     if (geometry_file_) {
       std::ifstream in{geometry_file_.get()};
       if (!in) {
@@ -49,6 +63,9 @@ cmd::EvaluateRulesets::EvaluateRulesets()
       }
       Geometry geometry = json::parse(in);
       params_.geometry  = geometry;
+    } else {
+      log_.errorf(component, "missing parameter 'geometry-file'");
+      return 1;
     }
 
     auto result = ::airmap::Context::create(log_.logger());
@@ -88,7 +105,8 @@ cmd::EvaluateRulesets::EvaluateRulesets()
 
           auto handler = [this, &ctxt, context, client](const RuleSets::Evaluation::Result& result) {
             if (result) {
-              log_.infof(component, "TBD\n");
+              log_.infof(component, "succesfully evaluated rulesets with provided geometry\n");
+              print_rules(ctxt.cout, result.value());
               context->stop();
             } else {
               try {

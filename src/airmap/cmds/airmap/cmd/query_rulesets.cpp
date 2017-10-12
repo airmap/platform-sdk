@@ -16,6 +16,22 @@ using json = nlohmann::json;
 namespace {
 
 constexpr const char* component{"query-rulesets"};
+
+std::string print_ruleset(const airmap::RuleSet& r) {
+  return fmt::sprintf(
+    "    id:           %s\n",
+    r.id
+  );
+}
+
+std::string print_rulesets(const std::vector<airmap::RuleSet>& v) {
+  std::ostringstream ss;
+  for (const auto& r : v) {
+    ss << print_ruleset(r);
+  }
+  return ss.str();
+}
+
 }  // namespace
 
 cmd::QueryRulesets::QueryRulesets()
@@ -108,7 +124,7 @@ cmd::QueryRulesets::QueryRulesets()
 
 void cmd::QueryRulesets::handle_ruleset_for_id_result(const RuleSets::ForId::Result& result) {
   if (result) {
-    log_.infof(component, "successfully queried rulesets from ruleset-id");
+    log_.infof(component, "successfully queried ruleset from ruleset-id:\n%s", print_ruleset(result.value()));
     context_->stop();
 } else {
     try {
@@ -125,7 +141,7 @@ void cmd::QueryRulesets::handle_ruleset_for_id_result(const RuleSets::ForId::Res
 
 void cmd::QueryRulesets::handle_ruleset_search_result(const RuleSets::Search::Result& result) {
   if (result) {
-    log_.infof(component, "successfully queried rulesets from geometry");
+    log_.infof(component, "successfully queried rulesets from geometry:\n%s", print_rulesets(result.value()));
     context_->stop();
 } else {
     try {
