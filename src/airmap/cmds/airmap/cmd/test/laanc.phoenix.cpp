@@ -307,7 +307,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixManual::parameters() {
           ]
         },
         "buffer": 100,
-        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "rulesets": ["usa_part_107"],
         "flight_features": {
           "environment_visibility": 5000.0,
           "flight_max_speed": 3.0,
@@ -482,7 +482,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixZoo::parameters() {
             ]
         },
         "buffer": 100,
-        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "rulesets": ["usa_part_107"],
         "flight_features": {
           "environment_visibility": 5000.0,
           "flight_max_speed": 3.0,
@@ -545,7 +545,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixSchwegg::parameters() {
             ]
         },
         "buffer": 100,
-        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "rulesets": ["usa_part_107"],
         "flight_features": {
           "environment_visibility": 5000.0,
           "flight_max_speed": 3.0,
@@ -664,7 +664,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixUniversity::parameters() {
             ]
         },
         "buffer": 100,
-        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "rulesets": ["usa_part_107"],
         "flight_features": {
           "environment_visibility": 5000.0,
           "flight_max_speed": 3.0,
