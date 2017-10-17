@@ -39,6 +39,7 @@ struct RuleSet {
     std::string short_text;      ///< The human-readable short summary of the rule.
     std::string description;     ///< The human-readable description of the rule.
     std::int32_t display_order;  ///< An indicator for ordering the ruleset.
+    // TBD - use flight feature struct from flight_plan.h
     std::vector<FlightFeature> flight_features;
   };
 
@@ -76,7 +77,7 @@ struct RuleSet {
   std::string short_name;        ///< The human-readable short name.
   std::string description;       ///< The human readable description.
   bool is_default;
-  Jurisdiction jurisdiction;
+  Jurisdiction jurisdiction;                ///< The jurisdiction.
   std::vector<std::string> airspace_types;  ///< The layers that a RuleSet instance applies to.
   std::vector<Rule> rules;                  ///< The individual rules in the set.
 };
