@@ -7,6 +7,6 @@ namespace test {
 
 std::string source_dir();
 
-}  // namespace
+}  // namespace test
 
 #endif  // TEST_HELPER_H_

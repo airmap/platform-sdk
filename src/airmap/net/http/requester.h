@@ -23,11 +23,11 @@ class Requester : DoNotCopyOrMove {
   virtual void delete_(const std::string& path, std::unordered_map<std::string, std::string>&& query,
                        std::unordered_map<std::string, std::string>&& headers, Callback cb) = 0;
   virtual void get(const std::string& path, std::unordered_map<std::string, std::string>&& query,
-                   std::unordered_map<std::string, std::string>&& headers, Callback cb) = 0;
+                   std::unordered_map<std::string, std::string>&& headers, Callback cb)     = 0;
   virtual void patch(const std::string& path, std::unordered_map<std::string, std::string>&& headers,
-                     const std::string& body, Callback cb) = 0;
+                     const std::string& body, Callback cb)                                  = 0;
   virtual void post(const std::string& path, std::unordered_map<std::string, std::string>&& headers,
-                    const std::string& body, Callback cb) = 0;
+                    const std::string& body, Callback cb)                                   = 0;
 
  protected:
   Requester() = default;

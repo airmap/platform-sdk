@@ -1,8 +1,8 @@
 #include <airmap/cmds/airmap/cmd/create_flight.h>
 #include <airmap/cmds/airmap/cmd/daemon.h>
+#include <airmap/cmds/airmap/cmd/evaluate_rulesets.h>
 #include <airmap/cmds/airmap/cmd/fetch_rules.h>
 #include <airmap/cmds/airmap/cmd/get_status.h>
-#include <airmap/cmds/airmap/cmd/evaluate_rulesets.h>
 #include <airmap/cmds/airmap/cmd/init.h>
 #include <airmap/cmds/airmap/cmd/login.h>
 #include <airmap/cmds/airmap/cmd/monitor_mids.h>

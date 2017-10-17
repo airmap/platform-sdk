@@ -69,7 +69,8 @@ void airmap::rest::RuleSets::fetch_rules(const FetchRules::Parameters& parameter
                   });
 }
 
-void airmap::rest::RuleSets::evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) {
+void airmap::rest::RuleSets::evaluate_rulesets(const Evaluation::Parameters& parameters,
+                                               const Evaluation::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 

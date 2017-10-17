@@ -27,7 +27,7 @@ class Broker : public mqtt::Broker {
   std::uint16_t port_;
 };
 
-}  // namespace broker
+}  // namespace boost
 }  // namespace mqtt
 }  // namespace net
 }  // namespace airmap

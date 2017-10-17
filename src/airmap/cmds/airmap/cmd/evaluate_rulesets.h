@@ -22,7 +22,7 @@ class EvaluateRulesets : public util::cli::CommandWithFlagsAndAction {
 
  private:
   using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using Rulesets = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using Rulesets     = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
@@ -31,7 +31,6 @@ class EvaluateRulesets : public util::cli::CommandWithFlagsAndAction {
   Required<GeometryFile> geometry_file_;
   Required<Rulesets> rulesets_;
   RuleSets::Evaluation::Parameters params_;
-  
 };
 
 }  // namespace cmd

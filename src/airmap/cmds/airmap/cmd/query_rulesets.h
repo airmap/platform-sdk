@@ -23,7 +23,7 @@ class QueryRulesets : public util::cli::CommandWithFlagsAndAction {
 
  private:
   using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using RuleSetId = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using RuleSetId    = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   void handle_ruleset_for_id_result(const RuleSets::ForId::Result& result);
   void handle_ruleset_search_result(const RuleSets::Search::Result& result);
@@ -36,7 +36,6 @@ class QueryRulesets : public util::cli::CommandWithFlagsAndAction {
   Required<ConfigFile> config_file_;
   Optional<GeometryFile> geometry_file_;
   Optional<RuleSetId> ruleset_id_;
-  
 };
 
 }  // namespace cmd

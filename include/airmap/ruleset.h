@@ -8,9 +8,9 @@
 
 #include <cstdint>
 #include <iosfwd>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 namespace airmap {
 
@@ -28,11 +28,11 @@ struct RuleSet {
 
     // TBD - use flight feature struct from flight_plan.h
     struct FlightFeature {
-    	std::string flight_feature;
-    	std::string description;
-    	std::string input_type;
-    	std::string measurement_type;
-    	std::string measurement_unit;
+      std::string flight_feature;
+      std::string description;
+      std::string input_type;
+      std::string measurement_type;
+      std::string measurement_unit;
     };
 
     Status status;               ///< The status of the rule.
@@ -62,32 +62,31 @@ struct RuleSet {
     /// Id models a unique identifier for a jurisdiction in the context of AirMap.
     using Id = std::uint64_t;
 
-    Id id;                          ///< The unique id.
-    std::string name;               ///< The human-readable name.
-    Region region;                  ///< The regional scope.
+    Id id;             ///< The unique id.
+    std::string name;  ///< The human-readable name.
+    Region region;     ///< The regional scope.
   };
 
   /// Id models a unique identifier for a briefing in the context of AirMap.
   using Id = std::string;
 
-  Id id;                   ///< The unique id.
-  SelectionType selection_type;               ///< The selection type.
-  std::string name;        ///< The human-readable name.
-  std::string short_name;  ///< The human-readable short name.
-  std::string description;     ///< The human readable description.
+  Id id;                         ///< The unique id.
+  SelectionType selection_type;  ///< The selection type.
+  std::string name;              ///< The human-readable name.
+  std::string short_name;        ///< The human-readable short name.
+  std::string description;       ///< The human readable description.
   bool is_default;
   Jurisdiction jurisdiction;
   std::vector<std::string> airspace_types;  ///< The layers that a RuleSet instance applies to.
-  std::vector<Rule> rules;          ///< The individual rules in the set.
+  std::vector<Rule> rules;                  ///< The individual rules in the set.
+};
 
-  };
+std::ostream& operator<<(std::ostream& out, RuleSet::Jurisdiction::Region region);
+std::istream& operator>>(std::istream& in, RuleSet::Jurisdiction::Region& region);
+std::ostream& operator<<(std::ostream& out, RuleSet::SelectionType type);
+std::istream& operator>>(std::istream& in, RuleSet::SelectionType& type);
+std::ostream& operator<<(std::ostream& out, RuleSet::Rule::Status status);
+std::istream& operator>>(std::istream& in, RuleSet::Rule::Status& status);
 
-  std::ostream& operator<<(std::ostream& out, RuleSet::Jurisdiction::Region region);
-  std::istream& operator>>(std::istream& in, RuleSet::Jurisdiction::Region& region);
-  std::ostream& operator<<(std::ostream& out, RuleSet::SelectionType type);
-  std::istream& operator>>(std::istream& in, RuleSet::SelectionType& type);
-  std::ostream& operator<<(std::ostream& out, RuleSet::Rule::Status status);
-  std::istream& operator>>(std::istream& in, RuleSet::Rule::Status& status);
-
-}
+}  // namespace airmap
 #endif  // AIRMAP_RULESET_H_

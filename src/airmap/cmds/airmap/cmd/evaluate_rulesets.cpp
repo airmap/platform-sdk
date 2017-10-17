@@ -30,14 +30,14 @@ void print_rules(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
 }  // namespace
 
 cmd::EvaluateRulesets::EvaluateRulesets()
-    : cli::CommandWithFlagsAndAction{"evaluate-rulesets", "evalute rulesets and return a list of rules matching results",
+    : cli::CommandWithFlagsAndAction{"evaluate-rulesets",
+                                     "evalute rulesets and return a list of rules matching results",
                                      "evalute rulesets and return a list of rules matching results"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
   flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
   flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
-
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};

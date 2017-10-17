@@ -29,7 +29,6 @@ class FetchRules : public util::cli::CommandWithFlagsAndAction {
   Required<ConfigFile> config_file_;
   Optional<Rulesets> rulesets_;
   RuleSets::FetchRules::Parameters params_;
-  
 };
 
 }  // namespace cmd
@@ -37,4 +36,4 @@ class FetchRules : public util::cli::CommandWithFlagsAndAction {
 }  // namespace cmds
 }  // namespace airmap
 
-#endif // AIRMAP_CMDS_AIRMAP_CMD_FETCH_RULES_H_
+#endif  // AIRMAP_CMDS_AIRMAP_CMD_FETCH_RULES_H_

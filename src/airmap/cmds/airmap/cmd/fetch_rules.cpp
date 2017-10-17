@@ -30,8 +30,9 @@ void print_rulesets(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
 }  // namespace
 
 cmd::FetchRules::FetchRules()
-    : cli::CommandWithFlagsAndAction{"fetch-rules", "fetches the rules that apply to the rulesets",
-                                     "fetches the rules that apply to the rulesets as well as the corresponding flight_features"} {
+    : cli::CommandWithFlagsAndAction{
+          "fetch-rules", "fetches the rules that apply to the rulesets",
+          "fetches the rules that apply to the rulesets as well as the corresponding flight_features"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));

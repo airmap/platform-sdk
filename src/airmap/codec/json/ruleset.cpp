@@ -36,7 +36,7 @@ std::istream& airmap::operator>>(std::istream& in, RuleSet::Jurisdiction::Region
   } else if (s == "local") {
     region = RuleSet::Jurisdiction::Region::local;
   }
-  
+
   return in;
 }
 
@@ -68,7 +68,6 @@ std::istream& airmap::operator>>(std::istream& in, RuleSet::SelectionType& type)
   }
 
   return in;
-
 }
 
 std::ostream& airmap::operator<<(std::ostream& out, RuleSet::Rule::Status status) {
@@ -106,8 +105,6 @@ std::istream& airmap::operator>>(std::istream& in, RuleSet::Rule::Status& status
 
   return in;
 }
-
-
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet& r) {
   get(r.id, j, "id");
