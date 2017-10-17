@@ -21,13 +21,13 @@ class FetchRules : public util::cli::CommandWithFlagsAndAction {
   FetchRules();
 
  private:
-  using Rulesets = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using RuleSetsCSV = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
-  Optional<Rulesets> rulesets_;
+  Optional<RuleSetsCSV> rulesets_;
   RuleSets::FetchRules::Parameters params_;
 };
 

@@ -46,9 +46,9 @@ std::string print_rulesets(const std::vector<airmap::RuleSet>& v) {
 
 }  // namespace
 
-cmd::QueryRulesets::QueryRulesets()
-    : cli::CommandWithFlagsAndAction{"query-rulesets", "queries rulesets by geometry or id with the AirMap services",
-                                     "queries rulesets by geometry or id with the AirMap services"} {
+cmd::QueryRuleSets::QueryRuleSets()
+    : cli::CommandWithFlagsAndAction{"query-rulesets", "queries rulesets by geometry or id from the AirMap services",
+                                     "queries rulesets by geometry or id from the AirMap services"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
@@ -111,7 +111,7 @@ cmd::QueryRulesets::QueryRulesets()
         RuleSets::ForId::Parameters params;
         params.id = ruleset_id_.get();
         client_->rulesets().for_id(
-            params, std::bind(&QueryRulesets::handle_ruleset_for_id_result, this, std::placeholders::_1));
+            params, std::bind(&QueryRuleSets::handle_ruleset_for_id_result, this, std::placeholders::_1));
       } else if (geometry_file_) {
         std::ifstream in{geometry_file_.get()};
         if (!in) {
@@ -122,7 +122,7 @@ cmd::QueryRulesets::QueryRulesets()
         RuleSets::Search::Parameters params;
         params.geometry = geometry;
         client_->rulesets().search(
-            params, std::bind(&QueryRulesets::handle_ruleset_search_result, this, std::placeholders::_1));
+            params, std::bind(&QueryRuleSets::handle_ruleset_search_result, this, std::placeholders::_1));
       }
     });
 
@@ -136,7 +136,7 @@ cmd::QueryRulesets::QueryRulesets()
   });
 }
 
-void cmd::QueryRulesets::handle_ruleset_for_id_result(const RuleSets::ForId::Result& result) {
+void cmd::QueryRuleSets::handle_ruleset_for_id_result(const RuleSets::ForId::Result& result) {
   if (result) {
     log_.infof(component, "successfully queried ruleset from ruleset-id:\n%s", print_ruleset(result.value()));
     context_->stop();
@@ -153,7 +153,7 @@ void cmd::QueryRulesets::handle_ruleset_for_id_result(const RuleSets::ForId::Res
   }
 }
 
-void cmd::QueryRulesets::handle_ruleset_search_result(const RuleSets::Search::Result& result) {
+void cmd::QueryRuleSets::handle_ruleset_search_result(const RuleSets::Search::Result& result) {
   if (result) {
     log_.infof(component, "successfully queried rulesets from geometry:\n%s", print_rulesets(result.value()));
     context_->stop();

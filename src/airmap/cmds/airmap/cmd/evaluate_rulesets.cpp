@@ -29,7 +29,7 @@ void print_rules(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
 
 }  // namespace
 
-cmd::EvaluateRulesets::EvaluateRulesets()
+cmd::EvaluateRuleSets::EvaluateRuleSets()
     : cli::CommandWithFlagsAndAction{"evaluate-rulesets",
                                      "evalute rulesets and return a list of rules matching results",
                                      "evalute rulesets and return a list of rules matching results"} {

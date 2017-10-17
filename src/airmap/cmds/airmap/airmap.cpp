@@ -35,14 +35,14 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::Daemon>());
     cmd_.command(std::make_shared<cmd::FetchRules>());
     cmd_.command(std::make_shared<cmd::GetStatus>());
-    cmd_.command(std::make_shared<cmd::EvaluateRulesets>());
+    cmd_.command(std::make_shared<cmd::EvaluateRuleSets>());
     cmd_.command(std::make_shared<cmd::Init>());
     cmd_.command(std::make_shared<cmd::Login>());
     cmd_.command(std::make_shared<cmd::MonitorMids>());
     cmd_.command(std::make_shared<cmd::MonitorTraffic>());
     cmd_.command(std::make_shared<cmd::Pilot>());
     cmd_.command(std::make_shared<cmd::PlanFlight>());
-    cmd_.command(std::make_shared<cmd::QueryRulesets>());
+    cmd_.command(std::make_shared<cmd::QueryRuleSets>());
     cmd_.command(std::make_shared<cmd::RenderBriefing>());
     cmd_.command(std::make_shared<cmd::StartFlightComms>());
     cmd_.command(std::make_shared<cmd::SimulateScenario>());

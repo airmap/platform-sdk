@@ -17,9 +17,9 @@ namespace cmds {
 namespace airmap {
 namespace cmd {
 
-class QueryRulesets : public util::cli::CommandWithFlagsAndAction {
+class QueryRuleSets : public util::cli::CommandWithFlagsAndAction {
  public:
-  QueryRulesets();
+  QueryRuleSets();
 
  private:
   using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;

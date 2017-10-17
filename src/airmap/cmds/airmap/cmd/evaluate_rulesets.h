@@ -16,20 +16,20 @@ namespace cmds {
 namespace airmap {
 namespace cmd {
 
-class EvaluateRulesets : public util::cli::CommandWithFlagsAndAction {
+class EvaluateRuleSets : public util::cli::CommandWithFlagsAndAction {
  public:
-  EvaluateRulesets();
+  EvaluateRuleSets();
 
  private:
   using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using Rulesets     = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using RuleSetsCSV  = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
   Required<GeometryFile> geometry_file_;
-  Required<Rulesets> rulesets_;
+  Required<RuleSetsCSV> rulesets_;
   RuleSets::Evaluation::Parameters params_;
 };
 
