@@ -73,6 +73,7 @@ add_library(
   paths.cpp
   pilots.cpp
   rule.cpp
+  ruleset.cpp
   status.cpp
   telemetry.cpp
   token.cpp

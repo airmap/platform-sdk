@@ -3,6 +3,7 @@
 
 #include <airmap/date_time.h>
 #include <airmap/geometry.h>
+#include <airmap/optional.h>
 #include <airmap/pilot.h>
 #include <airmap/status.h>
 
@@ -10,11 +11,13 @@
 #include <iosfwd>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace airmap {
 
 struct RuleSet {
+  struct Feature;
   /// Rule models the individual result of a Rule evaluation.
   struct Rule {
     /// Status enumerates all known status codes of a rule.
@@ -26,21 +29,11 @@ struct RuleSet {
       informational     ///< The rule is of informational nature.
     };
 
-    // TBD - use flight feature struct from flight_plan.h
-    struct FlightFeature {
-      std::string flight_feature;
-      std::string description;
-      std::string input_type;
-      std::string measurement_type;
-      std::string measurement_unit;
-    };
-
     Status status;               ///< The status of the rule.
     std::string short_text;      ///< The human-readable short summary of the rule.
     std::string description;     ///< The human-readable description of the rule.
     std::int32_t display_order;  ///< An indicator for ordering the ruleset.
-    // TBD - use flight feature struct from flight_plan.h
-    std::vector<FlightFeature> flight_features;
+    std::vector<Feature> flight_features;  ///< The features modelled by the rule.
   };
 
   /// SelectionType enumerates all known types for a RuleSet.
@@ -80,12 +73,78 @@ struct RuleSet {
   Jurisdiction jurisdiction;                ///< The jurisdiction.
   std::vector<std::string> airspace_types;  ///< The layers that a RuleSet instance applies to.
   std::vector<Rule> rules;                  ///< The individual rules in the set.
+
+  struct Feature {
+    enum class Type { unknown, boolean, floating_point, string };
+    enum class Measurement { unknown, speed, weight, distance };
+    enum class Unit { unknown, kilograms, meters, meters_per_sec };
+
+    class Value {
+     public:
+      Value();
+      explicit Value(bool value);
+      explicit Value(double value);
+      explicit Value(const std::string& value);
+      Value(const Value& other);
+      Value(Value&& other);
+      ~Value();
+      Value& operator=(const Value& other);
+      Value& operator=(Value&& other);
+
+      Type type() const;
+      bool boolean() const;
+      double floating_point() const;
+      const std::string& string() const;
+
+     private:
+      Value& construct(const Value& other);
+      Value& construct(Value&& other);
+      Value& construct(bool value);
+      Value& construct(double value);
+      Value& construct(const std::string& value);
+      Value& destruct();
+
+      Type type_;
+      union Detail {
+        Detail();
+        ~Detail();
+
+        bool b;
+        double d;
+        std::string s;
+      } detail_;
+    };
+
+    Optional<Value> value(bool b) const;
+    Optional<Value> value(double d) const;
+    Optional<Value> value(const std::string& s) const;
+
+    std::int32_t id{-1};
+    std::string name;
+    Optional<std::string> code;
+    std::string description;
+    RuleSet::Rule::Status status;
+    Type type{Type::unknown};
+    Measurement measurement{Measurement::unknown};
+    Unit unit{Unit::unknown};
+  };
 };
+
+std::ostream& operator<<(std::ostream& out, RuleSet::Feature::Type type);
+std::istream& operator>>(std::istream& in, RuleSet::Feature::Type& type);
+
+std::ostream& operator<<(std::ostream& out, RuleSet::Feature::Measurement measurement);
+std::istream& operator>>(std::istream& in, RuleSet::Feature::Measurement& measurement);
+
+std::ostream& operator<<(std::ostream& out, RuleSet::Feature::Unit unit);
+std::istream& operator>>(std::istream& in, RuleSet::Feature::Unit& unit);
 
 std::ostream& operator<<(std::ostream& out, RuleSet::Jurisdiction::Region region);
 std::istream& operator>>(std::istream& in, RuleSet::Jurisdiction::Region& region);
+
 std::ostream& operator<<(std::ostream& out, RuleSet::SelectionType type);
 std::istream& operator>>(std::istream& in, RuleSet::SelectionType& type);
+
 std::ostream& operator<<(std::ostream& out, RuleSet::Rule::Status status);
 std::istream& operator>>(std::istream& in, RuleSet::Rule::Status& status);
 

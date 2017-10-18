@@ -5,107 +5,6 @@
 #include <airmap/codec/json/get.h>
 #include <airmap/codec/json/optional.h>
 
-std::ostream& airmap::operator<<(std::ostream& out, RuleSet::Jurisdiction::Region region) {
-  switch (region) {
-    case RuleSet::Jurisdiction::Region::national:
-      return out << "national";
-    case RuleSet::Jurisdiction::Region::state:
-      return out << "state";
-    case RuleSet::Jurisdiction::Region::county:
-      return out << "county";
-    case RuleSet::Jurisdiction::Region::city:
-      return out << "city";
-    case RuleSet::Jurisdiction::Region::local:
-      return out << "local";
-  }
-  return out;
-}
-
-std::istream& airmap::operator>>(std::istream& in, RuleSet::Jurisdiction::Region& region) {
-  std::string s;
-  in >> s;
-
-  if (s == "national" || s == "federal") {
-    region = RuleSet::Jurisdiction::Region::national;
-  } else if (s == "state") {
-    region = RuleSet::Jurisdiction::Region::state;
-  } else if (s == "county") {
-    region = RuleSet::Jurisdiction::Region::county;
-  } else if (s == "city") {
-    region = RuleSet::Jurisdiction::Region::city;
-  } else if (s == "local") {
-    region = RuleSet::Jurisdiction::Region::local;
-  }
-
-  return in;
-}
-
-std::ostream& airmap::operator<<(std::ostream& out, RuleSet::SelectionType type) {
-  switch (type) {
-    case RuleSet::SelectionType::optional:
-      return out << "optional";
-    case RuleSet::SelectionType::required:
-      return out << "required";
-    case RuleSet::SelectionType::pickone:
-      return out << "pickone";
-  }
-
-  return out;
-}
-
-std::istream& airmap::operator>>(std::istream& in, RuleSet::SelectionType& type) {
-  std::string s;
-  in >> s;
-
-  if (s == "optional") {
-    type = RuleSet::SelectionType::optional;
-  } else if (s == "required") {
-    type = RuleSet::SelectionType::required;
-  } else if (s == "pickone") {
-    type = RuleSet::SelectionType::pickone;
-  } else if (s == "pick1") {
-    type = RuleSet::SelectionType::pickone;
-  }
-
-  return in;
-}
-
-std::ostream& airmap::operator<<(std::ostream& out, RuleSet::Rule::Status status) {
-  switch (status) {
-    case RuleSet::Rule::Status::unknown:
-      return out << "unknown";
-    case RuleSet::Rule::Status::conflicting:
-      return out << "conflicting";
-    case RuleSet::Rule::Status::not_conflicting:
-      return out << "not_conflicting";
-    case RuleSet::Rule::Status::missing_info:
-      return out << "missing_info";
-    case RuleSet::Rule::Status::informational:
-      return out << "informational";
-  }
-
-  return out;
-}
-
-std::istream& airmap::operator>>(std::istream& in, RuleSet::Rule::Status& status) {
-  std::string s;
-  in >> s;
-
-  if (s == "conflicting") {
-    status = RuleSet::Rule::Status::conflicting;
-  } else if (s == "not_conflicting") {
-    status = RuleSet::Rule::Status::not_conflicting;
-  } else if (s == "missing_info") {
-    status = RuleSet::Rule::Status::missing_info;
-  } else if (s == "informational" || s == "informational_rules") {
-    status = RuleSet::Rule::Status::informational;
-  } else {
-    status = RuleSet::Rule::Status::unknown;
-  }
-
-  return in;
-}
-
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet& r) {
   get(r.id, j, "id");
   get(r.selection_type, j, "selection_type");
@@ -116,6 +15,18 @@ void airmap::codec::json::decode(const nlohmann::json& j, RuleSet& r) {
   get(r.jurisdiction, j, "jurisdiction");
   get(r.airspace_types, j, "airspace_types");
   get(r.rules, j, "rules");
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSet& r) {
+  j["id"]             = r.id;
+  j["selection_type"] = r.selection_type;
+  j["name"]           = r.name;
+  j["short_name"]     = r.short_name;
+  j["description"]    = r.description;
+  j["default"]        = r.is_default;
+  j["jurisdiction"]   = r.jurisdiction;
+  j["airspace_types"] = r.airspace_types;
+  j["rules"]          = r.rules;
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Rule& r) {
@@ -132,23 +43,57 @@ void airmap::codec::json::decode(const nlohmann::json& j, std::vector<RuleSet::R
   }
 }
 
-void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Rule::Status& s) {
-  s = boost::lexical_cast<RuleSet::Rule::Status>(j.get<std::string>());
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Rule::FlightFeature& f) {
-  get(f.flight_feature, j, "flight_feature");
+void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature& f) {
+  get(f.id, j, "id");
+  get(f.code, j, "code");
+  get(f.name, j, "flight_feature");
   get(f.description, j, "description");
-  get(f.input_type, j, "input_type");
-  get(f.measurement_type, j, "measurement_type");
-  get(f.measurement_unit, j, "measurement_unit");
+  get(f.status, j, "status");
+  get(f.type, j, "input_type");
+  get(f.measurement, j, "measurement_type");
+  get(f.unit, j, "measurement_unit");
 }
 
-void airmap::codec::json::decode(const nlohmann::json& j, std::vector<RuleSet::Rule::FlightFeature>& v) {
+void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Type& f) {
+  f = boost::lexical_cast<RuleSet::Feature::Type>(j.get<std::string>());
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Measurement& m) {
+  m = boost::lexical_cast<RuleSet::Feature::Measurement>(j.get<std::string>());
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Unit& u) {
+  u = boost::lexical_cast<RuleSet::Feature::Unit>(j.get<std::string>());
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Value& v) {
+  switch (j.type()) {
+    case nlohmann::json::value_t::boolean:
+      v = RuleSet::Feature::Value{j.get<bool>()};
+      break;
+    case nlohmann::json::value_t::string:
+      v = RuleSet::Feature::Value{j.get<std::string>()};
+      break;
+    case nlohmann::json::value_t::number_integer:
+    case nlohmann::json::value_t::number_unsigned:
+    case nlohmann::json::value_t::number_float:
+      v = RuleSet::Feature::Value{j.get<double>()};
+      break;
+    default:
+      v = RuleSet::Feature::Value{};
+      break;
+  }
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, std::vector<RuleSet::Feature>& v) {
   for (auto element : j) {
-    v.push_back(RuleSet::Rule::FlightFeature{});
+    v.push_back(RuleSet::Feature{});
     v.back() = element;
   }
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Rule::Status& s) {
+  s = boost::lexical_cast<RuleSet::Rule::Status>(j.get<std::string>());
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::vector<RuleSet>& v) {
@@ -170,4 +115,20 @@ void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Jurisdiction&
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Jurisdiction::Region& r) {
   r = boost::lexical_cast<RuleSet::Jurisdiction::Region>(j.get<std::string>());
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Feature::Value& v) {
+  switch (v.type()) {
+    case RuleSet::Feature::Type::boolean:
+      j = v.boolean();
+      break;
+    case RuleSet::Feature::Type::floating_point:
+      j = v.floating_point();
+      break;
+    case RuleSet::Feature::Type::string:
+      j = v.string();
+      break;
+    default:
+      break;
+  }
 }

@@ -27,8 +27,10 @@ void airmap::codec::http::query::encode(std::unordered_map<std::string, std::str
                                         const RuleSets::Evaluation::Parameters& parameters) {
   if (parameters.rulesets)
     query["rulesets"] = parameters.rulesets.get();
-  // TBD
-  // if (parameters.flight_features)
+  // TBD - encode features into query string
+  // if (parameters.features) {
+  //   query["flight_features"] = parameters.features.dump();
+  // }
   if (parameters.geometry) {
     nlohmann::json geometry;
     geometry          = parameters.geometry.get();

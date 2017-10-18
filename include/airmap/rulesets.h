@@ -62,9 +62,9 @@ class RuleSets : DoNotCopyOrMove {
   struct Evaluation {
     struct Parameters {
       Required<Geometry> geometry;  ///< Evaluate rulesets intersecting this geometry.
-      // TBD - use flight feature unordered map from flight_plan.h
-      Optional<std::string> flight_features;  ///< Additional properties of the planned flight.
-      Required<std::string> rulesets;         ///< Evaluate these rulesets.
+      std::unordered_map<std::string, RuleSet::Feature::Value>
+          features;  ///< Additional properties of the planned flight.
+      Required<std::string> rulesets;  ///< Evaluate these rulesets.
     };
 
     /// Result models the outcome of calling RuleSets::evaluate_rulesets.
@@ -86,7 +86,7 @@ class RuleSets : DoNotCopyOrMove {
   /// reports back results to 'cb'.
   virtual void fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) = 0;
 
-  /// evaluate_rulesets evaluates rulesets identified by 'parameters' and
+  /// evaluate_rulesets evaluates rulesets and geometry identified by 'parameters' and
   /// reports back results to 'cb'.
   virtual void evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
 
