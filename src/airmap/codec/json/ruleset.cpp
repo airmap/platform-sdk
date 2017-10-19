@@ -17,18 +17,6 @@ void airmap::codec::json::decode(const nlohmann::json& j, RuleSet& r) {
   get(r.rules, j, "rules");
 }
 
-void airmap::codec::json::encode(nlohmann::json& j, const RuleSet& r) {
-  // j["id"]             = r.id;
-  // j["selection_type"] = r.selection_type;
-  // j["name"]           = r.name;
-  // j["short_name"]     = r.short_name;
-  // j["description"]    = r.description;
-  // j["default"]        = r.is_default;
-  // j["jurisdiction"]   = r.jurisdiction;
-  // j["airspace_types"] = r.airspace_types;
-  // j["rules"]          = r.rules;
-}
-
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Rule& r) {
   get(r.short_text, j, "short_text");
   get(r.description, j, "description");

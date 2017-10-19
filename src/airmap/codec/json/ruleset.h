@@ -14,8 +14,6 @@ namespace codec {
 namespace json {
 
 void decode(const nlohmann::json& j, RuleSet& r);
-void encode(nlohmann::json& j, const RuleSet& r);
-
 void decode(const nlohmann::json& j, RuleSet::Rule& r);
 void decode(const nlohmann::json& j, std::vector<RuleSet::Rule>& v);
 void decode(const nlohmann::json& j, RuleSet::Feature& f);
@@ -30,6 +28,7 @@ void decode(const nlohmann::json& j, RuleSet::SelectionType& t);
 void decode(const nlohmann::json& j, RuleSet::Jurisdiction& jd);
 void decode(const nlohmann::json& j, RuleSet::Jurisdiction::Region& r);
 void encode(nlohmann::json& j, const RuleSet::Feature::Value& v);
+
 
 }  // namespace json
 }  // namespace codec
