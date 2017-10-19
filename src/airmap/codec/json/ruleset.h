@@ -29,7 +29,6 @@ void decode(const nlohmann::json& j, RuleSet::Jurisdiction& jd);
 void decode(const nlohmann::json& j, RuleSet::Jurisdiction::Region& r);
 void encode(nlohmann::json& j, const RuleSet::Feature::Value& v);
 
-
 }  // namespace json
 }  // namespace codec
 }  // namespace airmap

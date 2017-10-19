@@ -63,7 +63,7 @@ class RuleSets : DoNotCopyOrMove {
     struct Parameters {
       Required<Geometry> geometry;  ///< Evaluate rulesets intersecting this geometry.
       std::unordered_map<std::string, RuleSet::Feature::Value>
-          features;  ///< Additional properties of the planned flight.
+          features;                    ///< Additional properties of the planned flight.
       Required<std::string> rulesets;  ///< Evaluate these rulesets.
     };
 
@@ -93,7 +93,6 @@ class RuleSets : DoNotCopyOrMove {
  protected:
   /// @cond
   RuleSets() = default;
-
   /// @endcond
 };
 

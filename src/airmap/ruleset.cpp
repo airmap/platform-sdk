@@ -30,8 +30,7 @@ airmap::RuleSet::Feature::Value::~Value() {
   destruct();
 }
 
-airmap::RuleSet::Feature::Value& airmap::RuleSet::Feature::Value::operator=(
-    const Value& other) {
+airmap::RuleSet::Feature::Value& airmap::RuleSet::Feature::Value::operator=(const Value& other) {
   return destruct().construct(other);
 }
 
@@ -55,8 +54,7 @@ const std::string& airmap::RuleSet::Feature::Value::string() const {
   return detail_.s;
 }
 
-airmap::RuleSet::Feature::Value& airmap::RuleSet::Feature::Value::construct(
-    const Value& other) {
+airmap::RuleSet::Feature::Value& airmap::RuleSet::Feature::Value::construct(const Value& other) {
   switch (other.type_) {
     case Type::boolean:
       construct(other.detail_.b);
@@ -106,8 +104,7 @@ airmap::RuleSet::Feature::Value& airmap::RuleSet::Feature::Value::construct(doub
   return *this;
 }
 
-airmap::RuleSet::Feature::Value& airmap::RuleSet::Feature::Value::construct(
-    const std::string& value) {
+airmap::RuleSet::Feature::Value& airmap::RuleSet::Feature::Value::construct(const std::string& value) {
   using sstring = std::string;
   type_         = Type::string;
   new (&detail_.s) sstring(value);
@@ -137,22 +134,19 @@ airmap::RuleSet::Feature::Value::Detail::Detail() : b{false} {
 airmap::RuleSet::Feature::Value::Detail::~Detail() {
 }
 
-airmap::Optional<airmap::RuleSet::Feature::Value> airmap::RuleSet::Feature::value(
-    bool b) const {
+airmap::Optional<airmap::RuleSet::Feature::Value> airmap::RuleSet::Feature::value(bool b) const {
   if (type != Type::boolean)
     return Optional<Value>{};
   return Optional<Value>{Value{b}};
 }
 
-airmap::Optional<airmap::RuleSet::Feature::Value> airmap::RuleSet::Feature::value(
-    double d) const {
+airmap::Optional<airmap::RuleSet::Feature::Value> airmap::RuleSet::Feature::value(double d) const {
   if (type != Type::floating_point)
     return Optional<Value>{};
   return Optional<Value>{Value{d}};
 }
 
-airmap::Optional<airmap::RuleSet::Feature::Value> airmap::RuleSet::Feature::value(
-    const std::string& s) const {
+airmap::Optional<airmap::RuleSet::Feature::Value> airmap::RuleSet::Feature::value(const std::string& s) const {
   if (type != Type::boolean)
     return Optional<Value>{};
   return Optional<Value>{Value{s}};
