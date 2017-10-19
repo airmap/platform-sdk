@@ -39,6 +39,14 @@ void airmap::codec::json::encode(nlohmann::json& j, const FlightPlan& p) {
   j["buffer"]            = p.buffer;
 }
 
+void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing& b) {
+  get(b.created_at, j, "created_at");
+  get(b.airspace, j, "airspace");
+  get(b.rulesets, j, "rulesets");
+  get(b.validations, j, "validations");
+  get(b.authorizations, j, "authorizations");
+}
+
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::AdvisoryStatus& a) {
   get(a.color, j, "color");
   get(a.advisories, j, "advisories");
