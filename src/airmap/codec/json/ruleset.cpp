@@ -25,8 +25,12 @@ void airmap::codec::json::encode(nlohmann::json& j, const RuleSet& r) {
   j["description"]    = r.description;
   j["default"]        = r.is_default;
   j["jurisdiction"]   = r.jurisdiction;
-  j["airspace_types"] = r.airspace_types;
-  j["rules"]          = r.rules;
+
+  for (const auto& airspace_type : r.airspace_types)
+    j["airspace_types"].push_back(airspace_type);
+
+  // for (const auto& rule : r.rules)
+  //  j["rules"].push_back(rule);
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Rule& r) {
@@ -129,6 +133,46 @@ void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Feature::Valu
       j = v.string();
       break;
     default:
+      break;
+  }
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::SelectionType& t) {
+  switch (t) {
+    case RuleSet::SelectionType::optional:
+      j["selection_type"] = "optional";
+      break;
+    case RuleSet::SelectionType::required:
+      j["selection_type"] = "required";
+      break;
+    case RuleSet::SelectionType::pickone:
+      j["selection_type"] = "pickone";
+      break;
+  }
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Jurisdiction& jd) {
+  j["id"]     = jd.id;
+  j["name"]   = jd.name;
+  j["region"] = jd.region;
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Jurisdiction::Region& r) {
+  switch (r) {
+    case RuleSet::Jurisdiction::Region::national:
+      j["region"] = "national";
+      break;
+    case RuleSet::Jurisdiction::Region::state:
+      j["region"] = "state";
+      break;
+    case RuleSet::Jurisdiction::Region::county:
+      j["region"] = "county";
+      break;
+    case RuleSet::Jurisdiction::Region::city:
+      j["region"] = "city";
+      break;
+    case RuleSet::Jurisdiction::Region::local:
+      j["region"] = "local";
       break;
   }
 }

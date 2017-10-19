@@ -30,6 +30,9 @@ void decode(const nlohmann::json& j, RuleSet::SelectionType& t);
 void decode(const nlohmann::json& j, RuleSet::Jurisdiction& jd);
 void decode(const nlohmann::json& j, RuleSet::Jurisdiction::Region& r);
 void encode(nlohmann::json& j, const RuleSet::Feature::Value& v);
+void encode(nlohmann::json& j, const RuleSet::SelectionType& t);
+void encode(nlohmann::json& j, const RuleSet::Jurisdiction& jd);
+void encode(nlohmann::json& j, const RuleSet::Jurisdiction::Region& r);
 
 }  // namespace json
 }  // namespace codec
