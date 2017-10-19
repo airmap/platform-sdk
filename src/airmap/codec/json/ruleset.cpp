@@ -120,3 +120,9 @@ void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Feature::Valu
       break;
   }
 }
+
+void airmap::codec::json::encode(nlohmann::json& j, const std::vector<RuleSet::Id>& v) {
+  for (const auto& id : v) {
+    j.push_back(id);
+  }
+}

@@ -34,7 +34,7 @@ laanc::Suite::EvaluationResult laanc::Suite::evaluate_initial_briefing(const Fli
       for (const auto& feature : rule.features) {
         if (feature.name == "flight_authorized" && feature.code &&
             feature.code.get() == "laanc_authorization_required" &&
-            feature.status == FlightPlan::Briefing::RuleSet::Rule::Status::conflicting) {
+            feature.status == RuleSet::Rule::Status::conflicting) {
           laanc_conflicted++;
         }
       }

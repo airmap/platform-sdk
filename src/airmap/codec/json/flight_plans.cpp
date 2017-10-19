@@ -27,7 +27,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlans::Create::P
     auto ff = j["flight_features"];
 
     for (auto it = ff.begin(); it != ff.end(); ++it) {
-      FlightPlan::Briefing::Feature::Value value = it.value();
+      RuleSet::Feature::Value value = it.value();
       p.features.emplace(it.key(), value);
     }
   }
