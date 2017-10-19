@@ -29,8 +29,8 @@ void airmap::codec::json::encode(nlohmann::json& j, const RuleSet& r) {
   for (const auto& airspace_type : r.airspace_types)
     j["airspace_types"].push_back(airspace_type);
 
-  // for (const auto& rule : r.rules)
-  //  j["rules"].push_back(rule);
+   for (const auto& rule : r.rules)
+    j["rules"].push_back(rule);
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Rule& r) {
@@ -175,4 +175,37 @@ void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Jurisdiction:
       j["region"] = "local";
       break;
   }
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Rule& r) {
+
+   j["short_text"] = r.short_text;
+   j["description"] = r.description;
+   j["status"] = r.status;
+   j["display_order"] = r.display_order;
+
+}
+
+
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSet::Rule::Status& s) {
+  switch (s) {
+    case RuleSet::Rule::Status::conflicting:
+      j["status"] = "conflicting";
+      break;
+    case RuleSet::Rule::Status::not_conflicting:
+      j["status"] = "not_conflicting";
+      break;
+    case RuleSet::Rule::Status::missing_info:
+      j["status"] = "missing_info";
+      break;
+    case RuleSet::Rule::Status::informational:
+      j["status"] = "informational";
+      break;
+    case RuleSet::Rule::Status::unknown:
+      j["status"] = "unknown";
+    default:  
+      break;
+
+  }
+
 }
