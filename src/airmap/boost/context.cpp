@@ -6,10 +6,21 @@
 
 #include <airmap/rest/client.h>
 
+#include <cstdlib>
+
 namespace {
 
 constexpr const char* component{"airmap::boost::Context"};
 
+namespace env {
+
+std::string get(const char* name, const std::string& default_value) {
+  if (auto var = ::getenv(name))
+    return var;
+  return default_value;
+}
+
+}  // namespace env
 }  // namespace
 
 std::shared_ptr<airmap::boost::Context> airmap::boost::Context::create(const std::shared_ptr<Logger>& logger) {
@@ -37,13 +48,21 @@ void airmap::boost::Context::create_client_with_configuration(const Client::Conf
   auto sp = shared_from_this();
   auto udp_sender =
       net::udp::boost::Sender::create(configuration.telemetry.host, configuration.telemetry.port, io_service_);
-  auto airmap_http_requester = net::http::boost::Requester::create(configuration.host, 443, log_.logger(), io_service_);
-  auto sso_http_requester =
-      net::http::boost::Requester::create(configuration.sso.host, configuration.sso.port, log_.logger(), io_service_);
+
+  rest::Client::Requesters requesters;
+  requesters.aircrafts     = aircrafts(configuration);
+  requesters.airspaces     = airspaces(configuration);
+  requesters.authenticator = authenticator(configuration);
+  requesters.flight_plans  = flight_plans(configuration);
+  requesters.flights       = flights(configuration);
+  requesters.pilots        = pilots(configuration);
+  requesters.rulesets      = rulesets(configuration);
+  requesters.status        = status(configuration);
+  requesters.sso           = sso(configuration);
+
   auto mqtt_broker = std::make_shared<net::mqtt::boost::Broker>(configuration.traffic.host, configuration.traffic.port,
                                                                 log_.logger(), io_service_);
-  cb(ClientCreateResult{std::make_shared<rest::Client>(configuration, sp, udp_sender, airmap_http_requester,
-                                                       sso_http_requester, mqtt_broker)});
+  cb(ClientCreateResult{std::make_shared<rest::Client>(configuration, sp, udp_sender, requesters, mqtt_broker)});
 }
 
 airmap::Context::ReturnCode airmap::boost::Context::exec(const SignalSet& signal_set,
@@ -110,4 +129,85 @@ void airmap::boost::Context::schedule_in(const Microseconds& wait_for, const std
 
 void airmap::boost::Context::dispatch(const std::function<void()>& task) {
   io_service_->dispatch(task);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::aircrafts(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_AIRCRAFTS", configuration.host);
+  auto port = env::get("AIRMAP_PORT_AIRCRAFTS", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::airspaces(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_AIRSPACES", configuration.host);
+  auto port = env::get("AIRMAP_PORT_AIRSPACES", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::authenticator(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_AUTHENTICATOR", configuration.host);
+  auto port = env::get("AIRMAP_PORT_AUTHENTICATOR", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::flights(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_FLIGHTS", configuration.host);
+  auto port = env::get("AIRMAP_PORT_FLIGHTS", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::flight_plans(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_FLIGHTS", configuration.host);
+  auto port = env::get("AIRMAP_PORT_FLIGHTS", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::pilots(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_PILOTS", configuration.host);
+  auto port = env::get("AIRMAP_PORT_PILOTS", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::rulesets(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_RULESETS", configuration.host);
+  auto port = env::get("AIRMAP_PORT_RULESETS", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::status(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_STATUS", configuration.host);
+  auto port = env::get("AIRMAP_PORT_STATUS", ::boost::lexical_cast<std::string>(443));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::sso(
+    const airmap::Client::Configuration& configuration) {
+  auto host = env::get("AIRMAP_HOST_SSO", configuration.sso.host);
+  auto port = env::get("AIRMAP_PORT_SSO", ::boost::lexical_cast<std::string>(configuration.sso.port));
+
+  return net::http::boost::Requester::create(host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(),
+                                             io_service_);
 }

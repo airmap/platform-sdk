@@ -9,6 +9,7 @@
 
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan& p) {
   get(p.id, j, "id");
+  get(p.flight_id, j, "flight_id");
   get(p.takeoff.latitude, j, "takeoff_latitude");
   get(p.takeoff.longitude, j, "takeoff_longitude");
   get(p.altitude_agl.max, j, "max_altitude_agl");
@@ -22,7 +23,9 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan& p) {
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const FlightPlan& p) {
-  j["id"]                = p.id;
+  j["id"] = p.id;
+  if (p.flight_id)
+    j["flight_id"] = p.flight_id.get();
   j["takeoff_latitude"]  = p.takeoff.latitude;
   j["takeoff_longitude"] = p.takeoff.longitude;
   j["max_altitude_agl"]  = p.altitude_agl.max;
@@ -158,6 +161,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::
 
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Authority& a) {
   get(a.name, j, "name");
+  get(a.id, j, "id");
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Authorization& a) {

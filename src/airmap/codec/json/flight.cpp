@@ -20,6 +20,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Flight& f) {
   get(f.pilot.id, j, "pilot_id");
   get(f.aircraft, j, "aircraft");
   get(f.aircraft.id, j, "aircraft_id");
+  get(f.flight_plan_id, j, "flight_plan_id");
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Flight>& f) {

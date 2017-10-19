@@ -69,6 +69,12 @@ cmake ..
 make
 ```
 
+### Raspberry Pi
+We provide `airmapd` as a docker image to the Raspberry Pi. Building the docker container requires a linux host as we rely on `qemu` to cross-build on x86 machines. Run the following commands from the top-level `airmapd` folder:
+```
+tools/rpi/build-docker-image.sh
+```
+
 ### macOS - homebrew
 Run the following commands:
 ```

@@ -1,0 +1,19 @@
+FROM resin/rpi-raspbian:stretch
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+RUN tools/rpi/setup.dev.sh
+RUN mkdir build
+WORKDIR build
+RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+RUN ninja
+RUN ninja test
+RUN ninja install
+WORKDIR /usr/src/app
+RUN tools/rpi/cleanup.dev.sh
+WORKDIR /tmp
+RUN rm -rf /usr/src/app
+
+ENTRYPOINT ["/usr/bin/airmap", "daemon"]

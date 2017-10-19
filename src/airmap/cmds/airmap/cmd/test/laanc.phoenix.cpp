@@ -22,6 +22,50 @@ void laanc::Suite::run(const std::shared_ptr<Logger>& logger, const std::shared_
   query_pilot();
 }
 
+laanc::Suite::EvaluationResult laanc::Suite::evaluate_initial_flight_plan(const FlightPlan&) {
+  return EvaluationResult::passed;
+}
+
+laanc::Suite::EvaluationResult laanc::Suite::evaluate_initial_briefing(const FlightPlan::Briefing& briefing) {
+  std::size_t laanc_conflicted = 0;
+
+  for (const auto& ruleset : briefing.rulesets) {
+    for (const auto& rule : ruleset.rules) {
+      for (const auto& feature : rule.features) {
+        if (feature.name == "flight_authorized" && feature.code &&
+            feature.code.get() == "laanc_authorization_required" &&
+            feature.status == FlightPlan::Briefing::RuleSet::Rule::Status::conflicting) {
+          laanc_conflicted++;
+        }
+      }
+    }
+  }
+
+  return laanc_conflicted == 0 ? EvaluationResult::error : EvaluationResult::passed;
+}
+
+laanc::Suite::EvaluationResult laanc::Suite::evaluate_submitted_flight_plan(const FlightPlan& fp) {
+  return fp.flight_id ? EvaluationResult::passed : EvaluationResult::error;
+}
+
+laanc::Suite::EvaluationResult laanc::Suite::evaluate_submitted_briefing(const FlightPlan::Briefing&) {
+  return EvaluationResult::passed;
+}
+
+laanc::Suite::EvaluationResult laanc::Suite::evaluate_final_briefing(const FlightPlan::Briefing& b) {
+  if (b.authorizations.empty()) {
+    return EvaluationResult::error;
+  }
+
+  auto auth = b.authorizations.front();
+
+  if (auth.status != FlightPlan::Briefing::Authorization::Status::accepted || auth.authority.id != "faa-laanc") {
+    return EvaluationResult::error;
+  }
+
+  return EvaluationResult::passed;
+}
+
 void laanc::Suite::query_pilot() {
   Pilots::Authenticated::Parameters parameters;
   parameters.authorization = token_.id();
@@ -83,7 +127,8 @@ void laanc::Suite::plan_flight() {
 void laanc::Suite::handle_plan_flight_finished(const FlightPlans::Create::Result& result) {
   if (result) {
     log_.infof(component, "successfully created flight plan");
-    render_briefing(result.value().id);
+    flight_plan_ = result.value();
+    render_briefing();
   } else {
     try {
       std::rethrow_exception(result.error());
@@ -96,39 +141,22 @@ void laanc::Suite::handle_plan_flight_finished(const FlightPlans::Create::Result
   }
 }
 
-void laanc::Suite::render_briefing(const FlightPlan::Id& id) {
+void laanc::Suite::render_briefing() {
   FlightPlans::RenderBriefing::Parameters parameters;
-  parameters.id            = id;
+  parameters.id            = flight_plan_.get().id;
   parameters.authorization = token_.id();
 
-  client_->flight_plans().render_briefing(parameters,
-                                          std::bind(&Suite::handle_render_briefing_finished, this, ph::_1, id));
+  client_->flight_plans().render_briefing(parameters, std::bind(&Suite::handle_render_briefing_finished, this, ph::_1));
 }
 
-void laanc::Suite::handle_render_briefing_finished(const FlightPlans::RenderBriefing::Result& result,
-                                                   const FlightPlan::Id& id) {
+void laanc::Suite::handle_render_briefing_finished(const FlightPlans::RenderBriefing::Result& result) {
   if (result) {
-    log_.infof(component, "successfully rendered flight brief");
-
-    std::size_t laanc_conflicted = 0;
-
-    for (const auto& ruleset : result.value().rulesets) {
-      for (const auto& rule : ruleset.rules) {
-        for (const auto& feature : rule.features) {
-          if (feature.name == "flight_authorized" && feature.code &&
-              feature.code.get() == "laanc_authorization_required" &&
-              feature.status == FlightPlan::Briefing::RuleSet::Rule::Status::conflicting) {
-            laanc_conflicted++;
-          }
-        }
-      }
-    }
-
-    if (laanc_conflicted == 0) {
+    if (evaluate_initial_briefing(result.value()) == EvaluationResult::passed) {
+      log_.infof(component, "successfully rendered flight brief");
+      submit_flight_plan();
+    } else {
       log_.errorf(component, "expected laanc authorization to be conflicting");
       context_->stop(::airmap::Context::ReturnCode::error);
-    } else {
-      submit_flight_plan(id);
     }
   } else {
     try {
@@ -142,22 +170,26 @@ void laanc::Suite::handle_render_briefing_finished(const FlightPlans::RenderBrie
   }
 }
 
-void laanc::Suite::submit_flight_plan(const FlightPlan::Id& id) {
+void laanc::Suite::submit_flight_plan() {
   FlightPlans::Submit::Parameters parameters;
-  parameters.id            = id;
+  parameters.id            = flight_plan_.get().id;
   parameters.authorization = token_.id();
 
-  client_->flight_plans().submit(parameters, std::bind(&Suite::handle_submit_flight_plan_finished, this, ph::_1, id));
+  client_->flight_plans().submit(parameters, std::bind(&Suite::handle_submit_flight_plan_finished, this, ph::_1));
 }
 
-void laanc::Suite::handle_submit_flight_plan_finished(const FlightPlans::Submit::Result& result,
-                                                      const FlightPlan::Id& id) {
+void laanc::Suite::handle_submit_flight_plan_finished(const FlightPlans::Submit::Result& result) {
   if (result) {
-    static const Microseconds timeout{5 * 1000 * 1000};
+    auto er = evaluate_submitted_flight_plan(result.value());
 
-    log_.infof(component, "successfully submitted flight plan");
-    log_.infof(component, "scheduling rendering of flight plan");
-    context_->schedule_in(timeout, [this, id]() { rerender_briefing(id); });
+    if (er == EvaluationResult::passed) {
+      log_.infof(component, "successfully submitted flight plan and received flight id");
+      flight_id_ = result.value().flight_id;
+      rerender_briefing();
+    } else {
+      log_.errorf(component, "successfully submitted flight plan but did not receive flight id");
+      context_->stop(::airmap::Context::ReturnCode::error);
+    }
   } else {
     try {
       std::rethrow_exception(result.error());
@@ -170,20 +202,28 @@ void laanc::Suite::handle_submit_flight_plan_finished(const FlightPlans::Submit:
   }
 }
 
-void laanc::Suite::rerender_briefing(const FlightPlan::Id& id) {
+void laanc::Suite::rerender_briefing() {
   FlightPlans::RenderBriefing::Parameters parameters;
-  parameters.id            = id;
+  parameters.id            = flight_plan_.get().id;
   parameters.authorization = token_.id();
 
   client_->flight_plans().render_briefing(parameters,
-                                          std::bind(&Suite::handle_rerender_briefing_finished, this, ph::_1, id));
+                                          std::bind(&Suite::handle_rerender_briefing_finished, this, ph::_1));
 }
 
-void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBriefing::Result& result,
-                                                     const FlightPlan::Id& id) {
+void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBriefing::Result& result) {
   if (result) {
-    log_.infof(component, "successfully rerendered flight briefing");
-    delete_flight_plan(id);
+    auto er = evaluate_submitted_briefing(result.value());
+
+    if (er == EvaluationResult::passed) {
+      static const Microseconds timeout{20 * 1000 * 1000};
+      log_.infof(component, "successfully rerendered flight briefing");
+      log_.infof(component, "scheduling final rendering of flight plan");
+      context_->schedule_in(timeout, [this]() { render_final_briefing(); });
+    } else {
+      log_.errorf(component, "successfully rerendered flight briefing but evluation failed");
+      context_->stop(::airmap::Context::ReturnCode::error);
+    }
   } else {
     try {
       std::rethrow_exception(result.error());
@@ -196,9 +236,43 @@ void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBr
   }
 }
 
-void laanc::Suite::delete_flight_plan(const FlightPlan::Id& id) {
+void laanc::Suite::render_final_briefing() {
+  FlightPlans::RenderBriefing::Parameters parameters;
+  parameters.id            = flight_plan_.get().id;
+  parameters.authorization = token_.id();
+
+  client_->flight_plans().render_briefing(parameters,
+                                          std::bind(&Suite::handle_render_final_briefing_finished, this, ph::_1));
+}
+
+void laanc::Suite::handle_render_final_briefing_finished(const FlightPlans::RenderBriefing::Result& result) {
+  if (result) {
+    auto er = evaluate_final_briefing(result.value());
+
+    if (er == EvaluationResult::passed) {
+      log_.infof(component, "successfully render final flight briefing");
+
+      delete_flight_plan();
+    } else {
+      log_.errorf(component, "missing laanc authorization in flight briefing");
+      context_->stop(::airmap::Context::ReturnCode::error);
+      return;
+    }
+  } else {
+    try {
+      std::rethrow_exception(result.error());
+    } catch (const std::exception& e) {
+      log_.errorf(component, "failed to render final flight briefing: %s", e.what());
+    } catch (...) {
+      log_.errorf(component, "failed to render final flight briefing");
+    }
+    context_->stop(::airmap::Context::ReturnCode::error);
+  }
+}
+
+void laanc::Suite::delete_flight_plan() {
   FlightPlans::Delete::Parameters parameters;
-  parameters.id            = id;
+  parameters.id            = flight_plan_.get().id;
   parameters.authorization = token_.id();
 
   client_->flight_plans().delete_(parameters, std::bind(&Suite::handle_delete_flight_plan_finished, this, ph::_1));
@@ -207,7 +281,7 @@ void laanc::Suite::delete_flight_plan(const FlightPlan::Id& id) {
 void laanc::Suite::handle_delete_flight_plan_finished(const FlightPlans::Delete::Result& result) {
   if (result) {
     log_.infof(component, "successfully deleted flight plan");
-    context_->stop();
+    delete_flight();
   } else {
     try {
       std::rethrow_exception(result.error());
@@ -220,154 +294,66 @@ void laanc::Suite::handle_delete_flight_plan_finished(const FlightPlans::Delete:
   }
 }
 
-airmap::FlightPlans::Create::Parameters laanc::PhoenixZoo::parameters() {
+void laanc::Suite::delete_flight() {
+  Flights::DeleteFlight::Parameters parameters;
+  parameters.id            = flight_id_.get();
+  parameters.authorization = token_.id();
+
+  client_->flights().delete_flight(parameters, std::bind(&Suite::handle_delete_flight_finished, this, ph::_1));
+}
+
+void laanc::Suite::handle_delete_flight_finished(const Flights::DeleteFlight::Result& result) {
+  if (result) {
+    log_.infof(component, "successfully deleted flight");
+    context_->stop();
+  } else {
+    try {
+      std::rethrow_exception(result.error());
+    } catch (const std::exception& e) {
+      log_.errorf(component, "failed to delete flight: %s", e.what());
+    } catch (...) {
+      log_.errorf(component, "failed to delete flight");
+    }
+    context_->stop(::airmap::Context::ReturnCode::error);
+  }
+}
+
+airmap::FlightPlans::Create::Parameters laanc::PhoenixManual::parameters() {
   static constexpr const char* json          = R"_(
     {
         "takeoff_longitude": -118.364180570977,
         "takeoff_latitude": 34.0168307437243,
-        "max_altitude_agl": 100,
+        "max_altitude_agl": 20,
         "min_altitude_agl": 1,
         "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-                [
-                    [
-                        -118.364180570977,
-                        34.0168307437243
-                    ],
-                    [
-                        -118.365628044777,
-                        34.0026580160048
-                    ],
-                    [
-                        -118.370366665279,
-                        33.9889926626396
-                    ],
-                    [
-                        -118.378212913785,
-                        33.9763595096654
-                    ],
-                    [
-                        -118.388864275762,
-                        33.9652435148409
-                    ],
-                    [
-                        -118.401911015266,
-                        33.9560712113537
-                    ],
-                    [
-                        -118.416851982014,
-                        33.9491944147928
-                    ],
-                    [
-                        -118.433113834775,
-                        33.9448768046356
-                    ],
-                    [
-                        -118.450072947987,
-                        33.9432838806463
-                    ],
-                    [
-                        -118.467079178993,
-                        33.9444766667622
-                    ],
-                    [
-                        -118.483480612439,
-                        33.9484093948682
-                    ],
-                    [
-                        -118.498648367065,
-                        33.954931253147
-                    ],
-                    [
-                        -118.512000548545,
-                        33.9637921333616
-                    ],
-                    [
-                        -118.523024460256,
-                        33.9746521633944
-                    ],
-                    [
-                        -118.531296241358,
-                        33.9870946705171
-                    ],
-                    [
-                        -118.536497187531,
-                        34.0006420919084
-                    ],
-                    [
-                        -118.538426122695,
-                        34.0147742363959
-                    ],
-                    [
-                        -118.537007327878,
-                        34.0289482094587
-                    ],
-                    [
-                        -118.532293692779,
-                        34.0426192459108
-                    ],
-                    [
-                        -118.524464932309,
-                        34.055261654524
-                    ],
-                    [
-                        -118.513820898597,
-                        34.0663890684601
-                    ],
-                    [
-                        -118.500770211903,
-                        34.0755732160792
-                    ],
-                    [
-                        -118.48581462341,
-                        34.0824604786282
-                    ],
-                    [
-                        -118.469529700366,
-                        34.086785583271
-                    ],
-                    [
-                        -118.45254258058,
-                        34.0883818892682
-                    ],
-                    [
-                        -118.435507670481,
-                        34.0871878577985
-                    ],
-                    [
-                        -118.419081251578,
-                        34.0832494465733
-                    ],
-                    [
-                        -118.403896008951,
-                        34.0767183326201
-                    ],
-                    [
-                        -118.390536499309,
-                        34.0678460332763
-                    ],
-                    [
-                        -118.379516534899,
-                        34.056974159122
-                    ],
-                    [
-                        -118.371259375595,
-                        34.0445211860435
-                    ],
-                    [
-                        -118.366081499672,
-                        34.030966270202
-                    ],
-                    [
-                        -118.364180570977,
-                        34.0168307437243
-                    ]
-                ]
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -112.10620880126953,
+                33.431011556740536
+              ],
+              [
+                -112.1000289916992,
+                33.42793141281223
+              ],
+              [
+                -112.09402084350586,
+                33.42914915719729
+              ],
+              [
+                -112.09917068481445,
+                33.431011556740536
+              ],
+              [
+                -112.10620880126953,
+                33.431011556740536
+              ]
             ]
+          ]
         },
         "buffer": 100,
-        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "rulesets": ["usa_part_107"],
         "flight_features": {
           "environment_visibility": 5000.0,
           "flight_max_speed": 3.0,
@@ -390,7 +376,102 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixZoo::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = Clock::universal_time();
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{40};
+  parameters.end_time                        = parameters.start_time + Minutes{5};
+  return parameters;
+}
+
+airmap::FlightPlans::Create::Parameters laanc::PhoenixZoo::parameters() {
+  static constexpr const char* json          = R"_(
+    {
+        "takeoff_longitude": -111.95188522338867,
+        "takeoff_latitude": 33.45135208763854,
+        "max_altitude_agl": 20,
+        "min_altitude_agl": 1,
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -111.95188522338867,
+                33.45135208763854
+              ],
+              [
+                -111.95265769958495,
+                33.449132050292846
+              ],
+              [
+                -111.95059776306152,
+                33.446840339233134
+              ],
+              [
+                -111.94896697998047,
+                33.44691195612031
+              ],
+              [
+                -111.94888114929199,
+                33.44791458633172
+              ],
+              [
+                -111.94673538208006,
+                33.44798620233191
+              ],
+              [
+                -111.94493293762207,
+                33.448129434154886
+              ],
+              [
+                -111.94398880004883,
+                33.44949012467619
+              ],
+              [
+                -111.94441795349121,
+                33.451065634400095
+              ],
+              [
+                -111.94699287414551,
+                33.451065634400095
+              ],
+              [
+                -111.94862365722656,
+                33.45213982916561
+              ],
+              [
+                -111.95094108581543,
+                33.45199660396564
+              ],
+              [
+                -111.95188522338867,
+                33.45135208763854
+              ]
+            ]
+          ]
+        },
+        "buffer": 100,
+        "rulesets": ["usa_part_107"],
+        "flight_features": {
+          "environment_visibility": 5000.0,
+          "flight_max_speed": 3.0,
+          "flight_vlos": true,
+          "flight_authorized": false,
+          "flight_carries_property_for_hire": false,
+          "flight_crosses_us_state_border": false,
+          "pilot_first_name": "Thomas",
+          "pilot_last_name": "Voß",
+          "pilot_phone_number": "+491621074430",
+          "pilot_in_command_part107_cert": true,
+          "uav_nav_lights": true,
+          "uav_preflight_check": true,
+          "uav_registered": true,
+          "uav_weight" : 1.0
+        }
+    }
+  )_";
+  FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
+  parameters.authorization                   = token_.id();
+  parameters.pilot                           = pilot_.get();
+  parameters.aircraft                        = aircraft_.get();
+  parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
   parameters.end_time                        = parameters.start_time + Minutes{5};
   return parameters;
 }
@@ -400,7 +481,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixSchwegg::parameters() {
     {
         "takeoff_longitude": -111.89334869384766,
         "takeoff_latitude": 33.42943568280503,
-        "max_altitude_agl": 100,
+        "max_altitude_agl": 20,
         "min_altitude_agl": 1,
         "geometry": {
             "type": "Polygon",
@@ -430,7 +511,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixSchwegg::parameters() {
             ]
         },
         "buffer": 100,
-        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "rulesets": ["usa_part_107"],
         "flight_features": {
           "environment_visibility": 5000.0,
           "flight_max_speed": 3.0,
@@ -453,7 +534,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixSchwegg::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = Clock::universal_time();
+  parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
   parameters.end_time                        = parameters.start_time + Minutes{5};
   return parameters;
 }
@@ -463,7 +544,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixUniversity::parameters() {
     {
         "takeoff_longitude": -111.92922592163086,
         "takeoff_latitude": 33.412672344081756,
-        "max_altitude_agl": 100,
+        "max_altitude_agl": 20,
         "min_altitude_agl": 1,
         "geometry": {
             "type": "Polygon",
@@ -549,7 +630,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixUniversity::parameters() {
             ]
         },
         "buffer": 100,
-        "rulesets": ["usa_part_107", "usa_sec_91"],
+        "rulesets": ["usa_part_107"],
         "flight_features": {
           "environment_visibility": 5000.0,
           "flight_max_speed": 3.0,
@@ -572,7 +653,297 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixUniversity::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = Clock::universal_time();
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
+  parameters.end_time                        = parameters.start_time + Minutes{5};
+  return parameters;
+}
+
+airmap::FlightPlans::Create::Parameters laanc::KentuckyFlorence::parameters() {
+  static constexpr const char* json          = R"_(
+    {
+        "takeoff_longitude": -84.61800813674927,
+        "takeoff_latitude": 39.00109310191585,
+        "max_altitude_agl": 20,
+        "min_altitude_agl": 1,
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -84.61800813674927,
+                39.00109310191585
+              ],
+              [
+                -84.61790084838867,
+                39.000759591417825
+              ],
+              [
+                -84.62045431137085,
+                38.999025311485944
+              ],
+              [
+                -84.61693525314331,
+                38.998058098444474
+              ],
+              [
+                -84.6162486076355,
+                38.99812480321662
+              ],
+              [
+                -84.61627006530762,
+                38.999125367252894
+              ],
+              [
+                -84.61740732192993,
+                39.00089299580567
+              ],
+              [
+                -84.6162486076355,
+                39.001526663213
+              ],
+              [
+                -84.61652755737305,
+                39.00172676753097
+              ],
+              [
+                -84.61800813674927,
+                39.00109310191585
+              ]
+            ]
+          ]
+        },
+        "buffer": 100,
+        "rulesets": ["usa_part_107"],
+        "flight_features": {
+          "environment_visibility": 5000.0,
+          "flight_max_speed": 3.0,
+          "flight_vlos": true,
+          "flight_authorized": false,
+          "flight_carries_property_for_hire": false,
+          "flight_crosses_us_state_border": false,
+          "pilot_first_name": "Thomas",
+          "pilot_last_name": "Voß",
+          "pilot_phone_number": "+491621074430",
+          "pilot_in_command_part107_cert": true,
+          "uav_nav_lights": true,
+          "uav_preflight_check": true,
+          "uav_registered": true,
+          "uav_weight" : 1.0
+        }
+    }
+  )_";
+  FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
+  parameters.authorization                   = token_.id();
+  parameters.pilot                           = pilot_.get();
+  parameters.aircraft                        = aircraft_.get();
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
+  parameters.end_time                        = parameters.start_time + Minutes{5};
+  return parameters;
+}
+
+laanc::Suite::EvaluationResult laanc::NevadaReno::evaluate_final_briefing(const FlightPlan::Briefing& b) {
+  if (b.authorizations.empty()) {
+    return EvaluationResult::error;
+  }
+
+  auto auth = b.authorizations.front();
+
+  if (auth.status != FlightPlan::Briefing::Authorization::Status::rejected || auth.authority.id != "faa-laanc") {
+    return EvaluationResult::error;
+  }
+
+  return EvaluationResult::passed;
+}
+
+airmap::FlightPlans::Create::Parameters laanc::NevadaReno::parameters() {
+  static constexpr const char* json          = R"_(
+    {
+        "takeoff_longitude": -119.79702472686768,
+        "takeoff_latitude": 39.51084501367582,
+        "max_altitude_agl": 20,
+        "min_altitude_agl": 1,
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -119.79702472686768,
+                39.51084501367582
+              ],
+              [
+                -119.78983640670778,
+                39.51084501367582
+              ],
+              [
+                -119.78983640670778,
+                39.51134165240756
+              ],
+              [
+                -119.79702472686768,
+                39.51134165240756
+              ],
+              [
+                -119.79702472686768,
+                39.51084501367582
+              ]
+            ]
+          ]
+        },
+        "buffer": 100,
+        "rulesets": ["usa_part_107"],
+        "flight_features": {
+          "environment_visibility": 5000.0,
+          "flight_max_speed": 3.0,
+          "flight_vlos": true,
+          "flight_authorized": false,
+          "flight_carries_property_for_hire": false,
+          "flight_crosses_us_state_border": false,
+          "pilot_first_name": "Thomas",
+          "pilot_last_name": "Voß",
+          "pilot_phone_number": "+491621074430",
+          "pilot_in_command_part107_cert": true,
+          "uav_nav_lights": true,
+          "uav_preflight_check": true,
+          "uav_registered": true,
+          "uav_weight" : 1.0
+        }
+    }
+  )_";
+  FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
+  parameters.authorization                   = token_.id();
+  parameters.pilot                           = pilot_.get();
+  parameters.aircraft                        = aircraft_.get();
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
+  parameters.end_time                        = parameters.start_time + Minutes{5};
+  return parameters;
+}
+
+airmap::FlightPlans::Create::Parameters laanc::ArkansasPineBluff::parameters() {
+  static constexpr const char* json          = R"_(
+    {
+        "takeoff_longitude": -91.97863340377808,
+        "takeoff_latitude": 34.219946599274,
+        "max_altitude_agl": 20,
+        "min_altitude_agl": 1,
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -91.97863340377808,
+                34.219946599274
+              ],
+              [
+                -91.97835445404053,
+                34.218101304583485
+              ],
+              [
+                -91.97726011276245,
+                34.217249616479045
+              ],
+              [
+                -91.97569370269775,
+                34.21865134857525
+              ],
+              [
+                -91.97863340377808,
+                34.219946599274
+              ]
+            ]
+          ]
+        },
+        "buffer": 100,
+        "rulesets": ["usa_part_107"],
+        "flight_features": {
+          "environment_visibility": 5000.0,
+          "flight_max_speed": 3.0,
+          "flight_vlos": true,
+          "flight_authorized": false,
+          "flight_carries_property_for_hire": false,
+          "flight_crosses_us_state_border": false,
+          "pilot_first_name": "Thomas",
+          "pilot_last_name": "Voß",
+          "pilot_phone_number": "+491621074430",
+          "pilot_in_command_part107_cert": true,
+          "uav_nav_lights": true,
+          "uav_preflight_check": true,
+          "uav_registered": true,
+          "uav_weight" : 1.0
+        }
+    }
+  )_";
+  FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
+  parameters.authorization                   = token_.id();
+  parameters.pilot                           = pilot_.get();
+  parameters.aircraft                        = aircraft_.get();
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
+  parameters.end_time                        = parameters.start_time + Minutes{5};
+  return parameters;
+}
+
+airmap::FlightPlans::Create::Parameters laanc::WyomingTetonVillage::parameters() {
+  static constexpr const char* json          = R"_(
+    {
+        "takeoff_longitude": -110.82299709320068,
+        "takeoff_latitude": 43.58135458245754,
+        "max_altitude_agl": 20,
+        "min_altitude_agl": 1,
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -110.82299709320068,
+                43.58135458245754
+              ],
+              [
+                -110.82359790802002,
+                43.581820896362856
+              ],
+              [
+                -110.83806037902832,
+                43.577002145173076
+              ],
+              [
+                -110.83600044250488,
+                43.56876274176711
+              ],
+              [
+                -110.82286834716797,
+                43.56988212311368
+              ],
+              [
+                -110.82299709320068,
+                43.58135458245754
+              ]
+            ]
+          ]
+        },
+        "buffer": 100,
+        "rulesets": ["usa_part_107"],
+        "flight_features": {
+          "environment_visibility": 5000.0,
+          "flight_max_speed": 3.0,
+          "flight_vlos": true,
+          "flight_authorized": false,
+          "flight_carries_property_for_hire": false,
+          "flight_crosses_us_state_border": false,
+          "pilot_first_name": "Thomas",
+          "pilot_last_name": "Voß",
+          "pilot_phone_number": "+491621074430",
+          "pilot_in_command_part107_cert": true,
+          "uav_nav_lights": true,
+          "uav_preflight_check": true,
+          "uav_registered": true,
+          "uav_weight" : 1.0
+        }
+    }
+  )_";
+  FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
+  parameters.authorization                   = token_.id();
+  parameters.pilot                           = pilot_.get();
+  parameters.aircraft                        = aircraft_.get();
+  parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
   parameters.end_time                        = parameters.start_time + Minutes{5};
   return parameters;
 }

@@ -40,6 +40,16 @@ class Context : public airmap::Context, public std::enable_shared_from_this<Cont
   enum class State { stopped, stopping, running };
   explicit Context(const std::shared_ptr<Logger>& logger);
 
+  std::shared_ptr<net::http::Requester> aircrafts(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> airspaces(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> authenticator(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> flights(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> flight_plans(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> pilots(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> rulesets(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> status(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> sso(const airmap::Client::Configuration& configuration);
+
   util::FormattingLogger log_;
 
   std::shared_ptr<::boost::asio::io_service> io_service_;

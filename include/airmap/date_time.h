@@ -29,6 +29,9 @@ DateTime from_milliseconds_since_epoch(const Milliseconds& ms);
 /// from_microseconds_since_epoch returns a DateTime.
 DateTime from_microseconds_since_epoch(const Microseconds& us);
 
+// moves the datetime forward to the specified hour
+DateTime move_to_hour(const DateTime& dt, int hour);
+
 namespace iso8601 {
 
 /// parse parses a DateTime instance from the string s in iso8601 format.

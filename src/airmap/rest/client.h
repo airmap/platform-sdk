@@ -25,10 +25,20 @@ namespace rest {
 
 class Client : public airmap::Client {
  public:
+  struct Requesters {
+    std::shared_ptr<net::http::Requester> aircrafts;
+    std::shared_ptr<net::http::Requester> airspaces;
+    std::shared_ptr<net::http::Requester> authenticator;
+    std::shared_ptr<net::http::Requester> flight_plans;
+    std::shared_ptr<net::http::Requester> flights;
+    std::shared_ptr<net::http::Requester> pilots;
+    std::shared_ptr<net::http::Requester> rulesets;
+    std::shared_ptr<net::http::Requester> status;
+    std::shared_ptr<net::http::Requester> sso;
+  };
+
   explicit Client(const Configuration& configuration, const std::shared_ptr<Context>& parent,
-                  const std::shared_ptr<net::udp::Sender>& sender,
-                  const std::shared_ptr<net::http::Requester>& airmap_requester,
-                  const std::shared_ptr<net::http::Requester>& sso_requester,
+                  const std::shared_ptr<net::udp::Sender>& sender, const Requesters& requesters,
                   const std::shared_ptr<net::mqtt::Broker>& broker);
 
   // From airmap::Client
