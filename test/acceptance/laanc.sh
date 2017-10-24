@@ -70,15 +70,15 @@ set_up() {
             "${AIRMAP_CIRCLECI_API_KEY}" \
             "${AIRMAP_CIRCLECI_CLIENT_ID}" \
             "${AIRMAP_CIRCLECI_DEVICE_ID}" \
-            "${AIRMAP_CIRCLECI_USERNAME}" \
-            "${AIRMAP_CIRCLECI_PASSWORD}" > ~/.config/airmap/production/config.json || true
+            "${AIRMAP_CIRCLECI_PASSWORD}" \
+            "${AIRMAP_CIRCLECI_USERNAME}" > ~/.config/airmap/production/config.json || true
 
         printf "${config_pattern_staging}" \
             "${AIRMAP_CIRCLECI_API_KEY}" \
             "${AIRMAP_CIRCLECI_CLIENT_ID}" \
             "${AIRMAP_CIRCLECI_DEVICE_ID}" \
-            "${AIRMAP_CIRCLECI_USERNAME}" \
-            "${AIRMAP_CIRCLECI_PASSWORD}" > ~/.config/airmap/staging/config.json || true
+            "${AIRMAP_CIRCLECI_PASSWORD}" \
+            "${AIRMAP_CIRCLECI_USERNAME}" > ~/.config/airmap/staging/config.json || true
     fi
 }
 
