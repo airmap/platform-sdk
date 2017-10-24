@@ -61,7 +61,7 @@ config_pattern_production="{
 set_up() {
     printenv
 
-    if [ "${CIRCLECI}" == "true" ]; then
+    if test "${CIRCLECI}" = "true"; then
         echo "setting up ci test environment"
         mkdir -p ~/.config/airmap/production || true
         mkdir -p ~/.config/airmap/staging || true
