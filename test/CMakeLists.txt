@@ -34,4 +34,6 @@ add_test(
 
 set_tests_properties(
   acceptance.laanc
-  PROPERTIES ENVIRONMENT "AIRMAP_EXECUTABLE=$<TARGET_FILE:airmap>")
+  PROPERTIES
+  ENVIRONMENT "AIRMAP_EXECUTABLE=$<TARGET_FILE:airmap>"
+  WILL_FAIL "true")
