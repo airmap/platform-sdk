@@ -97,5 +97,5 @@ run_all_test_suites() {
 
 set_up
 
-run_all_test_suites production
+# run_all_test_suites production
 run_all_test_suites staging
