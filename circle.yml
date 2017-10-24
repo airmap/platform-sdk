@@ -12,8 +12,7 @@ checkout:
 
 compile:
   override:
-    - sudo docker build --build-arg CIRCLECI=${CIRCLECI} --build-arg AIRMAP_CIRCLECI_API_KEY=${AIRMAP_CIRCLECI_API_KEY} --build-arg AIRMAP_CIRCLECI_CLIENT_ID=${AIRMAP_CIRCLECI_CLIENT_ID} --build-arg AIRMAP_CIRCLECI_DEVICE_ID=${AIRMAP_CIRCLECI_DEVICE_ID} --build-arg AIRMAP_CIRCLECI_USERNAME=${AIRMAP_CIRCLECI_USERNAME} --build-arg AIRMAP_CIRCLECI_PASSWORD=${AIRMAP_CIRCLECI_PASSWORD} --force-rm=true -t airmapd:latest -f Dockerfile.alpine .
-    - sudo docker build --build-arg CIRCLECI=${CIRCLECI} --build-arg AIRMAP_CIRCLECI_API_KEY=${AIRMAP_CIRCLECI_API_KEY} --build-arg AIRMAP_CIRCLECI_CLIENT_ID=${AIRMAP_CIRCLECI_CLIENT_ID} --build-arg AIRMAP_CIRCLECI_DEVICE_ID=${AIRMAP_CIRCLECI_DEVICE_ID} --build-arg AIRMAP_CIRCLECI_USERNAME=${AIRMAP_CIRCLECI_USERNAME} --build-arg AIRMAP_CIRCLECI_PASSWORD=${AIRMAP_CIRCLECI_PASSWORD} --force-rm=true -t airmapd:latest -f Dockerfile.ubuntu .
+    - tools/circleci/compile.sh
 
 test:
   override:
