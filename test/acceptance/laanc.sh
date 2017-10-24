@@ -47,8 +47,8 @@ config_pattern_production="{
     \"port\": 443
   },
   \"telemetry\": {
-    \"host\": \"api.k8s.stage..airmap.com\",
-    \"port\": 16060
+    \"host\": \"api.k8s.stage.airmap.com\",
+    \"port\": 32020
   },
   \"traffic\": {
     \"host\": \"mqtt-prod.airmap.io\",
@@ -66,33 +66,33 @@ set_up() {
         mkdir -p ~/.config/airmap/production || true
         mkdir -p ~/.config/airmap/staging || true
 
-        printf ${config_pattern_production} \
-            ${AIRMAP_CIRCLECI_API_KEY} \
-            ${AIRMAP_CIRCLECI_CLIENT_ID} \
-            ${AIRMAP_CIRCLECI_DEVICE_ID} \
-            ${AIRMAP_CIRCLECI_USERNAME} \
-            ${AIRMAP_CIRCLECI_PASSWORD} > ~/.config/airmap/production/config.json || true
+        printf "${config_pattern_production}" \
+            "${AIRMAP_CIRCLECI_API_KEY}" \
+            "${AIRMAP_CIRCLECI_CLIENT_ID}" \
+            "${AIRMAP_CIRCLECI_DEVICE_ID}" \
+            "${AIRMAP_CIRCLECI_USERNAME}" \
+            "${AIRMAP_CIRCLECI_PASSWORD}" > ~/.config/airmap/production/config.json || true
 
-        printf ${config_pattern_staging} \
-            ${AIRMAP_CIRCLECI_API_KEY} \
-            ${AIRMAP_CIRCLECI_CLIENT_ID} \
-            ${AIRMAP_CIRCLECI_DEVICE_ID} \
-            ${AIRMAP_CIRCLECI_USERNAME} \
-            ${AIRMAP_CIRCLECI_PASSWORD} > ~/.config/airmap/staging/config.json || true
+        printf "${config_pattern_staging}" \
+            "${AIRMAP_CIRCLECI_API_KEY}" \
+            "${AIRMAP_CIRCLECI_CLIENT_ID}" \
+            "${AIRMAP_CIRCLECI_DEVICE_ID}" \
+            "${AIRMAP_CIRCLECI_USERNAME}" \
+            "${AIRMAP_CIRCLECI_PASSWORD}" > ~/.config/airmap/staging/config.json || true
     fi
 }
 
 run_all_test_suites() {
     version=$1
-    ${AIRMAP_EXECUTABLE} login --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.arkansas.pinebluff --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.kentucky.florence --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.nevada.reno --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.phoenix.manual --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.phoenix.schwegg --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.phoenix.university --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.phoenix.zoo --version=${version}
-    ${AIRMAP_EXECUTABLE} test --test-suite=laanc.wyoming.tetonvillage --version=${version}
+    "${AIRMAP_EXECUTABLE}" login --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.arkansas.pinebluff --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.kentucky.florence --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.nevada.reno --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.phoenix.manual --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.phoenix.schwegg --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.phoenix.university --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.phoenix.zoo --version=${version}
+    "${AIRMAP_EXECUTABLE}" test --test-suite=laanc.wyoming.tetonvillage --version=${version}
 }
 
 set_up
