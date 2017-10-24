@@ -16,7 +16,7 @@ RUN mkdir build
 WORKDIR build
 RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
 RUN ninja
-RUN ninja test
+RUN ctest -V
 RUN ninja install
 WORKDIR /usr/src/app
 RUN tools/ubuntu/cleanup.dev.sh
