@@ -27,3 +27,11 @@ airmap_add_test(platform_test platform_test.cpp)
 airmap_add_test(rest_test rest_test.cpp)
 airmap_add_test(token_test token_test.cpp)
 # airmap_add_test(telemetry_test telemetry_test.cpp)
+
+add_test(
+  NAME acceptance.laanc
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/acceptance/laanc.sh)
+
+set_tests_properties(
+  acceptance.laanc
+  PROPERTIES ENVIRONMENT "AIRMAP_EXECUTABLE=$<TARGET_FILE:airmap>")
