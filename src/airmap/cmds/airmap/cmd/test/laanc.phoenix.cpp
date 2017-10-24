@@ -216,7 +216,7 @@ void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBr
     auto er = evaluate_submitted_briefing(result.value());
 
     if (er == EvaluationResult::passed) {
-      static const Microseconds timeout{20 * 1000 * 1000};
+      static const Microseconds timeout{5 * 1000 * 1000};
       log_.infof(component, "successfully rerendered flight briefing");
       log_.infof(component, "scheduling final rendering of flight plan");
       context_->schedule_in(timeout, [this]() { render_final_briefing(); });

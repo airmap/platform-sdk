@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 # TODO(tvoss): Reenable this once the laanc-enabled airports have been decided upon.
 # For now, we will *not* error out and the test will always pass.
 # set -e
 
-readonly config_pattern_staging="{
+config_pattern_staging="{
   \"credentials\": {
     \"api-key\": \"%s\",
     \"oauth\": {
@@ -31,7 +31,7 @@ readonly config_pattern_staging="{
 }
 "
 
-readonly config_pattern_production="{
+config_pattern_production="{
   \"credentials\": {
     \"api-key\": \"%s\",
     \"oauth\": {
@@ -58,7 +58,7 @@ readonly config_pattern_production="{
 }
 "
 
-function set_up {
+set_up() {
     if [[ -v CIRCLECI ]]; then
         echo "setting up ci test environment"
         mkdir -p ~/.config/airmap/production || true
@@ -80,7 +80,7 @@ function set_up {
     fi
 }
 
-function run_all_test_suites {
+run_all_test_suites() {
     version=$1
     ${AIRMAP_EXECUTABLE} login --version=${version}
     ${AIRMAP_EXECUTABLE} test --test-suite=laanc.arkansas.pinebluff --version=${version}
