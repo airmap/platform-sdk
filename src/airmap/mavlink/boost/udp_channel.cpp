@@ -7,7 +7,9 @@ constexpr const char* component{"airmap::mavlink::UdpChannel"};
 airmap::mavlink::boost::UdpChannel::UdpChannel(const std::shared_ptr<Logger>& logger,
                                                const std::shared_ptr<::boost::asio::io_service>& io_service,
                                                std::uint16_t port)
-    : log_{logger}, io_service_{io_service}, socket_{*io_service_, ::boost::asio::ip::udp::endpoint{::boost::asio::ip::udp::v4(), port}} {
+    : log_{logger},
+      io_service_{io_service},
+      socket_{*io_service_, ::boost::asio::ip::udp::endpoint{::boost::asio::ip::udp::v4(), port}} {
 }
 
 void airmap::mavlink::boost::UdpChannel::start_impl() {

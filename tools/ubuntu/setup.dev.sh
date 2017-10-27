@@ -15,4 +15,5 @@ apt install -y \
   libprotobuf-dev \
   libssl-dev \
   pkg-config \
-  protobuf-compiler
+  protobuf-compiler \
+  qtbase5-dev

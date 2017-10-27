@@ -32,6 +32,7 @@ enable_testing()
 find_package(Boost REQUIRED date_time filesystem program_options system)
 find_package(PkgConfig)
 find_package(Protobuf REQUIRED)
+find_package(Qt5Core)
 
 pkg_check_modules(OPENSSL REQUIRED openssl)
 

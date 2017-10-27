@@ -17,8 +17,7 @@ class UdpChannel : public Channel, public std::enable_shared_from_this<UdpChanne
   static constexpr std::size_t buffer_size{1024};
 
   explicit UdpChannel(const std::shared_ptr<Logger>& logger,
-                      const std::shared_ptr<::boost::asio::io_service>& io_service,
-                      std::uint16_t port);
+                      const std::shared_ptr<::boost::asio::io_service>& io_service, std::uint16_t port);
 
  protected:
   // From Channel

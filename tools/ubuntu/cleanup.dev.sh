@@ -16,7 +16,8 @@ apt remove -y \
   libprotobuf-dev \
   libssl-dev \
   pkg-config \
-  protobuf-compiler
+  protobuf-compiler \
+  qtbase5-dev
 
 apt autoremove -y
 

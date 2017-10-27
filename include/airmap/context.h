@@ -59,6 +59,9 @@ class Context : DoNotCopyOrMove {
   /// run.
   virtual void stop(ReturnCode rc = ReturnCode::success) = 0;
 
+  /// dispatch executes 'task' on the thread running this Context instance.
+  virtual void dispatch(const std::function<void()>& task) = 0;
+
   /// schedule_in schedules execution of 'functor' in 'wait_for' [us].
   virtual void schedule_in(const Microseconds& wait_for, const std::function<void()>& functor) = 0;
 
