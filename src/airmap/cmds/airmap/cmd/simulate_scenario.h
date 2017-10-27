@@ -76,6 +76,9 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
   void handle_start_flight_comms_result_for(util::Scenario::Participants::iterator participant,
                                             const Flights::StartFlightCommunications::Result& result);
 
+  void handle_end_flight_comms(util::Scenario::Participants::iterator participant, const Flights::EndFlightCommunications::Result& result);
+  void handle_end_flight(util::Scenario::Participants::iterator participant, const Flights::EndFlight::Result& result);
+
   struct {
     Client::Version version{Client::Version::production};
     Logger::Severity log_level{Logger::Severity::info};
