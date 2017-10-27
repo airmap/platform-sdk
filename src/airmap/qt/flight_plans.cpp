@@ -1,7 +1,7 @@
 #include <airmap/qt/flight_plans.h>
 
 airmap::qt::FlightPlans::FlightPlans(const std::shared_ptr<Dispatcher>& dispatcher,
-                                     const std::shared_ptr<Client>& client)
+                                     const std::shared_ptr<airmap::Client>& client)
     : dispatcher_{dispatcher}, client_{client} {
 }
 

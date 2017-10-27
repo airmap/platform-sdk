@@ -2,8 +2,8 @@
 #define AIRMAP_QT_STATUS_H_
 
 #include <airmap/client.h>
-#include <airmap/status.h>
 #include <airmap/qt/dispatcher.h>
+#include <airmap/status.h>
 
 #include <memory>
 
@@ -12,7 +12,7 @@ namespace qt {
 
 class Status : public airmap::Status {
  public:
-  explicit Status(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<Client>& client);
+  explicit Status(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
 
   void get_status_by_point(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) override;
   void get_status_by_path(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) override;
@@ -20,7 +20,7 @@ class Status : public airmap::Status {
 
  private:
   std::shared_ptr<Dispatcher> dispatcher_;
-  std::shared_ptr<Client> client_;
+  std::shared_ptr<airmap::Client> client_;
 };
 
 }  // namespace qt

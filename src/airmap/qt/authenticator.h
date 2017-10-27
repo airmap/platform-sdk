@@ -12,7 +12,7 @@ namespace qt {
 
 class Authenticator : public airmap::Authenticator, public std::enable_shared_from_this<Authenticator> {
  public:
-  explicit Authenticator(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<Client>& client);
+  explicit Authenticator(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
 
   void authenticate_with_password(const AuthenticateWithPassword::Params& params,
                                   const AuthenticateWithPassword::Callback& cb) override;
@@ -25,7 +25,7 @@ class Authenticator : public airmap::Authenticator, public std::enable_shared_fr
 
  private:
   std::shared_ptr<Dispatcher> dispatcher_;
-  std::shared_ptr<Client> client_;
+  std::shared_ptr<airmap::Client> client_;
 };
 
 }  // namespace qt

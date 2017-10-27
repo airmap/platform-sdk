@@ -12,7 +12,7 @@ namespace qt {
 
 class Flights : public airmap::Flights, public std::enable_shared_from_this<Flights> {
  public:
-  explicit Flights(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<Client>& client);
+  explicit Flights(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
 
   void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
@@ -28,7 +28,7 @@ class Flights : public airmap::Flights, public std::enable_shared_from_this<Flig
 
  private:
   std::shared_ptr<Dispatcher> dispatcher_;
-  std::shared_ptr<Client> client_;
+  std::shared_ptr<airmap::Client> client_;
 };
 
 }  // namespace qt
