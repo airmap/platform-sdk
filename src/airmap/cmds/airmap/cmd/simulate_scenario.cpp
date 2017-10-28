@@ -300,11 +300,13 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
     static const Microseconds timeout{1 * 1000 * 1000};
-    context_->schedule_in(timeout, [this](util::Scenario::Participants::iterator participant) { 
+    
+    context_->schedule_in(timeout, [this, participant]() { 
       client_->flights().end_flight_communications(
       {participant->authentication.get(), participant->flight.get().id},
       std::bind(&SimulateScenario::handle_end_flight_comms, this, participant, ph::_1));
     });
+    
   } else {
     try {
       std::rethrow_exception(result.error());
@@ -371,12 +373,15 @@ void cmd::SimulateScenario::handle_start_flight_comms_result_for(
 }
 
 void cmd::SimulateScenario::handle_end_flight_comms(util::Scenario::Participants::iterator participant, const Flights::EndFlightCommunications::Result& result) {
+  
   client_->flights().end_flight(
     {participant->authentication.get(), participant->flight.get().id},
     std::bind(&SimulateScenario::handle_end_flight, this, participant, ph::_1));
+    
 }
 
 void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iterator participant, const Flights::EndFlight::Result& result) {
+  
   if (result) {
     log_.infof(component, "successfully finished flight: %s", participant->flight.get().id);
     context_->stop();
@@ -390,4 +395,5 @@ void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iter
     }
     context_->stop(::airmap::Context::ReturnCode::error);
   }
+ 
 }
