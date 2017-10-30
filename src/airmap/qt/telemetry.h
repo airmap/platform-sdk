@@ -1,0 +1,28 @@
+#ifndef AIRMAP_QT_TELEMETRY_H_
+#define AIRMAP_QT_TELEMETRY_H_
+
+#include <airmap/client.h>
+#include <airmap/qt/dispatcher.h>
+#include <airmap/telemetry.h>
+
+#include <memory>
+
+namespace airmap {
+namespace qt {
+
+class Telemetry : public airmap::Telemetry, public std::enable_shared_from_this<Telemetry> {
+ public:
+  explicit Telemetry(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
+
+  void submit_updates(const Flight& flight, const std::string& key,
+                      const std::initializer_list<Update>& updates) override;
+
+ private:
+  std::shared_ptr<Dispatcher> dispatcher_;
+  std::shared_ptr<airmap::Client> client_;
+};
+
+}  // namespace qt
+}  // namespace airmap
+
+#endif  // AIRMAP_QT_TELEMETRY_H_

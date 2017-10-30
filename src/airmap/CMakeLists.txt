@@ -253,6 +253,8 @@ add_library(
   qt/rulesets.cpp
   qt/status.h
   qt/status.cpp
+  qt/telemetry.h
+  qt/telemetry.cpp
 )
 
 add_executable(
