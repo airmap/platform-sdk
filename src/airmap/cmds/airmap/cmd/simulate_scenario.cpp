@@ -299,7 +299,7 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     collector_->collect_flight_id_for(participant, result.value());
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
-    static const Microseconds timeout{1 * 1000 * 1000};
+    static const Microseconds timeout{60 * 1000 * 1000};
     
     context_->schedule_in(timeout, [this, participant]() { 
       client_->flights().end_flight_communications(
@@ -373,7 +373,6 @@ void cmd::SimulateScenario::handle_start_flight_comms_result_for(
 }
 
 void cmd::SimulateScenario::handle_end_flight_comms(util::Scenario::Participants::iterator participant, const Flights::EndFlightCommunications::Result& result) {
-  
   client_->flights().end_flight(
     {participant->authentication.get(), participant->flight.get().id},
     std::bind(&SimulateScenario::handle_end_flight, this, participant, ph::_1));
