@@ -1,5 +1,10 @@
 #include <airmap/qt/traffic.h>
 
+std::shared_ptr<airmap::qt::Traffic::Monitor> airmap::qt::Traffic::Monitor::create(
+    const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Traffic::Monitor>& native) {
+  return std::shared_ptr<Monitor>{new Monitor{dispatcher, native}};
+}
+
 airmap::qt::Traffic::Monitor::Monitor(const std::shared_ptr<Dispatcher>& dispatcher,
                                       const std::shared_ptr<airmap::Traffic::Monitor>& native)
     : dispatcher_{dispatcher}, native_{native} {
@@ -21,6 +26,11 @@ void airmap::qt::Traffic::Monitor::handle_update(Update::Type type, const std::v
   });
 }
 
+std::shared_ptr<airmap::qt::Traffic> airmap::qt::Traffic::create(const std::shared_ptr<Dispatcher>& dispatcher,
+                                                                 const std::shared_ptr<airmap::Client>& client) {
+  return std::shared_ptr<Traffic>{new Traffic{dispatcher, client}};
+}
+
 airmap::qt::Traffic::Traffic(const std::shared_ptr<Dispatcher>& dispatcher,
                              const std::shared_ptr<airmap::Client>& client)
     : dispatcher_{dispatcher}, client_{client} {
@@ -31,7 +41,7 @@ void airmap::qt::Traffic::monitor(const Monitor::Params& parameters, const Monit
     sp->client_->traffic().monitor(parameters, [this, sp, parameters, cb](const auto& result) {
       if (result) {
         auto m  = result.value();
-        auto mm = std::make_shared<Monitor>(sp->dispatcher_, m);
+        auto mm = Monitor::create(sp->dispatcher_, m);
         m->subscribe(mm);
         sp->dispatcher_->dispatch_to_qt([sp, mm, cb]() { cb(Monitor::Result{mm}); });
       } else {

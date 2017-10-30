@@ -1,5 +1,10 @@
 #include <airmap/qt/flight_plans.h>
 
+std::shared_ptr<airmap::qt::FlightPlans> airmap::qt::FlightPlans::create(
+    const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client) {
+  return std::shared_ptr<FlightPlans>{new FlightPlans{dispatcher, client}};
+}
+
 airmap::qt::FlightPlans::FlightPlans(const std::shared_ptr<Dispatcher>& dispatcher,
                                      const std::shared_ptr<airmap::Client>& client)
     : dispatcher_{dispatcher}, client_{client} {

@@ -1,5 +1,10 @@
 #include <airmap/qt/authenticator.h>
 
+std::shared_ptr<airmap::qt::Authenticator> airmap::qt::Authenticator::create(
+    const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client) {
+  return std::shared_ptr<Authenticator>{new Authenticator{dispatcher, client}};
+}
+
 airmap::qt::Authenticator::Authenticator(const std::shared_ptr<Dispatcher>& dispatcher,
                                          const std::shared_ptr<airmap::Client>& client)
     : dispatcher_{dispatcher}, client_{client} {

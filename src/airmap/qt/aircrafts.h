@@ -13,13 +13,15 @@ namespace qt {
 
 class Aircrafts : public airmap::Aircrafts, public std::enable_shared_from_this<Aircrafts> {
  public:
-  explicit Aircrafts(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
+  static std::shared_ptr<Aircrafts> create(const std::shared_ptr<Dispatcher>& dispatcher,
+                                           const std::shared_ptr<airmap::Client>& client);
 
   void manufacturers(const Manufacturers::Parameters& parameters, const Manufacturers::Callback& cb) override;
   void models(const Models::Parameters& parameters, const Models::Callback& cb) override;
   void model_for_id(const ModelForId::Parameters& parameters, const ModelForId::Callback& cb) override;
 
  private:
+  explicit Aircrafts(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
   std::shared_ptr<Dispatcher> dispatcher_;
   std::shared_ptr<airmap::Client> client_;
 };

@@ -2,6 +2,11 @@
 
 #include <airmap/flight.h>
 
+std::shared_ptr<airmap::qt::Telemetry> airmap::qt::Telemetry::create(const std::shared_ptr<Dispatcher>& dispatcher,
+                                                                     const std::shared_ptr<airmap::Client>& client) {
+  return std::shared_ptr<Telemetry>{new Telemetry{dispatcher, client}};
+}
+
 airmap::qt::Telemetry::Telemetry(const std::shared_ptr<Dispatcher>& dispatcher,
                                  const std::shared_ptr<airmap::Client>& client)
     : dispatcher_{dispatcher}, client_{client} {

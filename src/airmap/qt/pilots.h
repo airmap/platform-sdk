@@ -13,7 +13,8 @@ namespace qt {
 
 class Pilots : public airmap::Pilots, public std::enable_shared_from_this<Pilots> {
  public:
-  explicit Pilots(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
+  static std::shared_ptr<Pilots> create(const std::shared_ptr<Dispatcher>& dispatcher,
+                                        const std::shared_ptr<airmap::Client>& client);
 
   void authenticated(const Authenticated::Parameters& parameters, const Authenticated::Callback& cb) override;
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
@@ -28,6 +29,8 @@ class Pilots : public airmap::Pilots, public std::enable_shared_from_this<Pilots
   void update_aircraft(const UpdateAircraft::Parameters& parameters, const UpdateAircraft::Callback& cb) override;
 
  private:
+  explicit Pilots(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
+
   std::shared_ptr<Dispatcher> dispatcher_;
   std::shared_ptr<airmap::Client> client_;
 };

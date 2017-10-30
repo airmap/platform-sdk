@@ -51,16 +51,16 @@ struct airmap::qt::Client::Private {
         context_runner_{context_runner},
         dispatcher_{dispatcher},
         client_{client},
-        aircrafts_{new airmap::qt::Aircrafts{dispatcher_, client_}},
-        airspaces_{new airmap::qt::Airspaces{dispatcher_, client_}},
-        authenticator_{new airmap::qt::Authenticator{dispatcher_, client_}},
-        flight_plans_{new airmap::qt::FlightPlans{dispatcher_, client_}},
-        flights_{new airmap::qt::Flights{dispatcher_, client_}},
-        pilots_{new airmap::qt::Pilots{dispatcher_, client_}},
-        rulesets_{new airmap::qt::RuleSets{dispatcher_, client_}},
-        status_{new airmap::qt::Status{dispatcher_, client_}},
-        telemetry_{new airmap::qt::Telemetry{dispatcher_, client_}},
-        traffic_{new airmap::qt::Traffic{dispatcher_, client_}} {
+        aircrafts_{airmap::qt::Aircrafts::create(dispatcher_, client_)},
+        airspaces_{airmap::qt::Airspaces::create(dispatcher_, client_)},
+        authenticator_{airmap::qt::Authenticator::create(dispatcher_, client_)},
+        flight_plans_{airmap::qt::FlightPlans::create(dispatcher_, client_)},
+        flights_{airmap::qt::Flights::create(dispatcher_, client_)},
+        pilots_{airmap::qt::Pilots::create(dispatcher_, client_)},
+        rulesets_{airmap::qt::RuleSets::create(dispatcher_, client_)},
+        status_{airmap::qt::Status::create(dispatcher_, client_)},
+        telemetry_{airmap::qt::Telemetry::create(dispatcher_, client_)},
+        traffic_{airmap::qt::Traffic::create(dispatcher_, client_)} {
   }
 
   ~Private() {

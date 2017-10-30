@@ -13,7 +13,8 @@ namespace qt {
 /// FlightPlans provides functionality for managing flight plans.
 class FlightPlans : public airmap::FlightPlans, public std::enable_shared_from_this<FlightPlans> {
  public:
-  explicit FlightPlans(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
+  static std::shared_ptr<FlightPlans> create(const std::shared_ptr<Dispatcher>& dispatcher,
+                                             const std::shared_ptr<airmap::Client>& client);
 
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
   void create_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) override;
@@ -23,6 +24,8 @@ class FlightPlans : public airmap::FlightPlans, public std::enable_shared_from_t
   void submit(const Submit::Parameters& parameters, const Submit::Callback& cb) override;
 
  private:
+  explicit FlightPlans(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
+
   std::shared_ptr<Dispatcher> dispatcher_;
   std::shared_ptr<airmap::Client> client_;
 };

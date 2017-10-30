@@ -1,5 +1,10 @@
 #include <airmap/qt/rulesets.h>
 
+std::shared_ptr<airmap::qt::RuleSets> airmap::qt::RuleSets::create(const std::shared_ptr<Dispatcher>& dispatcher,
+                                                                   const std::shared_ptr<airmap::Client>& client) {
+  return std::shared_ptr<RuleSets>{new RuleSets{dispatcher, client}};
+}
+
 airmap::qt::RuleSets::RuleSets(const std::shared_ptr<Dispatcher>& dispatcher,
                                const std::shared_ptr<airmap::Client>& client)
     : dispatcher_{dispatcher}, client_{client} {
