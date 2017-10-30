@@ -9,12 +9,13 @@
 #include <QCoreApplication>
 
 namespace {
+
 constexpr const char* api_key =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
     "eyJjcmVkZW50aWFsX2lkIjoiY3JlZGVudGlhbHx6MzN6T0dEY21wbjV3NmZHTVdwUFpJblBEd1puIiwiYXBwbGljYXRpb25faWQiOiJhcHBsaWNh"
     "dGlvbnxwNE4ySnF2aGc3cFpxWVM2dzZ2eFh0Z2czeDV4Iiwib3JnYW5pemF0aW9uX2lkIjoiZGV2ZWxvcGVyfEt5cURrM0p0N2VuUGJLVVk0QU5i"
     "NUllMEFXbkQiLCJpYXQiOjE1MDg4ODU1NTN9.K3ejcgnoyip3u59ba-VBCivs6tn5gahOsI9FYkCI464";
-}
+}  // namespace
 
 int main(int argc, char** argv) {
   QCoreApplication app{argc, argv};

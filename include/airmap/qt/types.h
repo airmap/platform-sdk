@@ -53,6 +53,10 @@ Q_DECLARE_METATYPE(airmap::Version)
 namespace airmap {
 namespace qt {
 
+/// register_types makes airmap::* types known to the Qt type system.
+///
+/// This function has to be called at least once to be able to use airmap::*
+/// types in queued signal-slot connections.
 void register_types();
 
 }  // namespace qt

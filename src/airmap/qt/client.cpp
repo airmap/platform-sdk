@@ -12,6 +12,7 @@
 #include <airmap/qt/status.h>
 #include <airmap/qt/telemetry.h>
 #include <airmap/qt/traffic.h>
+#include <airmap/qt/types.h>
 
 #include <memory>
 #include <thread>
@@ -85,6 +86,8 @@ struct airmap::qt::Client::Private {
 
 void airmap::qt::Client::create(const Client::Configuration& configuration, const std::shared_ptr<Logger>& logger,
                                 QObject* parent, const CreateCallback& cb) {
+  register_types();
+
   auto result     = Context::create(logger);
   auto dispatcher = std::make_shared<Dispatcher>(result.value());
 
