@@ -13,6 +13,9 @@ namespace qt {
 
 /// Client implements the airmap::Client interface, bridging over between
 /// the Qt event loop and the native event loop of the native airmap::Client.
+///
+/// All callback invocations that might happen in the context of a Client instance
+/// are dispatched to the Qt applications' main thread.
 class Client : public QObject, public airmap::Client {
  public:
   using CreateResult   = Outcome<Client*, std::exception_ptr>;
@@ -41,9 +44,7 @@ class Client : public QObject, public airmap::Client {
  private:
   /// @cond
   struct Private;
-  /// Client initializes a new instance.
   Client(std::unique_ptr<Private>&& d, QObject* parent);
-
   std::unique_ptr<Private> d_;
   /// @endcond
 };

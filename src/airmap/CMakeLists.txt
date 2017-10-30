@@ -235,6 +235,7 @@ add_library(
   qt/client.cpp
   qt/dispatcher.h
   qt/dispatcher.cpp
+  qt/logger.cpp
 
   qt/aircrafts.h
   qt/aircrafts.cpp
@@ -246,6 +247,8 @@ add_library(
   qt/flight_plans.cpp
   qt/flights.h
   qt/flights.cpp
+  qt/status.h
+  qt/status.cpp
 )
 
 add_executable(

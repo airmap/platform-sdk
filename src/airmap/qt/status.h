@@ -10,7 +10,7 @@
 namespace airmap {
 namespace qt {
 
-class Status : public airmap::Status {
+class Status : public airmap::Status, public std::enable_shared_from_this<Status> {
  public:
   explicit Status(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);
 

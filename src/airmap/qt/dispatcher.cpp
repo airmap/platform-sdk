@@ -1,6 +1,9 @@
 #include <airmap/qt/dispatcher.h>
 
 #include <QCoreApplication>
+#include <QThread>
+
+#include <cassert>
 
 QEvent::Type airmap::qt::Dispatcher::Event::registered_type() {
   static const Type rt = static_cast<Type>(registerEventType());
@@ -14,19 +17,23 @@ void airmap::qt::Dispatcher::Event::dispatch() {
   task_();
 }
 
-airmap::qt::Dispatcher::Dispatcher(const std::shared_ptr<Context>& context) : context_{context} {
+std::shared_ptr<airmap::qt::Dispatcher::ToQt> airmap::qt::Dispatcher::ToQt::create() {
+  return std::shared_ptr<ToQt>{new ToQt{}};
 }
 
-void airmap::qt::Dispatcher::dispatch_to_qt(const std::function<void()>& task) {
-  QCoreApplication::postEvent(this, new Event{task});
+airmap::qt::Dispatcher::ToQt::ToQt() {
 }
 
-void airmap::qt::Dispatcher::dispatch_to_native(const std::function<void()>& task) {
-  context_->dispatch(task);
+void airmap::qt::Dispatcher::ToQt::dispatch(const Task& task) {
+  auto sp = shared_from_this();
+
+  QCoreApplication::postEvent(this, new Event{[sp, task]() { task(); }});
 }
 
-// From QObject
-bool airmap::qt::Dispatcher::event(QEvent* event) {
+bool airmap::qt::Dispatcher::ToQt::event(QEvent* event) {
+  assert(QCoreApplication::instance());
+  assert(QThread::currentThread() == QCoreApplication::instance()->thread());
+
   if (event->type() == Event::registered_type()) {
     event->accept();
 
@@ -39,3 +46,29 @@ bool airmap::qt::Dispatcher::event(QEvent* event) {
 
   return false;
 }
+
+std::shared_ptr<airmap::qt::Dispatcher::ToNative> airmap::qt::Dispatcher::ToNative::create(
+    const std::shared_ptr<Context>& context) {
+  return std::shared_ptr<ToNative>{new ToNative{context}};
+}
+
+airmap::qt::Dispatcher::ToNative::ToNative(const std::shared_ptr<Context>& context) : context_{context} {
+}
+
+void airmap::qt::Dispatcher::ToNative::dispatch(const Task& task) {
+  context_->dispatch(task);
+}
+
+airmap::qt::Dispatcher::Dispatcher(const std::shared_ptr<Context>& context)
+    : to_qt_{ToQt::create()}, to_native_{ToNative::create(context)} {
+}
+
+void airmap::qt::Dispatcher::dispatch_to_qt(const std::function<void()>& task) {
+  to_qt_->dispatch(task);
+}
+
+void airmap::qt::Dispatcher::dispatch_to_native(const std::function<void()>& task) {
+  to_native_->dispatch(task);
+}
+
+// From QObject

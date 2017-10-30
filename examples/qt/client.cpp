@@ -1,4 +1,5 @@
 #include <airmap/qt/client.h>
+#include <airmap/qt/logger.h>
 
 #include <airmap/authenticator.h>
 
@@ -15,27 +16,32 @@ constexpr const char* api_key =
 int main(int argc, char** argv) {
   QCoreApplication app{argc, argv};
 
+  auto qlogger = std::make_shared<airmap::qt::Logger>();
+
+  qlogger->logging_category().setEnabled(QtDebugMsg, true);
+  qlogger->logging_category().setEnabled(QtInfoMsg, true);
+  qlogger->logging_category().setEnabled(QtWarningMsg, true);
+
   auto credentials    = airmap::Credentials{};
   credentials.api_key = api_key;
-  auto logger         = airmap::create_default_logger();
+  auto dlogger         = std::make_shared<airmap::qt::DispatchingLogger>(qlogger);
   auto configuration  = airmap::Client::default_staging_configuration(credentials);
 
-  airmap::qt::Client::create(configuration, logger, &app, [](const auto& result) {
+  airmap::qt::Client::create(configuration, dlogger, &app, [](const auto& result) {
     if (result) {
       qInfo("Successfully created airmap::qt::Client instance");
       airmap::Authenticator::AuthenticateAnonymously::Params params;
       params.id = "qt client";
       result.value()->authenticator().authenticate_anonymously(params, [](const auto& result) {
         if (result) {
-            qInfo("Successfully authenticated with AirMap: %s", result.value().id.c_str());
-            QCoreApplication::exit(0);
+          qInfo("Successfully authenticated with AirMap: %s", result.value().id.c_str());
+          QCoreApplication::exit(0);
         } else {
-            qInfo("Failed to authenticate with AirMap");
-            QCoreApplication::exit(1);
+          qInfo("Failed to authenticate with AirMap");
+          QCoreApplication::exit(1);
         }
       });
-    }
-    else {
+    } else {
       qInfo("Failed to create airmap::qt::Client instance");
       QCoreApplication::exit(1);
     }

@@ -82,6 +82,7 @@ include_directories(
 
 add_subdirectory(doc)
 add_subdirectory(src/airmap)
+add_subdirectory(examples)
 add_subdirectory(test)
 
 find_program(CLANG_FORMAT_EXECUTABLE
