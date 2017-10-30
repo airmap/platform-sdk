@@ -11,6 +11,7 @@
 #include <airmap/qt/rulesets.h>
 #include <airmap/qt/status.h>
 #include <airmap/qt/telemetry.h>
+#include <airmap/qt/traffic.h>
 
 #include <memory>
 #include <thread>
@@ -58,7 +59,8 @@ struct airmap::qt::Client::Private {
         pilots_{new airmap::qt::Pilots{dispatcher_, client_}},
         rulesets_{new airmap::qt::RuleSets{dispatcher_, client_}},
         status_{new airmap::qt::Status{dispatcher_, client_}},
-        telemetry_{new airmap::qt::Telemetry{dispatcher_, client_}} {
+        telemetry_{new airmap::qt::Telemetry{dispatcher_, client_}},
+        traffic_{new airmap::qt::Traffic{dispatcher_, client_}} {
   }
 
   ~Private() {
@@ -78,6 +80,7 @@ struct airmap::qt::Client::Private {
   std::shared_ptr<airmap::qt::RuleSets> rulesets_;
   std::shared_ptr<airmap::qt::Status> status_;
   std::shared_ptr<airmap::qt::Telemetry> telemetry_;
+  std::shared_ptr<airmap::qt::Traffic> traffic_;
 };
 
 void airmap::qt::Client::create(const Client::Configuration& configuration, const std::shared_ptr<Logger>& logger,
@@ -147,5 +150,5 @@ airmap::Telemetry& airmap::qt::Client::telemetry() {
 }
 
 airmap::Traffic& airmap::qt::Client::traffic() {
-  throw std::logic_error{"not implemented"};
+  return *d_->traffic_;
 }

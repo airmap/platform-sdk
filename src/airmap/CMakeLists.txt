@@ -255,6 +255,8 @@ add_library(
   qt/status.cpp
   qt/telemetry.h
   qt/telemetry.cpp
+  qt/traffic.h
+  qt/traffic.cpp
 )
 
 add_executable(
