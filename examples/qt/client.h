@@ -14,6 +14,8 @@ class Client : public QObject {
 public:
     Client(QObject* parent);
 
+    bool test();
+
     Q_SIGNAL void sig_(const Aircraft&);
     Q_SIGNAL void sig_(const Airspace&);
     Q_SIGNAL void sig_(const Credentials&);
