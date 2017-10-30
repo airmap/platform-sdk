@@ -249,6 +249,8 @@ add_library(
   qt/flights.cpp
   qt/pilots.h
   qt/pilots.cpp
+  qt/rulesets.h
+  qt/rulesets.cpp
   qt/status.h
   qt/status.cpp
 )
