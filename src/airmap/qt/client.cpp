@@ -7,6 +7,7 @@
 #include <airmap/qt/authenticator.h>
 #include <airmap/qt/flight_plans.h>
 #include <airmap/qt/flights.h>
+#include <airmap/qt/pilots.h>
 #include <airmap/qt/status.h>
 
 #include <memory>
@@ -52,6 +53,7 @@ struct airmap::qt::Client::Private {
         authenticator_{new airmap::qt::Authenticator{dispatcher_, client_}},
         flight_plans_{new airmap::qt::FlightPlans{dispatcher_, client_}},
         flights_{new airmap::qt::Flights{dispatcher_, client_}},
+        pilots_{new airmap::qt::Pilots{dispatcher_, client_}},
         status_{new airmap::qt::Status{dispatcher_, client_}} {
   }
 
@@ -68,6 +70,7 @@ struct airmap::qt::Client::Private {
   std::shared_ptr<airmap::qt::Authenticator> authenticator_;
   std::shared_ptr<airmap::qt::FlightPlans> flight_plans_;
   std::shared_ptr<airmap::qt::Flights> flights_;
+  std::shared_ptr<airmap::qt::Pilots> pilots_;
   std::shared_ptr<airmap::qt::Status> status_;
 };
 
