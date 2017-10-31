@@ -375,6 +375,7 @@ void cmd::SimulateScenario::handle_start_flight_comms_result_for(
 void cmd::SimulateScenario::handle_end_flight_comms(util::Scenario::Participants::iterator participant,
                                                     const Flights::EndFlightCommunications::Result& result) {
   if (result) {
+    log_.infof(component, "successfully ended flight comms");
     client_->flights().end_flight({participant->authentication.get(), participant->flight.get().id},
                                   std::bind(&SimulateScenario::handle_end_flight, this, participant, ph::_1));
   } else {
