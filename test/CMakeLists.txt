@@ -26,6 +26,8 @@ airmap_add_test(geometry_test geometry_test.cpp)
 airmap_add_test(platform_test platform_test.cpp)
 airmap_add_test(rest_test rest_test.cpp)
 airmap_add_test(token_test token_test.cpp)
+
+airmap_add_test(issue_38_test issue_38_test.cpp)
 # airmap_add_test(telemetry_test telemetry_test.cpp)
 
 add_test(

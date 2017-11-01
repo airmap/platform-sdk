@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <iosfwd>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -99,6 +100,13 @@ class Airspace {
     std::string technology;  ///< The technology used by the power plant.
     std::uint64_t code;      ///< Official number of the power plant.
   };
+
+  /// RelatedGeometry bundles up a geometry related to an airspace.
+  struct RelatedGeometry {
+    std::string id;     ///< The unique id of the geometry in the context of AirMap.
+    Geometry geometry;  ///< The actual geometry.
+  };
+
   /// Enumerates all known airspace types.
   enum class Type {
     invalid              = 0,
@@ -177,10 +185,10 @@ class Airspace {
 
   /// related_geometries returns an immutable reference to all geometries associated with
   /// this airspace instance.
-  const std::vector<Geometry> &related_geometries() const;
+  const std::map<std::string, RelatedGeometry> &related_geometries() const;
   /// set_related_geometries adjusts the geometries associated with this airspace instance
   /// to 'geometry'.
-  void set_related_geometries(const std::vector<Geometry> &geometries);
+  void set_related_geometries(const std::map<std::string, RelatedGeometry> &geometries);
 
   /// rules returns an immutable reference to the rules applying to this airspace instance.
   const std::vector<Rule> &rules() const;
@@ -340,12 +348,13 @@ class Airspace {
   std::string city_;
   Timestamp last_updated_;
   Geometry geometry_;
-  std::vector<Geometry> related_geometries_;
+  std::map<std::string, RelatedGeometry> related_geometries_;
   std::vector<Rule> rules_;
   Details details_;
 };
 
 /// @cond
+bool operator==(const Airspace::RelatedGeometry &lhs, const Airspace::RelatedGeometry &rhs);
 bool operator==(const Airspace::Airport &lhs, const Airspace::Airport &rhs);
 bool operator==(const Airspace::Airport::Runway &lhs, const Airspace::Airport::Runway &rhs);
 bool operator==(const Airspace::ControlledAirspace &lhs, const Airspace::ControlledAirspace &rhs);

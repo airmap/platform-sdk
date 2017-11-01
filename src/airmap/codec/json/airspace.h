@@ -15,6 +15,8 @@ namespace json {
 
 void decode(const nlohmann::json& j, Airspace& airspace);
 void decode(const nlohmann::json& j, std::vector<Airspace>& v);
+void decode(const nlohmann::json& j, Airspace::RelatedGeometry& rg);
+void decode(const nlohmann::json& j, std::map<std::string, Airspace::RelatedGeometry>& rg);
 void decode(const nlohmann::json& j, Airspace::Type& type);
 void decode(const nlohmann::json& j, Airspace::Airport& airport);
 void decode(const nlohmann::json& j, Airspace::Airport::Runway& runway);

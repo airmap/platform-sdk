@@ -166,11 +166,11 @@ void airmap::Airspace::set_geometry(const Geometry &geometry) {
   geometry_ = geometry;
 }
 
-const std::vector<airmap::Geometry> &airmap::Airspace::related_geometries() const {
+const std::map<std::string, airmap::Airspace::RelatedGeometry> &airmap::Airspace::related_geometries() const {
   return related_geometries_;
 }
 
-void airmap::Airspace::set_related_geometries(const std::vector<Geometry> &geometries) {
+void airmap::Airspace::set_related_geometries(const std::map<std::string, RelatedGeometry> &geometries) {
   related_geometries_ = geometries;
 }
 
@@ -448,6 +448,10 @@ void airmap::Airspace::reset() {
 airmap::Airspace::Details::Details() : invalid{} {
 }
 airmap::Airspace::Details::~Details() {
+}
+
+bool airmap::operator==(const Airspace::RelatedGeometry &lhs, const Airspace::RelatedGeometry &rhs) {
+  return lhs.id == rhs.id && lhs.geometry == rhs.geometry;
 }
 
 bool airmap::operator==(const Airspace::Airport &lhs, const Airspace::Airport &rhs) {

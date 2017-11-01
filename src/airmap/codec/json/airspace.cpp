@@ -20,7 +20,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Airspace& airspace) {
   if (j.count("geometry") > 0)
     airspace.set_geometry(j["geometry"].get<Geometry>());
   if (j.count("related_geometry") > 0)
-    airspace.set_related_geometries(j["related_geometry"].get<std::vector<Geometry>>());
+    airspace.set_related_geometries(j["related_geometry"].get<std::map<std::string, Airspace::RelatedGeometry>>());
   if (j.count("rules") > 0)
     airspace.set_rules(j["rules"].get<std::vector<Rule>>());
   if (j.count("last_updated") > 0 && !j["last_updated"].is_null())
@@ -77,6 +77,16 @@ void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Airspace>&
     v.push_back(Airspace{});
     v.back() = element;
   }
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, Airspace::RelatedGeometry& rg) {
+  get(rg.id, j, "id");
+  get(rg.geometry, j, "geometry");
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, std::map<std::string, Airspace::RelatedGeometry>& rg) {
+  for (auto it   = j.begin(); it != j.end(); ++it)
+    rg[it.key()] = it.value();
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Airspace::Type& type) {
