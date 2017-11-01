@@ -24,6 +24,7 @@ using json = nlohmann::json;
 
 namespace {
 const std::string device_name = boost::asio::ip::host_name();
+const airmap::Microseconds duration{60 * 1000 * 1000};
 constexpr const char* component{"simulate-scenario-cli"};
 }  // namespace
 
@@ -282,7 +283,7 @@ void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participan
   const auto& polygon  = participant->geometry.details_for_polygon();
   params.authorization = participant->authentication.get();
   params.start_time    = Clock::universal_time();
-  params.end_time      = Clock::universal_time() + Minutes{1};
+  params.end_time      = Clock::universal_time() + duration;
   params.aircraft_id   = participant->aircraft.id;
   params.latitude      = polygon[0].coordinates[0].latitude;
   params.longitude     = polygon[0].coordinates[0].longitude;
@@ -299,9 +300,8 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     collector_->collect_flight_id_for(participant, result.value());
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
-    static const Microseconds timeout{60 * 1000 * 1000};
 
-    context_->schedule_in(timeout, [this, participant]() {
+    context_->schedule_in(duration, [this, participant]() {
       client_->flights().end_flight_communications(
           {participant->authentication.get(), participant->flight.get().id},
           std::bind(&SimulateScenario::handle_end_flight_comms, this, participant, ph::_1));
@@ -393,7 +393,7 @@ void cmd::SimulateScenario::handle_end_flight_comms(util::Scenario::Participants
 void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iterator participant,
                                               const Flights::EndFlight::Result& result) {
   if (result) {
-    log_.infof(component, "successfully finished flight: %s", participant->flight.get().id);
+    log_.infof(component, "successfully ended flight: %s", participant->flight.get().id);
     context_->stop();
   } else {
     try {
