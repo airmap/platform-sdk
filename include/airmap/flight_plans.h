@@ -35,18 +35,18 @@ class FlightPlans : DoNotCopyOrMove {
   struct Create {
     /// Parameters bundles up input parameters.
     struct Parameters {
-      std::string authorization;          ///< Authorization token obtained by logging in to the AirMap services.
-      Pilot pilot;                        ///< The pilot responsible for the flight.
-      Pilot::Aircraft aircraft;           ///< The aircraft conducting the flight.
-      float latitude;                     ///< The latitude component of the takeoff point in [°].
-      float longitude;                    ///< The longitude component of the takeoff point in [°].
-      float max_altitude;                 ///< The maximum altitude over the entire flight in [m].
-      float min_altitude;                 ///< The minimum altitude over the entire flight in [m].
-      float buffer;                       ///< The buffer in [m] around the geometry.
-      Geometry geometry;                  ///< The geometry describing the flight.
-      DateTime start_time;                ///< Point in time when the flight will start/was started.
-      DateTime end_time;                  ///< Point in time when the fligth will end.
-      std::vector<RuleSet::Id> rulesets;  ///< RuleSets that apply to this flight plan.
+      std::string authorization;           ///< Authorization token obtained by logging in to the AirMap services.
+      Pilot pilot;                         ///< The pilot responsible for the flight.
+      Optional<Pilot::Aircraft> aircraft;  ///< The aircraft conducting the flight.
+      float latitude;                      ///< The latitude component of the takeoff point in [°].
+      float longitude;                     ///< The longitude component of the takeoff point in [°].
+      float max_altitude;                  ///< The maximum altitude over the entire flight in [m].
+      float min_altitude;                  ///< The minimum altitude over the entire flight in [m].
+      float buffer;                        ///< The buffer in [m] around the geometry.
+      Geometry geometry;                   ///< The geometry describing the flight.
+      DateTime start_time;                 ///< Point in time when the flight will start/was started.
+      DateTime end_time;                   ///< Point in time when the fligth will end.
+      std::vector<RuleSet::Id> rulesets;   ///< RuleSets that apply to this flight plan.
       std::unordered_map<std::string, RuleSet::Feature::Value>
           features;  ///< Additional properties of the planned flight.
     };
