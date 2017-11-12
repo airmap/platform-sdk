@@ -10,7 +10,7 @@
 
 #include <unistd.h>
 
-#include <unordered_map>
+#include <map>
 
 namespace ip = boost::asio::ip;
 using json   = nlohmann::json;
@@ -54,7 +54,7 @@ class BunyanFormatter : public spdlog::formatter {
   }
 
  private:
-  std::unordered_map<spdlog::level::level_enum, uint> severity_lut_{
+  std::map<spdlog::level::level_enum, uint> severity_lut_{
       {spdlog::level::trace, 10}, {spdlog::level::debug, 20}, {spdlog::level::info, 30},
       {spdlog::level::warn, 40},  {spdlog::level::err, 50},   {spdlog::level::critical, 60},
   };

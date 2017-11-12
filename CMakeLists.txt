@@ -81,6 +81,7 @@ include_directories(
   ${OPENSSL_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIRS})
 
+add_subdirectory(config)
 add_subdirectory(doc)
 add_subdirectory(src/airmap)
 add_subdirectory(examples)

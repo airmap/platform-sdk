@@ -12,12 +12,12 @@ BOOST_AUTO_TEST_CASE(scope_is_inserted_correctly_into_output_stream) {
   {
     std::stringstream ss;
     ss << airmap::platform::StandardPaths::Scope::system;
-    BOOST_TEST(ss.str() == "system");
+    BOOST_CHECK(ss.str() == "system");
   }
   {
     std::stringstream ss;
     ss << airmap::platform::StandardPaths::Scope::user;
-    BOOST_TEST(ss.str() == "user");
+    BOOST_CHECK(ss.str() == "user");
   }
 }
 
@@ -25,22 +25,22 @@ BOOST_AUTO_TEST_CASE(location_is_inserted_correctly_into_output_stream) {
   {
     std::stringstream ss;
     ss << airmap::platform::StandardPaths::Location::cache;
-    BOOST_TEST(ss.str() == "cache");
+    BOOST_CHECK(ss.str() == "cache");
   }
   {
     std::stringstream ss;
     ss << airmap::platform::StandardPaths::Location::config;
-    BOOST_TEST(ss.str() == "config");
+    BOOST_CHECK(ss.str() == "config");
   }
   {
     std::stringstream ss;
     ss << airmap::platform::StandardPaths::Location::data;
-    BOOST_TEST(ss.str() == "data");
+    BOOST_CHECK(ss.str() == "data");
   }
   {
     std::stringstream ss;
     ss << airmap::platform::StandardPaths::Location::runtime;
-    BOOST_TEST(ss.str() == "runtime");
+    BOOST_CHECK(ss.str() == "runtime");
   }
 }
 
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(null_platform_always_returns_initial_path) {
     for (auto location :
          {airmap::platform::StandardPaths::Location::cache, airmap::platform::StandardPaths::Location::config,
           airmap::platform::StandardPaths::Location::data, airmap::platform::StandardPaths::Location::runtime})
-      BOOST_TEST(itf.standard_paths().path(scope, location) == airmap::platform::initial_path());
+      BOOST_CHECK(itf.standard_paths().path(scope, location) == airmap::platform::initial_path());
 }
 
 #if defined(AIRMAP_PLATFORM_LINUX)

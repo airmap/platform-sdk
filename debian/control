@@ -1,0 +1,34 @@
+Source: airmapd
+Priority: optional
+Maintainer: Thomas Voß <thomas@airmap.com>
+Build-Depends: build-essential,
+               cmake,
+               debhelper (>= 9),
+               dh-systemd,
+               doxygen,
+               git,
+               graphviz,
+               libboost-date-time-dev,
+               libboost-filesystem-dev,
+               libboost-program-options-dev,
+               libboost-system-dev,
+               libboost-test-dev,
+               libprotobuf-dev,
+               libssl-dev,
+               pkg-config,
+               protobuf-compiler,
+               qtbase5-dev,
+Standards-Version: 3.9.5
+Section: net
+Homepage: https://github.com/airmap/airmapd
+Vcs-Git: https://github.com/airmap/airmapd.git
+
+Package: airmapd
+Section: net
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: AirMap provides services to drone operators and airspace managers
+ AirMap provides services to drone operators, developers and airspace managers.
+ .
+ Daemon binaries required for both client integration and on-vehicle operation.

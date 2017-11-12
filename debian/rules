@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export DPKG_GENSYMBOLS_CHECK_LEVEL=4
+
+include /usr/share/dpkg/default.mk
+
+%:
+	dh $@ --fail-missing --with=systemd --parallel
+
+override_dh_installinit:
+	dh_installinit --noscripts

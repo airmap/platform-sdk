@@ -1,0 +1,13 @@
+[Unit]
+Description=The AirMap on-vehicle service
+
+[Service]
+ExecStart=/usr/bin/airmap daemon \
+    --telemetry-host=api.k8s.stage.airmap.com\
+    --telemetry-port=32003\
+    --tcp-endpoint-ip=127.0.0.1\
+    --tcp-endpoint-port=5760
+    --config-file=/etc/airmap/config.json
+
+[Install]
+WantedBy=multi-user.target

@@ -24,5 +24,5 @@ BOOST_AUTO_TEST_CASE(prevent_regression_for_issue_38) {
     }
   }
 
-  BOOST_TEST(related_geometries_count == 2);
+  BOOST_CHECK(related_geometries_count == 2);
 }

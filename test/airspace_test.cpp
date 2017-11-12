@@ -7,18 +7,18 @@
 
 BOOST_AUTO_TEST_CASE(default_ctor_yields_an_invalid_airspace) {
   airmap::Airspace airspace;
-  BOOST_TEST(airspace.type() == airmap::Airspace::Type::invalid);
+  BOOST_CHECK(airspace.type() == airmap::Airspace::Type::invalid);
 }
 
 BOOST_AUTO_TEST_CASE(copy_ctor_yields_instances_that_compare_equal) {
   airmap::Airspace a1, a2;
-  BOOST_TEST(a1 == a2);
+  BOOST_CHECK(a1 == a2);
 }
 
 BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for_default_ctor) {
   airmap::Airspace a1;
   auto a2 = a1;
-  BOOST_TEST(a1 == a2);
+  BOOST_CHECK(a1 == a2);
 }
 
 BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for_instances_with_trivial_details) {
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for
   airmap::Airspace a1;
   a1.set_details(park);
   auto a2 = a1;
-  BOOST_TEST(a1 == a2);
+  BOOST_CHECK(a1 == a2);
 }
 
 BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for_instances_with_complex_details) {
@@ -34,14 +34,14 @@ BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for
   airmap::Airspace a1;
   a1.set_details(airport);
   auto a2 = a1;
-  BOOST_TEST(a1 == a2);
+  BOOST_CHECK(a1 == a2);
 }
 
 BOOST_AUTO_TEST_CASE(instances_with_differences_do_not_compare_equal_for_different_properties) {
   airmap::Airspace a1, a2;
   a1.set_name("a1");
   a2.set_name("a2");
-  BOOST_TEST(a1 != a2);
+  BOOST_CHECK(a1 != a2);
 }
 
 BOOST_AUTO_TEST_CASE(instances_with_differences_do_not_compare_equal_for_different_geometries) {
@@ -59,5 +59,5 @@ BOOST_AUTO_TEST_CASE(instances_with_differences_do_not_compare_equal_for_differe
   a1.set_geometry(airmap::Geometry{p});
   a2.set_geometry(airmap::Geometry{ls});
 
-  BOOST_TEST(a1 != a2);
+  BOOST_CHECK(a1 != a2);
 }

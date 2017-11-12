@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
   auto credentials    = airmap::Credentials{};
   credentials.api_key = api_key;
   auto dlogger         = std::make_shared<airmap::qt::DispatchingLogger>(qlogger);
-  auto configuration  = airmap::Client::default_staging_configuration(credentials);
+  auto configuration  = airmap::Client::default_production_configuration(credentials);
 
   airmap::qt::Client::create(configuration, dlogger, &app, [](const auto& result) {
     if (result) {

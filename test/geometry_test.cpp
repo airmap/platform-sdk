@@ -19,18 +19,18 @@ std::ostream& operator<<(std::ostream& out, const Geometry&) {
 
 BOOST_AUTO_TEST_CASE(default_ctor_yields_an_invalid_geometry) {
   airmap::Geometry geometry;
-  BOOST_TEST(geometry.type() == airmap::Geometry::Type::invalid);
+  BOOST_CHECK(geometry.type() == airmap::Geometry::Type::invalid);
 }
 
 BOOST_AUTO_TEST_CASE(copy_ctor_yields_instances_that_compare_equal) {
   airmap::Geometry g1, g2;
-  BOOST_TEST(g1 == g2);
+  BOOST_CHECK(g1 == g2);
 }
 
 BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for_default_ctor) {
   airmap::Geometry g1;
   auto g2 = g1;
-  BOOST_TEST(g1 == g2);
+  BOOST_CHECK(g1 == g2);
 }
 
 BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for_instances_with_trivial_details) {
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for
 
   airmap::Geometry g1{p};
   auto g2 = g1;
-  BOOST_TEST(g1 == g2);
+  BOOST_CHECK(g1 == g2);
 }
 
 BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for_instances_with_complex_details) {
@@ -61,5 +61,5 @@ BOOST_AUTO_TEST_CASE(assignment_operator_yields_instances_that_compare_equal_for
 
   airmap::Geometry g1{gc};
   auto g2 = g1;
-  BOOST_TEST(g1 == g2);
+  BOOST_CHECK(g1 == g2);
 }
