@@ -4,6 +4,9 @@ set -e
 
 . /usr/share/debconf/confmodule
 
+# create_airmapd_config creates a configuration for airmapd with
+# a hard-coded api key and an id that defaults to the MAC of the
+# first wireless interface present on the device.
 create_airmapd_config()
 {
 mkdir -p /etc/airmap/aero

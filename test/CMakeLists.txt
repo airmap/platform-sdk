@@ -30,21 +30,23 @@ airmap_add_test(token_test token_test.cpp)
 airmap_add_test(issue_38_test issue_38_test.cpp)
 # airmap_add_test(telemetry_test telemetry_test.cpp)
 
-add_test(
-  NAME acceptance.laanc
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/acceptance/laanc.sh)
+if (AIRMAP_ENABLE_NETWORK_TESTS)
+  add_test(
+    NAME acceptance.laanc
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/acceptance/laanc.sh)
 
-set_tests_properties(
-  acceptance.laanc
-  PROPERTIES
-  ENVIRONMENT "AIRMAP_EXECUTABLE=$<TARGET_FILE:airmap>"
-  WILL_FAIL "true")
+  set_tests_properties(
+    acceptance.laanc
+    PROPERTIES
+    ENVIRONMENT "AIRMAP_EXECUTABLE=$<TARGET_FILE:airmap>"
+    WILL_FAIL "true")
 
-# add_test(
-#  NAME acceptance.rule_sets
-#  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/acceptance/rule_sets.sh)
+  add_test(
+    NAME acceptance.rule_sets
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/acceptance/rule_sets.sh)
 
-#set_tests_properties(
-#  acceptance.rule_sets
-#  PROPERTIES
-#  ENVIRONMENT "AIRMAP_EXECUTABLE=$<TARGET_FILE:airmap>")
+  set_tests_properties(
+    acceptance.rule_sets
+    PROPERTIES
+    ENVIRONMENT "AIRMAP_EXECUTABLE=$<TARGET_FILE:airmap>")
+endif()

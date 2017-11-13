@@ -5,6 +5,8 @@ set(AIRMAPD_VERSION_MAJOR 0)
 set(AIRMAPD_VERSION_MINOR 0)
 set(AIRMAPD_VERSION_PATCH 1)
 
+option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access" ON)
+
 find_program(GIT_EXECUTABLE
   NAMES git
   DOC "git executable"

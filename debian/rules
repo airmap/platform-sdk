@@ -8,5 +8,8 @@ include /usr/share/dpkg/default.mk
 %:
 	dh $@ --fail-missing --with=systemd --parallel
 
+override_dh_auto_configure:
+	dh_auto_configure -- -DAIRMAP_ENABLE_NETWORK_TESTS=OFF
+
 override_dh_installinit:
 	dh_installinit --noscripts
