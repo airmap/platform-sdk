@@ -1,8 +1,7 @@
 Source: airmapd
 Priority: optional
 Maintainer: Thomas Voß <thomas@airmap.com>
-Build-Depends: build-essential,
-               cmake,
+Build-Depends: cmake,
                debhelper (>= 9),
                dh-systemd,
                doxygen,
