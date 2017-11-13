@@ -7,7 +7,7 @@ ExecStart=/usr/bin/airmap daemon \
     --telemetry-port=32003\
     --tcp-endpoint-ip=127.0.0.1\
     --tcp-endpoint-port=5760
-    --config-file=/etc/airmap/config.json
+    --config-file=/etc/airmap/aero/config.json
 
 [Install]
 WantedBy=multi-user.target

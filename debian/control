@@ -23,7 +23,7 @@ Section: net
 Homepage: https://github.com/airmap/airmapd
 Vcs-Git: https://github.com/airmap/airmapd.git
 
-Package: airmapd
+Package: airmapd-bin
 Section: net
 Architecture: any
 Depends: ${misc:Depends},
@@ -32,3 +32,14 @@ Description: AirMap provides services to drone operators and airspace managers
  AirMap provides services to drone operators, developers and airspace managers.
  .
  Daemon binaries required for both client integration and on-vehicle operation.
+
+Package: airmapd-intel-aero
+Section: net
+Architecture: any
+Depends: airmapd-bin (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: AirMap provides services to drone operators and airspace managers
+ AirMap provides services to drone operators, developers and airspace managers.
+ .
+ Configuration required to run the daemon on the Intel Aero.
