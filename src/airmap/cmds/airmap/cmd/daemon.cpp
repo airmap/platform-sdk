@@ -43,16 +43,6 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
       return 1;
     }
 
-    if (!aircraft_id_) {
-      log_.errorf(component, "missing parameter 'aircraft-id'");
-      return 1;
-    }
-
-    if (!aircraft_id_.get().validate()) {
-      log_.errorf(component, "parameter 'aircraft-id' for accessing AirMap services must not be empty");
-      return 1;
-    }
-
     if (telemetry_host_ && !telemetry_host_.get().validate()) {
       log_.errorf(component, "parameter 'telemetry-host' must not be empty");
       return 1;
@@ -75,11 +65,6 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
 
     auto context = boost::Context::create(log_.logger());
     auto config  = Client::load_configuration_from_json(in_config);
-
-    if (!config.credentials.oauth) {
-      log_.errorf(component, "oauth credentials are missing from configuration");
-      return 1;
-    }
 
     std::shared_ptr<mavlink::Channel> channel;
 
@@ -122,7 +107,7 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
             return;
           }
 
-          ::airmap::Daemon::Configuration configuration{config.credentials, aircraft_id_.get(), log_.logger(), channel,
+          ::airmap::Daemon::Configuration configuration{config.credentials, aircraft_id_, log_.logger(), channel,
                                                         result.value()};
 
           ::airmap::Daemon::create(configuration)->start();

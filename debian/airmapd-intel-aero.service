@@ -2,6 +2,7 @@
 Description=The AirMap on-vehicle service
 
 [Service]
+Environment="HOME=/root"
 ExecStart=/usr/bin/airmap daemon \
     --telemetry-host=api.k8s.stage.airmap.com\
     --telemetry-port=32003\

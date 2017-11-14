@@ -20,7 +20,6 @@ class Daemon : public util::cli::CommandWithFlagsAndAction {
   Daemon();
 
  private:
-  using AircraftId    = util::TaggedString<util::tags::MustNotBeEmpty>;
   using SerialDevice  = util::TaggedString<util::tags::MustNotBeEmpty>;
   using TcpEndpointIp = util::TaggedString<util::tags::MustNotBeEmpty>;
 
@@ -28,7 +27,7 @@ class Daemon : public util::cli::CommandWithFlagsAndAction {
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
-  Required<AircraftId> aircraft_id_;
+  std::string aircraft_id_;
   Required<SerialDevice> serial_device_;
   Required<TelemetryHost> telemetry_host_;
   Required<std::uint16_t> telemetry_port_;

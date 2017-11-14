@@ -9,7 +9,8 @@ void airmap::codec::json::encode(nlohmann::json& j, const Flights::CreateFlight:
   j["latitude"]     = parameters.latitude;
   j["longitude"]    = parameters.longitude;
   j["max_altitude"] = parameters.max_altitude;
-  j["aircraft_id"]  = parameters.aircraft_id;
+  if (!parameters.aircraft_id.empty())
+    j["aircraft_id"]  = parameters.aircraft_id;
   j["start_time"]   = parameters.start_time;
   j["end_time"]     = parameters.end_time;
   j["public"]       = parameters.is_public;
