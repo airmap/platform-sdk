@@ -36,6 +36,7 @@ Package: airmapd-intel-aero
 Section: net
 Architecture: any
 Depends: airmapd-bin (= ${binary:Version}),
+         aero-system,
          ${misc:Depends},
          ${shlibs:Depends},
 Description: AirMap provides services to drone operators and airspace managers

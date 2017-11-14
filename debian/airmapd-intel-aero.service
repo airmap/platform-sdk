@@ -1,5 +1,7 @@
 [Unit]
 Description=The AirMap on-vehicle service
+Requires=mavlink-router.service
+After=network.target mavlink-router.service
 
 [Service]
 Environment="HOME=/root"
