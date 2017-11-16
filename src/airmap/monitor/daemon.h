@@ -45,19 +45,6 @@ class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_share
   void on_vehicle_removed(const std::shared_ptr<mavlink::Vehicle>& vehicle) override;
 
  private:
-  class SubmittingVehicleMonitor : public mavlink::Vehicle::Monitor {
-   public:
-    explicit SubmittingVehicleMonitor(const std::shared_ptr<TelemetrySubmitter>& submitter);
-
-    // From Vehicle::Monitor
-    void on_system_status_changed(const Optional<mavlink::State>& old_state, mavlink::State new_state) override;
-    void on_position_changed(const Optional<mavlink::GlobalPositionInt>& old_position,
-                             const mavlink::GlobalPositionInt& new_position) override;
-
-   private:
-    std::shared_ptr<TelemetrySubmitter> submitter_;
-  };
-
   /// Daemon initializes a new instance with the functional
   /// dependencies provided via 'configuration'.
   explicit Daemon(const Configuration& configuration);

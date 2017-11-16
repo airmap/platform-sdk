@@ -235,6 +235,8 @@ add_library(
 
   monitor/daemon.h
   monitor/daemon.cpp
+  monitor/submitting_vehicle_monitor.h
+  monitor/submitting_vehicle_monitor.cpp
   monitor/telemetry_submitter.h
   monitor/telemetry_submitter.cpp
 )

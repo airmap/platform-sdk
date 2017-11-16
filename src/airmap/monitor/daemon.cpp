@@ -1,4 +1,5 @@
 #include <airmap/monitor/daemon.h>
+#include <airmap/monitor/submitting_vehicle_monitor.h>
 
 namespace {
 constexpr const char* component{"airmap::monitor::Daemon"};
@@ -51,44 +52,4 @@ void airmap::monitor::Daemon::on_vehicle_added(const std::shared_ptr<mavlink::Ve
 
 void airmap::monitor::Daemon::on_vehicle_removed(const std::shared_ptr<mavlink::Vehicle>&) {
   // empty on purpose
-}
-
-airmap::monitor::Daemon::SubmittingVehicleMonitor::SubmittingVehicleMonitor(
-    const std::shared_ptr<TelemetrySubmitter>& submitter)
-    : submitter_{submitter} {
-}
-
-void airmap::monitor::Daemon::SubmittingVehicleMonitor::on_system_status_changed(
-    const Optional<mavlink::State>& old_state, mavlink::State new_state) {
-  if (old_state) {
-    switch (old_state.get()) {
-      case MAV_STATE_UNINIT:
-      case MAV_STATE_BOOT:
-      case MAV_STATE_CALIBRATING:
-      case MAV_STATE_STANDBY:
-        if (new_state == MAV_STATE_ACTIVE) {
-          submitter_->activate();
-        }
-        break;
-      case MAV_STATE_ACTIVE:
-      case MAV_STATE_CRITICAL:
-      case MAV_STATE_EMERGENCY:
-        switch (new_state) {
-          case MAV_STATE_UNINIT:
-          case MAV_STATE_BOOT:
-          case MAV_STATE_CALIBRATING:
-          case MAV_STATE_STANDBY:
-            submitter_->deactivate();
-            break;
-        }
-        break;
-      default:
-        break;
-    }
-  }
-}
-
-void airmap::monitor::Daemon::SubmittingVehicleMonitor::on_position_changed(
-    const Optional<mavlink::GlobalPositionInt>& old_position, const mavlink::GlobalPositionInt& new_position) {
-  submitter_->submit(new_position);
 }
