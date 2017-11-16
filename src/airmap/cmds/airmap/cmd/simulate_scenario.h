@@ -88,7 +88,7 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
     Optional<ConfigFile> config_file;
     Required<TelemetryHost> host;
     Required<std::uint16_t> port;
-    Required<std::uint16_t> mavlink_router_endpoint_port;
+    std::uint16_t mavlink_router_endpoint_port{9090};
     Required<ScenarioFile> scenario_file;
   } params_;
   std::shared_ptr<util::ScenarioSimulator::Runner> runner_;

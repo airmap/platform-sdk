@@ -158,11 +158,6 @@ cmd::SimulateScenario::SimulateScenario()
       return 1;
     }
 
-    if (!params_.mavlink_router_endpoint_port) {
-      log_.errorf(component, "parameter 'mavlink-router-endpoint-port' must not be empty");
-      return 1;
-    }
-
     if (!params_.scenario_file) {
       log_.errorf(component, "missing parameter 'scenario-file'");
       return 1;
@@ -193,7 +188,7 @@ cmd::SimulateScenario::SimulateScenario()
 
     auto route = ::airmap::mavlink::boost::TcpRoute::create(
         context_->io_service(),
-        ::boost::asio::ip::tcp::endpoint{::boost::asio::ip::tcp::v4(), params_.mavlink_router_endpoint_port.get()},
+        ::boost::asio::ip::tcp::endpoint{::boost::asio::ip::tcp::v4(), params_.mavlink_router_endpoint_port},
         log_.logger(), {std::make_shared<TcpRouteMonitor>(scenario)});
 
     router_ = std::shared_ptr<::airmap::mavlink::Router>(new ::airmap::mavlink::Router{route});
@@ -205,10 +200,10 @@ cmd::SimulateScenario::SimulateScenario()
                "  version:                   %s\n"
                "  telemetry.host:            %s\n"
                "  telemetry.port:            %d\n"
-               "  credentials.api_key:       %s\n"
-               "  mavlink router (tcp) port: %d",
-               config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key,
-               params_.mavlink_router_endpoint_port.get());
+               "  mavlink router (tcp) port: %d\n"
+               "  credentials.api_key:       %s",
+               config.host, config.version, config.telemetry.host, config.telemetry.port,
+               params_.mavlink_router_endpoint_port, config.credentials.api_key);
 
     context_->create_client_with_configuration(config, [this](const auto& result) mutable {
       if (not result) {
