@@ -1,10 +1,10 @@
 #include <airmap/cmds/airmap/cmd/daemon.h>
 
 #include <airmap/boost/context.h>
-#include <airmap/daemon.h>
 #include <airmap/mavlink/boost/serial_channel.h>
 #include <airmap/mavlink/boost/tcp_channel.h>
 #include <airmap/mavlink/boost/udp_channel.h>
+#include <airmap/monitor/daemon.h>
 #include <airmap/paths.h>
 
 #include <signal.h>
@@ -107,10 +107,10 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
             return;
           }
 
-          ::airmap::Daemon::Configuration configuration{config.credentials, aircraft_id_, log_.logger(), channel,
-                                                        result.value()};
+          ::airmap::monitor::Daemon::Configuration configuration{config.credentials, aircraft_id_, log_.logger(),
+                                                                 channel, result.value()};
 
-          ::airmap::Daemon::create(configuration)->start();
+          ::airmap::monitor::Daemon::create(configuration)->start();
         });
 
     return context->exec({SIGINT, SIGQUIT},

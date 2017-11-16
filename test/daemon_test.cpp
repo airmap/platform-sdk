@@ -2,11 +2,11 @@
 #define BOOST_TEST_MODULE daemon
 
 #include <airmap/boost/context.h>
-#include <airmap/daemon.h>
 #include <airmap/date_time.h>
 #include <airmap/mavlink/boost/tcp_channel.h>
 #include <airmap/mavlink/boost/tcp_route.h>
 #include <airmap/mavlink/router.h>
+#include <airmap/monitor/daemon.h>
 
 #include <mock/client.h>
 
@@ -93,9 +93,9 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   credentials.api_key   = api_key;
   credentials.anonymous = anon;
 
-  airmap::Daemon::Configuration config{credentials, aircraft_id, logger, channel, client};
+  airmap::monitor::Daemon::Configuration config{credentials, aircraft_id, logger, channel, client};
 
-  auto daemon = airmap::Daemon::create(config);
+  auto daemon = airmap::monitor::Daemon::create(config);
   daemon->start();
 
   std::thread worker{[context]() { context->run(); }};

@@ -106,9 +106,6 @@ add_library(
   token.cpp
   traffic.cpp
 
-  daemon.h
-  daemon.cpp
-
   boost/context.h
   boost/context.cpp
 
@@ -234,6 +231,15 @@ add_library(
 )
 
 add_library(
+  airmap-monitor
+
+  monitor/daemon.h
+  monitor/daemon.cpp
+  monitor/telemetry_submitter.h
+  monitor/telemetry_submitter.cpp
+)
+
+add_library(
   airmap-qt
 
   qt/client.cpp
@@ -317,6 +323,8 @@ add_executable(
 
 set_property(TARGET airmap-client PROPERTY CXX_STANDARD 14)
 set_property(TARGET airmap-client PROPERTY COMPILE_OPTIONS -fPIC)
+set_property(TARGET airmap-monitor PROPERTY CXX_STANDARD 14)
+set_property(TARGET airmap-monitor PROPERTY COMPILE_OPTIONS -fPIC)
 set_property(TARGET airmap-qt PROPERTY CXX_STANDARD 14)
 set_property(TARGET airmap-mavlink PROPERTY CXX_STANDARD 14)
 set_property(TARGET airmap-mavlink PROPERTY COMPILE_OPTIONS "-Wno-pedantic")
@@ -336,12 +344,18 @@ target_link_libraries(
   ${PROTOBUF_LIBRARIES})
 
 target_link_libraries(
+  airmap-monitor
+
+  airmap-client
+)
+
+target_link_libraries(
   airmap-qt
 
   airmap-client
 
   Qt5::Core)
 
-target_link_libraries(airmap airmap-client)
+target_link_libraries(airmap airmap-client airmap-monitor)
 
 install(TARGETS airmap RUNTIME DESTINATION bin)
