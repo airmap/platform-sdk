@@ -173,8 +173,8 @@ void airmap::Daemon::TelemetrySubmitter::request_authorization() {
   }
 }
 
-void airmap::Daemon::TelemetrySubmitter::handle_request_authorization_finished(const std::string& authorization) {
-  log_.infof(component, "successfully requested authorization from AirMap services");
+void airmap::Daemon::TelemetrySubmitter::handle_request_authorization_finished(std::string authorization) {
+  log_.infof(component, "successfully requested authorization from AirMap services %s", authorization);
   authorization_ = authorization;
   request_create_flight();
 }
@@ -216,7 +216,7 @@ void airmap::Daemon::TelemetrySubmitter::request_create_flight() {
   }
 }
 
-void airmap::Daemon::TelemetrySubmitter::handle_request_create_flight_finished(const Flight& flight) {
+void airmap::Daemon::TelemetrySubmitter::handle_request_create_flight_finished(Flight flight) {
   log_.infof(component, "successfully created flight: %s", flight.id);
   flight_ = flight;
   request_start_flight_comms();
@@ -251,7 +251,7 @@ void airmap::Daemon::TelemetrySubmitter::request_start_flight_comms() {
   });
 }
 
-void airmap::Daemon::TelemetrySubmitter::handle_request_start_flight_comms_finished(const std::string& key) {
+void airmap::Daemon::TelemetrySubmitter::handle_request_start_flight_comms_finished(std::string key) {
   log_.infof(component, "successfully started flight comms: %s", key);
   encryption_key_ = key;
 }

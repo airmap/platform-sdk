@@ -4,6 +4,10 @@
 #include <airmap/codec.h>
 #include <airmap/context.h>
 #include <airmap/paths.h>
+
+#include <airmap/boost/context.h>
+#include <airmap/mavlink/boost/tcp_route.h>
+#include <airmap/mavlink/router.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/scenario_simulator.h>
 #include <airmap/util/telemetry_simulator.h>
@@ -23,9 +27,59 @@ namespace ph  = std::placeholders;
 using json = nlohmann::json;
 
 namespace {
+
+namespace mavlink {
+constexpr std::uint8_t component_id       = 42;
+constexpr const std::uint32_t custom_mode = 0;
+constexpr float altitude_msl              = 100.;
+constexpr float altitude_gl               = 100.;
+constexpr float vx                        = 0.;
+constexpr float vy                        = 0.;
+constexpr float vz                        = 0.;
+constexpr float heading                   = 180.;
+}  // namespace mavlink
+
 const std::string device_name = boost::asio::ip::host_name();
 const airmap::Microseconds duration{60 * 1000 * 1000};
 constexpr const char* component{"simulate-scenario-cli"};
+
+class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
+ public:
+  explicit TcpRouteMonitor(const airmap::util::Scenario& scenario) : scenario_{scenario} {
+  }
+
+  // From airmap::mavlink::boost::TcpRoute::Monitor
+  void on_new_session(const std::shared_ptr<airmap::mavlink::boost::TcpRoute::Session>& session) override {
+    // We announce all participants in the scenario.
+    auto now = airmap::Clock::universal_time();
+
+    for (const auto& p : scenario_.participants) {
+      const auto& g          = p.geometry;
+      const auto& outer_ring = g.details_for_polygon().at(0);
+      const auto& to         = outer_ring.coordinates.at(0);
+
+      {
+        mavlink_message_t msg;
+        mavlink_msg_global_position_int_pack(p.id, mavlink::component_id, &msg, airmap::milliseconds_since_epoch(now),
+                                             to.latitude * 1E7, to.longitude * 1E7, mavlink::altitude_msl * 1E3,
+                                             mavlink::altitude_gl * 1E3, mavlink::vx, mavlink::vy, mavlink::vz,
+                                             mavlink::heading * 1E2);
+        session->process(msg);
+      }
+
+      {
+        mavlink_message_t msg;
+        mavlink_msg_heartbeat_pack(p.id, mavlink::component_id, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
+                                   MAV_MODE_GUIDED_ARMED, mavlink::custom_mode, MAV_STATE_ACTIVE);
+        session->process(msg);
+      }
+    }
+  }
+
+ private:
+  airmap::util::Scenario scenario_;
+};
+
 }  // namespace
 
 cmd::SimulateScenario::Collector::Collector(const util::Scenario& scenario) : scenario_{scenario} {
@@ -88,6 +142,8 @@ cmd::SimulateScenario::SimulateScenario()
   flag(flags::config_file(params_.config_file));
   flag(flags::telemetry_host(params_.host));
   flag(flags::telemetry_port(params_.port));
+  flag(cli::make_flag("mavlink-router-endpoint-port", "export a mavlink router on this ip",
+                      params_.mavlink_router_endpoint_port));
   flag(cli::make_flag("scenario-file", "use the scenario defined in this json file", params_.scenario_file));
 
   action([this](const cli::Command::Context& ctxt) {
@@ -99,6 +155,11 @@ cmd::SimulateScenario::SimulateScenario()
 
     if (params_.host && !params_.host.get().validate()) {
       log_.errorf(component, "parameter 'host' must not be empty");
+      return 1;
+    }
+
+    if (!params_.mavlink_router_endpoint_port) {
+      log_.errorf(component, "parameter 'mavlink-router-endpoint-port' must not be empty");
       return 1;
     }
 
@@ -114,16 +175,9 @@ cmd::SimulateScenario::SimulateScenario()
     }
     util::Scenario scenario = json::parse(in);
 
-    collector_  = std::make_shared<Collector>(scenario);
-    runner_     = std::make_shared<util::ScenarioSimulator::Runner>(5);
-    auto result = ::airmap::Context::create(log_.logger());
-
-    if (!result) {
-      log_.errorf(component, "could not acquire resources for accessing AirMap services");
-      return 1;
-    }
-
-    context_ = result.value();
+    collector_ = std::make_shared<Collector>(scenario);
+    runner_    = std::make_shared<util::ScenarioSimulator::Runner>(5);
+    context_   = ::airmap::boost::Context::create(log_.logger());
 
     std::ifstream config_file{params_.config_file.get()};
     if (!config_file) {
@@ -137,14 +191,24 @@ cmd::SimulateScenario::SimulateScenario()
     if (params_.port)
       config.telemetry.port = params_.port.get();
 
+    auto route = ::airmap::mavlink::boost::TcpRoute::create(
+        context_->io_service(),
+        ::boost::asio::ip::tcp::endpoint{::boost::asio::ip::tcp::v4(), params_.mavlink_router_endpoint_port.get()},
+        log_.logger(), {std::make_shared<TcpRouteMonitor>(scenario)});
+
+    router_ = std::shared_ptr<::airmap::mavlink::Router>(new ::airmap::mavlink::Router{route});
+    router_->start();
+
     log_.infof(component,
-               "client configuration:\n"
-               "  host:                %s\n"
-               "  version:             %s\n"
-               "  telemetry.host:      %s\n"
-               "  telemetry.port:      %d\n"
-               "  credentials.api_key: %s\n",
-               config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
+               "configuration:\n"
+               "  host:                      %s\n"
+               "  version:                   %s\n"
+               "  telemetry.host:            %s\n"
+               "  telemetry.port:            %d\n"
+               "  credentials.api_key:       %s\n"
+               "  mavlink router (tcp) port: %d",
+               config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key,
+               params_.mavlink_router_endpoint_port.get());
 
     context_->create_client_with_configuration(config, [this](const auto& result) mutable {
       if (not result) {
@@ -173,7 +237,7 @@ cmd::SimulateScenario::SimulateScenario()
     return context_->exec({SIGINT, SIGQUIT},
                           [this](int sig) {
                             log_.infof(component, "received [%s], shutting down", ::strsignal(sig));
-                            context_->stop();
+                            context_->stop(::airmap::Context::ReturnCode::success);
                           }) == ::airmap::Context::ReturnCode::success
                ? 0
                : 1;
@@ -214,6 +278,7 @@ void cmd::SimulateScenario::handle_authenticated_with_password_result_for(
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
+
 void cmd::SimulateScenario::handle_authenticated_anonymously_result_for(
     util::Scenario::Participants::iterator participant, const Authenticator::AuthenticateAnonymously::Result& result) {
   if (result) {
@@ -358,7 +423,28 @@ void cmd::SimulateScenario::handle_start_flight_comms_result_for(
 
     if (collector_->collect_key_for(participant, result.value().key)) {
       auto simulator = std::make_shared<util::ScenarioSimulator>(collector_->scenario(), log_.logger());
-      runner_->start(simulator, client_);
+      runner_->start(
+          simulator, [this](const DateTime& now, const util::Scenario::Participant& p, const Geometry::Coordinate& c) {
+            if (p.flight && p.encryption_key) {
+              Telemetry::Position position;
+              position.timestamp           = milliseconds_since_epoch(now);
+              position.latitude            = c.latitude;
+              position.longitude           = c.longitude;
+              position.altitude_msl        = ::mavlink::altitude_msl;
+              position.altitude_gl         = ::mavlink::altitude_gl;
+              position.horizontal_accuracy = 2.;
+
+              Telemetry::Update update{position};
+              client_->telemetry().submit_updates(p.flight.get(), p.encryption_key.get(), {update});
+            }
+
+            mavlink_message_t msg;
+            mavlink_msg_global_position_int_pack(p.id, ::mavlink::component_id, &msg, milliseconds_since_epoch(now),
+                                                 c.latitude * 1E7, c.longitude * 1E7, ::mavlink::altitude_msl * 1E3,
+                                                 ::mavlink::altitude_gl * 1E3, ::mavlink::vx, ::mavlink::vy,
+                                                 ::mavlink::vz, ::mavlink::heading * 1E2);
+            router_->route(msg);
+          });
     }
   } else {
     try {
@@ -394,7 +480,7 @@ void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iter
                                               const Flights::EndFlight::Result& result) {
   if (result) {
     log_.infof(component, "successfully ended flight: %s", participant->flight.get().id);
-    context_->stop();
+    context_->stop(::airmap::Context::ReturnCode::success);
   } else {
     try {
       std::rethrow_exception(result.error());

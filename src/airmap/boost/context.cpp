@@ -128,7 +128,7 @@ void airmap::boost::Context::schedule_in(const Microseconds& wait_for, const std
 }
 
 void airmap::boost::Context::dispatch(const std::function<void()>& task) {
-  io_service_->dispatch(task);
+  io_service_->post(task);
 }
 
 std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::aircrafts(

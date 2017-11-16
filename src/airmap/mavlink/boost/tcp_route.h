@@ -1,6 +1,7 @@
 #ifndef AIRMAP_MAVLINK_BOOST_TCP_ROUTE_H_
 #define AIRMAP_MAVLINK_BOOST_TCP_ROUTE_H_
 
+#include <airmap/do_not_copy_or_move.h>
 #include <airmap/mavlink/router.h>
 
 #include <airmap/logger.h>
@@ -20,17 +21,6 @@ namespace boost {
 // TcpRoute forwards all incoming messages to connected TCP clients.
 class TcpRoute : public Router::Route, public std::enable_shared_from_this<TcpRoute> {
  public:
-  // create initializes and returns a new instance with 'io_service', 'endpoint' and 'logger'.
-  static std::shared_ptr<TcpRoute> create(const std::shared_ptr<::boost::asio::io_service>& io_service,
-                                          const ::boost::asio::ip::tcp::endpoint& endpoint,
-                                          const std::shared_ptr<Logger>& logger);
-
-  // From Route
-  void process(const mavlink_message_t& message) override;
-  void start() override;
-  void stop() override;
-
- private:
   // Session models an active session with a remote endpoint.
   class Session : public std::enable_shared_from_this<Session> {
    public:
@@ -42,6 +32,19 @@ class TcpRoute : public Router::Route, public std::enable_shared_from_this<TcpRo
     ::boost::asio::ip::tcp::socket& socket();
 
    private:
+    class EncodedBuffer {
+     public:
+      std::size_t size() const;
+      void set_size(std::size_t size);
+
+      unsigned char* data();
+      const unsigned char* data() const;
+
+     private:
+      std::array<unsigned char, 1024> data_;
+      std::size_t size_;
+    };
+
     // Session initializes a new instance with 'io_service' and 'logger'.
     explicit Session(const std::shared_ptr<::boost::asio::io_service>& io_service,
                      const std::shared_ptr<Logger>& logger);
@@ -51,18 +54,42 @@ class TcpRoute : public Router::Route, public std::enable_shared_from_this<TcpRo
     std::shared_ptr<::boost::asio::io_service> io_service_;
     util::FormattingLogger log_;
     ::boost::asio::ip::tcp::socket socket_;
-    std::queue<std::array<unsigned char, 512>> buffers_;
+    std::queue<EncodedBuffer> buffers_;
   };
 
+  // Monitor enables users of TcpRoute to inject custom functionality.
+  class Monitor : airmap::DoNotCopyOrMove {
+   public:
+    // on_new_session is invoked for every new 'session'.
+    virtual void on_new_session(const std::shared_ptr<Session>& session) = 0;
+
+   protected:
+    Monitor() = default;
+  };
+
+  // create initializes and returns a new instance with 'io_service', 'endpoint' and 'logger'.
+  static std::shared_ptr<TcpRoute> create(const std::shared_ptr<::boost::asio::io_service>& io_service,
+                                          const ::boost::asio::ip::tcp::endpoint& endpoint,
+                                          const std::shared_ptr<Logger>& logger,
+                                          const std::set<std::shared_ptr<Monitor>>& monitors);
+
+  // From Route
+  void process(const mavlink_message_t& message) override;
+  void start() override;
+  void stop() override;
+
+ private:
   // TcpRoute initializes a new instance with 'context'.
   explicit TcpRoute(const std::shared_ptr<::boost::asio::io_service>& io_service,
-                    const ::boost::asio::ip::tcp::endpoint& endpoint, const std::shared_ptr<Logger>& logger);
+                    const ::boost::asio::ip::tcp::endpoint& endpoint, const std::shared_ptr<Logger>& logger,
+                    const std::set<std::shared_ptr<Monitor>>& monitors);
 
   void handle_accept(const ::boost::system::error_code& ec);
 
   std::shared_ptr<::boost::asio::io_service> io_service_;
   ::boost::asio::ip::tcp::acceptor acceptor_;
   util::FormattingLogger log_;
+  std::set<std::shared_ptr<Monitor>> monitors_;
   std::set<std::shared_ptr<Session>> sessions_;
 };
 

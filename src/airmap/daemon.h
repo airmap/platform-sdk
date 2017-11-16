@@ -73,13 +73,13 @@ class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_share
                                 const std::shared_ptr<Logger>& logger, const std::shared_ptr<Client>& client);
 
     void request_authorization();
-    void handle_request_authorization_finished(const std::string& authorization);
+    void handle_request_authorization_finished(std::string authorization);
 
     void request_create_flight();
-    void handle_request_create_flight_finished(const Flight& flight);
+    void handle_request_create_flight_finished(Flight flight);
 
     void request_start_flight_comms();
-    void handle_request_start_flight_comms_finished(const std::string& key);
+    void handle_request_start_flight_comms_finished(std::string key);
 
     State state_{State::inactive};
     bool authorization_requested_{false};

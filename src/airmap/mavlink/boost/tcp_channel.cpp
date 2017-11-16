@@ -28,8 +28,10 @@ void airmap::mavlink::boost::TcpChannel::handle_read(const ::boost::system::erro
     return;
   }
 
-  if (auto result = process_mavlink_data(buffer_.begin(), buffer_.begin() + transferred))
+  if (auto result = process_mavlink_data(buffer_.begin(), buffer_.begin() + transferred)) {
+    log_.debugf(component, "handing %d message to subscribers", result.get().size());
     invoke_subscribers(result.get());
+  }
 
   start_impl();
 }

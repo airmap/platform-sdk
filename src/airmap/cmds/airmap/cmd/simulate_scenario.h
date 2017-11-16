@@ -5,7 +5,6 @@
 
 #include <airmap/authenticator.h>
 #include <airmap/client.h>
-#include <airmap/context.h>
 #include <airmap/flight.h>
 #include <airmap/flights.h>
 #include <airmap/logger.h>
@@ -13,6 +12,9 @@
 #include <airmap/status.h>
 #include <airmap/telemetry.h>
 #include <airmap/traffic.h>
+
+#include <airmap/boost/context.h>
+#include <airmap/mavlink/router.h>
 #include <airmap/util/cli.h>
 #include <airmap/util/formatting_logger.h>
 #include <airmap/util/scenario_simulator.h>
@@ -86,12 +88,14 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
     Optional<ConfigFile> config_file;
     Required<TelemetryHost> host;
     Required<std::uint16_t> port;
+    Required<std::uint16_t> mavlink_router_endpoint_port;
     Required<ScenarioFile> scenario_file;
   } params_;
   std::shared_ptr<util::ScenarioSimulator::Runner> runner_;
   util::FormattingLogger log_{create_null_logger()};
   std::shared_ptr<Collector> collector_;
-  std::shared_ptr<::airmap::Context> context_;
+  std::shared_ptr<::airmap::boost::Context> context_;
+  std::shared_ptr<::airmap::mavlink::Router> router_;
   std::shared_ptr<Client> client_;
 };
 

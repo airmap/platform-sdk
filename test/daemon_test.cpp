@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   auto logger                        = airmap::create_default_logger(std::cout);
   auto context                       = airmap::boost::Context::create(logger);
   auto tcp_route =
-      airmap::mavlink::boost::TcpRoute::create(context->io_service(), tcp::endpoint{tcp::v4(), port}, logger);
+      airmap::mavlink::boost::TcpRoute::create(context->io_service(), tcp::endpoint{tcp::v4(), port}, logger, {});
 
   airmap::mavlink::Router router{{tcp_route}};
   router.start();

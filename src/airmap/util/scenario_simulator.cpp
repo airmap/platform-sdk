@@ -18,27 +18,14 @@ airmap::util::ScenarioSimulator::Runner::~Runner() {
     worker_.join();
 }
 
-void airmap::util::ScenarioSimulator::Runner::start(const std::shared_ptr<ScenarioSimulator>& simulator,
-                                                    const std::shared_ptr<Client>& client) {
+void airmap::util::ScenarioSimulator::Runner::start(
+    const std::shared_ptr<ScenarioSimulator>& simulator,
+    const std::function<void(const DateTime&, const Scenario::Participant&, const Geometry::Coordinate&)>& receiver) {
   if (!running_.exchange(true)) {
-    worker_ = std::thread{[this, simulator, client]() {
+    worker_ = std::thread{[this, simulator, receiver]() {
       simulator->start();
       while (running_.load()) {
-        simulator->update(
-            [this, client](const DateTime& now, const Scenario::Participant& p, const Geometry::Coordinate& c) {
-              if (p.flight && p.encryption_key) {
-                Telemetry::Position position;
-                position.timestamp           = milliseconds_since_epoch(now);
-                position.latitude            = c.latitude;
-                position.longitude           = c.longitude;
-                position.altitude_msl        = 100.;
-                position.altitude_gl         = 100.;
-                position.horizontal_accuracy = 2.;
-
-                Telemetry::Update update{position};
-                client->telemetry().submit_updates(p.flight.get(), p.encryption_key.get(), {update});
-              }
-            });
+        simulator->update(receiver);
         std::this_thread::sleep_for(std::chrono::milliseconds{1000 / frequency_});
       }
     }};
@@ -83,6 +70,7 @@ void airmap::util::from_json(const nlohmann::json& j, Scenario& s) {
 }
 
 void airmap::util::from_json(const nlohmann::json& j, Scenario::Participant& p) {
+  codec::json::get(p.id, j, "id");
   codec::json::get(p.aircraft, j, "aircraft");
   codec::json::get(p.pilot, j, "pilot");
   codec::json::get(p.user, j, "user");

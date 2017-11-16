@@ -6,14 +6,15 @@ constexpr const char* component{"TcpRoute"};
 
 std::shared_ptr<airmap::mavlink::boost::TcpRoute> airmap::mavlink::boost::TcpRoute::create(
     const std::shared_ptr<::boost::asio::io_service>& io_service, const ::boost::asio::ip::tcp::endpoint& endpoint,
-    const std::shared_ptr<Logger>& logger) {
-  return std::shared_ptr<TcpRoute>{new TcpRoute{io_service, endpoint, logger}};
+    const std::shared_ptr<Logger>& logger, const std::set<std::shared_ptr<Monitor>>& monitors) {
+  return std::shared_ptr<TcpRoute>{new TcpRoute{io_service, endpoint, logger, monitors}};
 }
 
 airmap::mavlink::boost::TcpRoute::TcpRoute(const std::shared_ptr<::boost::asio::io_service>& io_service,
                                            const ::boost::asio::ip::tcp::endpoint& endpoint,
-                                           const std::shared_ptr<Logger>& logger)
-    : io_service_{io_service}, acceptor_{*io_service_, endpoint}, log_{logger} {
+                                           const std::shared_ptr<Logger>& logger,
+                                           const std::set<std::shared_ptr<Monitor>>& monitors)
+    : io_service_{io_service}, acceptor_{*io_service_, endpoint}, log_{logger}, monitors_{monitors} {
 }
 
 // start starts accepting connections
@@ -28,6 +29,9 @@ void airmap::mavlink::boost::TcpRoute::start() {
       sp->log_.infof(component, "accepting incoming connection from endpoint: %s:%d",
                      session->socket().remote_endpoint().address().to_string(),
                      session->socket().remote_endpoint().port());
+      for (const auto& monitor : sp->monitors_)
+        monitor->on_new_session(session);
+
       sp->sessions_.insert(session);
       sp->start();
     }
@@ -42,10 +46,25 @@ void airmap::mavlink::boost::TcpRoute::stop() {
 // From Route
 void airmap::mavlink::boost::TcpRoute::process(const mavlink_message_t& message) {
   io_service_->post([ sp = shared_from_this(), message ]() {
-    sp->log_.infof(component, "handing message to %d sessions", sp->sessions_.size());
     for (const auto& session : sp->sessions_)
       session->process(message);
   });
+}
+
+std::size_t airmap::mavlink::boost::TcpRoute::Session::EncodedBuffer::size() const {
+  return size_;
+}
+
+void airmap::mavlink::boost::TcpRoute::Session::EncodedBuffer::set_size(std::size_t size) {
+  size_ = size;
+}
+
+unsigned char* airmap::mavlink::boost::TcpRoute::Session::EncodedBuffer::data() {
+  return data_.data();
+}
+
+const unsigned char* airmap::mavlink::boost::TcpRoute::Session::EncodedBuffer::data() const {
+  return data_.data();
 }
 
 std::shared_ptr<airmap::mavlink::boost::TcpRoute::Session> airmap::mavlink::boost::TcpRoute::Session::create(
@@ -58,42 +77,38 @@ std::shared_ptr<airmap::mavlink::boost::TcpRoute::Session> airmap::mavlink::boos
 }
 
 void airmap::mavlink::boost::TcpRoute::Session::process(const mavlink_message_t& message) {
-  log_.infof(component, "processing mavlink message for session on endpoint %s:%d",
-             socket_.remote_endpoint().address().to_string(), socket_.remote_endpoint().port());
+  log_.debugf(component, "processing mavlink message for session on endpoint %s:%d",
+              socket_.remote_endpoint().address().to_string(), socket_.remote_endpoint().port());
 
-  std::array<unsigned char, 512> buffer;
-  mavlink_msg_to_send_buffer(buffer.data(), &message);
+  EncodedBuffer eb;
+  eb.set_size(mavlink_msg_to_send_buffer(eb.data(), &message));
 
-  io_service_->post([ sp = shared_from_this(), buffer ]() {
-    sp->buffers_.emplace(buffer);
-
+  io_service_->post([ sp = shared_from_this(), eb = std::move(eb) ]() {
+    sp->buffers_.emplace(eb);
     if (sp->buffers_.size() == 1)
       sp->process();
   });
 }
 
 void airmap::mavlink::boost::TcpRoute::Session::process() {
-  const auto& buffer = buffers_.front();
-  ::boost::asio::async_write(
-      socket_, ::boost::asio::buffer(buffer.data(), buffer.size()),
-      ::boost::asio::transfer_all(), [sp = shared_from_this()](const auto& error, auto bytes_transferred) {
-        sp->buffers_.pop();
+  const auto& eb = buffers_.front();
 
-        if (error) {
-          sp->log_.infof(component, "failed to process mavlink message for session on endpoint %s:%d: %s",
-                         sp->socket_.remote_endpoint().address().to_string(), sp->socket_.remote_endpoint().port(),
-                         error.message());
+  ::boost::asio::async_write(socket_, ::boost::asio::buffer(eb.data(), eb.size()),
+                             ::boost::asio::transfer_all(), [sp = shared_from_this()](const auto& error, auto) {
+                               sp->buffers_.pop();
 
-          return;
-        }
+                               if (error) {
+                                 sp->log_.infof(component,
+                                                "failed to process mavlink message for session on endpoint %s:%d: %s",
+                                                sp->socket_.remote_endpoint().address().to_string(),
+                                                sp->socket_.remote_endpoint().port(), error.message());
 
-        if (bytes_transferred != sp->buffers_.front().size()) {
-          return;
-        }
+                                 return;
+                               }
 
-        if (!sp->buffers_.empty())
-          sp->process();
-      });
+                               if (!sp->buffers_.empty())
+                                 sp->process();
+                             });
 }
 
 airmap::mavlink::boost::TcpRoute::Session::Session(const std::shared_ptr<::boost::asio::io_service>& io_service,

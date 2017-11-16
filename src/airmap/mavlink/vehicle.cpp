@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-airmap::mavlink::Vehicle::Vehicle(std::uint8_t system_id) : system_id_{system_id} {
+airmap::mavlink::Vehicle::Vehicle(std::uint8_t system_id) : system_id_{system_id}, system_status_{MAV_STATE_UNINIT} {
 }
 
 void airmap::mavlink::Vehicle::update(const mavlink_message_t& msg) {

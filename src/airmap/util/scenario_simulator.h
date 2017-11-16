@@ -2,7 +2,6 @@
 #define AIRMAP_UTIL_SCENARIO_SIMULATOR_H_
 
 #include <airmap/aircraft.h>
-#include <airmap/client.h>
 #include <airmap/date_time.h>
 #include <airmap/flight.h>
 #include <airmap/geometry.h>
@@ -32,6 +31,7 @@ struct Scenario {
   };
 
   struct Participant {
+    std::uint32_t id;
     Pilot::Aircraft aircraft;
     Pilot pilot;
     Optional<User> user;
@@ -58,7 +58,9 @@ class ScenarioSimulator {
     explicit Runner(std::uint32_t frequency);
     ~Runner();
 
-    void start(const std::shared_ptr<ScenarioSimulator>& simulator, const std::shared_ptr<Client>& client);
+    void start(const std::shared_ptr<ScenarioSimulator>& simulator,
+               const std::function<void(const DateTime&, const Scenario::Participant&, const Geometry::Coordinate&)>&
+                   enumerator);
     void stop();
 
    private:

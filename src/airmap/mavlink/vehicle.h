@@ -42,7 +42,7 @@ class Vehicle {
   std::uint8_t system_id_;
   std::unordered_set<std::shared_ptr<Monitor>> monitors_;
 
-  State system_status_{MAV_STATE_UNINIT};
+  State system_status_;
   Optional<GlobalPositionInt> global_position_int_;
 };
 
