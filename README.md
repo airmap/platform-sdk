@@ -1,4 +1,4 @@
-# airmapd [![CircleCI](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd.svg?style=svg&circle-token=14a0fc3307775671f97988bd781b674977671dd8)](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd)
+# airmapd [ ![CircleCI](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd.svg?style=svg&circle-token=14a0fc3307775671f97988bd781b674977671dd8) ](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd) {#mainpage}
 
 `airmapd` is the representation of AirMap's services on the client side, ranging from desktop machines running a ground-control station to drones featuring a companion computer. From a high-level point of view, `airmapd`
  - exposes the AirMap services to client applications
