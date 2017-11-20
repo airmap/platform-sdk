@@ -5,6 +5,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <sstream>
+
 BOOST_AUTO_TEST_CASE(error_value_default_ctor_yields_correct_type) {
   airmap::Error::Value value;
   BOOST_CHECK(value.type() == airmap::Error::Value::Type::undefined);
@@ -215,7 +217,7 @@ BOOST_AUTO_TEST_CASE(error_value_assignment_operator_yields_correct_type) {
   {
     auto ref = std::vector<airmap::Error::Value>{airmap::Error::Value{std::int64_t{42}},
                                                  airmap::Error::Value{std::string{"42"}}};
-    auto w   = airmap::Error::Value{ref};
+    auto w = airmap::Error::Value{ref};
     BOOST_CHECK(w.type() == airmap::Error::Value::Type::vector);
     BOOST_CHECK(w.vector() == ref);
   }
@@ -264,8 +266,38 @@ BOOST_AUTO_TEST_CASE(error_value_move_operator_yields_correct_type) {
   {
     auto ref = std::vector<airmap::Error::Value>{airmap::Error::Value{std::int64_t{42}},
                                                  airmap::Error::Value{std::string{"42"}}};
-    auto w   = std::move(airmap::Error::Value{ref});
+    auto w = std::move(airmap::Error::Value{ref});
     BOOST_CHECK(w.type() == airmap::Error::Value::Type::vector);
     BOOST_CHECK(w.vector() == ref);
   }
+}
+
+BOOST_AUTO_TEST_CASE(error_value_operator_outputs_correct_string) {
+  auto error =
+      airmap::Error{"this is a test"}
+          .description("with a description")
+          .value(airmap::Error::Value{std::string{"boolean"}}, airmap::Error::Value{false})
+          .value(airmap::Error::Value{std::string{"integer"}}, airmap::Error::Value{std::int64_t{42}})
+          .value(airmap::Error::Value{std::string{"floating_point"}}, airmap::Error::Value{double{42}})
+          .value(airmap::Error::Value{std::string{"string"}}, airmap::Error::Value{std::string{"42"}})
+          .value(airmap::Error::Value{std::string{"blob"}}, airmap::Error::Value{std::vector<std::uint8_t>{'4', '2'}})
+          .value(airmap::Error::Value{std::string{"dictionary"}},
+                 airmap::Error::Value{std::map<airmap::Error::Value, airmap::Error::Value>{
+                     {airmap::Error::Value{std::string{"boolean"}}, airmap::Error::Value{false}},
+                     {airmap::Error::Value{std::string{"integer"}}, airmap::Error::Value{std::int64_t{42}}},
+                     {airmap::Error::Value{std::string{"floating_point"}}, airmap::Error::Value{double{42.}}},
+                     {airmap::Error::Value{std::string{"string"}}, airmap::Error::Value{std::string{"42"}}},
+                     {airmap::Error::Value{std::string{"blob"}},
+                      airmap::Error::Value{std::vector<std::uint8_t>{'4', '2'}}},
+                 }})
+          .value(airmap::Error::Value{std::string{"vector"}},
+                 airmap::Error::Value{std::vector<airmap::Error::Value>{
+                     airmap::Error::Value{false}, airmap::Error::Value{std::int64_t{42}},
+                     airmap::Error::Value{double{42.}}, airmap::Error::Value{std::string{"42"}},
+                     airmap::Error::Value{std::vector<std::uint8_t>{'4', '2'}},
+                 }});
+
+  std::stringstream ss;
+  ss << error;
+  std::cout << error;
 }

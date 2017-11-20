@@ -16,22 +16,6 @@ namespace airmap {
 
 /// Error models an error raised by an AirMap component.
 struct Error {
-  /// Category abstracts interpretation of numeric error codes.
-  class Category : DoNotCopyOrMove {
-   public:
-    /// numeric_error_code_to_value translates 'numeric_value' to a human-readable string.
-    virtual Optional<std::string> numeric_error_code_to_value(std::uint32_t numeric_value) = 0;
-
-   protected:
-    Category() = default;
-  };
-
-  /// Code bundles together a numeric error code and its corresponding category.
-  struct Code {
-    std::uint32_t numeric_value;         ///< The numeric value of the error code.
-    std::shared_ptr<Category> category;  ///< The corresponding category for interpreting the code.
-  };
-
   /// Value is a discriminated union type wrapping up multiple atomic types and
   /// their composition into a vector or a dictionary.
   class Value {
