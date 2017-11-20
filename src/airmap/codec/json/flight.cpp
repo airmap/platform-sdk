@@ -24,7 +24,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Flight& f) {
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Flight>& f) {
-  for (const auto& element : j) {
+  for (const auto& element : j["results"]) {
     f.emplace_back();
     f.back() = element;
   }
