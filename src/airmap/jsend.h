@@ -55,6 +55,16 @@ inline Outcome<T, Error> to_outcome(const nlohmann::json& j) {
   return Result{Error{"not jsend formatted"}.value(Error::Value{"json"}, Error::Value{j.dump()})};
 }
 
+template <typename T>
+inline Outcome<T, Error> parse_to_outcome(const std::string& json) {
+  try {
+    return to_outcome<T>(nlohmann::json::parse(json));
+  } catch (const std::exception& e) {
+    return Outcome<T, Error>{
+        Error{"failed to parse JSON response"}.description(e.what()).value(Error::Value{"json"}, Error::Value{json})};
+  }
+}
+
 }  // namespace jsend
 }  // namespace airmap
 

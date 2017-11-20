@@ -1,6 +1,7 @@
 #include <airmap/error.h>
 
 #include <cassert>
+#include <iosfwd>
 
 namespace {
 
@@ -364,6 +365,43 @@ bool airmap::operator<(const Error::Value& lhs, const Error::Value& rhs) {
   return false;
 }
 
+std::ostream& airmap::operator<<(std::ostream& out, const Error::Value& value) {
+  switch (value.type()) {
+    case Error::Value::Type::undefined:
+      return out << "undefined";
+    case Error::Value::Type::boolean:
+      return out << std::boolalpha << value.boolean();
+    case Error::Value::Type::integer:
+      return out << value.integer();
+    case Error::Value::Type::floating_point:
+      return out << value.floating_point();
+    case Error::Value::Type::string:
+      return out << value.string();
+    case Error::Value::Type::blob:
+      for (const auto& c : value.blob())
+        out << std::hex << "0x" << std::uint16_t(c) << std::dec << " ";
+      return out;
+    case Error::Value::Type::dictionary:
+      out << "[";
+      for (const auto& pair : value.dictionary())
+        out << "(" << pair.first << "," << pair.second << ")";
+      return out << "]";
+    case Error::Value::Type::vector:
+      out << "[";
+      for (const auto& element : value.vector())
+        out << "(" << element << ")";
+      return out << "]";
+  }
+
+  return out;
+}
+
 std::ostream& airmap::operator<<(std::ostream& out, const Error& error) {
-  return out << error.message();
+  out << error.message();
+  if (error.description())
+    out << "\n" << error.description().get();
+  for (const auto& pair : error.values()) {
+    out << "\n  " << pair.first << ": " << pair.second;
+  }
+  return out;
 }

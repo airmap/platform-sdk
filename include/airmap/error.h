@@ -6,6 +6,7 @@
 
 #include <cstdint>
 
+#include <iosfwd>
 #include <map>
 #include <memory>
 #include <string>
@@ -170,6 +171,8 @@ struct Error {
 bool operator==(const Error::Value& lhs, const Error::Value& rhs);
 /// operator< returns true if type and value of lhs compare < than type and value of rhs.
 bool operator<(const Error::Value& lhs, const Error::Value& rhs);
+/// operator<< inserts 'value' into 'out'.
+std::ostream& operator<<(std::ostream& out, const Error::Value& value);
 /// operator<< inserts 'error' into 'out'.
 std::ostream& operator<<(std::ostream& out, const Error& error);
 
