@@ -34,7 +34,7 @@ void airmap::rest::Flights::search(const Search::Parameters& parameters, const S
 
   requester_->get("/", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
     if (result) {
-      cb(jsend::to_outcome<std::vector<Flight>>(json::parse(result.value().body)));
+      cb(jsend::to_outcome<Search::Response>(json::parse(result.value().body)));
     } else {
       cb(Search::Result{result.error()});
     }
