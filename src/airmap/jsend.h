@@ -38,33 +38,21 @@ inline Outcome<T, Error> to_outcome(const nlohmann::json& j) {
     }
 
     if (s == status::failure) {
-      Error err;
-      err.description = j.at(key::data).dump();
-
-      return Result{err};
+      return Result{Error{"a failure occured, please see description for details"}.description(j.at(key::data).dump())};
     }
 
     if (s == status::error) {
-      Error err;
-      err.message     = j.at(key::message).get<std::string>();
-      err.description = j.at(key::data).dump();
-
-      return Result{err};
+      return Result{Error{j.at(key::message).get<std::string>()}.description(j.at(key::data).dump())};
     }
   } else {
     if (j.find(status::error) != j.end()) {
-      Error err;
-      err.message = j.at(status::error).get<std::string>();
+      return Result{Error{j.at(status::error).get<std::string>()}};
     }
 
     return Result{j.get<T>()};
   }
 
-  Error err;
-  err.message        = "not JSend formatted";
-  err.values["json"] = Error::Value{j.dump()};
-
-  return Result{err};
+  return Result{Error{"not jsend formatted"}.value(Error::Value{"json"}, Error::Value{j.dump()})};
 }
 
 }  // namespace jsend

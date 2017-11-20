@@ -133,9 +133,37 @@ struct Error {
     Details details_;
   };
 
-  std::string message;                  ///< Short, human-readable message.
-  std::string description;              ///< Detailed description of the error, meant to be used for defect analysis.
-  std::map<std::string, Value> values;  ///< Dictionary of additional data attached to the error.
+  /// Error initializes a new error instance with 'message'.
+  explicit Error();
+
+  /// Error initializes a new error instance with 'message'.
+  explicit Error(const std::string& message);
+
+  /// message returns the message describing an error condition.
+  const std::string& message() const;
+  /// message sets the message of the Error instance to 'message'.
+  Error message(const std::string& message) const;
+  /// message sets the message of the Error instance to 'message'.
+  Error& message(const std::string& message);
+
+  /// description returns the optional description of an error condition.
+  const Optional<std::string>& description() const;
+  /// description sets the message of the Error instance to 'description'.
+  Error description(const std::string& description) const;
+  /// description sets the message of the Error instance to 'description'.
+  Error& description(const std::string& description);
+
+  /// values returns the additional values describing an error condition.
+  const std::map<Value, Value>& values() const;
+  /// value adds the pair (key, value) to the additional values describing an error condition.
+  Error value(const Value& key, const Value& value) const;
+  /// value adds the pair (key, value) to the additional values describing an error condition.
+  Error& value(const Value& key, const Value& value);
+
+ private:
+  std::string message_;                ///< Short, human-readable message.
+  Optional<std::string> description_;  ///< Detailed description of the error, meant to be used for defect analysis.
+  std::map<Value, Value> values_;      ///< Dictionary of additional data attached to the error.
 };
 
 /// operator== returns true if both type and value of lhs and rhs compare equal.

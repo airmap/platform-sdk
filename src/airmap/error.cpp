@@ -236,15 +236,19 @@ airmap::Error::Value& airmap::Error::Value::destruct() {
     case Type::string:
       using String = std::string;
       details_.string.~String();
+      break;
     case Type::blob:
       using Blob = std::vector<std::uint8_t>;
       details_.blob.~Blob();
+      break;
     case Type::dictionary:
       using Dictionary = std::map<Value, Value>;
       details_.dictionary.~Dictionary();
+      break;
     case Type::vector:
       using Vector = std::vector<Value>;
       details_.vector.~Vector();
+      break;
     default:
       break;
   }
@@ -285,6 +289,53 @@ bool airmap::operator==(const Error::Value& lhs, const Error::Value& rhs) {
   return false;
 }
 
+airmap::Error::Error() = default;
+
+airmap::Error::Error(const std::string& message) : message_{message} {
+}
+
+const std::string& airmap::Error::message() const {
+  return message_;
+}
+
+airmap::Error airmap::Error::message(const std::string& message) const {
+  auto copy = *this;
+  return copy.message(message);
+}
+
+airmap::Error& airmap::Error::message(const std::string& message) {
+  message_ = message;
+  return *this;
+}
+
+const airmap::Optional<std::string>& airmap::Error::description() const {
+  return description_;
+}
+
+airmap::Error airmap::Error::description(const std::string& description) const {
+  auto copy = *this;
+  return copy.description(description);
+}
+
+airmap::Error& airmap::Error::description(const std::string& description) {
+  description_ = description;
+  return *this;
+}
+
+const std::map<airmap::Error::Value, airmap::Error::Value>& airmap::Error::values() const {
+  return values_;
+}
+
+airmap::Error airmap::Error::value(const Value& key, const Value& value) const {
+  auto copy = *this;
+  return copy.value(key, value);
+}
+
+airmap::Error& airmap::Error::value(const Value& key, const Value& value) {
+  values_[key] = value;
+  return *this;
+}
+
 bool airmap::operator<(const Error::Value& lhs, const Error::Value& rhs) {
   if (!is_basic_type(lhs) || !is_basic_type(rhs)) {
     throw std::logic_error{"cannot compare non-basic types"};
@@ -314,5 +365,5 @@ bool airmap::operator<(const Error::Value& lhs, const Error::Value& rhs) {
 }
 
 std::ostream& airmap::operator<<(std::ostream& out, const Error& error) {
-  return out << error.message;
+  return out << error.message();
 }

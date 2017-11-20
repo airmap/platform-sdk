@@ -14,9 +14,7 @@ using tcp      = boost::asio::ip::tcp;
 namespace {
 
 airmap::Error wrap_error_code(const boost::system::error_code& ec) {
-  airmap::Error err;
-  err.message = ec.message();
-  return err;
+  return airmap::Error{ec.message()};
 }
 
 }  // namespace
