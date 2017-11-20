@@ -123,13 +123,7 @@ cmd::Pilot::Pilot()
 
     context_->create_client_with_configuration(config, [this](const ::airmap::Context::ClientCreateResult& result) {
       if (not result) {
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          log_.errorf(component, "failed to create AirMap client instance: %s", e.what());
-        } catch (...) {
-          log_.errorf(component, "failed to create AirMap client instance");
-        }
+        log_.errorf(component, "failed to create AirMap client instance: %s", result.error());
         context_->stop(::airmap::Context::ReturnCode::error);
         return;
       }
@@ -170,13 +164,7 @@ void cmd::Pilot::handle_authenticated_pilot_result(const Pilots::Authenticated::
     client_->pilots().aircrafts(
         params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1));
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to query information about pilot: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to query information about pilot");
-    }
+    log_.errorf(component, "failed to query information about pilot: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -191,13 +179,7 @@ void cmd::Pilot::handle_for_id_pilot_result(const Pilots::ForId::Result& result)
     client_->pilots().aircrafts(
         params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1));
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to query information about pilot: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to query information about pilot");
-    }
+    log_.errorf(component, "failed to query information about pilot: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -207,13 +189,7 @@ void cmd::Pilot::handle_aircrafts_result(const ::airmap::Pilot& pilot, const Pil
     print_pilot_and_aircrafts(log_, pilot, result.value());
     context_->stop();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to query information about aircrafts: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to query information about aircrafts");
-    }
+    log_.errorf(component, "failed to query information about aircrafts: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }

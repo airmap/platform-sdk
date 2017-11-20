@@ -2,6 +2,7 @@
 #define AIRMAP_NET_MQTT_BROKER_H_
 
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/outcome.h>
 
 #include <functional>
@@ -16,7 +17,7 @@ class Client;
 
 class Broker : public DoNotCopyOrMove {
  public:
-  using ConnectResult   = Outcome<std::shared_ptr<Client>, std::exception_ptr>;
+  using ConnectResult   = Outcome<std::shared_ptr<Client>, Error>;
   using ConnectCallback = std::function<void(const ConnectResult&)>;
 
   struct Credentials {

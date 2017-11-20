@@ -95,13 +95,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
     context->create_client_with_configuration(
         config, [this, &ctxt, context](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
-            try {
-              std::rethrow_exception(result.error());
-            } catch (const std::exception& e) {
-              log_.errorf(component, "failed to create client: %s", e.what());
-            } catch (...) {
-              log_.errorf(component, "failed to create client");
-            }
+            log_.errorf(component, "failed to create client: %s", result.error());
             context->stop(::airmap::Context::ReturnCode::error);
             return;
           }
@@ -114,13 +108,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
               print_rules(ctxt.cout, result.value());
               context->stop();
             } else {
-              try {
-                std::rethrow_exception(result.error());
-              } catch (const std::exception& e) {
-                log_.errorf(component, "failed to evaluate rulesets: %s", e.what());
-              } catch (...) {
-                log_.errorf(component, "failed to evaluate rulesets");
-              }
+              log_.errorf(component, "failed to evaluate rulesets: %s", result.error());
               context->stop(::airmap::Context::ReturnCode::error);
               return;
             }

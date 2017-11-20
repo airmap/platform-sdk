@@ -94,13 +94,7 @@ cmd::QueryRuleSets::QueryRuleSets()
 
     context_->create_client_with_configuration(config, [this](const ::airmap::Context::ClientCreateResult& result) {
       if (not result) {
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          log_.errorf(component, "failed to create client: %s", e.what());
-        } catch (...) {
-          log_.errorf(component, "failed to create client");
-        }
+        log_.errorf(component, "failed to create client: %s", result.error());
         context_->stop(::airmap::Context::ReturnCode::error);
         return;
       }
@@ -141,13 +135,7 @@ void cmd::QueryRuleSets::handle_ruleset_for_id_result(const RuleSets::ForId::Res
     log_.infof(component, "successfully queried ruleset from ruleset-id:\n%s", print_ruleset(result.value()));
     context_->stop();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to query for rulesets: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to query for rulesets");
-    }
+    log_.errorf(component, "failed to query for rulesets: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
     return;
   }
@@ -158,13 +146,7 @@ void cmd::QueryRuleSets::handle_ruleset_search_result(const RuleSets::Search::Re
     log_.infof(component, "successfully queried rulesets from geometry:\n%s", print_rulesets(result.value()));
     context_->stop();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to query for rulesets: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to query for rulesets");
-    }
+    log_.errorf(component, "failed to query for rulesets: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
     return;
   }

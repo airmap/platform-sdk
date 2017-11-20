@@ -64,13 +64,7 @@ cmd::Login::Login()
     context_->create_client_with_configuration(
         config, [this, &ctxt, config](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
-            try {
-              std::rethrow_exception(result.error());
-            } catch (const std::exception& e) {
-              log_.errorf(component, "failed to create client: %s", e.what());
-            } catch (...) {
-              log_.errorf(component, "failed to create client");
-            }
+            log_.errorf(component, "failed to create client: %s", result.error());
             context_->stop(::airmap::Context::ReturnCode::error);
             return;
           }
@@ -158,13 +152,7 @@ void cmd::Login::handle_result_for_authentication_with_password(
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not authenticate with the Airmap services: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "could not authenticate with the Airmap services");
-    }
+    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -184,13 +172,7 @@ void cmd::Login::handle_result_for_anonymous_authentication(
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not authenticate with the Airmap services: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "could not authenticate with the Airmap services");
-    }
+    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -218,13 +200,7 @@ void cmd::Login::handle_result_for_renewed_authentication(const Authenticator::R
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not authenticate with the Airmap services: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "could not authenticate with the Airmap services");
-    }
+    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }

@@ -207,13 +207,7 @@ cmd::SimulateScenario::SimulateScenario()
 
     context_->create_client_with_configuration(config, [this](const auto& result) mutable {
       if (not result) {
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          log_.errorf(component, "failed to create client: %s", e.what());
-        } catch (...) {
-          log_.errorf(component, "failed to create client");
-        }
+        log_.errorf(component, "failed to create client: %s", result.error());
         context_->stop(::airmap::Context::ReturnCode::error);
         return;
       }
@@ -263,13 +257,7 @@ void cmd::SimulateScenario::handle_authenticated_with_password_result_for(
     request_flight_status_for(participant);
     request_create_flight_for(participant);
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not authenticate with the Airmap services: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "could not authenticate with the Airmap services");
-    }
+    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -282,13 +270,7 @@ void cmd::SimulateScenario::handle_authenticated_anonymously_result_for(
     request_flight_status_for(participant);
     request_create_flight_for(participant);
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not authenticate with the Airmap services: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "could not authenticate with the Airmap services");
-    }
+    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -328,13 +310,7 @@ void cmd::SimulateScenario::handle_flight_status_result_for(util::Scenario::Part
                result.value().weather.precipitation, result.value().weather.wind.heading,
                result.value().weather.wind.speed, result.value().weather.wind.gusting);
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to get flight status: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to get flight status");
-    }
+    log_.errorf(component, "failed to get flight status: %s", result.error());
   }
 }
 
@@ -368,13 +344,7 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     });
 
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not create flight for polygon: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "could not create flight for polygon");
-    }
+    log_.errorf(component, "could not create flight for polygon: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -393,14 +363,8 @@ void cmd::SimulateScenario::handle_traffic_monitoring_result_for(util::Scenario:
     monitor->subscribe(std::make_shared<Traffic::Monitor::LoggingSubscriber>(component, log_.logger()));
     collector_->collect_traffic_monitor_for(participant, monitor);
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not start monitoring traffic for flight %s: %s", participant->flight.get().id,
-                  e.what());
-    } catch (...) {
-      log_.errorf(component, "could not start monitoring traffic for flight %s", participant->flight.get().id);
-    }
+    log_.errorf(component, "could not start monitoring traffic for flight %s: %s", participant->flight.get().id,
+                result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -442,13 +406,8 @@ void cmd::SimulateScenario::handle_start_flight_comms_result_for(
           });
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "could not start flight comms for flight %s: %s", participant->flight.get().id, e.what());
-    } catch (...) {
-      log_.errorf(component, "could not start flight comms for flight %s", participant->flight.get().id);
-    }
+    log_.errorf(component, "could not start flight comms for flight %s: %s", participant->flight.get().id,
+                result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -460,13 +419,7 @@ void cmd::SimulateScenario::handle_end_flight_comms(util::Scenario::Participants
     client_->flights().end_flight({participant->authentication.get(), participant->flight.get().id},
                                   std::bind(&SimulateScenario::handle_end_flight, this, participant, ph::_1));
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to end flight comms: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to end flight comms");
-    }
+    log_.errorf(component, "failed to end flight comms: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -477,13 +430,7 @@ void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iter
     log_.infof(component, "successfully ended flight: %s", participant->flight.get().id);
     context_->stop(::airmap::Context::ReturnCode::success);
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to end flight: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to end flight");
-    }
+    log_.errorf(component, "failed to end flight: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }

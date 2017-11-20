@@ -41,13 +41,7 @@ void airmap::monitor::TelemetrySubmitter::deactivate() {
 
     client_->flights().end_flight(parameters, [sp = shared_from_this()](const auto& result) {
       if (!result) {
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          sp->log_.errorf(component, "failed to end flight: %s", e.what());
-        } catch (...) {
-          sp->log_.errorf(component, "failed to end flight");
-        }
+        sp->log_.errorf(component, "failed to end flight: %s", result.error());
       }
     });
   }
@@ -96,13 +90,7 @@ void airmap::monitor::TelemetrySubmitter::request_authorization() {
         sp->handle_request_authorization_finished(result.value().id);
       } else {
         sp->authorization_requested_ = false;
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          sp->log_.errorf(component, "failed to authenticate with AirMap services: %s", e.what());
-        } catch (...) {
-          sp->log_.errorf(component, "failed to authenticate with AirMap services");
-        }
+        sp->log_.errorf(component, "failed to authenticate with AirMap services: %s", result.error());
       }
     });
   } else {
@@ -112,13 +100,7 @@ void airmap::monitor::TelemetrySubmitter::request_authorization() {
         sp->handle_request_authorization_finished(result.value().id);
       } else {
         sp->authorization_requested_ = false;
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          sp->log_.errorf(component, "failed to authenticate with AirMap services: %s", e.what());
-        } catch (...) {
-          sp->log_.errorf(component, "failed to authenticate with AirMap services");
-        }
+        sp->log_.errorf(component, "failed to authenticate with AirMap services: %s", result.error());
       }
     });
   }
@@ -155,13 +137,7 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
         sp->handle_request_create_flight_finished(result.value());
       } else {
         sp->create_flight_requested_ = false;
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          sp->log_.errorf(component, "failed to create flight by point: %s", e.what());
-        } catch (...) {
-          sp->log_.errorf(component, "failed to create flight by point");
-        }
+        sp->log_.errorf(component, "failed to create flight by point: %s", result.error());
       }
     });
   }
@@ -191,13 +167,7 @@ void airmap::monitor::TelemetrySubmitter::request_start_flight_comms() {
       sp->handle_request_start_flight_comms_finished(result.value().key);
     } else {
       sp->start_flight_comms_requested_ = false;
-      try {
-        std::rethrow_exception(result.error());
-      } catch (const std::exception& e) {
-        sp->log_.errorf(component, "failed to start flight communications: %s", e.what());
-      } catch (...) {
-        sp->log_.errorf(component, "failed to start flight communications");
-      }
+      sp->log_.errorf(component, "failed to start flight communications: %s", result.error());
     }
   });
 }

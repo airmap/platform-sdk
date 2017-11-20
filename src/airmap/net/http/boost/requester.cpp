@@ -13,8 +13,10 @@ using tcp      = boost::asio::ip::tcp;
 
 namespace {
 
-std::exception_ptr wrap_error_code(const boost::system::error_code& ec) {
-  return std::make_exception_ptr(std::runtime_error{ec.message()});
+airmap::Error wrap_error_code(const boost::system::error_code& ec) {
+  airmap::Error err;
+  err.message = ec.message();
+  return err;
 }
 
 }  // namespace

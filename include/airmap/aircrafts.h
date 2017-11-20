@@ -3,6 +3,7 @@
 
 #include <airmap/aircraft.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/optional.h>
 #include <airmap/outcome.h>
 
@@ -25,7 +26,7 @@ class Aircrafts : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Flights::manufacturers.
-    using Result = Outcome<std::vector<Aircraft::Manufacturer>, std::exception_ptr>;
+    using Result = Outcome<std::vector<Aircraft::Manufacturer>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Flights::manufacturers finishes.
     using Callback = std::function<void(const Result&)>;
@@ -41,7 +42,7 @@ class Aircrafts : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Flights::models.
-    using Result = Outcome<std::vector<Aircraft>, std::exception_ptr>;
+    using Result = Outcome<std::vector<Aircraft>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Flights::models finishes.
     using Callback = std::function<void(const Result&)>;
@@ -56,7 +57,7 @@ class Aircrafts : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Flights::model_for_id.
-    using Result = Outcome<Aircraft, std::exception_ptr>;
+    using Result = Outcome<Aircraft, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Flights::model_for_id finishes.
     using Callback = std::function<void(const Result&)>;

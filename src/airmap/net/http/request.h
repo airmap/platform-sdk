@@ -2,6 +2,7 @@
 #define AIRMAP_NET_HTTP_REQUEST_H_
 
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/net/http/response.h>
 #include <airmap/outcome.h>
 
@@ -15,7 +16,7 @@ namespace http {
 
 class Request : DoNotCopyOrMove {
  public:
-  using Result   = Outcome<Response, std::exception_ptr>;
+  using Result   = Outcome<Response, Error>;
   using Callback = std::function<void(const Result&)>;
 
   virtual void execute(const Callback& cb) = 0;

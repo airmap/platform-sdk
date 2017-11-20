@@ -4,6 +4,7 @@
 #include <airmap/client.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/logger.h>
 #include <airmap/outcome.h>
 
@@ -24,9 +25,9 @@ class Context : DoNotCopyOrMove {
   };
 
   /// @cond
-  using ClientCreateResult   = Outcome<std::shared_ptr<Client>, std::exception_ptr>;
+  using ClientCreateResult   = Outcome<std::shared_ptr<Client>, Error>;
   using ClientCreateCallback = std::function<void(const ClientCreateResult&)>;
-  using CreateResult         = Outcome<std::shared_ptr<Context>, std::exception_ptr>;
+  using CreateResult         = Outcome<std::shared_ptr<Context>, Error>;
   using SignalHandler        = std::function<void(int)>;
   using SignalSet            = std::unordered_set<int>;
   /// @endcond

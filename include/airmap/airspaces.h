@@ -4,6 +4,7 @@
 #include <airmap/airspace.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/outcome.h>
 
 #include <functional>
@@ -23,7 +24,7 @@ class Airspaces : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Airspaces::for_id.
-    using Result = Outcome<std::vector<Airspace>, std::exception_ptr>;
+    using Result = Outcome<std::vector<Airspace>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Airspaces::for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -45,7 +46,7 @@ class Airspaces : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Airspaces::search.
-    using Result = Outcome<std::vector<Airspace>, std::exception_ptr>;
+    using Result = Outcome<std::vector<Airspace>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Airspaces::search finishes.
     using Callback = std::function<void(const Result&)>;

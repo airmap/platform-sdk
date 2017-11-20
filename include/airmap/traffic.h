@@ -3,6 +3,7 @@
 
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/logger.h>
 #include <airmap/outcome.h>
 
@@ -51,7 +52,7 @@ class Traffic : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Traffic::monitor.
-    using Result = Outcome<std::shared_ptr<Monitor>, std::exception_ptr>;
+    using Result = Outcome<std::shared_ptr<Monitor>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Traffic::monitor finishes.
     using Callback = std::function<void(const Result&)>;

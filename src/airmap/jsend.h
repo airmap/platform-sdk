@@ -1,6 +1,7 @@
 #ifndef AIRMAP_JSEND_H_
 #define AIRMAP_JSEND_H_
 
+#include <airmap/error.h>
 #include <airmap/outcome.h>
 
 #include <nlohmann/json.hpp>
@@ -25,32 +26,45 @@ static constexpr const char* message{"message"};
 
 }  // namespace key
 
-inline std::string stringify_error(const nlohmann::json& j) {
-  if (j.at(key::status) == status::error)
-    return j.at(key::data).dump();
-  if (j.at(key::status) == status::failure)
-    return j.at(key::data).dump();
-  throw std::runtime_error{"not an error"};
-}
-
 template <typename T>
-inline Outcome<T, std::exception_ptr> to_outcome(const nlohmann::json& j) {
-  using Result = Outcome<T, std::exception_ptr>;
+inline Outcome<T, Error> to_outcome(const nlohmann::json& j) {
+  using Result = Outcome<T, Error>;
 
   if (j.find(key::status) != j.end()) {
-    if (j[key::status] == status::success) {
+    auto s = j[key::status];
+
+    if (s == status::success) {
       return Result{j[key::data].get<T>()};
     }
 
-    return Result{std::make_exception_ptr(std::runtime_error{jsend::stringify_error(j)})};
+    if (s == status::failure) {
+      Error err;
+      err.description = j.at(key::data).dump();
 
+      return Result{err};
+    }
+
+    if (s == status::error) {
+      Error err;
+      err.message     = j.at(key::message).get<std::string>();
+      err.description = j.at(key::data).dump();
+
+      return Result{err};
+    }
   } else {
     if (j.find(status::error) != j.end()) {
-      return Result{std::make_exception_ptr(std::runtime_error{j.dump()})};
+      Error err;
+      err.message = j.at(status::error).get<std::string>();
     }
 
     return Result{j.get<T>()};
   }
+
+  Error err;
+  err.message        = "not JSend formatted";
+  err.values["json"] = Error::Value{j.dump()};
+
+  return Result{err};
 }
 
 }  // namespace jsend

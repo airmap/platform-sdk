@@ -3,6 +3,7 @@
 
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/flight.h>
 #include <airmap/geometry.h>
 #include <airmap/optional.h>
@@ -28,7 +29,7 @@ class Flights : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Flights::for_id.
-    using Result = Outcome<Flight, std::exception_ptr>;
+    using Result = Outcome<Flight, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to Flights::for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -53,7 +54,7 @@ class Flights : DoNotCopyOrMove {
       Optional<bool> enhance;               ///< If true, provides extended information per flight in the result set.
     };
     /// Result models the outcome of calling Flights::search.
-    using Result = Outcome<std::vector<Flight>, std::exception_ptr>;
+    using Result = Outcome<std::vector<Flight>, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to Flights::search finishes.
     using Callback = std::function<void(const Result&)>;
@@ -78,7 +79,7 @@ class Flights : DoNotCopyOrMove {
       Optional<Geometry> geometry;      ///< The geometry that describes the flight.
     };
     /// Result models the outcome of calling Flights::create_flight.
-    using Result = Outcome<Flight, std::exception_ptr>;
+    using Result = Outcome<Flight, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to Flights::create_flight finishes.
     using Callback = std::function<void(const Result&)>;
@@ -99,7 +100,7 @@ class Flights : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Flights::delete_flight.
-    using Result = Outcome<Response, std::exception_ptr>;
+    using Result = Outcome<Response, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Flights::delete_flight finishes.
     using Callback = std::function<void(const Result&)>;
@@ -120,7 +121,7 @@ class Flights : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Flights::delete_flight.
-    using Result = Outcome<Response, std::exception_ptr>;
+    using Result = Outcome<Response, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Flights::end_flight finishes.
     using Callback = std::function<void(const Result&)>;
@@ -141,7 +142,7 @@ class Flights : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Flights::start_flight_communications.
-    using Result = Outcome<Response, std::exception_ptr>;
+    using Result = Outcome<Response, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Flights::start_flight_communications.
     using Callback = std::function<void(const Result&)>;
@@ -160,7 +161,7 @@ class Flights : DoNotCopyOrMove {
     struct Response {};
 
     /// Result models the outcome of calling Flights::end_flight_communications.
-    using Result = Outcome<Response, std::exception_ptr>;
+    using Result = Outcome<Response, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Flights::end_flight_communications finishes.
     using Callback = std::function<void(const Result&)>;
