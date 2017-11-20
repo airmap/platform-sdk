@@ -8,7 +8,6 @@
 BOOST_AUTO_TEST_CASE(error_value_default_ctor_yields_correct_type) {
   airmap::Error::Value value;
   BOOST_CHECK(value.type() == airmap::Error::Value::Type::undefined);
-  BOOST_CHECK(!value.boolean());
 }
 
 BOOST_AUTO_TEST_CASE(error_value_ctor_with_boolean_yields_correct_type) {
