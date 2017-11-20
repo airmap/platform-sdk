@@ -133,13 +133,21 @@ struct Error {
 
   /// description returns the optional description of an error condition.
   const Optional<std::string>& description() const;
-  /// description sets the message of the Error instance to 'description'.
+  /// clear_description resets the description of the Error instance.
+  Error clear_description() const;
+  /// clear_description resets the description of the Error instance.
+  Error& clear_description();
+  /// description sets the description of the Error instance to 'description'.
   Error description(const std::string& description) const;
-  /// description sets the message of the Error instance to 'description'.
+  /// description sets the description of the Error instance to 'description'.
   Error& description(const std::string& description);
 
   /// values returns the additional values describing an error condition.
   const std::map<Value, Value>& values() const;
+  /// clear_values resets the values of the Error instance.
+  Error clear_values() const;
+  /// clear_values resets the values of the Error instance.
+  Error& clear_values();
   /// value adds the pair (key, value) to the additional values describing an error condition.
   Error value(const Value& key, const Value& value) const;
   /// value adds the pair (key, value) to the additional values describing an error condition.

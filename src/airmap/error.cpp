@@ -313,6 +313,16 @@ const airmap::Optional<std::string>& airmap::Error::description() const {
   return description_;
 }
 
+airmap::Error airmap::Error::clear_description() const {
+  auto copy = *this;
+  return copy.clear_description();
+}
+
+airmap::Error& airmap::Error::clear_description() {
+  description_.reset();
+  return *this;
+}
+
 airmap::Error airmap::Error::description(const std::string& description) const {
   auto copy = *this;
   return copy.description(description);
@@ -325,6 +335,16 @@ airmap::Error& airmap::Error::description(const std::string& description) {
 
 const std::map<airmap::Error::Value, airmap::Error::Value>& airmap::Error::values() const {
   return values_;
+}
+
+airmap::Error airmap::Error::clear_values() const {
+  auto copy = *this;
+  return copy.clear_values();
+}
+
+airmap::Error& airmap::Error::clear_values() {
+  values_.clear();
+  return *this;
 }
 
 airmap::Error airmap::Error::value(const Value& key, const Value& value) const {

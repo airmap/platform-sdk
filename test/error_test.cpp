@@ -5,8 +5,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <sstream>
-
 BOOST_AUTO_TEST_CASE(error_value_default_ctor_yields_correct_type) {
   airmap::Error::Value value;
   BOOST_CHECK(value.type() == airmap::Error::Value::Type::undefined);
@@ -272,7 +270,25 @@ BOOST_AUTO_TEST_CASE(error_value_move_operator_yields_correct_type) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(error_value_operator_outputs_correct_string) {
+BOOST_AUTO_TEST_CASE(error_resets_description_correctly) {
+  airmap::Error err{"message"};
+  err.description("description").clear_description();
+  BOOST_CHECK(!err.description());
+  BOOST_CHECK(!airmap::Error{"message"}.description("description").clear_description().description());
+}
+
+BOOST_AUTO_TEST_CASE(error_resets_values_correctly) {
+  airmap::Error err{"message"};
+  err.value(airmap::Error::Value{false}, airmap::Error::Value{false}).clear_values();
+  BOOST_CHECK(err.values().empty());
+  BOOST_CHECK(airmap::Error{"message"}
+                  .value(airmap::Error::Value{false}, airmap::Error::Value{false})
+                  .clear_values()
+                  .values()
+                  .empty());
+}
+
+BOOST_AUTO_TEST_CASE(error_insertion_operator_outputs_correct_string) {
   auto error =
       airmap::Error{"this is a test"}
           .description("with a description")
@@ -297,7 +313,5 @@ BOOST_AUTO_TEST_CASE(error_value_operator_outputs_correct_string) {
                      airmap::Error::Value{std::vector<std::uint8_t>{'4', '2'}},
                  }});
 
-  std::stringstream ss;
-  ss << error;
   std::cout << error;
 }
