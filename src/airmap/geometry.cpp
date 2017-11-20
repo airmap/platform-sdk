@@ -216,6 +216,10 @@ airmap::Geometry airmap::Geometry::polygon(const std::vector<Coordinate>& coordi
   return Geometry{polygon};
 }
 
+bool airmap::operator==(const Geometry::Polygon& lhs, const Geometry::Polygon& rhs) {
+  return lhs.outer_ring == rhs.outer_ring && lhs.inner_rings == rhs.inner_rings;
+}
+
 bool airmap::operator==(const Geometry::Coordinate& lhs, const Geometry::Coordinate& rhs) {
   return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude && lhs.altitude == rhs.altitude;
 }

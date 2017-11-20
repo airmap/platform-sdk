@@ -5,8 +5,8 @@
 
 airmap::util::TelemetrySimulator::TelemetrySimulator(const airmap::Geometry::Polygon& polygon)
     : polygon_{polygon},
-      segment_begin_{polygon_.at(0).coordinates.begin()},
-      segment_end_{polygon_.at(0).coordinates.begin() + 1},
+      segment_begin_{polygon_.outer_ring.coordinates.begin()},
+      segment_end_{polygon_.outer_ring.coordinates.begin() + 1},
       segment_ruler_{segment_begin_->latitude},
       segment_start_time_{Clock::universal_time()},
       segment_bearing_{segment_ruler_.bearing(*segment_begin_, *segment_end_)},
@@ -17,10 +17,10 @@ airmap::util::TelemetrySimulator::TelemetrySimulator(const airmap::Geometry::Pol
 
 airmap::util::TelemetrySimulator::TelemetrySimulator(const TelemetrySimulator& other)
     : polygon_{other.polygon_},
-      segment_begin_{polygon_.at(0).coordinates.begin() +
-                     std::distance(other.polygon_.at(0).coordinates.begin(), other.segment_begin_)},
-      segment_end_{polygon_.at(0).coordinates.begin() +
-                   std::distance(other.polygon_.at(0).coordinates.begin(), other.segment_end_)},
+      segment_begin_{polygon_.outer_ring.coordinates.begin() +
+                     std::distance(other.polygon_.outer_ring.coordinates.begin(), other.segment_begin_)},
+      segment_end_{polygon_.outer_ring.coordinates.begin() +
+                   std::distance(other.polygon_.outer_ring.coordinates.begin(), other.segment_end_)},
       segment_ruler_{other.segment_ruler_},
       segment_start_time_{other.segment_start_time_},
       segment_bearing_{other.segment_bearing_},
@@ -31,10 +31,10 @@ airmap::util::TelemetrySimulator::TelemetrySimulator(const TelemetrySimulator& o
 
 airmap::util::TelemetrySimulator& airmap::util::TelemetrySimulator::operator=(const TelemetrySimulator& other) {
   polygon_       = other.polygon_;
-  segment_begin_ = polygon_.at(0).coordinates.begin() +
-                   std::distance(other.polygon_.at(0).coordinates.begin(), other.segment_begin_);
-  segment_end_ =
-      polygon_.at(0).coordinates.begin() + std::distance(other.polygon_.at(0).coordinates.begin(), other.segment_end_);
+  segment_begin_ = polygon_.outer_ring.coordinates.begin() +
+                   std::distance(other.polygon_.outer_ring.coordinates.begin(), other.segment_begin_);
+  segment_end_ = polygon_.outer_ring.coordinates.begin() +
+                 std::distance(other.polygon_.outer_ring.coordinates.begin(), other.segment_end_);
   segment_ruler_      = other.segment_ruler_;
   segment_start_time_ = other.segment_start_time_;
   segment_bearing_    = other.segment_bearing_;
@@ -49,8 +49,8 @@ airmap::Geometry::Coordinate airmap::util::TelemetrySimulator::update(const Date
     segment_begin_ = segment_end_;
     segment_end_   = segment_end_ + 1;
 
-    if (segment_end_ == polygon_.at(0).coordinates.end()) {
-      segment_begin_ = polygon_.at(0).coordinates.begin();
+    if (segment_end_ == polygon_.outer_ring.coordinates.end()) {
+      segment_begin_ = polygon_.outer_ring.coordinates.begin();
       segment_end_   = segment_begin_ + 1;
     }
 
