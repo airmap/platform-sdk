@@ -32,7 +32,7 @@ void airmap::rest::Aircrafts::manufacturers(const Manufacturers::Parameters& par
   requester_->get("/manufacturer", std::move(query), std::move(headers),
                   [cb](const net::http::Requester::Result& result) {
                     if (result) {
-                      cb(jsend::to_outcome<std::vector<Aircraft::Manufacturer>>(json::parse(result.value().body)));
+                      cb(jsend::parse_to_outcome<std::vector<Aircraft::Manufacturer>>(result.value().body));
                     } else {
                       cb(Manufacturers::Result{result.error()});
                     }
@@ -45,7 +45,7 @@ void airmap::rest::Aircrafts::models(const Models::Parameters& parameters, const
 
   requester_->get("/model", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
     if (result) {
-      cb(jsend::to_outcome<std::vector<Aircraft>>(json::parse(result.value().body)));
+      cb(jsend::parse_to_outcome<std::vector<Aircraft>>(result.value().body));
     } else {
       cb(Models::Result{result.error()});
     }
@@ -58,7 +58,7 @@ void airmap::rest::Aircrafts::model_for_id(const ModelForId::Parameters& paramet
   requester_->get(fmt::sprintf("/model/%s", parameters.id), std::move(query), std::move(headers),
                   [cb](const net::http::Requester::Result& result) {
                     if (result) {
-                      cb(jsend::to_outcome<Aircraft>(json::parse(result.value().body)));
+                      cb(jsend::parse_to_outcome<Aircraft>(result.value().body));
                     } else {
                       cb(ModelForId::Result{result.error()});
                     }

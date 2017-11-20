@@ -92,6 +92,7 @@ add_library(
   context.cpp
   credentials.cpp
   date_time.cpp
+  error.cpp
   flight_plan.cpp
   geometry.cpp
   jsend.h

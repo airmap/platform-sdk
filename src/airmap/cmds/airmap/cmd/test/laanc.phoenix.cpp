@@ -79,13 +79,7 @@ void laanc::Suite::handle_query_pilot_finished(const Pilots::Authenticated::Resu
     pilot_ = result.value();
     query_aircrafts();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to query pilot profile: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to query pilot profile");
-    }
+    log_.errorf(component, "failed to query pilot profile: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -109,13 +103,7 @@ void laanc::Suite::handle_query_aircrafts_finished(const Pilots::Aircrafts::Resu
       plan_flight();
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to query pilot profile for aircrafts: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to query pilot profile for aircrafts");
-    }
+    log_.errorf(component, "failed to query pilot profile for aircrafts: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -130,13 +118,7 @@ void laanc::Suite::handle_plan_flight_finished(const FlightPlans::Create::Result
     flight_plan_ = result.value();
     render_briefing();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to create flight: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to create flight");
-    }
+    log_.errorf(component, "failed to create flight: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -159,13 +141,7 @@ void laanc::Suite::handle_render_briefing_finished(const FlightPlans::RenderBrie
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to render flight briefing: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to render flight briefing");
-    }
+    log_.errorf(component, "failed to render flight briefing: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -191,13 +167,7 @@ void laanc::Suite::handle_submit_flight_plan_finished(const FlightPlans::Submit:
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to submit flight plan: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to submit flight plan");
-    }
+    log_.errorf(component, "failed to submit flight plan: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -225,13 +195,7 @@ void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBr
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to rerender flight briefing: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to rerender flight briefing");
-    }
+    log_.errorf(component, "failed to rerender flight briefing: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -259,13 +223,7 @@ void laanc::Suite::handle_render_final_briefing_finished(const FlightPlans::Rend
       return;
     }
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to render final flight briefing: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to render final flight briefing");
-    }
+    log_.errorf(component, "failed to render final flight briefing: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -283,13 +241,7 @@ void laanc::Suite::handle_delete_flight_plan_finished(const FlightPlans::Delete:
     log_.infof(component, "successfully deleted flight plan");
     end_flight();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to delete flight plan: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to delete flight plan");
-    }
+    log_.errorf(component, "failed to delete flight plan: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -307,13 +259,7 @@ void laanc::Suite::handle_end_flight_finished(const Flights::EndFlight::Result& 
     log_.infof(component, "successfully ended flight");
     delete_flight();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to end flight: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to end flight");
-    }
+    log_.errorf(component, "failed to end flight: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -331,13 +277,7 @@ void laanc::Suite::handle_delete_flight_finished(const Flights::DeleteFlight::Re
     log_.infof(component, "successfully deleted flight");
     context_->stop();
   } else {
-    try {
-      std::rethrow_exception(result.error());
-    } catch (const std::exception& e) {
-      log_.errorf(component, "failed to delete flight: %s", e.what());
-    } catch (...) {
-      log_.errorf(component, "failed to delete flight");
-    }
+    log_.errorf(component, "failed to delete flight: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }

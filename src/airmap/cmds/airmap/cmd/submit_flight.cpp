@@ -79,13 +79,7 @@ cmd::SubmitFlight::SubmitFlight()
     context->create_client_with_configuration(
         config, [this, &ctxt, config, context](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
-            try {
-              std::rethrow_exception(result.error());
-            } catch (const std::exception& e) {
-              log_.errorf(component, "failed to create client: %s", e.what());
-            } catch (...) {
-              log_.errorf(component, "failed to create client");
-            }
+            log_.errorf(component, "failed to create client: %s", result.error());
             context->stop(::airmap::Context::ReturnCode::error);
             return;
           }
@@ -112,13 +106,7 @@ cmd::SubmitFlight::SubmitFlight()
                          iso8601::generate(result.value().start_time), iso8601::generate(result.value().end_time));
               context->stop();
             } else {
-              try {
-                std::rethrow_exception(result.error());
-              } catch (const std::exception& e) {
-                log_.errorf(component, "failed to submit flight plan: %s", e.what());
-              } catch (...) {
-                log_.errorf(component, "failed to submit flight plan");
-              }
+              log_.errorf(component, "failed to submit flight plan: %s", result.error());
               context->stop(::airmap::Context::ReturnCode::error);
             }
           };

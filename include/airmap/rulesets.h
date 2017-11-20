@@ -2,6 +2,7 @@
 #define AIRMAP_RULESETS_H_
 
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/geometry.h>
 #include <airmap/outcome.h>
 #include <airmap/ruleset.h>
@@ -23,7 +24,7 @@ class RuleSets : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling RuleSets::search.
-    using Result = Outcome<std::vector<RuleSet>, std::exception_ptr>;
+    using Result = Outcome<std::vector<RuleSet>, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to RuleSets::search finishes.
     using Callback = std::function<void(const Result&)>;
@@ -37,7 +38,7 @@ class RuleSets : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling RuleSets::for_id.
-    using Result = Outcome<RuleSet, std::exception_ptr>;
+    using Result = Outcome<RuleSet, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to RuleSets::for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -51,7 +52,7 @@ class RuleSets : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling RuleSets::fetch_rules.
-    using Result = Outcome<std::vector<RuleSet>, std::exception_ptr>;
+    using Result = Outcome<std::vector<RuleSet>, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to RuleSets::fetch_rules finishes.
     using Callback = std::function<void(const Result&)>;
@@ -68,7 +69,7 @@ class RuleSets : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling RuleSets::evaluate_rulesets.
-    using Result = Outcome<std::vector<RuleSet>, std::exception_ptr>;
+    using Result = Outcome<std::vector<RuleSet>, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to RuleSets::evaluate_rulesets finishes.
     using Callback = std::function<void(const Result&)>;

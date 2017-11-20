@@ -1,6 +1,7 @@
 #include <airmap/net/http/boost/request.h>
 
 #include <fmt/printf.h>
+#include <boost/lexical_cast.hpp>
 
 #include <stdexcept>
 
@@ -10,8 +11,8 @@ namespace ssl  = boost::asio::ssl;
 
 namespace {
 
-std::exception_ptr wrap_error_code(const boost::system::error_code& ec) {
-  return std::make_exception_ptr(std::runtime_error{ec.message()});
+airmap::Error wrap_error_code(const boost::system::error_code& ec) {
+  return airmap::Error{ec.message()};
 }
 
 constexpr const char* component{"airmap::net::http::boost::Request"};
@@ -73,15 +74,33 @@ void airmap::net::http::boost::NonEncryptingRequest::handle_read(const ::boost::
     case ::http::status_class::redirection:
       log_.debugf(component, "received redirection http response: %s", sc);
       break;
-    case ::http::status_class::client_error:
-    case ::http::status_class::server_error:
-      // TODO(tvoss): We should think about introducing an http::ClientError and
-      // http::ServerError, both inheriting std::runtime_error.
-      cb_(Result{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s - %s\n%s", sc, request_, response_)})});
+    case ::http::status_class::client_error: {
+      cb_(Result{
+          Error{"client error"}
+              .value(Error::Value{std::string{"status-code"}}, Error::Value{static_cast<std::int64_t>(sc)})
+              .value(Error::Value{std::string{"request"}}, Error::Value{::boost::lexical_cast<std::string>(request_)})
+              .value(Error::Value{std::string{"response"}},
+                     Error::Value{::boost::lexical_cast<std::string>(response_)})});
       break;
-    default:
-      cb_(Result{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s\n%s", request_, response_)})});
+    }
+    case ::http::status_class::server_error: {
+      cb_(Result{
+          Error{"server error"}
+              .value(Error::Value{std::string{"status-code"}}, Error::Value{static_cast<std::int64_t>(sc)})
+              .value(Error::Value{std::string{"request"}}, Error::Value{::boost::lexical_cast<std::string>(request_)})
+              .value(Error::Value{std::string{"response"}},
+                     Error::Value{::boost::lexical_cast<std::string>(response_)})});
       break;
+    }
+    default: {
+      cb_(Result{
+          Error{"networking error"}
+              .value(Error::Value{std::string{"status-code"}}, Error::Value{static_cast<std::int64_t>(sc)})
+              .value(Error::Value{std::string{"request"}}, Error::Value{::boost::lexical_cast<std::string>(request_)})
+              .value(Error::Value{std::string{"response"}},
+                     Error::Value{::boost::lexical_cast<std::string>(response_)})});
+      break;
+    }
   }
 }
 
@@ -152,14 +171,32 @@ void airmap::net::http::boost::EncryptingRequest::handle_read(const ::boost::sys
     case ::http::status_class::redirection:
       log_.debugf(component, "received redirection http response: %s", sc);
       break;
-    case ::http::status_class::client_error:
-    case ::http::status_class::server_error:
-      // TODO(tvoss): We should think about introducing an http::ClientError and
-      // http::ServerError, both inheriting std::runtime_error.
-      cb_(Result{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s - %s\n%s", sc, request_, response_)})});
+    case ::http::status_class::client_error: {
+      cb_(Result{
+          Error{"client error"}
+              .value(Error::Value{std::string{"status-code"}}, Error::Value{static_cast<std::int64_t>(sc)})
+              .value(Error::Value{std::string{"request"}}, Error::Value{::boost::lexical_cast<std::string>(request_)})
+              .value(Error::Value{std::string{"response"}},
+                     Error::Value{::boost::lexical_cast<std::string>(response_)})});
       break;
-    default:
-      cb_(Result{std::make_exception_ptr(std::runtime_error{fmt::sprintf("%s\n%s", request_, response_)})});
+    }
+    case ::http::status_class::server_error: {
+      cb_(Result{
+          Error{"server error"}
+              .value(Error::Value{std::string{"status-code"}}, Error::Value{static_cast<std::int64_t>(sc)})
+              .value(Error::Value{std::string{"request"}}, Error::Value{::boost::lexical_cast<std::string>(request_)})
+              .value(Error::Value{std::string{"response"}},
+                     Error::Value{::boost::lexical_cast<std::string>(response_)})});
       break;
+    }
+    default: {
+      cb_(Result{
+          Error{"networking error"}
+              .value(Error::Value{std::string{"status-code"}}, Error::Value{static_cast<std::int64_t>(sc)})
+              .value(Error::Value{std::string{"request"}}, Error::Value{::boost::lexical_cast<std::string>(request_)})
+              .value(Error::Value{std::string{"response"}},
+                     Error::Value{::boost::lexical_cast<std::string>(response_)})});
+      break;
+    }
   }
 }

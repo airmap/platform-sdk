@@ -3,6 +3,7 @@
 
 #include <airmap/aircraft.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/optional.h>
 #include <airmap/outcome.h>
 #include <airmap/pilot.h>
@@ -36,7 +37,7 @@ class Pilots : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Pilots::authenticated.
-    using Result = Outcome<Pilot, std::exception_ptr>;
+    using Result = Outcome<Pilot, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::authenticated finishes.
     using Callback = std::function<void(const Result&)>;
@@ -54,7 +55,7 @@ class Pilots : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Pilots::for_id.
-    using Result = Outcome<Pilot, std::exception_ptr>;
+    using Result = Outcome<Pilot, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -76,7 +77,7 @@ class Pilots : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Pilots::update_for_id.
-    using Result = Outcome<Pilot, std::exception_ptr>;
+    using Result = Outcome<Pilot, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::update_for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -94,7 +95,7 @@ class Pilots : DoNotCopyOrMove {
     struct Empty {};
 
     /// Result models the outcome of calling Pilots::start_verify_pilot_phone_for_id.
-    using Result = Outcome<Empty, std::exception_ptr>;
+    using Result = Outcome<Empty, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::start_verify_pilot_phone_for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -113,7 +114,7 @@ class Pilots : DoNotCopyOrMove {
     struct Empty {};
 
     /// Result models the outcome of calling Pilots::finish_verify_pilot_phone_for_id.
-    using Result = Outcome<Empty, std::exception_ptr>;
+    using Result = Outcome<Empty, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::finish_verify_pilot_phone_for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -129,7 +130,7 @@ class Pilots : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Pilots::aircrafts.
-    using Result = Outcome<std::vector<Pilot::Aircraft>, std::exception_ptr>;
+    using Result = Outcome<std::vector<Pilot::Aircraft>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::aircrafts finishes.
     using Callback = std::function<void(const Result&)>;
@@ -147,7 +148,7 @@ class Pilots : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Pilots::add_aircraft.
-    using Result = Outcome<Pilot::Aircraft, std::exception_ptr>;
+    using Result = Outcome<Pilot::Aircraft, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::add_aircraft finishes.
     using Callback = std::function<void(const Result&)>;
@@ -166,7 +167,7 @@ class Pilots : DoNotCopyOrMove {
     struct Empty {};
 
     /// Result models the outcome of calling Pilots::delete_aircraft.
-    using Result = Outcome<Empty, std::exception_ptr>;
+    using Result = Outcome<Empty, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::delete_aircraft finishes.
     using Callback = std::function<void(const Result&)>;
@@ -185,7 +186,7 @@ class Pilots : DoNotCopyOrMove {
 
     struct Empty {};
     /// Result models the outcome of calling Pilots::update_aircraft.
-    using Result = Outcome<Empty, std::exception_ptr>;
+    using Result = Outcome<Empty, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Pilots::update_aircraft finishes.
     using Callback = std::function<void(const Result&)>;

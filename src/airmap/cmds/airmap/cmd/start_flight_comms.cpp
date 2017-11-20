@@ -87,13 +87,7 @@ cmd::StartFlightComms::StartFlightComms()
     context->create_client_with_configuration(
         config, [this, &ctxt, token, context](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
-            try {
-              std::rethrow_exception(result.error());
-            } catch (const std::exception& e) {
-              log_.errorf(component, "failed to create client: %s", e.what());
-            } catch (...) {
-              log_.errorf(component, "failed to create client");
-            }
+            log_.errorf(component, "failed to create client: %s", result.error());
             context->stop(::airmap::Context::ReturnCode::error);
             return;
           }
@@ -104,14 +98,7 @@ cmd::StartFlightComms::StartFlightComms()
               Flights::StartFlightCommunications::Parameters{token.id(), params_.flight_id.get()},
               [this, &ctxt, context, client](const Flights::StartFlightCommunications::Result& result) {
                 if (!result) {
-                  try {
-                    std::rethrow_exception(result.error());
-                  } catch (const std::exception& e) {
-                    log_.errorf(component, "failed to start flight communications: %s\n", e.what());
-                  } catch (...) {
-                    log_.errorf(component, "failed to start flight communications");
-                  }
-
+                  log_.errorf(component, "failed to start flight communications: %s", result.error());
                   context->stop(::airmap::Context::ReturnCode::error);
                   return;
                 }

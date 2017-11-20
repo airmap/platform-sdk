@@ -78,13 +78,7 @@ cmd::MonitorTraffic::MonitorTraffic()
     context_->create_client_with_configuration(
         config, [this, token](const ::airmap::Context::ClientCreateResult& result) {
           if (!result) {
-            try {
-              std::rethrow_exception(result.error());
-            } catch (const std::exception& e) {
-              log_.errorf(component, "failed to create client: %s", e.what());
-            } catch (...) {
-              log_.errorf(component, "failed to create client");
-            }
+            log_.errorf(component, "failed to create client: %s", result.error());
             context_->stop(::airmap::Context::ReturnCode::error);
             return;
           }
@@ -98,13 +92,7 @@ cmd::MonitorTraffic::MonitorTraffic()
               monitor_->subscribe(
                   std::make_shared<::airmap::Traffic::Monitor::LoggingSubscriber>(component, log_.logger()));
             } else {
-              try {
-                std::rethrow_exception(result.error());
-              } catch (const std::exception& e) {
-                log_.errorf(component, "failed to create traffic monitor: %s", e.what());
-              } catch (...) {
-                log_.errorf(component, "failed to create traffic monitor");
-              }
+              log_.errorf(component, "failed to create traffic monitor: %s", result.error());
               context_->stop(::airmap::Context::ReturnCode::error);
               return;
             }

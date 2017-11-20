@@ -3,6 +3,7 @@
 
 #include <airmap/credentials.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/outcome.h>
 #include <airmap/token.h>
 
@@ -41,7 +42,7 @@ class Authenticator : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Authenticator::authenticate_with_password.
-    using Result = Outcome<Token::OAuth, std::exception_ptr>;
+    using Result = Outcome<Token::OAuth, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Authenticator::authenticate_with_password finishes.
     using Callback = std::function<void(const Result&)>;
@@ -53,7 +54,7 @@ class Authenticator : DoNotCopyOrMove {
     /// The input parameters.
     using Params = Credentials::Anonymous;
     /// Result models the outcome of calling Authenticator::authenticate_anonymously.
-    using Result = Outcome<Token::Anonymous, std::exception_ptr>;
+    using Result = Outcome<Token::Anonymous, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Authenticator::authenticate_anonymously finishes.
     using Callback = std::function<void(const Result&)>;
@@ -70,7 +71,7 @@ class Authenticator : DoNotCopyOrMove {
       Scope scope{Scope::open_id};              ///< The scope of the authentication renewal request.
     };
     /// Result models the outcome of calling Authenticator::renew_authentication.
-    using Result = Outcome<Token::Refreshed, std::exception_ptr>;
+    using Result = Outcome<Token::Refreshed, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Authenticator::renew_authentication finishes.
     using Callback = std::function<void(const Result&)>;

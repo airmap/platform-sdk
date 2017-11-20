@@ -21,6 +21,7 @@ void airmap::qt::register_types() {
   register_type_once<Airspace>("Airspace");
   register_type_once<Credentials>("Credentials");
   register_type_once<DateTime>("DateTime");
+  register_type_once<Error>("Error");
   register_type_once<FlightPlan>("FlightPlan");
   register_type_once<Flight>("Flight");
   register_type_once<Geometry>("Geometry");
@@ -50,6 +51,7 @@ void airmap::qt::register_types() {
   register_type_once<airmap::Airspace>("airmap::Airspace");
   register_type_once<airmap::Credentials>("airmap::Credentials");
   register_type_once<airmap::DateTime>("airmap::DateTime");
+  register_type_once<airmap::Error>("airmap::Error");
   register_type_once<airmap::FlightPlan>("airmap::FlightPlan");
   register_type_once<airmap::Flight>("airmap::Flight");
   register_type_once<airmap::Geometry>("airmap::Geometry");

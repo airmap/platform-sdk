@@ -4,6 +4,7 @@
 #include <airmap/airspace.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/geometry.h>
 #include <airmap/optional.h>
 #include <airmap/outcome.h>
@@ -71,7 +72,7 @@ class Status : DoNotCopyOrMove {
       Optional<std::uint32_t> buffer;          ///< Buffer around the center point of the query.
     };
     /// Result models the outcome of calling Status::get_status*.
-    using Result = Outcome<Report, std::exception_ptr>;
+    using Result = Outcome<Report, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Status::get_status* finishes.
     using Callback = std::function<void(const Result&)>;

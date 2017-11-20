@@ -31,15 +31,17 @@ void airmap::net::mqtt::boost::Broker::connect(const Credentials& credentials, c
         if (::mqtt::connect_return_code::accepted == rc) {
           cb(ConnectResult(Client::create(logger, io_service, client)));
         } else {
-          cb(ConnectResult(std::make_exception_ptr(std::runtime_error{fmt::sprintf(
-              "failed to connect to mqtt broker %s:%d: %s", host, port, ::mqtt::connect_return_code_to_str(rc))})));
+          cb(ConnectResult{Error{"failed to connect to mqtt broker"}
+                               .description(::mqtt::connect_return_code_to_str(rc))
+                               .value(Error::Value{"host"}, Error::Value{host})
+                               .value(Error::Value{"port"}, Error::Value{static_cast<std::int64_t>(port)})});
         }
         return ::mqtt::connect_return_code::accepted == rc;
       });
 
   client->connect([cb](const auto& ec) {
     if (ec) {
-      cb(ConnectResult(std::make_exception_ptr(std::runtime_error{ec.message()})));
+      cb(ConnectResult{Error{ec.message()}});
     }
   });
 }

@@ -2,6 +2,7 @@
 #define AIRMAP_TELEMETRY_H_
 
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 
 #include <cstdint>
 #include <string>

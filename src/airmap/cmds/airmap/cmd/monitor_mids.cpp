@@ -105,13 +105,7 @@ cmd::MonitorMids::MonitorMids()
                                                    net::mqtt::QualityOfService::exactly_once, handler));
         }
       } else {
-        try {
-          std::rethrow_exception(result.error());
-        } catch (const std::exception& e) {
-          log_.errorf(component, "failed to connect to mqtt broker: %s", e.what());
-        } catch (...) {
-          log_.errorf(component, "failed to connect to mqtt broker");
-        }
+        log_.errorf(component, "failed to connect to mqtt broker: %s", result.error());
         context_->stop(::airmap::Context::ReturnCode::error);
         return;
       }

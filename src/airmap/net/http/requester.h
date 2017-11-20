@@ -3,6 +3,7 @@
 
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/outcome.h>
 
 #include <airmap/net/http/response.h>
@@ -24,17 +25,17 @@ namespace http {
 
 class Requester : DoNotCopyOrMove {
  public:
-  using Result   = Outcome<Response, std::exception_ptr>;
+  using Result   = Outcome<Response, Error>;
   using Callback = std::function<void(const Result&)>;
 
   virtual void delete_(const std::string& path, std::unordered_map<std::string, std::string>&& query,
                        std::unordered_map<std::string, std::string>&& headers, Callback cb) = 0;
   virtual void get(const std::string& path, std::unordered_map<std::string, std::string>&& query,
-                   std::unordered_map<std::string, std::string>&& headers, Callback cb)     = 0;
+                   std::unordered_map<std::string, std::string>&& headers, Callback cb) = 0;
   virtual void patch(const std::string& path, std::unordered_map<std::string, std::string>&& headers,
-                     const std::string& body, Callback cb)                                  = 0;
+                     const std::string& body, Callback cb) = 0;
   virtual void post(const std::string& path, std::unordered_map<std::string, std::string>&& headers,
-                    const std::string& body, Callback cb)                                   = 0;
+                    const std::string& body, Callback cb) = 0;
 
  protected:
   Requester() = default;

@@ -2,6 +2,7 @@
 #define AIRMAP_FLIGHT_PLANS_H_
 
 #include <airmap/do_not_copy_or_move.h>
+#include <airmap/error.h>
 #include <airmap/flight_plan.h>
 #include <airmap/outcome.h>
 
@@ -24,7 +25,7 @@ class FlightPlans : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling FlightPlans::for_id.
-    using Result = Outcome<FlightPlan, std::exception_ptr>;
+    using Result = Outcome<FlightPlan, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to FlightPlans::for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -52,7 +53,7 @@ class FlightPlans : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling FlightPlans::create_by_polygon.
-    using Result = Outcome<FlightPlan, std::exception_ptr>;
+    using Result = Outcome<FlightPlan, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to FlightPlans::create_by_point or FlightPlans::create_by_polygon finishes.
     using Callback = std::function<void(const Result&)>;
@@ -67,7 +68,7 @@ class FlightPlans : DoNotCopyOrMove {
       FlightPlan flight_plan;  ///< The details of the plan that should be created with the AirMap services.
     };
     /// Result models the outcome of calling FlightPlans::update.
-    using Result = Outcome<FlightPlan, std::exception_ptr>;
+    using Result = Outcome<FlightPlan, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to FlightPlans::update finishes.
     using Callback = std::function<void(const Result&)>;
@@ -88,7 +89,7 @@ class FlightPlans : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling FlightPlans::delete_flight.
-    using Result = Outcome<Response, std::exception_ptr>;
+    using Result = Outcome<Response, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to FlightPlans::delete_flight finishes.
     using Callback = std::function<void(const Result&)>;
@@ -103,7 +104,7 @@ class FlightPlans : DoNotCopyOrMove {
       FlightPlan::Id id;                    ///< Id of the flight plan that should be rendered as a briefing.
     };
     /// Result models the outcome of calling FlightPlans::submit.
-    using Result = Outcome<FlightPlan::Briefing, std::exception_ptr>;
+    using Result = Outcome<FlightPlan::Briefing, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to FlightPlans::submit finishes.
     using Callback = std::function<void(const Result&)>;
@@ -118,7 +119,7 @@ class FlightPlans : DoNotCopyOrMove {
       FlightPlan::Id id;                    ///< Id of the flight plan that should be submitted.
     };
     /// Result models the outcome of calling FlightPlans::submit.
-    using Result = Outcome<FlightPlan, std::exception_ptr>;
+    using Result = Outcome<FlightPlan, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to FlightPlans::submit finishes.
     using Callback = std::function<void(const Result&)>;

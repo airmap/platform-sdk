@@ -108,13 +108,7 @@ cmd::Test::Test() : cli::CommandWithFlagsAndAction{"test", "executes runtime tes
     context->create_client_with_configuration(
         config, [this, suite, config, token, context](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
-            try {
-              std::rethrow_exception(result.error());
-            } catch (const std::exception& e) {
-              log_.errorf(component, "failed to create client: %s", e.what());
-            } catch (...) {
-              log_.errorf(component, "failed to create client");
-            }
+            log_.errorf(component, "failed to create client: %s", result.error());
             context->stop(::airmap::Context::ReturnCode::error);
             return;
           }

@@ -3,6 +3,7 @@
 
 #include <airmap/client.h>
 #include <airmap/context.h>
+#include <airmap/error.h>
 #include <airmap/logger.h>
 #include <airmap/outcome.h>
 
@@ -20,7 +21,7 @@ namespace qt {
 /// are dispatched to the Qt applications' main thread.
 class Client : public QObject, public airmap::Client {
  public:
-  using CreateResult   = Outcome<Client*, std::exception_ptr>;
+  using CreateResult   = Outcome<Client*, Error>;
   using CreateCallback = std::function<void(const CreateResult&)>;
 
   /// create creates a new Client instance with parent 'parent', logging to 'logger', using the config
