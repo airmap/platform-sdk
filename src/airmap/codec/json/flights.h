@@ -13,6 +13,8 @@ namespace codec {
 namespace json {
 
 void encode(nlohmann::json& j, const Flights::CreateFlight::Parameters& parameters);
+void decode(const nlohmann::json& j, Flights::Search::Response& response);
+void decode(const nlohmann::json& j, Flights::Search::Response::Paging& paging);
 void decode(const nlohmann::json& j, Flights::EndFlight::Response& response);
 void decode(const nlohmann::json& j, Flights::DeleteFlight::Response& response);
 void decode(const nlohmann::json& j, Flights::StartFlightCommunications::Response& response);

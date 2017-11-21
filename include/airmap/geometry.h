@@ -47,7 +47,10 @@ class Geometry {
   ///     the exterior ring, and any others MUST be interior rings.  The
   ///     exterior ring bounds the surface, and the interior rings (if
   ///     present) bound holes within the surface.
-  using Polygon            = std::vector<CoordinateVector<Type::polygon>>;
+  struct Polygon {
+    CoordinateVector<Type::polygon> outer_ring;
+    std::vector<CoordinateVector<Type::polygon>> inner_rings;
+  };
   using MultiPolygon       = std::vector<Polygon>;
   using GeometryCollection = std::vector<Geometry>;
 
@@ -129,6 +132,8 @@ class Geometry {
 
 /// @cond
 bool operator==(const Geometry::Coordinate& lhs, const Geometry::Coordinate& rhs);
+
+bool operator==(const Geometry::Polygon& lhs, const Geometry::Polygon& rhs);
 
 template <Geometry::Type tag>
 bool operator==(const Geometry::CoordinateVector<tag>& lhs, const Geometry::CoordinateVector<tag>& rhs) {
