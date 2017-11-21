@@ -77,11 +77,18 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   mock::Telemetry telemetry;
   REQUIRE_CALL(telemetry, submit_updates(_, _, _)).LR_SIDE_EFFECT(context->stop(airmap::Context::ReturnCode::success));
 
+  mock::Traffic traffic;
+  auto traffic_monitor = std::make_shared<mock::Traffic::Monitor>();
+  REQUIRE_CALL(*traffic_monitor, subscribe(_));
+  auto monitor_result = airmap::Traffic::Monitor::Result{traffic_monitor};
+  REQUIRE_CALL(traffic, monitor(_, _)).SIDE_EFFECT(_2(monitor_result));
+
   auto client = std::make_shared<mock::Client>();
 
   REQUIRE_CALL(*client, authenticator()).LR_RETURN(std::ref(authenticator));
   REQUIRE_CALL(*client, flights()).LR_RETURN(std::ref(flights)).TIMES(AT_LEAST(1));
   REQUIRE_CALL(*client, telemetry()).LR_RETURN(std::ref(telemetry));
+  REQUIRE_CALL(*client, traffic()).LR_RETURN(std::ref(traffic));
 
   auto channel = std::make_shared<airmap::mavlink::boost::TcpChannel>(logger, context->io_service(),
                                                                       ip::address::from_string("127.0.0.1"), port);
@@ -93,7 +100,7 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   credentials.api_key   = api_key;
   credentials.anonymous = anon;
 
-  airmap::monitor::Daemon::Configuration config{credentials, aircraft_id, logger, channel, client};
+  airmap::monitor::Daemon::Configuration config{credentials, aircraft_id, logger, channel, client, ":9292"};
 
   auto daemon = airmap::monitor::Daemon::create(config);
   daemon->start();

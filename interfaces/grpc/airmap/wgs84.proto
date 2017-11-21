@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "grpc/airmap/units.proto";
+
+package grpc.airmap;
+
+message Coordinate {
+  enum Reference {
+    unknown_reference = 0;  // The unknown reference.
+    ellipsoid         = 1;  // References the hypothetical equipotential gravitational surface.
+    geoid             = 2;  // References and approximates the mean sea level.
+    surface           = 3;  // References the actual height of the surface.
+    external          = 4;  // References an external measurement or estimate.
+  }
+
+  Degrees latitude    = 1;  // The latitude component of this coordinate.
+  Degrees longitude   = 2;  // The longitude component of this coordinate.
+  Meters altitude     = 3;  // The altitude component of this coordinate.
+  Reference reference = 4;  // The reference for the altitude of this coordinate.
+}

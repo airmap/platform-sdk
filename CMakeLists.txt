@@ -5,6 +5,9 @@ set(AIRMAPD_VERSION_MAJOR 0)
 set(AIRMAPD_VERSION_MINOR 0)
 set(AIRMAPD_VERSION_PATCH 1)
 
+# Cmake find modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access" ON)
 
 find_program(GIT_EXECUTABLE
@@ -32,6 +35,7 @@ message(STATUS "Building in build timestamp ${AIRMAPD_VERSION_BUILD_TIMESTAMP}")
 enable_testing()
 
 find_package(Boost REQUIRED date_time filesystem program_options system unit_test_framework)
+find_package(GRPC REQUIRED)
 find_package(PkgConfig)
 find_package(Protobuf REQUIRED)
 find_package(Qt5Core)
@@ -99,7 +103,12 @@ find_program(CLANG_FORMAT_EXECUTABLE
 
 if (CLANG_FORMAT_EXECUTABLE)
   message(STATUS "Enabling format target")
-  file(GLOB_RECURSE AIRMAPD_SRCS include/*.h src/*.h src/*.cpp test/*.h test/*.cpp)
+  file(
+    GLOB_RECURSE AIRMAPD_SRCS 
+    include/*.h 
+    interfaces/*.proto
+    src/*.h src/*.cpp
+    test/*.h test/*.cpp)
 
   add_custom_target(
     format ${CLANG_FORMAT_EXECUTABLE} -style=file -i ${AIRMAPD_SRCS})

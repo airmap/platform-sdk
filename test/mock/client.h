@@ -48,6 +48,20 @@ struct Telemetry : public airmap::Telemetry {
              override);
 };
 
+struct Traffic : public airmap::Traffic {
+  struct Monitor : public airmap::Traffic::Monitor {
+    Monitor() = default;
+
+    MAKE_MOCK1(subscribe, void(const std::shared_ptr<airmap::Traffic::Monitor::Subscriber>&), override);
+    MAKE_MOCK1(unsubscribe, void(const std::shared_ptr<airmap::Traffic::Monitor::Subscriber>&), override);
+  };
+
+  Traffic() = default;
+
+  MAKE_MOCK2(monitor, void(const airmap::Traffic::Monitor::Params&, const airmap::Traffic::Monitor::Callback&),
+             override);
+};
+
 struct Client : public airmap::Client {
   MAKE_MOCK0(authenticator, airmap::Authenticator&(), override);
   MAKE_MOCK0(aircrafts, airmap::Aircrafts&(), override);
