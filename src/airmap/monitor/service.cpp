@@ -24,6 +24,18 @@ void airmap::monitor::Service::ConnectToUpdates::Subscriber::handle_update(
   for (const auto& update : updates) {
     ::grpc::airmap::Traffic_Update tu;
 
+    switch (type) {
+      case airmap::Traffic::Update::Type::situational_awareness:
+        tu.set_type(::grpc::airmap::Traffic_Update_Type_situational_awareness);
+        break;
+      case airmap::Traffic::Update::Type::alert:
+        tu.set_type(::grpc::airmap::Traffic_Update_Type_alert);
+        break;
+      case airmap::Traffic::Update::Type::unknown:
+        tu.set_type(::grpc::airmap::Traffic_Update_Type_unknown_type);
+        break;
+    }
+
     tu.set_aircraft_id(update.aircraft_id);
     tu.mutable_track()->set_as_string(update.id);
     tu.mutable_position()->mutable_latitude()->set_value(update.latitude);

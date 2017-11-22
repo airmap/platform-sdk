@@ -10,6 +10,7 @@
 namespace airmap {
 namespace monitor {
 
+// FanOutTrafficMonitor fans out incoming updates to all of its subscribers.
 class FanOutTrafficMonitor : public Traffic::Monitor::Subscriber, public Traffic::Monitor {
  public:
   // From Traffic::Monitor

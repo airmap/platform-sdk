@@ -28,13 +28,14 @@ namespace monitor {
 /// in its operations.
 class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_shared_from_this<Daemon> {
  public:
+  /// Configuration bundles up construction time parameters.
   struct Configuration {
-    Credentials credentials;
-    std::string aircraft_id;
-    std::shared_ptr<Logger> logger;
-    std::shared_ptr<mavlink::Channel> channel;
-    std::shared_ptr<Client> client;
-    std::string grpc_endpoint;
+    Credentials credentials;                    ///< Credentials used to authenticate with the AirMap services.
+    std::string aircraft_id;                    ///< The id of the aircraft that the monitor runs on.
+    std::shared_ptr<Logger> logger;             ///< The logger instance.
+    std::shared_ptr<mavlink::Channel> channel;  ///< The MavLink channel that should be monitored.
+    std::shared_ptr<Client> client;             ///< The client used to communicate with the AirMap cloud services.
+    std::string grpc_endpoint;                  ///< The local endpoint that the service should be exposed on.
   };
 
   // create returns a new Daemon instance ready for startup.

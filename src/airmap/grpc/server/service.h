@@ -22,10 +22,17 @@ class Service : DoNotCopyOrMove {
     MethodInvocation() = default;
   };
 
+  // StatefulMethodInvocation helps with tracking the state of a
+  // method invocation.
   class StatefulMethodInvocation : public MethodInvocation {
    protected:
-    enum class Status { ready, finished };
-    Status status_{Status::ready};
+    // Status enumerates all possible states of an instance.
+    enum class Status {
+      ready,    // The instance is ready to serve incoming requests.
+      finished  // The instance is finished serviing requests and ready for cleanup.
+    };
+
+    Status status_{Status::ready};  // The current status of the invocation.
   };
 
   // instance returns a ::grpc::Service instance with its lifetime bound

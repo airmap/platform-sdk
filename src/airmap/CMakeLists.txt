@@ -33,65 +33,7 @@ protobuf_generate_cpp(
   AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_HEADERS
   ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/amd_uav_flight_update.proto)
 
-set(AIRMAP_INTERFACES_GRPC_PROTOS
-    ${CMAKE_SOURCE_DIR}/interfaces/grpc/airmap/geometry.proto
-    ${CMAKE_SOURCE_DIR}/interfaces/grpc/airmap/ids.proto
-    ${CMAKE_SOURCE_DIR}/interfaces/grpc/airmap/traffic.proto
-    ${CMAKE_SOURCE_DIR}/interfaces/grpc/airmap/units.proto
-    ${CMAKE_SOURCE_DIR}/interfaces/grpc/airmap/wgs84.proto
-    ${CMAKE_SOURCE_DIR}/interfaces/grpc/airmap/monitor/monitor.proto)
-
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/interfaces)
-
-set(AIRMAP_INTERFACES_GRPC_SRCS
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/geometry.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/geometry.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/geometry.grpc.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/geometry.grpc.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/ids.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/ids.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/ids.grpc.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/ids.grpc.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/traffic.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/traffic.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/traffic.grpc.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/traffic.grpc.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/units.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/units.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/units.grpc.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/units.grpc.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/wgs84.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/wgs84.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/wgs84.grpc.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/wgs84.grpc.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/monitor/monitor.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/monitor/monitor.pb.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/monitor/monitor.grpc.pb.h
-    ${CMAKE_CURRENT_BINARY_DIR}/interfaces/grpc/airmap/monitor/monitor.grpc.pb.cc)
-
-add_custom_command(
-  OUTPUT ${AIRMAP_INTERFACES_GRPC_SRCS}
-
-  COMMAND ${Protobuf_PROTOC_EXECUTABLE} 
-    --cpp_out ${CMAKE_CURRENT_BINARY_DIR}/interfaces
-    --proto_path ${CMAKE_SOURCE_DIR}/interfaces
-    ${AIRMAP_INTERFACES_GRPC_PROTOS}
-  COMMAND ${Protobuf_PROTOC_EXECUTABLE} 
-    --grpc_out ${CMAKE_CURRENT_BINARY_DIR}/interfaces
-    --proto_path ${CMAKE_SOURCE_DIR}/interfaces
-    --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} 
-    ${AIRMAP_INTERFACES_GRPC_PROTOS}
-  DEPENDS ${Protobuf_PROTOC_EXECUTABLE} ${GRPC_CPP_PLUGIN} ${AIRMAP_INTERFACES_GRPC_PROTOS}
-  COMMENT "Generating C++ code for AirMap gRPC interfaces"
-  VERBATIM )
-
-set_source_files_properties(
-  ${AIRMAP_INTERFACES_GRPC_SRCS}
-  PROPERTIES GENERATED TRUE)
-
-include_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/interfaces)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(
   airmap-mavlink
@@ -310,8 +252,6 @@ add_library(
   monitor/submitting_vehicle_monitor.cpp
   monitor/telemetry_submitter.h
   monitor/telemetry_submitter.cpp
-
-  ${AIRMAP_INTERFACES_GRPC_SRCS}
 )
 
 add_library(
@@ -422,8 +362,7 @@ target_link_libraries(
 
 target_link_libraries(
   airmap-grpc
-
-  gRPC::grpc++
+  airmap-interfaces-grpc
 )
 
 target_link_libraries(

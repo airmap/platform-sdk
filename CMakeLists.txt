@@ -88,8 +88,9 @@ include_directories(
   ${PROTOBUF_INCLUDE_DIRS})
 
 add_subdirectory(doc)
-add_subdirectory(src/airmap)
+add_subdirectory(interfaces)
 add_subdirectory(examples)
+add_subdirectory(src/airmap)
 add_subdirectory(test)
 
 find_program(CLANG_FORMAT_EXECUTABLE

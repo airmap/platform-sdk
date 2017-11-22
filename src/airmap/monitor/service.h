@@ -1,5 +1,5 @@
-#ifndef AIRMAP_MONITOR_MONITOR_H_
-#define AIRMAP_MONITOR_MONITOR_H_
+#ifndef AIRMAP_MONITOR_SERVICE_H_
+#define AIRMAP_MONITOR_SERVICE_H_
 
 #include <airmap/grpc/server/service.h>
 
@@ -12,21 +12,30 @@
 namespace airmap {
 namespace monitor {
 
+/// Service exposes the daemon via gRPC.
+///
+/// An instance subscribes to incoming traffic updates
+/// and forwards the updates to subscribers connected via gRPC.
 class Service : public airmap::grpc::server::Service {
  public:
-  Service(const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
+  /// Service initializes a new instance with 'traffic_monitor'
+  explicit Service(const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
 
   // From airmap::grpc::server::Service.
   ::grpc::Service& instance() override;
   void start(::grpc::ServerCompletionQueue& completion_queue) override;
 
  private:
+  // ConnectToUpdates models the state of a single invocation of
+  // the method 'ConnectToUpdates'.
   class ConnectToUpdates : public StatefulMethodInvocation {
    public:
     using Parameters = ::grpc::airmap::monitor::ConnectToUpdatesParameters;
     using Result     = ::grpc::airmap::monitor::Update;
     using Responder  = ::grpc::ServerAsyncWriter<Result>;
 
+    // start_listening sets up a new ConnectToUpdates and enqueues it
+    // for handling incoming requests.
     static void start_listening(::grpc::ServerCompletionQueue* completion_qeueu,
                                 ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
                                 const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
