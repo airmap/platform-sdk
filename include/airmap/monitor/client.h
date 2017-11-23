@@ -9,6 +9,8 @@
 #include <vector>
 
 namespace airmap {
+/// namespace monitor bundles up types and functions to
+/// interact with the AirMap monitor daemon.
 namespace monitor {
 
 /// Client provides access to the AirMap monitor service.
@@ -62,5 +64,9 @@ class Client : DoNotCopyOrMove {
 
 }  // namespace monitor
 }  // namespace airmap
+
+/// @example monitor/client.cpp
+/// Illustrates how to use airmap::monitor::Client to connect
+/// to an AirMap monitor instance.
 
 #endif  // AIRMAP_MONITOR_CLIENT_H_

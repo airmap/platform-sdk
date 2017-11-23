@@ -1,6 +1,7 @@
 #include <airmap/monitor/daemon.h>
-#include <airmap/monitor/service.h>
 #include <airmap/monitor/submitting_vehicle_monitor.h>
+
+#include <airmap/monitor/grpc/service.h>
 
 namespace {
 constexpr const char* component{"airmap::monitor::Daemon"};
@@ -19,10 +20,10 @@ airmap::monitor::Daemon::Daemon(const Configuration& configuration)
     : configuration_{configuration},
       log_{configuration_.logger},
       fan_out_traffic_monitor_{std::make_shared<FanOutTrafficMonitor>()},
-      executor_{std::make_shared<grpc::server::Executor>(grpc::server::Executor::Configuration{
+      executor_{std::make_shared<airmap::grpc::server::Executor>(airmap::grpc::server::Executor::Configuration{
           configuration.context,
           configuration_.grpc_endpoint,
-          {std::make_shared<::airmap::monitor::Service>(fan_out_traffic_monitor_)},
+          {std::make_shared<airmap::monitor::grpc::Service>(fan_out_traffic_monitor_)},
           ::grpc::InsecureServerCredentials()})},
       executor_worker_{[this]() { executor_->run(); }} {
 }

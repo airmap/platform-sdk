@@ -234,6 +234,12 @@ add_library(
 add_library(
   airmap-grpc
 
+  grpc/init.h
+  grpc/init.cpp
+
+  grpc/client/executor.h
+  grpc/client/executor.cpp
+
   grpc/server/executor.h
   grpc/server/executor.cpp
   grpc/server/service.h
@@ -246,8 +252,6 @@ add_library(
   monitor/daemon.cpp
   monitor/fan_out_traffic_monitor.h
   monitor/fan_out_traffic_monitor.cpp
-  monitor/service.h
-  monitor/service.cpp
   monitor/submitting_vehicle_monitor.h
   monitor/submitting_vehicle_monitor.cpp
   monitor/telemetry_submitter.h
@@ -255,6 +259,8 @@ add_library(
 
   monitor/grpc/client.h
   monitor/grpc/client.cpp
+  monitor/grpc/service.h
+  monitor/grpc/service.cpp
 )
 
 add_library(

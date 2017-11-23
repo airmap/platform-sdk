@@ -3,34 +3,23 @@
 #include <grpc++/grpc++.h>
 
 airmap::monitor::grpc::Client::Client(const Configuration& configuration, const std::shared_ptr<Context>& context)
-    : context_{context},
-      completion_queue_worker_{[this]() {
-        bool ok   = false;
-        void* tag = nullptr;
-
-        while (completion_queue_.Next(&tag, &ok)) {
-          if (auto mi = static_cast<ConnectToUpdatesInvocation*>(tag)) {
-            mi->proceed(ok);
-          }
-
-          if (!ok)
-            break;
-        }
-      }},
+    : log_{configuration.logger},
+      context_{context},
+      executor_worker_{[this]() { executor_.run(); }},
       stub_{std::make_shared<::grpc::airmap::monitor::Monitor::Stub>(
           ::grpc::CreateChannel(configuration.endpoint, ::grpc::InsecureChannelCredentials()))} {
 }
 
 airmap::monitor::grpc::Client::~Client() {
-  completion_queue_.Shutdown();
+  executor_.stop();
 
-  if (completion_queue_worker_.joinable()) {
-    completion_queue_worker_.join();
+  if (executor_worker_.joinable()) {
+    executor_worker_.join();
   }
 }
 
 void airmap::monitor::grpc::Client::connect_to_updates(const ConnectToUpdates::Callback& cb) {
-  ConnectToUpdatesInvocation::start(stub_, &completion_queue_, cb, context_);
+  executor_.invoke_method([this, cb](auto cq) { ConnectToUpdatesInvocation::start(stub_, cq, cb, context_); });
 }
 
 void airmap::monitor::grpc::Client::UpdateStreamImpl::write_update(const Update& update) {

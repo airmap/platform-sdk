@@ -1,6 +1,7 @@
-#ifndef AIRMAP_MONITOR_SERVICE_H_
-#define AIRMAP_MONITOR_SERVICE_H_
+#ifndef AIRMAP_MONITOR_GRPC_SERVICE_H_
+#define AIRMAP_MONITOR_GRPC_SERVICE_H_
 
+#include <airmap/grpc/method_invocation.h>
 #include <airmap/grpc/server/service.h>
 
 #include <airmap/aircrafts.h>
@@ -11,7 +12,7 @@
 
 namespace airmap {
 namespace monitor {
-
+namespace grpc {
 /// Service exposes the daemon via gRPC.
 ///
 /// An instance subscribes to incoming traffic updates
@@ -28,7 +29,7 @@ class Service : public airmap::grpc::server::Service {
  private:
   // ConnectToUpdates models the state of a single invocation of
   // the method 'ConnectToUpdates'.
-  class ConnectToUpdates : public MethodInvocation {
+  class ConnectToUpdates : public airmap::grpc::MethodInvocation {
    public:
     using Parameters = ::grpc::airmap::monitor::ConnectToUpdatesParameters;
     using Result     = ::grpc::airmap::monitor::Update;
@@ -86,7 +87,8 @@ class Service : public airmap::grpc::server::Service {
   ::grpc::airmap::monitor::Monitor::AsyncService async_monitor_;
 };
 
+}  // namespace grpc
 }  // namespace monitor
 }  // namespace airmap
 
-#endif  // AIRMAP_MONITOR_MONITOR_H_
+#endif  // AIRMAP_MONITOR_GRPC_SERVICE_H_

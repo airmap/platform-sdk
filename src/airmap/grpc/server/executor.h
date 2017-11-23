@@ -2,6 +2,7 @@
 #define AIRMAP_GRPC_SERVER_EXECUTOR_H_
 
 #include <airmap/context.h>
+#include <airmap/grpc/init.h>
 #include <airmap/grpc/server/service.h>
 
 #include <grpc++/grpc++.h>
@@ -36,6 +37,7 @@ class Executor {
   void stop();
 
  private:
+  bool is_grpc_initialized_{grpc::init()};
   std::shared_ptr<Context> context_;
   std::vector<std::shared_ptr<Service>> services_;
   std::unique_ptr<::grpc::Server> server_;

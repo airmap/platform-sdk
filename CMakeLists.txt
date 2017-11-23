@@ -105,7 +105,8 @@ find_program(CLANG_FORMAT_EXECUTABLE
 if (CLANG_FORMAT_EXECUTABLE)
   message(STATUS "Enabling format target")
   file(
-    GLOB_RECURSE AIRMAPD_SRCS 
+    GLOB_RECURSE AIRMAPD_SRCS
+    examples/*.h examples/*.cpp
     include/*.h 
     interfaces/*.proto
     src/*.h src/*.cpp

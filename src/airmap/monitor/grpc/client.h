@@ -4,10 +4,11 @@
 #include <airmap/monitor/client.h>
 
 #include <airmap/context.h>
+#include <airmap/grpc/client/executor.h>
+#include <airmap/grpc/method_invocation.h>
+#include <airmap/util/formatting_logger.h>
 
 #include "grpc/airmap/monitor/monitor.grpc.pb.h"
-
-#include <grpc++/grpc++.h>
 
 #include <mutex>
 #include <set>
@@ -46,7 +47,7 @@ class Client : public airmap::monitor::Client {
 
   // ConnectToUpdatesInvocation bundles up the state of an invocation
   // of connect_to_updates.
-  class ConnectToUpdatesInvocation {
+  class ConnectToUpdatesInvocation : public airmap::grpc::MethodInvocation {
    public:
     using Parameters = ::grpc::airmap::monitor::ConnectToUpdatesParameters;
     using Element    = ::grpc::airmap::monitor::Update;
@@ -60,9 +61,8 @@ class Client : public airmap::monitor::Client {
     explicit ConnectToUpdatesInvocation(const std::shared_ptr<Stub>& stub, ::grpc::CompletionQueue* completion_queue,
                                         const ConnectToUpdates::Callback& cb, const std::shared_ptr<Context>& context);
 
-    // proceed advances the state of the invocation.
-    // 'result' indicates whether the last operation was successful or not.
-    void proceed(bool result);
+    // From MethodInvocation
+    void proceed(bool result) override;
 
    private:
     enum class State { connecting, streaming, finished };
@@ -81,10 +81,13 @@ class Client : public airmap::monitor::Client {
     std::unique_ptr<Stream> stream_;
   };
 
+  bool is_grpc_initialized_{airmap::grpc::init()};
+
+  util::FormattingLogger log_;
   std::shared_ptr<Context> context_;
 
-  ::grpc::CompletionQueue completion_queue_;
-  std::thread completion_queue_worker_;
+  airmap::grpc::client::Executor executor_;
+  std::thread executor_worker_;
 
   std::shared_ptr<Stub> stub_;
 };

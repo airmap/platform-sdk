@@ -1,24 +1,24 @@
-#include <airmap/monitor/service.h>
+#include <airmap/monitor/grpc/service.h>
 
 #include "grpc/airmap/traffic.pb.h"
 
-airmap::monitor::Service::Service(const std::shared_ptr<Traffic::Monitor>& traffic_monitor)
+airmap::monitor::grpc::Service::Service(const std::shared_ptr<Traffic::Monitor>& traffic_monitor)
     : traffic_monitor_{traffic_monitor} {
 }
 
-::grpc::Service& airmap::monitor::Service::instance() {
+::grpc::Service& airmap::monitor::grpc::Service::instance() {
   return async_monitor_;
 }
 
-void airmap::monitor::Service::start(::grpc::ServerCompletionQueue& cq) {
+void airmap::monitor::grpc::Service::start(::grpc::ServerCompletionQueue& cq) {
   ConnectToUpdates::start_listening(&cq, &async_monitor_, traffic_monitor_);
 }
 
-airmap::monitor::Service::ConnectToUpdates::Subscriber::Subscriber(ConnectToUpdates* invocation)
+airmap::monitor::grpc::Service::ConnectToUpdates::Subscriber::Subscriber(ConnectToUpdates* invocation)
     : invocation_{invocation} {
 }
 
-void airmap::monitor::Service::ConnectToUpdates::Subscriber::handle_update(
+void airmap::monitor::grpc::Service::ConnectToUpdates::Subscriber::handle_update(
     airmap::Traffic::Update::Type type, const std::vector<airmap::Traffic::Update>& updates) {
   ::grpc::airmap::monitor::Update u;
 
@@ -63,13 +63,13 @@ void airmap::monitor::Service::ConnectToUpdates::Subscriber::handle_update(
   invocation_->write(u);
 }
 
-void airmap::monitor::Service::ConnectToUpdates::start_listening(
+void airmap::monitor::grpc::Service::ConnectToUpdates::start_listening(
     ::grpc::ServerCompletionQueue* completion_queue, ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
     const std::shared_ptr<Traffic::Monitor>& traffic_monitor) {
   new ConnectToUpdates(completion_queue, async_monitor, traffic_monitor);
 }
 
-airmap::monitor::Service::ConnectToUpdates::ConnectToUpdates(
+airmap::monitor::grpc::Service::ConnectToUpdates::ConnectToUpdates(
     ::grpc::ServerCompletionQueue* completion_queue, ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
     const std::shared_ptr<Traffic::Monitor>& traffic_monitor)
     : completion_queue_{completion_queue},
@@ -80,11 +80,11 @@ airmap::monitor::Service::ConnectToUpdates::ConnectToUpdates(
                                           completion_queue_, this);
 }
 
-void airmap::monitor::Service::ConnectToUpdates::write(const ::grpc::airmap::monitor::Update& update) {
+void airmap::monitor::grpc::Service::ConnectToUpdates::write(const ::grpc::airmap::monitor::Update& update) {
   responder_.Write(update, this);
 }
 
-void airmap::monitor::Service::ConnectToUpdates::proceed(bool result) {
+void airmap::monitor::grpc::Service::ConnectToUpdates::proceed(bool result) {
   if (state_ == State::ready && result) {
     start_listening(completion_queue_, async_monitor_, traffic_monitor_);
     state_                      = State::streaming;

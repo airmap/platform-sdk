@@ -1,5 +1,7 @@
 #include <airmap/grpc/server/executor.h>
 
+#include <airmap/grpc/method_invocation.h>
+
 #include <fmt/printf.h>
 
 airmap::grpc::server::Executor::Executor(const Configuration& c) : context_{c.context}, services_{c.services} {
@@ -33,7 +35,7 @@ void airmap::grpc::server::Executor::run() {
   void* tag = nullptr;
 
   while (server_completion_queue_->Next(&tag, &ok)) {
-    if (auto method_invocation = static_cast<Service::MethodInvocation*>(tag)) {
+    if (auto method_invocation = static_cast<MethodInvocation*>(tag)) {
       context_->dispatch([method_invocation, ok]() { method_invocation->proceed(ok); });
     }
 
