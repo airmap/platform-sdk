@@ -18,8 +18,9 @@ std::shared_ptr<airmap::monitor::Daemon> airmap::monitor::Daemon::create(const C
 airmap::monitor::Daemon::Daemon(const Configuration& configuration)
     : configuration_{configuration},
       log_{configuration_.logger},
-      fan_out_traffic_monitor_{new FanOutTrafficMonitor{}},
+      fan_out_traffic_monitor_{std::make_shared<FanOutTrafficMonitor>()},
       executor_{std::make_shared<grpc::server::Executor>(grpc::server::Executor::Configuration{
+          configuration.context,
           configuration_.grpc_endpoint,
           {std::make_shared<::airmap::monitor::Service>(fan_out_traffic_monitor_)},
           ::grpc::InsecureServerCredentials()})},

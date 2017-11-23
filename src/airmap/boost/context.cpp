@@ -1,5 +1,7 @@
 #include <airmap/boost/context.h>
 
+#include <airmap/monitor/grpc/client.h>
+
 #include <airmap/net/http/boost/requester.h>
 #include <airmap/net/mqtt/boost/broker.h>
 #include <airmap/net/udp/boost/sender.h>
@@ -63,6 +65,14 @@ void airmap::boost::Context::create_client_with_configuration(const Client::Conf
   auto mqtt_broker = std::make_shared<net::mqtt::boost::Broker>(configuration.traffic.host, configuration.traffic.port,
                                                                 log_.logger(), io_service_);
   cb(ClientCreateResult{std::make_shared<rest::Client>(configuration, sp, udp_sender, requesters, mqtt_broker)});
+}
+
+void airmap::boost::Context::create_monitor_client_with_configuration(
+    const monitor::Client::Configuration& configuration, const MonitorClientCreateCallback& cb) {
+  auto sp     = shared_from_this();
+  auto client = std::make_shared<monitor::grpc::Client>(configuration, sp);
+
+  dispatch([cb, client]() { cb(MonitorClientCreateResult{client}); });
 }
 
 airmap::Context::ReturnCode airmap::boost::Context::exec(const SignalSet& signal_set,

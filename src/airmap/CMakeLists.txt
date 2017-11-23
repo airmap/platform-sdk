@@ -252,6 +252,9 @@ add_library(
   monitor/submitting_vehicle_monitor.cpp
   monitor/telemetry_submitter.h
   monitor/telemetry_submitter.cpp
+
+  monitor/grpc/client.h
+  monitor/grpc/client.cpp
 )
 
 add_library(
@@ -352,6 +355,7 @@ target_link_libraries(
 
   ${AIRMAP_PLATFORM_LIBRARIES}
   airmap-mavlink
+  airmap-monitor
 
   fmt
   network-uri

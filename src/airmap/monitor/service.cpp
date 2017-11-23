@@ -14,7 +14,8 @@ void airmap::monitor::Service::start(::grpc::ServerCompletionQueue& cq) {
   ConnectToUpdates::start_listening(&cq, &async_monitor_, traffic_monitor_);
 }
 
-airmap::monitor::Service::ConnectToUpdates::Subscriber::Subscriber(Responder* responder) : responder_{responder} {
+airmap::monitor::Service::ConnectToUpdates::Subscriber::Subscriber(ConnectToUpdates* invocation)
+    : invocation_{invocation} {
 }
 
 void airmap::monitor::Service::ConnectToUpdates::Subscriber::handle_update(
@@ -59,7 +60,7 @@ void airmap::monitor::Service::ConnectToUpdates::Subscriber::handle_update(
     *u.add_traffic() = tu;
   }
 
-  responder_->Write(u, nullptr);
+  invocation_->write(u);
 }
 
 void airmap::monitor::Service::ConnectToUpdates::start_listening(
@@ -79,16 +80,26 @@ airmap::monitor::Service::ConnectToUpdates::ConnectToUpdates(
                                           completion_queue_, this);
 }
 
-void airmap::monitor::Service::ConnectToUpdates::proceed() {
-  if (status_ == Status::ready) {
+void airmap::monitor::Service::ConnectToUpdates::write(const ::grpc::airmap::monitor::Update& update) {
+  responder_.Write(update, this);
+}
+
+void airmap::monitor::Service::ConnectToUpdates::proceed(bool result) {
+  if (state_ == State::ready && result) {
     start_listening(completion_queue_, async_monitor_, traffic_monitor_);
-    traffic_monitor_subscriber_ = std::make_shared<Subscriber>(&responder_);
+    state_                      = State::streaming;
+    traffic_monitor_subscriber_ = std::make_shared<Subscriber>(this);
     traffic_monitor_->subscribe(traffic_monitor_subscriber_);
-    // responder_.Finish(to_protobuf<Result>(result), ::grpc::Status::OK, this);
-  } else if (status_ == Status::finished) {
-    // After the subscriber has been unsubscribed, no more updates will come in
-    // from the traffic monitor. With that, we are good to clean up ourselves.
-    traffic_monitor_->unsubscribe(traffic_monitor_subscriber_);
+  } else if (state_ == State::streaming) {
+    // We have encountered an error and cancel the streaming.
+    if (!result) {
+      // After the subscriber has been unsubscribed, no more updates will come in
+      // from the traffic monitor. With that, we are good to clean up ourselves.
+      traffic_monitor_->unsubscribe(traffic_monitor_subscriber_);
+      state_ = State::finished;
+      responder_.Finish(::grpc::Status::CANCELLED, this);
+    }
+  } else if (state_ == State::finished) {
     delete this;
   }
 }

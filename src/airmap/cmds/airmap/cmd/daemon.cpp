@@ -106,7 +106,7 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
           }
 
           ::airmap::monitor::Daemon::Configuration configuration{
-              config.credentials, aircraft_id_, log_.logger(), channel, result.value(), grpc_endpoint_};
+              config.credentials, aircraft_id_, log_.logger(), channel, context, result.value(), grpc_endpoint_};
 
           ::airmap::monitor::Daemon::create(configuration)->start();
         });

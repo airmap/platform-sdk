@@ -7,6 +7,7 @@ brew update
 brew install \
   cmake \
   boost \
+  grpc \
   pkgconfig \
   protobuf \
   openssl \

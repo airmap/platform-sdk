@@ -2,6 +2,7 @@
 #define MOCK_CLIENT_H_
 
 #include <airmap/client.h>
+#include <airmap/context.h>
 
 #include <airmap/authenticator.h>
 #include <airmap/flights.h>

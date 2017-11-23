@@ -16,7 +16,9 @@ class Service : DoNotCopyOrMove {
   class MethodInvocation : DoNotCopyOrMove {
    public:
     // proceed advances the state of the invocation.
-    virtual void proceed() = 0;
+    // 'result' indicates the state of the underlying operation, true if
+    // the previous operation succeeded, false otherwise.
+    virtual void proceed(bool result) = 0;
 
    protected:
     MethodInvocation() = default;

@@ -12,14 +12,16 @@ constexpr const char* component{"airmap::monitor::TelemetrySubmitter"};
 
 std::shared_ptr<airmap::monitor::TelemetrySubmitter> airmap::monitor::TelemetrySubmitter::create(
     const Credentials& credentials, const std::string& aircraft_id, const std::shared_ptr<Logger>& logger,
-    const std::shared_ptr<Client>& client, const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber) {
+    const std::shared_ptr<airmap::Client>& client,
+    const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber) {
   return std::shared_ptr<airmap::monitor::TelemetrySubmitter>{
       new airmap::monitor::TelemetrySubmitter{credentials, aircraft_id, logger, client, traffic_subscriber}};
 }
 
 airmap::monitor::TelemetrySubmitter::TelemetrySubmitter(
     const Credentials& credentials, const std::string& aircraft_id, const std::shared_ptr<Logger>& logger,
-    const std::shared_ptr<Client>& client, const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber)
+    const std::shared_ptr<airmap::Client>& client,
+    const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber)
     : log_{logger},
       client_{client},
       traffic_subscriber_{traffic_subscriber},

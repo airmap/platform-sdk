@@ -6,6 +6,7 @@
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 #include <airmap/logger.h>
+#include <airmap/monitor/client.h>
 #include <airmap/outcome.h>
 
 #include <functional>
@@ -25,11 +26,13 @@ class Context : DoNotCopyOrMove {
   };
 
   /// @cond
-  using ClientCreateResult   = Outcome<std::shared_ptr<Client>, Error>;
-  using ClientCreateCallback = std::function<void(const ClientCreateResult&)>;
-  using CreateResult         = Outcome<std::shared_ptr<Context>, Error>;
-  using SignalHandler        = std::function<void(int)>;
-  using SignalSet            = std::unordered_set<int>;
+  using ClientCreateResult          = Outcome<std::shared_ptr<Client>, Error>;
+  using ClientCreateCallback        = std::function<void(const ClientCreateResult&)>;
+  using MonitorClientCreateResult   = Outcome<std::shared_ptr<monitor::Client>, Error>;
+  using MonitorClientCreateCallback = std::function<void(const MonitorClientCreateResult&)>;
+  using CreateResult                = Outcome<std::shared_ptr<Context>, Error>;
+  using SignalHandler               = std::function<void(int)>;
+  using SignalSet                   = std::unordered_set<int>;
   /// @endcond
 
   /// create tries to assemble and return a new Context instance.
@@ -39,6 +42,11 @@ class Context : DoNotCopyOrMove {
   /// and reports results to 'cb'.
   virtual void create_client_with_configuration(const Client::Configuration& configuration,
                                                 const ClientCreateCallback& cb) = 0;
+
+  /// create_monitor_client_with_configuration schedules creation of a new monitor::Client with 'configuration'
+  /// and reports results to 'cb'.
+  virtual void create_monitor_client_with_configuration(const monitor::Client::Configuration& configuration,
+                                                        const MonitorClientCreateCallback& cb) = 0;
 
   /// exec hands a thread of execution to a Context instance, monitoring
   /// the signals present in 'signal_set' and dispatching incoming signals

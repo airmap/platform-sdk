@@ -41,7 +41,8 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   /// create returns a new TelemetrySubmitter instance.
   static std::shared_ptr<TelemetrySubmitter> create(
       const Credentials& credentials, const std::string& aircraft_id, const std::shared_ptr<Logger>& logger,
-      const std::shared_ptr<Client>& client, const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber);
+      const std::shared_ptr<airmap::Client>& client,
+      const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber);
   /// activate transitions an instance to State::active.
   ///
   /// The following sequence of actions is triggered:
@@ -62,7 +63,7 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
 
  private:
   explicit TelemetrySubmitter(const Credentials& credentials, const std::string& aircraft_id,
-                              const std::shared_ptr<Logger>& logger, const std::shared_ptr<Client>& client,
+                              const std::shared_ptr<Logger>& logger, const std::shared_ptr<airmap::Client>& client,
                               const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber);
 
   void request_authorization();
@@ -84,7 +85,7 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   bool start_flight_comms_requested_{false};
 
   util::FormattingLogger log_;
-  std::shared_ptr<Client> client_;
+  std::shared_ptr<airmap::Client> client_;
   std::shared_ptr<Traffic::Monitor::Subscriber> traffic_subscriber_;
   Credentials credentials_;
   std::string aircraft_id_;

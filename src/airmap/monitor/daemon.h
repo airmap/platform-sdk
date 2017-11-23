@@ -3,6 +3,7 @@
 
 #include <airmap/authenticator.h>
 #include <airmap/client.h>
+#include <airmap/context.h>
 #include <airmap/flights.h>
 #include <airmap/grpc/server/executor.h>
 #include <airmap/logger.h>
@@ -34,7 +35,8 @@ class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_share
     std::string aircraft_id;                    ///< The id of the aircraft that the monitor runs on.
     std::shared_ptr<Logger> logger;             ///< The logger instance.
     std::shared_ptr<mavlink::Channel> channel;  ///< The MavLink channel that should be monitored.
-    std::shared_ptr<Client> client;             ///< The client used to communicate with the AirMap cloud services.
+    std::shared_ptr<Context> context;           ///< Target context for incoming calls.
+    std::shared_ptr<airmap::Client> client;     ///< The client used to communicate with the AirMap cloud services.
     std::string grpc_endpoint;                  ///< The local endpoint that the service should be exposed on.
   };
 

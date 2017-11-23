@@ -5,6 +5,7 @@ class Airmapd < Formula
 
   depends_on "cmake" => :build
   depends_on "boost"
+  depends_on "grpc"
   depends_on "pkgconfig"
   depends_on "protobuf"
   depends_on "openssl"

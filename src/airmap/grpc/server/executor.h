@@ -1,6 +1,7 @@
 #ifndef AIRMAP_GRPC_SERVER_EXECUTOR_H_
 #define AIRMAP_GRPC_SERVER_EXECUTOR_H_
 
+#include <airmap/context.h>
 #include <airmap/grpc/server/service.h>
 
 #include <grpc++/grpc++.h>
@@ -17,6 +18,7 @@ class Executor {
  public:
   // Configuration bundles up creation-time parameters of an Executor.
   struct Configuration {
+    std::shared_ptr<Context> context;                        // Target context.
     std::string endpoint;                                    // The endpoint that the server should listen on.
     std::vector<std::shared_ptr<Service>> services;          // The services that should be registered on the server.
     std::shared_ptr<::grpc::ServerCredentials> credentials;  // The credentials used by the server.
@@ -34,6 +36,7 @@ class Executor {
   void stop();
 
  private:
+  std::shared_ptr<Context> context_;
   std::vector<std::shared_ptr<Service>> services_;
   std::unique_ptr<::grpc::Server> server_;
   std::unique_ptr<::grpc::ServerCompletionQueue> server_completion_queue_;

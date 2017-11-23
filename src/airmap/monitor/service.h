@@ -28,7 +28,7 @@ class Service : public airmap::grpc::server::Service {
  private:
   // ConnectToUpdates models the state of a single invocation of
   // the method 'ConnectToUpdates'.
-  class ConnectToUpdates : public StatefulMethodInvocation {
+  class ConnectToUpdates : public MethodInvocation {
    public:
     using Parameters = ::grpc::airmap::monitor::ConnectToUpdatesParameters;
     using Result     = ::grpc::airmap::monitor::Update;
@@ -40,10 +40,16 @@ class Service : public airmap::grpc::server::Service {
                                 ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
                                 const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
 
+    // write sends out 'update'.
+    void write(const ::grpc::airmap::monitor::Update& update);
+
     // From MethodInvocation
-    void proceed() override;
+    void proceed(bool result) override;
 
    private:
+    // State enumerates all known states of the invocation.
+    enum class State { ready = 0, streaming = 1, finished = 2 };
+
     // Subscriber handles incoming traffic updates and bridges them
     // over to a Responder instance.
     //
@@ -52,20 +58,21 @@ class Service : public airmap::grpc::server::Service {
     class Subscriber : public Traffic::Monitor::Subscriber {
      public:
       // Subscriber initializes a new instance with 'responder'.
-      explicit Subscriber(Responder* responder);
+      explicit Subscriber(ConnectToUpdates* invocation);
 
       // From Traffic::Monitor::Subscriber
       void handle_update(airmap::Traffic::Update::Type type,
                          const std::vector<airmap::Traffic::Update>& update) override;
 
      private:
-      Responder* responder_;
+      ConnectToUpdates* invocation_;
     };
 
     ConnectToUpdates(::grpc::ServerCompletionQueue* completion_queue,
                      ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
                      const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
 
+    State state_{State::ready};
     ::grpc::ServerCompletionQueue* completion_queue_;
     ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor_;
     std::shared_ptr<Traffic::Monitor> traffic_monitor_;

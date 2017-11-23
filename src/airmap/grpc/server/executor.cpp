@@ -2,7 +2,7 @@
 
 #include <fmt/printf.h>
 
-airmap::grpc::server::Executor::Executor(const Configuration& c) : services_{c.services} {
+airmap::grpc::server::Executor::Executor(const Configuration& c) : context_{c.context}, services_{c.services} {
   grpc_init();
   ::grpc::ServerBuilder builder;
 
@@ -33,10 +33,12 @@ void airmap::grpc::server::Executor::run() {
   void* tag = nullptr;
 
   while (server_completion_queue_->Next(&tag, &ok)) {
+    if (auto method_invocation = static_cast<Service::MethodInvocation*>(tag)) {
+      context_->dispatch([method_invocation, ok]() { method_invocation->proceed(ok); });
+    }
+
     if (!ok)
       break;
-    if (auto method_invocation = static_cast<Service::MethodInvocation*>(tag))
-      method_invocation->proceed();
   }
 }
 
