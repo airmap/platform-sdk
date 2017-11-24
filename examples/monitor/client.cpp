@@ -51,12 +51,12 @@ int main(int argc, char** argv) {
     run_under_testing = argv[2] == std::string{"test"};
   }
 
-  auto logger   = airmap::create_default_logger(std::cout);
-  auto log      = airmap::util::FormattingLogger{logger};
+  auto logger   = ::airmap::create_default_logger(std::cout);
+  auto log      = ::airmap::util::FormattingLogger{logger};
   auto result   = ::airmap::Context::create(logger);
   auto receiver = std::make_shared<LoggingReceiver>(logger);
-  auto client   = std::shared_ptr<airmap::monitor::Client>{};
-  auto stream   = std::shared_ptr<airmap::monitor::Client::UpdateStream>{};
+  auto client   = std::shared_ptr<::airmap::monitor::Client>{};
+  auto stream   = std::shared_ptr<::airmap::monitor::Client::UpdateStream>{};
 
   if (!result) {
     log.errorf(component, "failed to create AirMap context: %s", result.error());
@@ -67,12 +67,12 @@ int main(int argc, char** argv) {
 
   auto context = result.value();
 
-  airmap::monitor::Client::Configuration config;
+  ::airmap::monitor::Client::Configuration config;
   config.endpoint = endpoint;
   config.logger   = logger;
 
   if (run_under_testing) {
-    context->schedule_in(airmap::Microseconds{5 * 1000 * 1000}, [&]() {
+    context->schedule_in(::airmap::Microseconds{5 * 1000 * 1000}, [&]() {
       log.infof(component, "stopping execution");
       context->stop();
     });
