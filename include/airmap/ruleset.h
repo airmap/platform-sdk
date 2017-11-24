@@ -16,7 +16,9 @@
 
 namespace airmap {
 
+/// RuleSet bundles together properties describing a ruleset.
 struct RuleSet {
+  // Feature describes a flight feature modelled by a particular rule.
   struct Feature;
   /// Rule models the individual result of a Rule evaluation.
   struct Rule {
@@ -149,4 +151,5 @@ std::ostream& operator<<(std::ostream& out, RuleSet::Rule::Status status);
 std::istream& operator>>(std::istream& in, RuleSet::Rule::Status& status);
 
 }  // namespace airmap
+
 #endif  // AIRMAP_RULESET_H_

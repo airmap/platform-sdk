@@ -3,6 +3,7 @@
 #include <airmap/codec.h>
 #include <airmap/codec/json/aircraft.h>
 #include <airmap/codec/json/date_time.h>
+#include <airmap/codec/json/evaluation.h>
 #include <airmap/codec/json/geometry.h>
 #include <airmap/codec/json/get.h>
 #include <airmap/codec/json/pilot.h>
@@ -42,58 +43,10 @@ void airmap::codec::json::encode(nlohmann::json& j, const FlightPlan& p) {
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing& b) {
   get(b.created_at, j, "created_at");
   get(b.airspace, j, "airspace");
-  get(b.rulesets, j, "rulesets");
-  get(b.validations, j, "validations");
-  get(b.authorizations, j, "authorizations");
+  decode(j, b.evaluation);
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::AdvisoryStatus& a) {
   get(a.color, j, "color");
   get(a.advisories, j, "advisories");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Authority& a) {
-  get(a.name, j, "name");
-  get(a.id, j, "id");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Authorization& a) {
-  get(a.status, j, "status");
-  get(a.authority, j, "authority");
-  get(a.message, j, "message");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, std::vector<FlightPlan::Briefing::Authorization>& v) {
-  for (auto element : j) {
-    v.push_back(FlightPlan::Briefing::Authorization{});
-    v.back() = element;
-  }
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Authorization::Status& s) {
-  s = boost::lexical_cast<FlightPlan::Briefing::Authorization::Status>(j.get<std::string>());
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Validation& v) {
-  get(v.status, j, "status");
-  get(v.data, j, "data");
-  get(v.message, j, "message");
-  get(v.feature, j, "feature");
-  get(v.authority, j, "authority");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, std::vector<FlightPlan::Briefing::Validation>& v) {
-  for (auto element : j) {
-    v.push_back(FlightPlan::Briefing::Validation{});
-    v.back() = element;
-  }
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Validation::Feature& f) {
-  get(f.code, j, "code");
-  get(f.description, j, "description");
-}
-
-void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing::Validation::Status& s) {
-  s = boost::lexical_cast<FlightPlan::Briefing::Validation::Status>(j.get<std::string>());
 }

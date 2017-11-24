@@ -3,6 +3,7 @@
 
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
+#include <airmap/evaluation.h>
 #include <airmap/geometry.h>
 #include <airmap/outcome.h>
 #include <airmap/ruleset.h>
@@ -69,7 +70,7 @@ class RuleSets : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling RuleSets::evaluate_rulesets.
-    using Result = Outcome<std::vector<RuleSet>, Error>;
+    using Result = Outcome<Evaluation, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to RuleSets::evaluate_rulesets finishes.
     using Callback = std::function<void(const Result&)>;
