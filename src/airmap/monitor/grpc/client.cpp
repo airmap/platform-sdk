@@ -2,6 +2,10 @@
 
 #include <grpc++/grpc++.h>
 
+namespace {
+constexpr const char* component{"airmap::monitor::grpc::Client"};
+}  // namespace
+
 airmap::monitor::grpc::Client::Client(const Configuration& configuration, const std::shared_ptr<Context>& context)
     : log_{configuration.logger},
       context_{context},
@@ -19,7 +23,10 @@ airmap::monitor::grpc::Client::~Client() {
 }
 
 void airmap::monitor::grpc::Client::connect_to_updates(const ConnectToUpdates::Callback& cb) {
-  executor_.invoke_method([this, cb](auto cq) { ConnectToUpdatesInvocation::start(stub_, cq, cb, context_); });
+  executor_.invoke_method([this, cb](auto cq) {
+    log_.debugf(component, "starting request for grpc.airmap.ConnectToUpdates");
+    ConnectToUpdatesInvocation::start(log_.logger(), stub_, cq, cb, context_);
+  });
 }
 
 void airmap::monitor::grpc::Client::UpdateStreamImpl::write_update(const Update& update) {
@@ -45,17 +52,19 @@ void airmap::monitor::grpc::Client::UpdateStreamImpl::unsubscribe(const std::sha
   receivers_.erase(receiver);
 }
 
-void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::start(const std::shared_ptr<Stub>& stub,
+void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::start(const std::shared_ptr<Logger>& logger,
+                                                                      const std::shared_ptr<Stub>& stub,
                                                                       ::grpc::CompletionQueue* completion_queue,
                                                                       const ConnectToUpdates::Callback& cb,
                                                                       const std::shared_ptr<Context>& context) {
-  new ConnectToUpdatesInvocation{stub, completion_queue, cb, context};
+  new ConnectToUpdatesInvocation{logger, stub, completion_queue, cb, context};
 }
 
 airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::ConnectToUpdatesInvocation(
-    const std::shared_ptr<Stub>& stub, ::grpc::CompletionQueue* completion_queue, const ConnectToUpdates::Callback& cb,
-    const std::shared_ptr<Context>& context)
-    : stub_{stub},
+    const std::shared_ptr<Logger>& logger, const std::shared_ptr<Stub>& stub, ::grpc::CompletionQueue* completion_queue,
+    const ConnectToUpdates::Callback& cb, const std::shared_ptr<Context>& context)
+    : log_{logger},
+      stub_{stub},
       completion_queue_{completion_queue},
       cb_{cb},
       context_{context},
@@ -63,8 +72,9 @@ airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::ConnectToUpdatesInvoc
 }
 
 void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::proceed(bool result) {
+  log_.debugf(component, "ConnectToUpdatesInvocation::proceed: (%s, %s)", state_, result ? "true" : "false");
   switch (state_) {
-    case State::connecting:
+    case State::ready:
       if (!result) {
         context_->dispatch([cb = cb_]() { cb(ConnectToUpdates::Result{Error{"failed to connect to updates"}}); });
         state_ = State::finished;
@@ -72,6 +82,7 @@ void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::proceed(bool res
       } else {
         update_stream_ = std::make_shared<UpdateStreamImpl>();
         context_->dispatch([ cb = cb_, us = update_stream_ ]() { cb(ConnectToUpdates::Result{us}); });
+        state_ = State::streaming;
         stream_->Read(&element_, this);
       }
       break;
@@ -132,10 +143,10 @@ void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::proceed(bool res
           }
 
           u.traffic.push_back(tu);
-        }
 
-        context_->dispatch([ us = update_stream_, u ]() { us->write_update(u); });
-        stream_->Read(&element_, this);
+          context_->dispatch([ us = update_stream_, u ]() { us->write_update(u); });
+          stream_->Read(&element_, this);
+        }
       }
       break;
     case State::finished:

@@ -54,24 +54,25 @@ class Client : public airmap::monitor::Client {
     using Stream     = ::grpc::ClientAsyncReader<::grpc::airmap::monitor::Update>;
 
     // Start creates and runs a new invocation.
-    static void start(const std::shared_ptr<Stub>& stub, ::grpc::CompletionQueue* completion_queue,
-                      const ConnectToUpdates::Callback& cb, const std::shared_ptr<Context>& context);
+    static void start(const std::shared_ptr<Logger>& logger, const std::shared_ptr<Stub>& stub,
+                      ::grpc::CompletionQueue* completion_queue, const ConnectToUpdates::Callback& cb,
+                      const std::shared_ptr<Context>& context);
 
     // ConnectToUpdatesInvocation initializes a new instance with 'completion_queue'.
-    explicit ConnectToUpdatesInvocation(const std::shared_ptr<Stub>& stub, ::grpc::CompletionQueue* completion_queue,
-                                        const ConnectToUpdates::Callback& cb, const std::shared_ptr<Context>& context);
+    explicit ConnectToUpdatesInvocation(const std::shared_ptr<Logger>& logger, const std::shared_ptr<Stub>& stub,
+                                        ::grpc::CompletionQueue* completion_queue, const ConnectToUpdates::Callback& cb,
+                                        const std::shared_ptr<Context>& context);
 
     // From MethodInvocation
     void proceed(bool result) override;
 
    private:
-    enum class State { connecting, streaming, finished };
-
-    State state_{State::connecting};
+    State state_{State::ready};
     ::grpc::Status status_;
     ::grpc::ClientContext client_context_;
-    std::shared_ptr<Stub> stub_;
 
+    util::FormattingLogger log_;
+    std::shared_ptr<Stub> stub_;
     ::grpc::CompletionQueue* completion_queue_;
     ConnectToUpdates::Callback cb_;
     std::shared_ptr<Context> context_;

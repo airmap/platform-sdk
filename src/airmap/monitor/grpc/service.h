@@ -6,7 +6,10 @@
 
 #include <airmap/aircrafts.h>
 #include <airmap/client.h>
+#include <airmap/logger.h>
 #include <airmap/traffic.h>
+
+#include <airmap/util/formatting_logger.h>
 
 #include "grpc/airmap/monitor/monitor.grpc.pb.h"
 
@@ -20,7 +23,7 @@ namespace grpc {
 class Service : public airmap::grpc::server::Service {
  public:
   /// Service initializes a new instance with 'traffic_monitor'
-  explicit Service(const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
+  explicit Service(const std::shared_ptr<Logger>& logger, const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
 
   // From airmap::grpc::server::Service.
   ::grpc::Service& instance() override;
@@ -37,7 +40,7 @@ class Service : public airmap::grpc::server::Service {
 
     // start_listening sets up a new ConnectToUpdates and enqueues it
     // for handling incoming requests.
-    static void start_listening(::grpc::ServerCompletionQueue* completion_qeueu,
+    static void start_listening(const std::shared_ptr<Logger>& logger, ::grpc::ServerCompletionQueue* completion_qeueu,
                                 ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
                                 const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
 
@@ -48,9 +51,6 @@ class Service : public airmap::grpc::server::Service {
     void proceed(bool result) override;
 
    private:
-    // State enumerates all known states of the invocation.
-    enum class State { ready = 0, streaming = 1, finished = 2 };
-
     // Subscriber handles incoming traffic updates and bridges them
     // over to a Responder instance.
     //
@@ -69,11 +69,12 @@ class Service : public airmap::grpc::server::Service {
       ConnectToUpdates* invocation_;
     };
 
-    ConnectToUpdates(::grpc::ServerCompletionQueue* completion_queue,
+    ConnectToUpdates(const std::shared_ptr<Logger>& logger, ::grpc::ServerCompletionQueue* completion_queue,
                      ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
                      const std::shared_ptr<Traffic::Monitor>& traffic_monitor);
 
     State state_{State::ready};
+    util::FormattingLogger log_;
     ::grpc::ServerCompletionQueue* completion_queue_;
     ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor_;
     std::shared_ptr<Traffic::Monitor> traffic_monitor_;
@@ -83,6 +84,7 @@ class Service : public airmap::grpc::server::Service {
     Responder responder_;
   };
 
+  util::FormattingLogger log_;
   std::shared_ptr<Traffic::Monitor> traffic_monitor_;
   ::grpc::airmap::monitor::Monitor::AsyncService async_monitor_;
 };

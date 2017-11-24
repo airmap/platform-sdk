@@ -22,7 +22,7 @@ struct LoggingReceiver : public airmap::monitor::Client::UpdateStream::Receiver 
 
     record.printf(
         "received update\n"
-        "  traffic: %d updates",
+        "  traffic: %d updates\n",
         update.traffic.size());
 
     for (const auto& tu : update.traffic) {

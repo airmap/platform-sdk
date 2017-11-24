@@ -236,6 +236,8 @@ add_library(
 
   grpc/init.h
   grpc/init.cpp
+  grpc/method_invocation.h
+  grpc/method_invocation.cpp
 
   grpc/client/executor.h
   grpc/client/executor.cpp

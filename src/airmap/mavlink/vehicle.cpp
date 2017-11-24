@@ -66,6 +66,6 @@ void airmap::mavlink::LoggingVehicleMonitor::on_system_status_changed(const Opti
 
 void airmap::mavlink::LoggingVehicleMonitor::on_position_changed(const Optional<GlobalPositionInt>& old_position,
                                                                  const GlobalPositionInt& new_position) {
-  log_.infof(component_, "position changed: %s -> %s", old_position, new_position);
+  log_.debugf(component_, "position changed: %s -> %s", old_position, new_position);
   next_->on_position_changed(old_position, new_position);
 }

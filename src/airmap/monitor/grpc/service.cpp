@@ -2,8 +2,13 @@
 
 #include "grpc/airmap/traffic.pb.h"
 
-airmap::monitor::grpc::Service::Service(const std::shared_ptr<Traffic::Monitor>& traffic_monitor)
-    : traffic_monitor_{traffic_monitor} {
+namespace {
+constexpr const char* component{"airmap::monitor::grpc::Service"};
+}  // namespace
+
+airmap::monitor::grpc::Service::Service(const std::shared_ptr<Logger>& logger,
+                                        const std::shared_ptr<Traffic::Monitor>& traffic_monitor)
+    : log_{logger}, traffic_monitor_{traffic_monitor} {
 }
 
 ::grpc::Service& airmap::monitor::grpc::Service::instance() {
@@ -11,7 +16,8 @@ airmap::monitor::grpc::Service::Service(const std::shared_ptr<Traffic::Monitor>&
 }
 
 void airmap::monitor::grpc::Service::start(::grpc::ServerCompletionQueue& cq) {
-  ConnectToUpdates::start_listening(&cq, &async_monitor_, traffic_monitor_);
+  log_.infof(component, "starting to serve grpc.airmap.Monitor service");
+  ConnectToUpdates::start_listening(log_.logger(), &cq, &async_monitor_, traffic_monitor_);
 }
 
 airmap::monitor::grpc::Service::ConnectToUpdates::Subscriber::Subscriber(ConnectToUpdates* invocation)
@@ -64,15 +70,18 @@ void airmap::monitor::grpc::Service::ConnectToUpdates::Subscriber::handle_update
 }
 
 void airmap::monitor::grpc::Service::ConnectToUpdates::start_listening(
-    ::grpc::ServerCompletionQueue* completion_queue, ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
+    const std::shared_ptr<Logger>& logger, ::grpc::ServerCompletionQueue* completion_queue,
+    ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
     const std::shared_ptr<Traffic::Monitor>& traffic_monitor) {
-  new ConnectToUpdates(completion_queue, async_monitor, traffic_monitor);
+  new ConnectToUpdates(logger, completion_queue, async_monitor, traffic_monitor);
 }
 
 airmap::monitor::grpc::Service::ConnectToUpdates::ConnectToUpdates(
-    ::grpc::ServerCompletionQueue* completion_queue, ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
+    const std::shared_ptr<Logger>& logger, ::grpc::ServerCompletionQueue* completion_queue,
+    ::grpc::airmap::monitor::Monitor::AsyncService* async_monitor,
     const std::shared_ptr<Traffic::Monitor>& traffic_monitor)
-    : completion_queue_{completion_queue},
+    : log_{logger},
+      completion_queue_{completion_queue},
       async_monitor_{async_monitor},
       traffic_monitor_{traffic_monitor},
       responder_{&server_context_} {
@@ -85,11 +94,17 @@ void airmap::monitor::grpc::Service::ConnectToUpdates::write(const ::grpc::airma
 }
 
 void airmap::monitor::grpc::Service::ConnectToUpdates::proceed(bool result) {
-  if (state_ == State::ready && result) {
-    start_listening(completion_queue_, async_monitor_, traffic_monitor_);
-    state_                      = State::streaming;
-    traffic_monitor_subscriber_ = std::make_shared<Subscriber>(this);
-    traffic_monitor_->subscribe(traffic_monitor_subscriber_);
+  log_.debugf(component, "ConnectToUpdates::proceed: (%s, %s)", state_, result ? "true" : "false");
+  if (state_ == State::ready) {
+    start_listening(log_.logger(), completion_queue_, async_monitor_, traffic_monitor_);
+    if (result) {
+      state_                      = State::streaming;
+      traffic_monitor_subscriber_ = std::make_shared<Subscriber>(this);
+      traffic_monitor_->subscribe(traffic_monitor_subscriber_);
+    } else {
+      state_ = State::finished;
+      responder_.Finish(::grpc::Status::CANCELLED, this);
+    }
   } else if (state_ == State::streaming) {
     // We have encountered an error and cancel the streaming.
     if (!result) {
