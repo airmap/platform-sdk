@@ -59,9 +59,9 @@ class RuleSets : DoNotCopyOrMove {
     using Callback = std::function<void(const Result&)>;
   };
 
-  /// Evaluation bundles up types to ease interaction with
+  /// EvaluateRules bundles up types to ease interaction with
   /// RuleSets::evaluate_rulesets.
-  struct Evaluation {
+  struct EvaluateRules {
     struct Parameters {
       Required<Geometry> geometry;  ///< Evaluate rulesets intersecting this geometry.
       std::unordered_map<std::string, RuleSet::Feature::Value>
@@ -90,7 +90,7 @@ class RuleSets : DoNotCopyOrMove {
 
   /// evaluate_rulesets evaluates rulesets and geometry identified by 'parameters' and
   /// reports back results to 'cb'.
-  virtual void evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
+  virtual void evaluate_rulesets(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) = 0;
 
  protected:
   /// @cond

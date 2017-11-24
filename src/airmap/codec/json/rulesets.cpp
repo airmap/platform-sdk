@@ -6,7 +6,7 @@ void airmap::codec::json::encode(nlohmann::json& j, const RuleSets::Search::Para
   j["geometry"] = p.geometry;
 }
 
-void airmap::codec::json::encode(nlohmann::json& j, const RuleSets::Evaluation::Parameters& p) {
+void airmap::codec::json::encode(nlohmann::json& j, const RuleSets::EvaluateRules::Parameters& p) {
   j["geometry"] = p.geometry;
   if (!p.features.empty()) {
     nlohmann::json features;

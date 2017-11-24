@@ -60,3 +60,14 @@ void airmap::codec::json::decode(const nlohmann::json& j, Evaluation::Validation
 void airmap::codec::json::decode(const nlohmann::json& j, Evaluation::Validation::Status& s) {
   s = boost::lexical_cast<Evaluation::Validation::Status>(j.get<std::string>());
 }
+
+void airmap::codec::json::decode(const nlohmann::json& j, Evaluation::Failure& f) {
+  f = boost::lexical_cast<Evaluation::Failure>(j.get<std::string>());
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Evaluation::Failure>& v) {
+  for (auto element : j) {
+    v.push_back(Evaluation::Failure{});
+    v.back() = element;
+  }
+}

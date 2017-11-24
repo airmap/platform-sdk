@@ -64,17 +64,17 @@ void airmap::rest::RuleSets::fetch_rules(const FetchRules::Parameters& parameter
   });
 }
 
-void airmap::rest::RuleSets::evaluate_rulesets(const Evaluation::Parameters& parameters,
-                                               const Evaluation::Callback& cb) {
+void airmap::rest::RuleSets::evaluate_rulesets(const EvaluateRules::Parameters& parameters,
+                                               const EvaluateRules::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
 
   json j = parameters;
 
   requester_->post("/evaluation", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
     if (result) {
-      cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
+      cb(jsend::to_outcome<Evaluation>(json::parse(result.value().body)));
     } else {
-      cb(Evaluation::Result{result.error()});
+      cb(EvaluateRules::Result{result.error()});
     }
   });
 }

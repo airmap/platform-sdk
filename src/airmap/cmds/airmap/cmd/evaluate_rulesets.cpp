@@ -102,7 +102,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
 
           auto client = result.value();
 
-          auto handler = [this, &ctxt, context, client](const RuleSets::Evaluation::Result& result) {
+          auto handler = [this, &ctxt, context, client](const RuleSets::EvaluateRules::Result& result) {
             if (result) {
               log_.infof(component, "succesfully evaluated rulesets with provided geometry\n");
               print_rules(ctxt.cout, result.value());

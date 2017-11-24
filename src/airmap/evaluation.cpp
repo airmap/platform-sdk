@@ -66,7 +66,7 @@ std::istream& airmap::operator>>(std::istream& in, Evaluation::Validation::Statu
   return in;
 }
 
-std::ostream& operator<<(std::ostream& out, Evaluation::Failure failure) {
+std::ostream& airmap::operator<<(std::ostream& out, Evaluation::Failure failure) {
   switch (failure) {
     case Evaluation::Failure::validation:
       return out << "validation";
@@ -78,7 +78,7 @@ std::ostream& operator<<(std::ostream& out, Evaluation::Failure failure) {
   return out;
 }
 
-std::istream& operator>>(std::istream& in, Evaluation::Failure& failure) {
+std::istream& airmap::operator>>(std::istream& in, Evaluation::Failure& failure) {
   std::string s;
   in >> s;
 

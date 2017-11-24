@@ -21,6 +21,8 @@ void decode(const nlohmann::json& j, Evaluation::Validation& v);
 void decode(const nlohmann::json& j, std::vector<Evaluation::Validation>& v);
 void decode(const nlohmann::json& j, Evaluation::Validation::Feature& f);
 void decode(const nlohmann::json& j, Evaluation::Validation::Status& s);
+void decode(const nlohmann::json& j, Evaluation::Failure& f);
+void decode(const nlohmann::json& j, std::vector<Evaluation::Failure>& v);
 
 }  // namespace json
 }  // namespace codec

@@ -34,7 +34,8 @@ void airmap::qt::RuleSets::fetch_rules(const FetchRules::Parameters& parameters,
   });
 }
 
-void airmap::qt::RuleSets::evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) {
+void airmap::qt::RuleSets::evaluate_rulesets(const EvaluateRules::Parameters& parameters,
+                                             const EvaluateRules::Callback& cb) {
   dispatcher_->dispatch_to_native([ this, sp = shared_from_this(), parameters, cb ]() {
     sp->client_->rulesets().evaluate_rulesets(parameters, [this, sp, cb](const auto& result) {
       sp->dispatcher_->dispatch_to_qt([sp, result, cb]() { cb(result); });

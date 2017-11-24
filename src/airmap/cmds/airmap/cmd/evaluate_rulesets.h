@@ -32,7 +32,7 @@ class EvaluateRuleSets : public util::cli::CommandWithFlagsAndAction {
   Required<GeometryFile> geometry_file_;
   Required<RuleSetsCSV> rulesets_;
   Optional<FlightFeatures> flight_features_;
-  RuleSets::Evaluation::Parameters params_;
+  RuleSets::EvaluateRules::Parameters params_;
 };
 
 }  // namespace cmd

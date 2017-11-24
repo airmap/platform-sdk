@@ -2,8 +2,8 @@
 #define AIRMAP_EVALUATION_H_
 
 #include <airmap/optional.h>
-#include <airmap/status.h>
 #include <airmap/ruleset.h>
+#include <airmap/status.h>
 
 #include <cstdint>
 #include <iosfwd>
@@ -67,7 +67,7 @@ struct Evaluation {
   std::vector<RuleSet> rulesets;        ///< All RuleSet instances relevant to a specific briefing/flight plan.
   std::vector<Validation> validations;  ///< All Validation instances relevant to a specific briefing/flight plan.
   std::vector<Authorization>
-      authorizations;  ///< All Authorization instances relevant to a specific briefing/flight plan.
+      authorizations;             ///< All Authorization instances relevant to a specific briefing/flight plan.
   std::vector<Failure> failures;  ///< All Failure instances relevant to a specific briefing/flight plan.
 };
 
