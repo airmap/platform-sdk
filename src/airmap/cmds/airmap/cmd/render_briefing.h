@@ -4,6 +4,7 @@
 #include <airmap/cmds/airmap/cmd/flags.h>
 
 #include <airmap/client.h>
+#include <airmap/evaluation.h>
 #include <airmap/flight_plans.h>
 #include <airmap/logger.h>
 #include <airmap/optional.h>

@@ -17,16 +17,6 @@ namespace {
 
 constexpr const char* component{"evaluate-rulesets"};
 
-void print_rules(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
-  for (const auto& r : v) {
-    out << std::endl;
-    out << "    id:           " << r.id << std::endl;
-    out << "    # rules:      " << r.rules.size() << std::endl;
-    // TBD - print rules
-  }
-  out << std::endl;
-}
-
 }  // namespace
 
 cmd::EvaluateRuleSets::EvaluateRuleSets()
@@ -104,8 +94,13 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
 
           auto handler = [this, &ctxt, context, client](const RuleSets::EvaluateRules::Result& result) {
             if (result) {
-              log_.infof(component, "succesfully evaluated rulesets with provided geometry\n");
-              print_rules(ctxt.cout, result.value());
+              log_.infof(component,
+                 "successfully evaluated rulesets:\n"
+                 "  # rulesets:       %d\n"
+                 "  # validations:    %d\n"
+                 "  # authorizations: %d\n"
+                 "  # failures:       %d\n",
+                 result.value().rulesets.size(), result.value().validations.size(), result.value().authorizations.size(), result.value().failures.size());
               context->stop();
             } else {
               log_.errorf(component, "failed to evaluate rulesets: %s", result.error());
