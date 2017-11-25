@@ -1,6 +1,6 @@
 #include <airmap/monitor/grpc/service.h>
 
-#include "grpc/airmap/traffic.pb.h"
+#include <airmap/codec/grpc/traffic.h>
 
 namespace {
 constexpr const char* component{"airmap::monitor::grpc::Service"};
@@ -29,41 +29,7 @@ void airmap::monitor::grpc::Service::ConnectToUpdates::Subscriber::handle_update
   ::grpc::airmap::monitor::Update u;
 
   for (const auto& update : updates) {
-    ::grpc::airmap::Traffic_Update tu;
-
-    switch (type) {
-      case airmap::Traffic::Update::Type::situational_awareness:
-        tu.set_type(::grpc::airmap::Traffic_Update_Type_situational_awareness);
-        break;
-      case airmap::Traffic::Update::Type::alert:
-        tu.set_type(::grpc::airmap::Traffic_Update_Type_alert);
-        break;
-      case airmap::Traffic::Update::Type::unknown:
-        tu.set_type(::grpc::airmap::Traffic_Update_Type_unknown_type);
-        break;
-    }
-
-    tu.set_aircraft_id(update.aircraft_id);
-    tu.mutable_track()->set_as_string(update.id);
-    tu.mutable_position()->mutable_latitude()->set_value(update.latitude);
-    tu.mutable_position()->mutable_longitude()->set_value(update.longitude);
-    tu.mutable_ground_speed()->set_value(update.ground_speed);
-    tu.mutable_heading()->set_value(update.heading);
-    tu.mutable_direction()->set_value(update.direction);
-
-    auto us = microseconds_since_epoch(update.recorded);
-    auto s  = us / (1000 * 1000);
-
-    tu.mutable_recorded()->set_seconds(s);
-    tu.mutable_recorded()->set_nanos(us - (s * 1000 * 1000));
-
-    us = microseconds_since_epoch(update.timestamp);
-    s  = us / (1000 * 1000);
-
-    tu.mutable_generated()->set_seconds(s);
-    tu.mutable_generated()->set_nanos(us - (s * 1000 * 1000));
-
-    *u.add_traffic() = tu;
+    codec::grpc::encode(*u.add_traffic(), update);
   }
 
   invocation_->write(u);

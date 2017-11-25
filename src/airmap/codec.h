@@ -8,6 +8,9 @@
 #include <airmap/codec/http/query/rulesets.h>
 #include <airmap/codec/http/query/status.h>
 
+#include <airmap/codec/grpc/date_time.h>
+#include <airmap/codec/grpc/traffic.h>
+
 #include <airmap/codec/json/aircraft.h>
 #include <airmap/codec/json/airspace.h>
 #include <airmap/codec/json/authenticator.h>

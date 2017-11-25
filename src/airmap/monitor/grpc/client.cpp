@@ -1,5 +1,7 @@
 #include <airmap/monitor/grpc/client.h>
 
+#include <airmap/codec.h>
+
 #include <grpc++/grpc++.h>
 
 namespace {
@@ -94,59 +96,13 @@ void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::proceed(bool res
         Update u;
 
         for (int i = 0; i < element_.traffic_size(); i++) {
-          const auto& update = element_.traffic(i);
-          Traffic::Update tu;
-
-          tu.aircraft_id = update.aircraft_id();
-
-          if (update.has_track()) {
-            tu.id = update.track().as_string();
-          } else {
-            tu.id = "n/a";
-          }
-
-          if (update.has_position()) {
-            tu.latitude  = update.position().has_latitude() ? update.position().latitude().value() : 0;
-            tu.longitude = update.position().has_longitude() ? update.position().longitude().value() : 0;
-          }
-
-          if (update.has_ground_speed()) {
-            tu.ground_speed = update.ground_speed().value();
-          } else {
-            tu.ground_speed = 0;
-          }
-
-          if (update.has_heading()) {
-            tu.heading = update.heading().value();
-          } else {
-            tu.heading = 0;
-          }
-
-          if (update.has_direction()) {
-            tu.direction = update.direction().value();
-          } else {
-            tu.direction = 0;
-          }
-
-          if (update.has_recorded()) {
-            auto micros = update.recorded().seconds() * 1000 * 1000 + update.recorded().nanos() / 1000;
-            tu.recorded = from_microseconds_since_epoch(Microseconds{micros});
-          } else {
-            tu.recorded = Clock::universal_time();
-          }
-
-          if (update.has_generated()) {
-            auto micros  = update.generated().seconds() * 1000 * 1000 + update.generated().nanos() / 1000;
-            tu.timestamp = from_microseconds_since_epoch(Microseconds{micros});
-          } else {
-            tu.timestamp = Clock::universal_time();
-          }
-
-          u.traffic.push_back(tu);
-
-          context_->dispatch([ us = update_stream_, u ]() { us->write_update(u); });
-          stream_->Read(&element_, this);
+          Traffic::Update to;
+          codec::grpc::decode(element_.traffic(i), to);
+          u.traffic.push_back(to);
         }
+
+        context_->dispatch([ us = update_stream_, u ]() { us->write_update(u); });
+        stream_->Read(&element_, this);
       }
       break;
     case State::finished:

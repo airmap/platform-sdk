@@ -123,6 +123,11 @@ add_library(
   codec/http/query/status.h
   codec/http/query/status.cpp
 
+  codec/grpc/date_time.h
+  codec/grpc/date_time.cpp
+  codec/grpc/traffic.h
+  codec/grpc/traffic.cpp
+
   codec/json/aircraft.h
   codec/json/aircraft.cpp
   codec/json/airspace.h
