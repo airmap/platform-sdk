@@ -96,8 +96,9 @@ cmd::RenderBriefing::RenderBriefing()
                          "  # authorizations: %d\n"
                          "  advisory status:\n"
                          "    color:          %s\n",
-                         result.value().created_at, result.value().evaluation.rulesets.size(), result.value().evaluation.validations.size(),
-                         result.value().evaluation.authorizations.size(), result.value().airspace.color);
+                         result.value().created_at, result.value().evaluation.rulesets.size(),
+                         result.value().evaluation.validations.size(), result.value().evaluation.authorizations.size(),
+                         result.value().airspace.color);
               context->stop();
             } else {
               log_.errorf(component, "failed to render flight briefing: %s", result.error());

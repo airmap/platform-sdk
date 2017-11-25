@@ -13,6 +13,7 @@
 
 namespace airmap {
 
+/// Evaluation bundles together information regarding an airspace ruleset evaluation.
 struct Evaluation {
   /// Authority models an authority capable of authorizing flight plans.
   struct Authority {
@@ -58,6 +59,7 @@ struct Evaluation {
     Authority authority;  ///< The authority carrying out the validation.
   };
 
+  /// Failure enumrates all known failures during evaluation.
   enum class Failure {
     validation,     ///< The validation failed.
     authorization,  ///< The authorization failed.

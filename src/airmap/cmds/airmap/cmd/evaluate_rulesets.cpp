@@ -28,7 +28,9 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
   flag(flags::config_file(config_file_));
   flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
   flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
-  flag(cli::make_flag("flight-features", "object with key value pairs indicating flight details", flight_features_));
+  flag(cli::make_flag("flight-features",
+                      "use the object in this json file with key value pairs indicating flight details",
+                      flight_features_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
@@ -95,12 +97,13 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
           auto handler = [this, &ctxt, context, client](const RuleSets::EvaluateRules::Result& result) {
             if (result) {
               log_.infof(component,
-                 "successfully evaluated rulesets:\n"
-                 "  # rulesets:       %d\n"
-                 "  # validations:    %d\n"
-                 "  # authorizations: %d\n"
-                 "  # failures:       %d\n",
-                 result.value().rulesets.size(), result.value().validations.size(), result.value().authorizations.size(), result.value().failures.size());
+                         "successfully evaluated rulesets:\n"
+                         "  # rulesets:       %d\n"
+                         "  # validations:    %d\n"
+                         "  # authorizations: %d\n"
+                         "  # failures:       %d\n",
+                         result.value().rulesets.size(), result.value().validations.size(),
+                         result.value().authorizations.size(), result.value().failures.size());
               context->stop();
             } else {
               log_.errorf(component, "failed to evaluate rulesets: %s", result.error());
