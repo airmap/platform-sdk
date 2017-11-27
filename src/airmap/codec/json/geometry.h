@@ -26,6 +26,7 @@ void encode(nlohmann::json& j, const std::vector<Geometry>& geometries);
 void encode(nlohmann::json& j, Geometry::Type type);
 void encode(nlohmann::json& j, const Geometry::Coordinate& coordinate);
 void encode(nlohmann::json& j, const std::vector<Geometry::Coordinate>& coordinates);
+void encode(nlohmann::json& j, const Geometry::Polygon& cvs);
 void encode(nlohmann::json& j, const std::vector<Geometry::Polygon>& cvs);
 
 template <Geometry::Type tag>

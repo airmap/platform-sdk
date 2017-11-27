@@ -81,9 +81,15 @@ void airmap::codec::json::decode(const nlohmann::json& j, Geometry::MultiLineStr
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Geometry::Polygon& p) {
+  std::size_t index = 0;
   for (const auto& element : j) {
-    p.push_back(Geometry::CoordinateVector<Geometry::Type::polygon>{});
-    p.back() = element;
+    if (index == 0) {
+      p.outer_ring = element;
+    } else {
+      p.inner_rings.push_back(Geometry::CoordinateVector<Geometry::Type::polygon>{});
+      p.inner_rings.back() = element;
+    }
+    index++;
   }
 }
 
@@ -168,6 +174,12 @@ void airmap::codec::json::encode(nlohmann::json& j, const Geometry::Coordinate& 
 void airmap::codec::json::encode(nlohmann::json& j, const std::vector<Geometry::Coordinate>& coordinates) {
   for (const auto& coordinate : coordinates)
     j.push_back(coordinate);
+}
+
+void airmap::codec::json::encode(nlohmann::json& j, const Geometry::Polygon& polygon) {
+  j.push_back(polygon.outer_ring);
+  for (const auto& inner_ring : polygon.inner_rings)
+    j.push_back(inner_ring);
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const std::vector<Geometry::Polygon>& cvs) {

@@ -53,8 +53,18 @@ class Flights : DoNotCopyOrMove {
       Optional<DateTime> end_before;        ///< Search for flights that ended before this timestamp.
       Optional<bool> enhance;               ///< If true, provides extended information per flight in the result set.
     };
+
+    /// Response bundles up pagination and actual results for a call to Flights::search.
+    struct Response {
+      struct Paging {
+        std::uint32_t limit;        ///< The maximum number of results per page.
+        std::uint32_t total;        ///< The total number of results.
+      } paging;                     ///< Bundles up pagination information.
+      std::vector<Flight> flights;  ///< One page of flight results.
+    };
+
     /// Result models the outcome of calling Flights::search.
-    using Result = Outcome<std::vector<Flight>, Error>;
+    using Result = Outcome<Response, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to Flights::search finishes.
     using Callback = std::function<void(const Result&)>;

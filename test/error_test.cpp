@@ -214,7 +214,7 @@ BOOST_AUTO_TEST_CASE(error_value_assignment_operator_yields_correct_type) {
   {
     auto ref = std::vector<airmap::Error::Value>{airmap::Error::Value{std::int64_t{42}},
                                                  airmap::Error::Value{std::string{"42"}}};
-    auto w = airmap::Error::Value{ref};
+    auto w   = airmap::Error::Value{ref};
     BOOST_CHECK(w.type() == airmap::Error::Value::Type::vector);
     BOOST_CHECK(w.vector() == ref);
   }
@@ -263,7 +263,7 @@ BOOST_AUTO_TEST_CASE(error_value_move_operator_yields_correct_type) {
   {
     auto ref = std::vector<airmap::Error::Value>{airmap::Error::Value{std::int64_t{42}},
                                                  airmap::Error::Value{std::string{"42"}}};
-    auto w = std::move(airmap::Error::Value{ref});
+    auto w   = std::move(airmap::Error::Value{ref});
     BOOST_CHECK(w.type() == airmap::Error::Value::Type::vector);
     BOOST_CHECK(w.vector() == ref);
   }

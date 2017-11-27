@@ -21,6 +21,16 @@ void airmap::codec::json::encode(nlohmann::json& j, const Flights::CreateFlight:
   }
 }
 
+void airmap::codec::json::decode(const nlohmann::json& j, Flights::Search::Response::Paging& paging) {
+  get(paging.limit, j, "limit");
+  get(paging.total, j, "total");
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, Flights::Search::Response& response) {
+  get(response.paging, j, "paging");
+  get(response.flights, j, "results");
+}
+
 void airmap::codec::json::decode(const nlohmann::json& j, Flights::EndFlight::Response& response) {
   get(response.end_time, j, "end_time");
 }

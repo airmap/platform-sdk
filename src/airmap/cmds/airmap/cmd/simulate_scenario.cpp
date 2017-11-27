@@ -55,7 +55,7 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
 
     for (const auto& p : scenario_.participants) {
       const auto& g          = p.geometry;
-      const auto& outer_ring = g.details_for_polygon().at(0);
+      const auto& outer_ring = g.details_for_polygon().outer_ring;
       const auto& to         = outer_ring.coordinates.at(0);
 
       {
@@ -278,8 +278,8 @@ void cmd::SimulateScenario::handle_authenticated_anonymously_result_for(
 void cmd::SimulateScenario::request_flight_status_for(util::Scenario::Participants::iterator participant) {
   Status::GetStatus::Parameters params;
   const auto& polygon     = participant->geometry.details_for_polygon();
-  params.latitude         = polygon[0].coordinates[0].latitude;
-  params.longitude        = polygon[0].coordinates[0].longitude;
+  params.latitude         = polygon.outer_ring.coordinates[0].latitude;
+  params.longitude        = polygon.outer_ring.coordinates[0].longitude;
   params.geometry         = participant->geometry;
   params.flight_date_time = Clock::universal_time();
   params.weather          = true;
@@ -321,8 +321,8 @@ void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participan
   params.start_time    = Clock::universal_time();
   params.end_time      = Clock::universal_time() + duration;
   params.aircraft_id   = participant->aircraft.id;
-  params.latitude      = polygon[0].coordinates[0].latitude;
-  params.longitude     = polygon[0].coordinates[0].longitude;
+  params.latitude      = polygon.outer_ring.coordinates[0].latitude;
+  params.longitude     = polygon.outer_ring.coordinates[0].longitude;
   params.geometry      = participant->geometry;
 
   client_->flights().create_flight_by_polygon(
