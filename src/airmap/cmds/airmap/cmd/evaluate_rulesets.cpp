@@ -26,11 +26,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
-  flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
-  flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
-  flag(cli::make_flag("flight-features",
-                      "use the object in this json file with key value pairs indicating flight details",
-                      flight_features_));
+  flag(cli::make_flag("evaluation", "evaluation-file", evaluation_file_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
@@ -45,25 +41,17 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
       return 1;
     }
 
-    if (!rulesets_) {
-      log_.errorf(component, "missing parameter 'rulesets'");
+    if (!evaluation_file_ || !evaluation_file_.get().validate()) {
+      log_.errorf(component, "missing parameter 'evaluation'");
       return 1;
     }
 
-    params_.rulesets = rulesets_.get();
-
-    if (geometry_file_) {
-      std::ifstream in{geometry_file_.get()};
-      if (!in) {
-        log_.errorf(component, "failed to open %s for reading", geometry_file_.get());
-        return 1;
-      }
-      Geometry geometry = json::parse(in);
-      params_.geometry  = geometry;
-    } else {
-      log_.errorf(component, "missing parameter 'geometry-file'");
+    std::ifstream evaluation_in{evaluation_file_.get()};
+    if (!evaluation_in) {
+      log_.errorf(component, "failed to open %s for reading", evaluation_file_.get());
       return 1;
     }
+    params_ = json::parse(evaluation_in);
 
     auto result = ::airmap::Context::create(log_.logger());
 

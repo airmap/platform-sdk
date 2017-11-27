@@ -22,17 +22,13 @@ class EvaluateRuleSets : public util::cli::CommandWithFlagsAndAction {
   EvaluateRuleSets();
 
  private:
-  using GeometryFile   = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using RuleSetsCSV    = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using FlightFeatures = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using EvaluationFile = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
-  Required<GeometryFile> geometry_file_;
-  Required<RuleSetsCSV> rulesets_;
-  Optional<FlightFeatures> flight_features_;
+  Required<EvaluationFile> evaluation_file_;
   RuleSets::EvaluateRules::Parameters params_;
 };
 
