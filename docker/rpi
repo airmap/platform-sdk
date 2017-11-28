@@ -16,8 +16,6 @@ RUN mkdir build
 WORKDIR build
 RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
 RUN ninja
-RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
-RUN ninja
 RUN ctest -V
 RUN ninja install
 WORKDIR /usr/src/app

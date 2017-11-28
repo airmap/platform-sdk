@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:edge
 
 ARG CIRCLECI
 ARG AIRMAP_CIRCLECI_API_KEY
@@ -14,8 +14,6 @@ COPY . /usr/src/app
 RUN tools/alpine/setup.dev.sh
 RUN mkdir build
 WORKDIR build
-RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
-RUN ninja
 RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
 RUN ninja
 RUN ctest -V

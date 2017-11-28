@@ -8,6 +8,7 @@ apt update
 apt remove -y \
   build-essential \
   cmake \
+  git \
   ninja-build \
   libboost-date-time1.62-dev \
   libboost-filesystem1.62-dev \
@@ -29,7 +30,6 @@ apt install -y \
   libboost-program-options1.62.0 \
   libboost-system1.62.0 \
   libprotobuf10 \
-  libc-ares2 \
   libssl1.1
 
 # And remove all cached debian packages

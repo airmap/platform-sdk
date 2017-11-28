@@ -5,7 +5,6 @@ set -ex
 brew update
 
 brew install \
-  c-ares \
   cmake \
   boost \
   pkgconfig \

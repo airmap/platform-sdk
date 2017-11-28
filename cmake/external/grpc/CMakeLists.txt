@@ -6,8 +6,7 @@ include(ExternalProject)
 
 ExternalProject_add(
     grpc
-    GIT_REPOSITORY https://github.com/grpc/grpc.git
-    GIT_TAG v1.7.2
+    GIT_REPOSITORY https://github.com/airmap/grpc.git
     PREFIX grpc
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=$ENV{AIRMAP_GRPC_OUTPUT_PATH}

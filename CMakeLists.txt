@@ -24,7 +24,28 @@ list(
 
 include(external.cmake)
 
-include(${AIRMAP_PROTOBUF_OUTPUT_PATH}/lib/cmake/protobuf/protobuf-config.cmake)
-include(${AIRMAP_GRPC_OUTPUT_PATH}/lib/cmake/grpc/gRPCConfig.cmake)
+find_file(
+  AIRMAP_PROTOBUF_CMAKE_CONFIG protobuf-config.cmake
+  PATHS ${AIRMAP_PROTOBUF_OUTPUT_PATH}/lib/cmake/protobuf ${AIRMAP_PROTOBUF_OUTPUT_PATH}/lib64/cmake/protobuf
+  NO_DEFAULT_PATH)
+
+message(STATUS ${AIRMAP_PROTOBUF_CMAKE_CONFIG})
+
+if (NOT AIRMAP_PROTOBUF_CMAKE_CONFIG)
+  message(FATAL_ERROR "Failed to find protobuf cmake config file")
+endif()
+
+include(${AIRMAP_PROTOBUF_CMAKE_CONFIG})
+
+find_file(
+  AIRMAP_GRPC_CMAKE_CONFIG gRPCConfig.cmake
+  PATHS ${AIRMAP_GRPC_OUTPUT_PATH}/lib/cmake/grpc ${AIRMAP_GRPC_OUTPUT_PATH}/lib64/cmake/grpc
+  NO_DEFAULT_PATH)
+
+if (NOT AIRMAP_GRPC_CMAKE_CONFIG)
+  message(FATAL_ERROR "Failed to find grpc cmake config file")
+endif()
+
+include(${AIRMAP_GRPC_CMAKE_CONFIG})
 
 include(airmapd.cmake)
