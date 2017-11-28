@@ -14,9 +14,6 @@ void airmap::grpc::client::Executor::run() {
     if (auto mi = static_cast<MethodInvocation*>(tag)) {
       mi->proceed(ok);
     }
-
-    if (!ok)
-      break;
   }
 }
 

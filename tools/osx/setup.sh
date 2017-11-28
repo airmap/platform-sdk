@@ -5,13 +5,13 @@ set -ex
 brew update
 
 brew install \
+  c-ares \
   cmake \
   boost \
-  grpc \
   pkgconfig \
-  protobuf \
   openssl \
-  qt || true
+  qt \
+  zlib || true
 
 ln -s /usr/local/opt/openssl/include/openssl/ /usr/local/include/ || true
 ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/ || true

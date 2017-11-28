@@ -13,7 +13,7 @@ apt install -y \
   libboost-program-options1.62-dev \
   libboost-system1.62-dev \
   libboost-test1.62-dev \
-  libprotobuf-dev \
+  libc-ares-dev \
   libssl-dev \
   pkg-config \
-  protobuf-compiler
+  zlib1g-dev

@@ -23,15 +23,39 @@ endif()
 
 configure_file(version.cpp.in version.cpp)
 
-protobuf_generate_cpp(
-  TELEMETRY_PROTOBUF_SOURCES
-  TELEMETRY_PROTOBUF_HEADERS
-  rest/telemetry.proto)
+set(
+  AIRMAP_TELEMETRY_PROTOBUF_PROTOS
 
-protobuf_generate_cpp(
-  AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_SOURCES
-  AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_HEADERS
-  ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/amd_uav_flight_update.proto)
+  ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/amd_uav_flight_update.proto
+  ${CMAKE_CURRENT_SOURCE_DIR}/rest/telemetry.proto
+)
+
+set(
+  AIRMAP_TELEMETRY_PROTOBUF_SOURCES
+
+  ${CMAKE_CURRENT_BINARY_DIR}/telemetry.pb.h
+  ${CMAKE_CURRENT_BINARY_DIR}/telemetry.pb.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/amd_uav_flight_update.pb.h
+  ${CMAKE_CURRENT_BINARY_DIR}/amd_uav_flight_update.pb.cc
+)
+
+add_custom_command(
+  OUTPUT ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
+
+  COMMAND $<TARGET_FILE:protobuf::protoc> 
+    --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
+    --proto_path ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/
+    --proto_path ${CMAKE_CURRENT_SOURCE_DIR}/rest/
+    ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
+
+  DEPENDS $<TARGET_FILE:protobuf::protoc> ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
+  COMMENT "Generating C++ code for AirMap telemetry interfaces"
+  VERBATIM)
+
+set_source_files_properties(
+  ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
+  PROPERTIES GENERATED TRUE
+)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
@@ -232,8 +256,7 @@ add_library(
 
   ${AIRMAP_PLATFORM_SRCS}
 
-  ${TELEMETRY_PROTOBUF_SOURCES}
-  ${TELEMETRY_PROTOBUF_HEADERS}
+  ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
 )
 
 add_library(

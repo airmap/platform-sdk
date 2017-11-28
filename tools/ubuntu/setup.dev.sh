@@ -6,6 +6,7 @@ apt update
 
 apt install -y \
   build-essential \
+  git \
   cmake \
   ninja-build \
   libboost-date-time1.63-dev \
@@ -13,8 +14,8 @@ apt install -y \
   libboost-program-options1.63-dev \
   libboost-system1.63-dev \
   libboost-test1.63-dev \
-  libprotobuf-dev \
+  libc-ares-dev \
   libssl-dev \
   pkg-config \
-  protobuf-compiler \
-  qtbase5-dev
+  qtbase5-dev \
+  zlib1g-dev

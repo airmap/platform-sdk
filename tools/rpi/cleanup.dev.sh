@@ -14,11 +14,11 @@ apt remove -y \
   libboost-program-options1.62-dev \
   libboost-system1.62-dev \
   libboost-test1.62-dev \
-  libprotobuf-dev \
+  libc-ares-dev \
   libssl-dev \
   pkg-config \
-  protobuf-compiler \
-  qtbase5-dev
+  qtbase5-dev \
+  zlib1g-dev
 
 apt autoremove -y
 
@@ -29,6 +29,7 @@ apt install -y \
   libboost-program-options1.62.0 \
   libboost-system1.62.0 \
   libprotobuf10 \
+  libc-ares2 \
   libssl1.1
 
 # And remove all cached debian packages
