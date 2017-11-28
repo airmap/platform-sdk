@@ -9,13 +9,13 @@ ExternalProject_add(
     GIT_REPOSITORY https://github.com/google/protobuf.git
     GIT_TAG v3.5.0
     PREFIX protobuf
-    SOURCE_SUBDIR cmake
-    CMAKE_ARGS 
-        -DCMAKE_INSTALL_PREFIX=$ENV{AIRMAP_PROTOBUF_OUTPUT_PATH}
-        -Dprotobuf_BUILD_TESTS=OFF
-        -Dprotobuf_BUILD_SHARED_LIBS=OFF
-        -Dprotobuf_WITH_ZLIB=OFF
-        -Dprotobuf_MODULE_COMPATIBLE=ON
+    CONFIGURE_COMMAND ${CMAKE_COMMAND}
+      -DCMAKE_INSTALL_PREFIX:PATH=$ENV{AIRMAP_PROTOBUF_OUTPUT_PATH}
+      -Dprotobuf_BUILD_TESTS=OFF
+      -Dprotobuf_BUILD_SHARED_LIBS=OFF
+      -Dprotobuf_WITH_ZLIB=OFF
+      -Dprotobuf_MODULE_COMPATIBLE=ON
+      <SOURCE_DIR>/cmake
     UPDATE_COMMAND ""
 )
 
