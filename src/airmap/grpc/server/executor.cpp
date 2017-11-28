@@ -16,7 +16,7 @@ airmap::grpc::server::Executor::Executor(const Configuration& c) : context_{c.co
 
   // Get hold of the completion queue used for the asynchronous communication
   // with the gRPC runtime.
-  server_completion_queue_ = builder.AddCompletionQueue();
+  server_completion_queue_ = builder.AddCompletionQueue(true);
 
   // Finally assemble the server.
   server_ = builder.BuildAndStart();
