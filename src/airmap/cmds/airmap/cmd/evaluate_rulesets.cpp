@@ -26,7 +26,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
-  flag(cli::make_flag("evaluation", "evaluation-file", evaluation_file_));
+  flag(cli::make_flag("evaluation-file", "evaluation-file", evaluation_file_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
@@ -42,7 +42,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
     }
 
     if (!evaluation_file_ || !evaluation_file_.get().validate()) {
-      log_.errorf(component, "missing parameter 'evaluation'");
+      log_.errorf(component, "missing parameter 'evaluation-file'");
       return 1;
     }
 
