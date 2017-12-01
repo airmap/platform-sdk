@@ -73,6 +73,7 @@ add_library(
   ${CMAKE_SOURCE_DIR}/include/airmap/client.h
   ${CMAKE_SOURCE_DIR}/include/airmap/credentials.h
   ${CMAKE_SOURCE_DIR}/include/airmap/date_time.h
+  ${CMAKE_SOURCE_DIR}/include/airmap/evaluation.h
   ${CMAKE_SOURCE_DIR}/include/airmap/flight.h
   ${CMAKE_SOURCE_DIR}/include/airmap/flights.h
   ${CMAKE_SOURCE_DIR}/include/airmap/optional.h
@@ -93,7 +94,7 @@ add_library(
   credentials.cpp
   date_time.cpp
   error.cpp
-  flight_plan.cpp
+  evaluation.cpp
   geometry.cpp
   jsend.h
   jsend.cpp
@@ -137,6 +138,8 @@ add_library(
   codec/json/credentials.cpp
   codec/json/date_time.h
   codec/json/date_time.cpp
+  codec/json/evaluation.h
+  codec/json/evaluation.cpp
   codec/json/flight_plan.h
   codec/json/flight_plan.cpp
   codec/json/flight_plans.h

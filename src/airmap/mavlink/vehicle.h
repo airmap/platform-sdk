@@ -22,7 +22,7 @@ class Vehicle {
    public:
     virtual void on_system_status_changed(const Optional<State>& old_state, State new_state) = 0;
     virtual void on_position_changed(const Optional<GlobalPositionInt>& old_position,
-                                     const GlobalPositionInt& new_position) = 0;
+                                     const GlobalPositionInt& new_position)                  = 0;
 
    protected:
     Monitor() = default;

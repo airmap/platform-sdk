@@ -17,16 +17,6 @@ namespace {
 
 constexpr const char* component{"evaluate-rulesets"};
 
-void print_rules(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
-  for (const auto& r : v) {
-    out << std::endl;
-    out << "    id:           " << r.id << std::endl;
-    out << "    # rules:      " << r.rules.size() << std::endl;
-    // TBD - print rules
-  }
-  out << std::endl;
-}
-
 }  // namespace
 
 cmd::EvaluateRuleSets::EvaluateRuleSets()
@@ -36,9 +26,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
-  flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
-  flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
-  flag(cli::make_flag("flight-features", "object with key value pairs indicating flight details", flight_features_));
+  flag(cli::make_flag("evaluation-file", "evaluation-file", evaluation_file_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
@@ -53,25 +41,17 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
       return 1;
     }
 
-    if (!rulesets_) {
-      log_.errorf(component, "missing parameter 'rulesets'");
+    if (!evaluation_file_ || !evaluation_file_.get().validate()) {
+      log_.errorf(component, "missing parameter 'evaluation-file'");
       return 1;
     }
 
-    params_.rulesets = rulesets_.get();
-
-    if (geometry_file_) {
-      std::ifstream in{geometry_file_.get()};
-      if (!in) {
-        log_.errorf(component, "failed to open %s for reading", geometry_file_.get());
-        return 1;
-      }
-      Geometry geometry = json::parse(in);
-      params_.geometry  = geometry;
-    } else {
-      log_.errorf(component, "missing parameter 'geometry-file'");
+    std::ifstream evaluation_in{evaluation_file_.get()};
+    if (!evaluation_in) {
+      log_.errorf(component, "failed to open %s for reading", evaluation_file_.get());
       return 1;
     }
+    params_ = json::parse(evaluation_in);
 
     auto result = ::airmap::Context::create(log_.logger());
 
@@ -102,10 +82,16 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
 
           auto client = result.value();
 
-          auto handler = [this, &ctxt, context, client](const RuleSets::Evaluation::Result& result) {
+          auto handler = [this, &ctxt, context, client](const RuleSets::EvaluateRules::Result& result) {
             if (result) {
-              log_.infof(component, "succesfully evaluated rulesets with provided geometry\n");
-              print_rules(ctxt.cout, result.value());
+              log_.infof(component,
+                         "successfully evaluated rulesets:\n"
+                         "  # rulesets:       %d\n"
+                         "  # validations:    %d\n"
+                         "  # authorizations: %d\n"
+                         "  # failures:       %d\n",
+                         result.value().rulesets.size(), result.value().validations.size(),
+                         result.value().authorizations.size(), result.value().failures.size());
               context->stop();
             } else {
               log_.errorf(component, "failed to evaluate rulesets: %s", result.error());

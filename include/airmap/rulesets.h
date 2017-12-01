@@ -3,6 +3,7 @@
 
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
+#include <airmap/evaluation.h>
 #include <airmap/geometry.h>
 #include <airmap/outcome.h>
 #include <airmap/ruleset.h>
@@ -58,9 +59,9 @@ class RuleSets : DoNotCopyOrMove {
     using Callback = std::function<void(const Result&)>;
   };
 
-  /// Evaluation bundles up types to ease interaction with
+  /// EvaluateRules bundles up types to ease interaction with
   /// RuleSets::evaluate_rulesets.
-  struct Evaluation {
+  struct EvaluateRules {
     struct Parameters {
       Required<Geometry> geometry;  ///< Evaluate rulesets intersecting this geometry.
       std::unordered_map<std::string, RuleSet::Feature::Value>
@@ -69,7 +70,7 @@ class RuleSets : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling RuleSets::evaluate_rulesets.
-    using Result = Outcome<std::vector<RuleSet>, Error>;
+    using Result = Outcome<Evaluation, Error>;
     /// Callback describes the function signature of the callback that is invoked
     /// when a call to RuleSets::evaluate_rulesets finishes.
     using Callback = std::function<void(const Result&)>;
@@ -89,7 +90,7 @@ class RuleSets : DoNotCopyOrMove {
 
   /// evaluate_rulesets evaluates rulesets and geometry identified by 'parameters' and
   /// reports back results to 'cb'.
-  virtual void evaluate_rulesets(const Evaluation::Parameters& parameters, const Evaluation::Callback& cb) = 0;
+  virtual void evaluate_rulesets(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) = 0;
 
  protected:
   /// @cond
