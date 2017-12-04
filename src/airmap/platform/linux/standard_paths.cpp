@@ -1,6 +1,6 @@
 #include <airmap/platform/linux/standard_paths.h>
 
-#include <xdg/xdg.h>
+#include <airmap/platform/linux/xdg.h>
 
 airmap::Optional<airmap::platform::Path> airmap::platform::linux_::StandardPaths::path(Scope scope, Location location) {
   switch (location) {
