@@ -1,3 +1,4 @@
+#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE issue_38
 
 #include <airmap/airspace.h>

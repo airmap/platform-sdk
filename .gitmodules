@@ -18,6 +18,9 @@
 	path = vendor/mqtt_client_cpp
 	url = https://github.com/airmap/mqtt_client_cpp.git
 	branch = 58c3017f6f8201627434fe1e8143bef5691fd66f
+[submodule "vendor/xdg"]
+	path = vendor/xdg
+	url = https://github.com/vosst/xdg.git
 [submodule "vendor/airmap/am-protos"]
 	path = vendor/airmap/am-protos
 	url = https://github.com/airmap/am-protos.git

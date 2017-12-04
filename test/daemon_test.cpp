@@ -1,3 +1,4 @@
+#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE daemon
 
 #include <airmap/boost/context.h>
