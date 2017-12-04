@@ -393,9 +393,6 @@ target_link_libraries(
   airmap-mavlink
   airmap-monitor
 
-  fmt
-  network-uri
-  spdlog
   ${Boost_LIBRARIES}
   ${OPENSSL_LDFLAGS}
   ${PROTOBUF_LIBRARIES})
