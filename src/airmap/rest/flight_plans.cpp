@@ -2,6 +2,7 @@
 
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
+#include <airmap/net/http/middleware.h>
 
 #include <fmt/printf.h>
 #include <nlohmann/json.hpp>
@@ -31,13 +32,7 @@ void airmap::rest::FlightPlans::for_id(const ForId::Parameters& parameters, cons
     headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
 
   requester_->get(fmt::sprintf("/plan/%s", parameters.id), std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      cb(jsend::to_outcome<FlightPlan>(json::parse(result.value().body)));
-                    } else {
-                      cb(ForId::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<FlightPlan>(cb));
 }
 
 void airmap::rest::FlightPlans::create_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) {
@@ -46,13 +41,7 @@ void airmap::rest::FlightPlans::create_by_polygon(const Create::Parameters& para
 
   json j = parameters;
 
-  requester_->post("/plan", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<FlightPlan>(json::parse(result.value().body)));
-    } else {
-      cb(Create::Result{result.error()});
-    }
-  });
+  requester_->post("/plan", std::move(headers), j.dump(), net::http::jsend_parsing_request_callback<FlightPlan>(cb));
 }
 
 void airmap::rest::FlightPlans::update(const Update::Parameters& parameters, const Update::Callback& cb) {
@@ -65,13 +54,7 @@ void airmap::rest::FlightPlans::update(const Update::Parameters& parameters, con
   j = parameters.flight_plan;
 
   requester_->patch(fmt::sprintf("/plan/%s", parameters.flight_plan.id), std::move(headers), j.dump(),
-                    [cb](const net::http::Requester::Result& result) {
-                      if (result) {
-                        cb(jsend::to_outcome<FlightPlan>(json::parse(result.value().body)));
-                      } else {
-                        cb(Create::Result{result.error()});
-                      }
-                    });
+                    net::http::jsend_parsing_request_callback<FlightPlan>(cb));
 }
 
 void airmap::rest::FlightPlans::delete_(const Delete::Parameters& parameters, const Delete::Callback& cb) {
@@ -81,13 +64,7 @@ void airmap::rest::FlightPlans::delete_(const Delete::Parameters& parameters, co
     headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
 
   requester_->delete_(fmt::sprintf("/plan/%s", parameters.id), std::move(query), std::move(headers),
-                      [cb](const net::http::Requester::Result& result) {
-                        if (result) {
-                          cb(jsend::to_outcome<Delete::Response>(json::parse(result.value().body)));
-                        } else {
-                          cb(Delete::Result{result.error()});
-                        }
-                      });
+                      net::http::jsend_parsing_request_callback<Delete::Response>(cb));
 }
 
 void airmap::rest::FlightPlans::render_briefing(const RenderBriefing::Parameters& parameters,
@@ -98,14 +75,7 @@ void airmap::rest::FlightPlans::render_briefing(const RenderBriefing::Parameters
     headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
 
   requester_->get(fmt::sprintf("/plan/%s/briefing", parameters.id), std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      auto j = json::parse(result.value().body);
-                      cb(jsend::to_outcome<FlightPlan::Briefing>(json::parse(result.value().body)));
-                    } else {
-                      cb(RenderBriefing::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<FlightPlan::Briefing>(cb));
 }
 
 void airmap::rest::FlightPlans::submit(const Submit::Parameters& parameters, const Submit::Callback& cb) {
@@ -115,11 +85,5 @@ void airmap::rest::FlightPlans::submit(const Submit::Parameters& parameters, con
   };
 
   requester_->post(fmt::sprintf("/plan/%s/submit", parameters.id), std::move(headers), std::string{},
-                   [cb](const net::http::Requester::Result& result) {
-                     if (result) {
-                       cb(jsend::to_outcome<FlightPlan>(json::parse(result.value().body)));
-                     } else {
-                       cb(Create::Result{result.error()});
-                     }
-                   });
+                   net::http::jsend_parsing_request_callback<FlightPlan>(cb));
 }

@@ -2,6 +2,7 @@
 
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
+#include <airmap/net/http/middleware.h>
 
 #include <fmt/printf.h>
 #include <nlohmann/json.hpp>
@@ -31,13 +32,8 @@ void airmap::rest::Pilots::authenticated(const Authenticated::Parameters& parame
   headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization);
   codec::http::query::encode(query, parameters);
 
-  requester_->get("/profile", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<Pilot>(json::parse(result.value().body)));
-    } else {
-      cb(Authenticated::Result{result.error()});
-    }
-  });
+  requester_->get("/profile", std::move(query), std::move(headers),
+                  net::http::jsend_parsing_request_callback<Pilot>(cb));
 }
 
 void airmap::rest::Pilots::for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) {
@@ -47,13 +43,7 @@ void airmap::rest::Pilots::for_id(const ForId::Parameters& parameters, const For
   codec::http::query::encode(query, parameters);
 
   requester_->get(fmt::sprintf("/%s", parameters.id), std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      cb(jsend::to_outcome<Pilot>(json::parse(result.value().body)));
-                    } else {
-                      cb(ForId::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<Pilot>(cb));
 }
 
 void airmap::rest::Pilots::update_for_id(const UpdateForId::Parameters& parameters, const UpdateForId::Callback& cb) {
@@ -63,13 +53,7 @@ void airmap::rest::Pilots::update_for_id(const UpdateForId::Parameters& paramete
   json j = parameters;
 
   requester_->patch(fmt::sprintf("/%s", parameters.id), std::move(headers), j.dump(),
-                    [cb](const net::http::Requester::Result& result) {
-                      if (result) {
-                        cb(jsend::to_outcome<Pilot>(json::parse(result.value().body)));
-                      } else {
-                        cb(UpdateForId::Result{result.error()});
-                      }
-                    });
+                    net::http::jsend_parsing_request_callback<Pilot>(cb));
 }
 
 void airmap::rest::Pilots::start_verify_pilot_phone_for_id(const StartVerifyPilotPhoneForId::Parameters& parameters,
@@ -78,13 +62,7 @@ void airmap::rest::Pilots::start_verify_pilot_phone_for_id(const StartVerifyPilo
   headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization);
 
   requester_->post(fmt::sprintf("/%s/phone/send_token", parameters.id), std::move(headers), std::string{},
-                   [cb](const net::http::Requester::Result& result) {
-                     if (result) {
-                       cb(jsend::to_outcome<StartVerifyPilotPhoneForId::Empty>(json::parse(result.value().body)));
-                     } else {
-                       cb(StartVerifyPilotPhoneForId::Result{result.error()});
-                     }
-                   });
+                   net::http::jsend_parsing_request_callback<StartVerifyPilotPhoneForId::Empty>(cb));
 }
 
 void airmap::rest::Pilots::finish_verify_pilot_phone_for_id(const FinishVerifyPilotPhoneForId::Parameters& parameters,
@@ -95,13 +73,7 @@ void airmap::rest::Pilots::finish_verify_pilot_phone_for_id(const FinishVerifyPi
   json j = parameters;
 
   requester_->post(fmt::sprintf("/phone/send_token", parameters.id), std::move(headers), j.dump(),
-                   [cb](const net::http::Requester::Result& result) {
-                     if (result) {
-                       cb(jsend::to_outcome<FinishVerifyPilotPhoneForId::Empty>(json::parse(result.value().body)));
-                     } else {
-                       cb(FinishVerifyPilotPhoneForId::Result{result.error()});
-                     }
-                   });
+                   net::http::jsend_parsing_request_callback<FinishVerifyPilotPhoneForId::Empty>(cb));
 }
 
 void airmap::rest::Pilots::aircrafts(const Aircrafts::Parameters& parameters, const Aircrafts::Callback& cb) {
@@ -109,13 +81,7 @@ void airmap::rest::Pilots::aircrafts(const Aircrafts::Parameters& parameters, co
   headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization);
 
   requester_->get(fmt::sprintf("/%s/aircraft", parameters.id), std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      cb(jsend::to_outcome<std::vector<Pilot::Aircraft>>(json::parse(result.value().body)));
-                    } else {
-                      cb(Aircrafts::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<std::vector<Pilot::Aircraft>>(cb));
 }
 
 void airmap::rest::Pilots::add_aircraft(const AddAircraft::Parameters& parameters, const AddAircraft::Callback& cb) {
@@ -125,13 +91,7 @@ void airmap::rest::Pilots::add_aircraft(const AddAircraft::Parameters& parameter
   json j = parameters;
 
   requester_->post(fmt::sprintf("/%s/aircraft", parameters.id), std::move(headers), j.dump(),
-                   [cb](const net::http::Requester::Result& result) {
-                     if (result) {
-                       cb(jsend::to_outcome<Pilot::Aircraft>(json::parse(result.value().body)));
-                     } else {
-                       cb(AddAircraft::Result{result.error()});
-                     }
-                   });
+                   net::http::jsend_parsing_request_callback<Pilot::Aircraft>(cb));
 }
 
 void airmap::rest::Pilots::delete_aircraft(const DeleteAircraft::Parameters& parameters,
@@ -140,13 +100,7 @@ void airmap::rest::Pilots::delete_aircraft(const DeleteAircraft::Parameters& par
   headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization);
 
   requester_->delete_(fmt::sprintf("/%s/aircraft/%s", parameters.id, parameters.aircraft_id), std::move(query),
-                      std::move(headers), [cb](const net::http::Requester::Result& result) {
-                        if (result) {
-                          cb(jsend::to_outcome<DeleteAircraft::Empty>(json::parse(result.value().body)));
-                        } else {
-                          cb(DeleteAircraft::Result{result.error()});
-                        }
-                      });
+                      std::move(headers), net::http::jsend_parsing_request_callback<DeleteAircraft::Empty>(cb));
 }
 
 void airmap::rest::Pilots::update_aircraft(const UpdateAircraft::Parameters& parameters,
@@ -157,11 +111,5 @@ void airmap::rest::Pilots::update_aircraft(const UpdateAircraft::Parameters& par
   json j = parameters;
 
   requester_->patch(fmt::sprintf("/%s/aircraft/%s", parameters.id, parameters.aircraft_id), std::move(headers),
-                    j.dump(), [cb](const net::http::Requester::Result& result) {
-                      if (result) {
-                        cb(jsend::to_outcome<UpdateAircraft::Empty>(json::parse(result.value().body)));
-                      } else {
-                        cb(UpdateAircraft::Result{result.error()});
-                      }
-                    });
+                    j.dump(), net::http::jsend_parsing_request_callback<UpdateAircraft::Empty>(cb));
 }

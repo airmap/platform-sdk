@@ -2,6 +2,7 @@
 
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
+#include <airmap/net/http/middleware.h>
 
 #include <fmt/printf.h>
 #include <nlohmann/json.hpp>
@@ -29,39 +30,23 @@ void airmap::rest::RuleSets::search(const Search::Parameters& parameters, const 
 
   json j = parameters;
 
-  requester_->post("/", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
-    } else {
-      cb(Search::Result{result.error()});
-    }
-  });
+  requester_->post("/", std::move(headers), j.dump(),
+                   net::http::jsend_parsing_request_callback<std::vector<RuleSet>>(cb));
 }
 
 void airmap::rest::RuleSets::for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
 
   requester_->get(fmt::sprintf("/%s", parameters.id), std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      cb(jsend::to_outcome<RuleSet>(json::parse(result.value().body)));
-                    } else {
-                      cb(ForId::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<RuleSet>(cb));
 }
 
 void airmap::rest::RuleSets::fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  requester_->get("/rule", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<std::vector<RuleSet>>(json::parse(result.value().body)));
-    } else {
-      cb(FetchRules::Result{result.error()});
-    }
-  });
+  requester_->get("/rule", std::move(query), std::move(headers),
+                  net::http::jsend_parsing_request_callback<std::vector<RuleSet>>(cb));
 }
 
 void airmap::rest::RuleSets::evaluate_rulesets(const EvaluateRules::Parameters& parameters,
@@ -70,11 +55,6 @@ void airmap::rest::RuleSets::evaluate_rulesets(const EvaluateRules::Parameters& 
 
   json j = parameters;
 
-  requester_->post("/evaluation", std::move(headers), j.dump(), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<Evaluation>(json::parse(result.value().body)));
-    } else {
-      cb(EvaluateRules::Result{result.error()});
-    }
-  });
+  requester_->post("/evaluation", std::move(headers), j.dump(),
+                   net::http::jsend_parsing_request_callback<Evaluation>(cb));
 }

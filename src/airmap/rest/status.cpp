@@ -2,6 +2,7 @@
 
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
+#include <airmap/net/http/middleware.h>
 
 #include <fmt/printf.h>
 #include <boost/format.hpp>
@@ -29,26 +30,15 @@ void airmap::rest::Status::get_status_by_point(const GetStatus::Parameters& para
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  requester_->get("/point", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<Report>(json::parse(result.value().body)));
-    } else {
-      cb(GetStatus::Result{result.error()});
-    }
-  });
+  requester_->get("/point", std::move(query), std::move(headers),
+                  net::http::jsend_parsing_request_callback<Report>(cb));
 }
 
 void airmap::rest::Status::get_status_by_path(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  requester_->get("/path", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<Report>(json::parse(result.value().body)));
-    } else {
-      cb(GetStatus::Result{result.error()});
-    }
-  });
+  requester_->get("/path", std::move(query), std::move(headers), net::http::jsend_parsing_request_callback<Report>(cb));
 }
 
 void airmap::rest::Status::get_status_by_polygon(const GetStatus::Parameters& parameters,
@@ -56,11 +46,6 @@ void airmap::rest::Status::get_status_by_polygon(const GetStatus::Parameters& pa
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  requester_->get("/polygon", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<Report>(json::parse(result.value().body)));
-    } else {
-      cb(GetStatus::Result{result.error()});
-    }
-  });
+  requester_->get("/polygon", std::move(query), std::move(headers),
+                  net::http::jsend_parsing_request_callback<Report>(cb));
 }
