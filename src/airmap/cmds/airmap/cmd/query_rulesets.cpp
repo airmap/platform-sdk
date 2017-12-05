@@ -33,7 +33,7 @@ std::string print_ruleset(const airmap::RuleSet& r) {
       r.id, r.name, r.short_name, r.selection_type, r.description, r.is_default, r.jurisdiction.id, r.jurisdiction.name,
       r.jurisdiction.region, r.rules.size()
       // TBD - print rules
-  );
+      );
 }
 
 std::string print_rulesets(const std::vector<airmap::RuleSet>& v) {
