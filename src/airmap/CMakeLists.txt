@@ -15,8 +15,30 @@ if (${AIRMAP_PLATFORM} STREQUAL "linux")
     platform/linux/interface.cpp
     platform/linux/standard_paths.h
     platform/linux/standard_paths.cpp
+    platform/linux/xdg.h
+    platform/linux/xdg.cpp
   )
   set(AIRMAP_PLATFORM_LIBRARIES ${AIRMAP_PLATFORM_LIBRARIES} xdg)
+
+  configure_file(
+    platform/linux/libairmap-cpp.pc.in
+    platform/linux/libairmap-cpp.pc
+    @ONLY)
+
+  configure_file(
+    platform/linux/libairmap-qt.pc.in
+    platform/linux/libairmap-qt.pc
+    @ONLY)
+
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/platform/linux/libairmap-cpp.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  )
+
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/platform/linux/libairmap-qt.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  )
 else()
   add_definitions(-DAIRMAP_PLATFORM_NULL)
 endif()
@@ -36,7 +58,7 @@ protobuf_generate_cpp(
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(
-  airmap-mavlink
+  airmap-mavlink OBJECT
 
   mavlink/channel.h
   mavlink/channel.cpp
@@ -63,7 +85,7 @@ add_library(
 )
 
 add_library(
-  airmap-client
+  airmap-client OBJECT
 
   ${CMAKE_SOURCE_DIR}/include/airmap/aircraft.h
   ${CMAKE_SOURCE_DIR}/include/airmap/aircrafts.h
@@ -237,7 +259,7 @@ add_library(
 )
 
 add_library(
-  airmap-monitor
+  airmap-monitor OBJECT
 
   monitor/daemon.h
   monitor/daemon.cpp
@@ -248,7 +270,15 @@ add_library(
 )
 
 add_library(
-  airmap-qt
+  airmap-cpp SHARED
+
+  $<TARGET_OBJECTS:airmap-client>
+)
+
+add_library(
+  airmap-qt SHARED
+
+  $<TARGET_OBJECTS:airmap-client>
 
   qt/client.cpp
   qt/dispatcher.h
@@ -280,6 +310,10 @@ add_library(
 
 add_executable(
   airmap
+
+  $<TARGET_OBJECTS:airmap-client>
+  $<TARGET_OBJECTS:airmap-mavlink>
+  $<TARGET_OBJECTS:airmap-monitor>
 
   cmds/airmap/airmap.cpp
   cmds/airmap/cmd/create_flight.h
@@ -343,31 +377,32 @@ set_property(TARGET airmap-mavlink PROPERTY COMPILE_OPTIONS "-Wno-pedantic")
 set_property(TARGET airmap PROPERTY CXX_STANDARD 14)
 
 target_link_libraries(
-  airmap-client
+  airmap-cpp
 
-  ${AIRMAP_PLATFORM_LIBRARIES}
-  airmap-mavlink
-
-  fmt
-  network-uri
-  spdlog
   ${Boost_LIBRARIES}
   ${OPENSSL_LDFLAGS}
-  ${PROTOBUF_LIBRARIES})
-
-target_link_libraries(
-  airmap-monitor
-
-  airmap-client
+  ${PROTOBUF_LIBRARIES}
 )
 
 target_link_libraries(
   airmap-qt
 
-  airmap-client
+  ${Boost_LIBRARIES}
+  ${OPENSSL_LDFLAGS}
+  ${PROTOBUF_LIBRARIES}
 
-  Qt5::Core)
+  Qt5::Core
+)
 
-target_link_libraries(airmap airmap-client airmap-monitor)
+target_link_libraries(
+  airmap
 
-install(TARGETS airmap RUNTIME DESTINATION bin)
+  ${Boost_LIBRARIES}
+  ${OPENSSL_LDFLAGS}
+  ${PROTOBUF_LIBRARIES}
+)
+
+install(TARGETS airmap-cpp LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS airmap-qt LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS airmap RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/airmap DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
