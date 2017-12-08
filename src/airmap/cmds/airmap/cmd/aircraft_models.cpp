@@ -28,7 +28,7 @@ cmd::AircraftModels::AircraftModels()
   flag(flags::token_file(token_file_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
+    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
