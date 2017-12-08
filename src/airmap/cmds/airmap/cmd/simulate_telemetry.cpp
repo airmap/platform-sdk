@@ -34,8 +34,8 @@ constexpr const char* component{"telemetry-simulator"};
 }  // namespace
 
 cmd::SimulateTelemetry::SimulateTelemetry()
-    : cli::CommandWithFlagsAndAction{"simulate-telemetry", "inject artificial telemetry data for a given flight",
-                                     "inject artificial telemetry data for a given flight"} {
+    : cli::CommandWithFlagsAndAction{"simulate-telemetry", "injects artificial telemetry data for a given flight",
+                                     "injects artificial telemetry data for a given flight"} {
   flag(flags::version(params_.version));
   flag(flags::log_level(params_.log_level));
   flag(flags::config_file(params_.config_file));

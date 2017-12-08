@@ -22,8 +22,8 @@ constexpr const char* component{"start-flight-comms"};
 }
 
 cmd::StartFlightComms::StartFlightComms()
-    : cli::CommandWithFlagsAndAction{"start-flight-comms", "prepare flight for injection of telemetry data",
-                                     "prepare flight for injection of telemetry data"} {
+    : cli::CommandWithFlagsAndAction{"start-flight-comms", "prepares flight for injection of telemetry data",
+                                     "prepares flight for injection of telemetry data"} {
   flag(flags::version(params_.version));
   flag(flags::log_level(params_.log_level));
   flag(flags::config_file(params_.config_file));

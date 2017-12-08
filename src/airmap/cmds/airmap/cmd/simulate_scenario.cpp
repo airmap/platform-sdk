@@ -135,8 +135,8 @@ airmap::util::Scenario& cmd::SimulateScenario::Collector::scenario() {
 
 cmd::SimulateScenario::SimulateScenario()
     : cli::CommandWithFlagsAndAction{"simulate-scenario",
-                                     "simulate multiple vehicles carrying out missions and submitting telemetry",
-                                     "simulate multiple vehicles carrying out missions and submitting telemetry"} {
+                                     "simulates multiple vehicles carrying out missions and submitting telemetry",
+                                     "simulates multiple vehicles carrying out missions and submitting telemetry"} {
   flag(flags::version(params_.version));
   flag(flags::log_level(params_.log_level));
   flag(flags::config_file(params_.config_file));

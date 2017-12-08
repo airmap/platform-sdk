@@ -33,8 +33,8 @@ void print_evaluation(std::ostream& out, const airmap::Evaluation& e) {
 
 cmd::EvaluateRuleSets::EvaluateRuleSets()
     : cli::CommandWithFlagsAndAction{"evaluate-rulesets",
-                                     "evalute rulesets and return a list of rules matching results",
-                                     "evalute rulesets and return a list of rules matching results"} {
+                                     "evalutes rulesets and return a list of rules matching results",
+                                     "evalutes rulesets and return a list of rules matching results"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));

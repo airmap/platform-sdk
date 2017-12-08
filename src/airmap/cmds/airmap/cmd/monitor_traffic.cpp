@@ -14,8 +14,8 @@ constexpr const char* component{"monitor-traffic"};
 }
 
 cmd::MonitorTraffic::MonitorTraffic()
-    : cli::CommandWithFlagsAndAction{"monitor-traffic", "traffic alerts and situational awareness",
-                                     "receive traffic alerts for a flight with AirMap services"} {
+    : cli::CommandWithFlagsAndAction{"monitor-traffic", "monitors traffic alerts and situational awareness",
+                                     "monitors traffic alerts and situational awareness"} {
   flag(flags::log_level(params_.log_level));
   flag(flags::config_file(params_.config_file));
   flag(flags::token_file(params_.token_file));
