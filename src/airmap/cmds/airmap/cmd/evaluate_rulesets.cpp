@@ -17,6 +17,18 @@ namespace {
 
 constexpr const char* component{"evaluate-rulesets"};
 
+void print_evaluation(std::ostream& out, const airmap::Evaluation& e) {
+  cli::TabWriter tw;
+
+  tw << "# rulesets"
+     << "# validations"
+     << "# authorizations"
+     << "# failures" << cli::TabWriter::NewLine{} << e.rulesets.size() << e.validations.size()
+     << e.authorizations.size() << e.failures.size();
+
+  tw.flush(out);
+}
+
 }  // namespace
 
 cmd::EvaluateRuleSets::EvaluateRuleSets()
@@ -29,7 +41,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
   flag(cli::make_flag("evaluation-file", "evaluation-file", evaluation_file_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cerr))};
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -56,7 +68,7 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -84,14 +96,8 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
 
           auto handler = [this, &ctxt, context, client](const RuleSets::EvaluateRules::Result& result) {
             if (result) {
-              log_.infof(component,
-                         "successfully evaluated rulesets:\n"
-                         "  # rulesets:       %d\n"
-                         "  # validations:    %d\n"
-                         "  # authorizations: %d\n"
-                         "  # failures:       %d\n",
-                         result.value().rulesets.size(), result.value().validations.size(),
-                         result.value().authorizations.size(), result.value().failures.size());
+              log_.infof(component, "successfully evaluated rulesets");
+              print_evaluation(ctxt.cout, result.value());
               context->stop();
             } else {
               log_.errorf(component, "failed to evaluate rulesets: %s", result.error());
@@ -101,7 +107,6 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
           };
 
           client->rulesets().evaluate_rulesets(params_, handler);
-
         });
 
     return context->exec({SIGINT, SIGQUIT},

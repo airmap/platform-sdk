@@ -47,7 +47,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
   flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", params_.geometry_file));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cerr))};
 
     if (!params_.config_file) {
       params_.config_file = ConfigFile{paths::config_file(params_.version).string()};
@@ -87,7 +87,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -142,7 +142,7 @@ cmd::SimulateTelemetry::SimulateTelemetry()
             while (true) {
               auto data = simulator.update();
 
-              log_.infof(component, "Submitting update for position (%f,%f)", data.latitude, data.longitude);
+              log_.infof(component, "submitting update for position (%f,%f)", data.latitude, data.longitude);
 
               client->telemetry().submit_updates(
                   flight, params_.encryption_key.get(),

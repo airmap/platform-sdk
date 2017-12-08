@@ -20,7 +20,7 @@ namespace {
 constexpr const char* component{"end-flight"};
 }
 
-cmd::EndFlight::EndFlight() : cli::CommandWithFlagsAndAction{"end-flight", "end a flight", "end a flight"} {
+cmd::EndFlight::EndFlight() : cli::CommandWithFlagsAndAction{"end-flight", "ends a flight", "ends a flight"} {
   flag(flags::version(params_.version));
   flag(flags::log_level(params_.log_level));
   flag(flags::config_file(params_.config_file));
@@ -28,7 +28,7 @@ cmd::EndFlight::EndFlight() : cli::CommandWithFlagsAndAction{"end-flight", "end 
   flag(flags::flight_id(params_.flight_id));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cerr))};
 
     if (!params_.config_file) {
       params_.config_file = ConfigFile{paths::config_file(params_.version).string()};
@@ -65,7 +65,7 @@ cmd::EndFlight::EndFlight() : cli::CommandWithFlagsAndAction{"end-flight", "end 
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -99,8 +99,13 @@ cmd::EndFlight::EndFlight() : cli::CommandWithFlagsAndAction{"end-flight", "end 
                                            return;
                                          }
 
-                                         log_.infof(component, "successfully ended flight: %s",
-                                                    iso8601::generate(result.value().end_time));
+                                         log_.infof(component, "successfully ended flight");
+
+                                         cli::TabWriter tw;
+                                         tw << "flight-ended" << cli::TabWriter::NewLine{}
+                                            << iso8601::generate(result.value().end_time);
+                                         tw.flush(ctxt.cout);
+
                                          context->stop();
                                        });
         });

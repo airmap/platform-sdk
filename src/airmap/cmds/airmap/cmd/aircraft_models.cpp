@@ -20,8 +20,8 @@ constexpr const char* component{"aircraft-models"};
 }  // namespace
 
 cmd::AircraftModels::AircraftModels()
-    : cli::CommandWithFlagsAndAction{"aircraft-models", "list all models in the AirMap database",
-                                     "list all models in the AirMap database"} {
+    : cli::CommandWithFlagsAndAction{"aircraft-models", "lists all aircraft models in the AirMap database",
+                                     "lists all aircraft models in the AirMap database"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
@@ -55,7 +55,7 @@ cmd::AircraftModels::AircraftModels()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -71,17 +71,19 @@ cmd::AircraftModels::AircraftModels()
                "  credentials.api_key: %s\n",
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
-    context_->create_client_with_configuration(config, [this](const ::airmap::Context::ClientCreateResult& result) {
-      if (not result) {
-        log_.errorf(component, "failed to create AirMap client instance: %s", result.error());
-        context_->stop(::airmap::Context::ReturnCode::error);
-        return;
-      }
+    context_->create_client_with_configuration(
+        config, [this, &ctxt](const ::airmap::Context::ClientCreateResult& result) {
+          if (not result) {
+            log_.errorf(component, "failed to create AirMap client instance: %s", result.error());
+            context_->stop(::airmap::Context::ReturnCode::error);
+            return;
+          }
 
-      client_ = result.value();
-      client_->aircrafts().models(Aircrafts::Models::Parameters{},
-                                  std::bind(&AircraftModels::handle_models_result, this, std::placeholders::_1));
-    });
+          client_ = result.value();
+          client_->aircrafts().models(
+              Aircrafts::Models::Parameters{},
+              std::bind(&AircraftModels::handle_models_result, this, std::placeholders::_1, std::ref(ctxt)));
+        });
 
     return context_->exec({SIGINT, SIGQUIT},
                           [this](int sig) {
@@ -93,13 +95,20 @@ cmd::AircraftModels::AircraftModels()
   });
 }
 
-void cmd::AircraftModels::handle_models_result(const Aircrafts::Models::Result& result) {
+void cmd::AircraftModels::handle_models_result(const Aircrafts::Models::Result& result, ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully queried aircraft models");
+
+    cli::TabWriter tw;
+    tw << "model-id"
+       << "model-name"
+       << "manufacturer-id"
+       << "manufacturer-name";
     for (const auto& a : result.value()) {
-      std::cout << a.model.id << " " << a.model.name << " " << a.manufacturer.id << " " << a.manufacturer.name
-                << std::endl;
+      tw << cli::TabWriter::NewLine{} << a.model.id << a.model.name << a.manufacturer.id << a.manufacturer.name;
     }
+    tw.flush(context.get().cout);
+
     context_->stop();
   } else {
     log_.errorf(component, "failed to query aircraft models");

@@ -24,12 +24,16 @@ class Login : public util::cli::CommandWithFlagsAndAction {
   Login();
 
  private:
-  void renew_authentication(const Credentials& credentials, const Token& token);
-  void request_authentication(const Credentials& credentials);
-  void handle_result_for_authentication_with_password(const Authenticator::AuthenticateWithPassword::Result& result);
-  void handle_result_for_anonymous_authentication(const Authenticator::AuthenticateAnonymously::Result& result);
+  using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
+
+  void renew_authentication(const Credentials& credentials, const Token& token, ConstContextRef context);
+  void request_authentication(const Credentials& credentials, ConstContextRef context);
+  void handle_result_for_authentication_with_password(const Authenticator::AuthenticateWithPassword::Result& result,
+                                                      ConstContextRef context);
+  void handle_result_for_anonymous_authentication(const Authenticator::AuthenticateAnonymously::Result& result,
+                                                  ConstContextRef context);
   void handle_result_for_renewed_authentication(const Authenticator::RenewAuthentication::Result& result,
-                                                const Token& previous_token);
+                                                const Token& previous_token, ConstContextRef context);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};

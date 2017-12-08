@@ -61,6 +61,37 @@ class ProgressBar {
   /// @endcond
 };
 
+class TabWriter {
+ public:
+  struct NewLine {};
+
+  /// flush flushes the content of a TabWriter instance to 'out'.
+  std::ostream& flush(std::ostream& out);
+
+  TabWriter& fill_with(char fill_character);
+  TabWriter& separate_columns_with(char column_separator);
+  /// write pushes 'line' to TabWriter;
+  TabWriter& write(const std::string& cell);
+  TabWriter& new_line();
+
+ private:
+  char fill_{' '};
+  char column_separator_{' '};
+  std::vector<std::size_t> column_width_;
+  std::vector<std::size_t>::iterator current_column_{column_width_.end()};
+  std::vector<std::vector<std::string>> table_{1};
+};
+
+template <typename T>
+inline TabWriter& operator<<(TabWriter& w, const T& value) {
+  std::ostringstream ss;
+  ss << value;
+  return w.write(ss.str());
+}
+
+TabWriter& operator<<(TabWriter& w, const std::string& value);
+TabWriter& operator<<(TabWriter& w, const TabWriter::NewLine&);
+
 template <std::size_t max>
 class SizeConstrainedString {
  public:
@@ -249,6 +280,7 @@ class Command {
   struct Context {
     std::istream& cin;              ///< The std::istream that should be used for reading.
     std::ostream& cout;             ///< The std::ostream that should be used for writing.
+    std::ostream& cerr;             ///< The std::ostream that should be used for logging/reporting.
     std::vector<std::string> args;  ///< The command line args.
   };
 

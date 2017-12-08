@@ -23,7 +23,9 @@ class AircraftModels : public util::cli::CommandWithFlagsAndAction {
   AircraftModels();
 
  private:
-  void handle_models_result(const Aircrafts::Models::Result& result);
+  using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
+
+  void handle_models_result(const Aircrafts::Models::Result& result, ConstContextRef context);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};

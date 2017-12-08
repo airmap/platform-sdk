@@ -147,7 +147,7 @@ cmd::SimulateScenario::SimulateScenario()
   flag(cli::make_flag("scenario-file", "use the scenario defined in this json file", params_.scenario_file));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cerr))};
 
     if (!params_.config_file) {
       params_.config_file = ConfigFile{paths::config_file(params_.version).string()};
@@ -257,7 +257,7 @@ void cmd::SimulateScenario::handle_authenticated_with_password_result_for(
     request_flight_status_for(participant);
     request_create_flight_for(participant);
   } else {
-    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
+    log_.errorf(component, "failed to authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -270,7 +270,7 @@ void cmd::SimulateScenario::handle_authenticated_anonymously_result_for(
     request_flight_status_for(participant);
     request_create_flight_for(participant);
   } else {
-    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
+    log_.errorf(component, "failed to authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -344,7 +344,7 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     });
 
   } else {
-    log_.errorf(component, "could not create flight for polygon: %s", result.error());
+    log_.errorf(component, "failed to create flight for polygon: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
@@ -363,7 +363,7 @@ void cmd::SimulateScenario::handle_traffic_monitoring_result_for(util::Scenario:
     monitor->subscribe(std::make_shared<Traffic::Monitor::LoggingSubscriber>(component, log_.logger()));
     collector_->collect_traffic_monitor_for(participant, monitor);
   } else {
-    log_.errorf(component, "could not start monitoring traffic for flight %s: %s", participant->flight.get().id,
+    log_.errorf(component, "failed to start monitoring traffic for flight %s: %s", participant->flight.get().id,
                 result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
@@ -406,7 +406,7 @@ void cmd::SimulateScenario::handle_start_flight_comms_result_for(
           });
     }
   } else {
-    log_.errorf(component, "could not start flight comms for flight %s: %s", participant->flight.get().id,
+    log_.errorf(component, "failed to start flight comms for flight %s: %s", participant->flight.get().id,
                 result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }

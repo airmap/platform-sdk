@@ -93,21 +93,22 @@ cmd::AddAircraft::AddAircraft()
                "  credentials.api_key: %s\n",
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
-    context_->create_client_with_configuration(config, [this](const ::airmap::Context::ClientCreateResult& result) {
-      if (not result) {
-        log_.errorf(component, "failed to create AirMap client instance: %s", result.error());
-        context_->stop(::airmap::Context::ReturnCode::error);
-        return;
-      }
+    context_->create_client_with_configuration(
+        config, [this, &ctxt](const ::airmap::Context::ClientCreateResult& result) {
+          if (not result) {
+            log_.errorf(component, "failed to create AirMap client instance: %s", result.error());
+            context_->stop(::airmap::Context::ReturnCode::error);
+            return;
+          }
 
-      client_ = result.value();
+          client_ = result.value();
 
-      Pilots::Authenticated::Parameters params;
-      params.authorization       = token_.get().id();
-      params.retrieve_statistics = false;
-      client_->pilots().authenticated(
-          params, std::bind(&AddAircraft::handle_authenticated_pilot_result, this, std::placeholders::_1));
-    });
+          Pilots::Authenticated::Parameters params;
+          params.authorization       = token_.get().id();
+          params.retrieve_statistics = false;
+          client_->pilots().authenticated(params, std::bind(&AddAircraft::handle_authenticated_pilot_result, this,
+                                                            std::placeholders::_1, std::ref(ctxt)));
+        });
 
     return context_->exec({SIGINT, SIGQUIT},
                           [this](int sig) {
@@ -119,7 +120,8 @@ cmd::AddAircraft::AddAircraft()
   });
 }
 
-void cmd::AddAircraft::handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result) {
+void cmd::AddAircraft::handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result,
+                                                         ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully queried information about pilot");
     Pilots::AddAircraft::Parameters params;
@@ -128,24 +130,26 @@ void cmd::AddAircraft::handle_authenticated_pilot_result(const Pilots::Authentic
     params.model_id      = model_id_.get();
     params.nick_name     = nick_name_.get();
 
-    client_->pilots().add_aircraft(params,
-                                    std::bind(&AddAircraft::handle_add_aircraft_result, this, std::placeholders::_1));
+    client_->pilots().add_aircraft(
+        params, std::bind(&AddAircraft::handle_add_aircraft_result, this, std::placeholders::_1, context));
   } else {
     log_.errorf(component, "failed to query information about pilot: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
 
-void cmd::AddAircraft::handle_add_aircraft_result(const Pilots::AddAircraft::Result& result) {
+void cmd::AddAircraft::handle_add_aircraft_result(const Pilots::AddAircraft::Result& result, ConstContextRef context) {
   if (result) {
-    log_.infof(component,
-               "successfully added aircraft to pilot profile:\n"
-               "  id:         %s\n"
-               "  nick-name:  %s\n"
-               "  model-id:   %s\n"
-               "  created-at: %s",
-               result.value().id, result.value().nick_name, result.value().model.model.id,
-               iso8601::generate(result.value().created_at));
+    log_.infof(component, "successfully added aircraft to pilot profile");
+
+    cli::TabWriter tw;
+    tw << "id"
+       << "nick-name"
+       << "model-id"
+       << "created-at" << cli::TabWriter::NewLine{} << result.value().id << result.value().nick_name
+       << result.value().model.model.id << iso8601::generate(result.value().created_at);
+    tw.flush(context.get().cout);
+
     context_->stop();
   } else {
     log_.errorf(component, "failed to add aircraft: %s", result.error());

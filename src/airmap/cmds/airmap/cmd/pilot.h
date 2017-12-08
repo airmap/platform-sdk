@@ -23,11 +23,13 @@ class Pilot : public util::cli::CommandWithFlagsAndAction {
   Pilot();
 
  private:
-  using PilotId = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
+  using PilotId         = util::TaggedString<util::tags::MustNotBeEmpty>;
 
-  void handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result);
-  void handle_for_id_pilot_result(const Pilots::ForId::Result& result);
-  void handle_aircrafts_result(const ::airmap::Pilot& pilot, const Pilots::Aircrafts::Result& result);
+  void handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result, ConstContextRef context);
+  void handle_for_id_pilot_result(const Pilots::ForId::Result& result, ConstContextRef context);
+  void handle_aircrafts_result(const ::airmap::Pilot& pilot, const Pilots::Aircrafts::Result& result,
+                               ConstContextRef context);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};

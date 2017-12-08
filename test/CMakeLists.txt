@@ -19,6 +19,7 @@ function(airmap_add_test name source)
 endfunction (airmap_add_test)
 
 airmap_add_test(airspace_test airspace_test.cpp)
+airmap_add_test(cli_test cli_test.cpp)
 airmap_add_test(client_test client_test.cpp)
 airmap_add_test(credentials_test credentials_test.cpp)
 airmap_add_test(daemon_test daemon_test.cpp)

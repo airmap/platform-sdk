@@ -59,7 +59,7 @@ class Airmap : airmap::DoNotCopyOrMove {
   }
 
   int run(const std::vector<std::string>& args) {
-    return cmd_.run(cli::Command::Context{std::cin, std::cout, args});
+    return cmd_.run(cli::Command::Context{std::cin, std::cout, std::cerr, args});
   }
 
  private:

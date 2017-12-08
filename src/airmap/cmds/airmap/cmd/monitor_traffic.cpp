@@ -14,7 +14,7 @@ constexpr const char* component{"monitor-traffic"};
 }
 
 cmd::MonitorTraffic::MonitorTraffic()
-    : cli::CommandWithFlagsAndAction{"monitor-traffic", "Traffic Alerts and Situational Awareness",
+    : cli::CommandWithFlagsAndAction{"monitor-traffic", "traffic alerts and situational awareness",
                                      "receive traffic alerts for a flight with AirMap services"} {
   flag(flags::log_level(params_.log_level));
   flag(flags::config_file(params_.config_file));
@@ -22,7 +22,7 @@ cmd::MonitorTraffic::MonitorTraffic()
   flag(flags::flight_id(params_.flight_id));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cerr))};
 
     if (!params_.config_file) {
       params_.config_file = ConfigFile{paths::config_file(Client::Version::production).string()};
@@ -59,7 +59,7 @@ cmd::MonitorTraffic::MonitorTraffic()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 

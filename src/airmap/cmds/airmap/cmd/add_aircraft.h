@@ -23,11 +23,12 @@ class AddAircraft : public util::cli::CommandWithFlagsAndAction {
   AddAircraft();
 
  private:
-  using ModelId  = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using NickName = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
+  using ModelId         = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using NickName        = util::TaggedString<util::tags::MustNotBeEmpty>;
 
-  void handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result);
-  void handle_add_aircraft_result(const Pilots::AddAircraft::Result& result);
+  void handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result, ConstContextRef context);
+  void handle_add_aircraft_result(const Pilots::AddAircraft::Result& result, ConstContextRef context);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};

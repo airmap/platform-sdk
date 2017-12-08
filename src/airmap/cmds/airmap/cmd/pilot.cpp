@@ -17,19 +17,41 @@ namespace {
 
 constexpr const char* component{"pilot"};
 
-void print_pilot_and_aircrafts(airmap::util::FormattingLogger& log, const airmap::Pilot& pilot,
+void print_pilot_and_aircrafts(std::ostream& out, const airmap::Pilot& pilot,
                                const std::vector<airmap::Pilot::Aircraft>& aircrafts) {
-  std::cout << pilot.id << " " << pilot.first_name << " " << pilot.last_name << " " << pilot.user_name << " "
-            << pilot.picture_url << " " << std::boolalpha << pilot.verification_status.email << " " << std::boolalpha
-            << pilot.verification_status.phone << " " << pilot.statistics.flight.total << " "
-            << airmap::iso8601::generate(pilot.statistics.flight.last_flight_time) << " "
-            << pilot.statistics.aircraft.total << " " << airmap::iso8601::generate(pilot.created_at) << std::endl;
+  cli::TabWriter tw;
+  tw << "id"
+     << "first-name"
+     << "last-name"
+     << "user-name"
+     << "picture-url"
+     << "email-verified"
+     << "phone-verified"
+     << "flights-count"
+     << "last-flight"
+     << "aircrafts-count"
+     << "created-at";
+  tw << cli::TabWriter::NewLine{};
+  tw << pilot.id << pilot.first_name << pilot.last_name << pilot.user_name << pilot.picture_url
+     << pilot.verification_status.email << pilot.verification_status.phone << pilot.statistics.flight.total
+     << airmap::iso8601::generate(pilot.statistics.flight.last_flight_time) << pilot.statistics.aircraft.total
+     << airmap::iso8601::generate(pilot.created_at);
 
-  for (const auto& aircraft : aircrafts) {
-    std::cout << aircraft.id << " " << aircraft.nick_name << " " << aircraft.model.model.id << " "
-              << aircraft.model.model.name << " " << aircraft.model.manufacturer.id << " "
-              << aircraft.model.manufacturer.name << std::endl;
+  if (!aircrafts.empty()) {
+    tw << cli::TabWriter::NewLine{};
+    tw << "id"
+       << "nick-name"
+       << "model-id"
+       << "model-name"
+       << "manufacturer-id"
+       << "manufacturer-name";
+    for (const auto& aircraft : aircrafts) {
+      tw << cli::TabWriter::NewLine{} << aircraft.id << aircraft.nick_name << aircraft.model.model.id
+         << aircraft.model.model.name << aircraft.model.manufacturer.id << aircraft.model.manufacturer.name;
+    }
   }
+
+  tw.flush(out);
 }
 
 }  // namespace
@@ -44,7 +66,7 @@ cmd::Pilot::Pilot()
   flag(cli::make_flag("pilot-id", "id of pilot", pilot_id_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
+    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -75,7 +97,7 @@ cmd::Pilot::Pilot()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -91,28 +113,30 @@ cmd::Pilot::Pilot()
                "  credentials.api_key: %s\n",
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
-    context_->create_client_with_configuration(config, [this](const ::airmap::Context::ClientCreateResult& result) {
-      if (not result) {
-        log_.errorf(component, "failed to create AirMap client instance: %s", result.error());
-        context_->stop(::airmap::Context::ReturnCode::error);
-        return;
-      }
+    context_->create_client_with_configuration(
+        config, [this, &ctxt](const ::airmap::Context::ClientCreateResult& result) {
+          if (not result) {
+            log_.errorf(component, "failed to create AirMap client instance: %s", result.error());
+            context_->stop(::airmap::Context::ReturnCode::error);
+            return;
+          }
 
-      client_ = result.value();
+          client_ = result.value();
 
-      if (pilot_id_) {
-        Pilots::ForId::Parameters params;
-        params.authorization       = token_.get().id();
-        params.retrieve_statistics = true;
-        client_->pilots().for_id(params, std::bind(&Pilot::handle_for_id_pilot_result, this, std::placeholders::_1));
-      } else {
-        Pilots::Authenticated::Parameters params;
-        params.authorization       = token_.get().id();
-        params.retrieve_statistics = true;
-        client_->pilots().authenticated(
-            params, std::bind(&Pilot::handle_authenticated_pilot_result, this, std::placeholders::_1));
-      }
-    });
+          if (pilot_id_) {
+            Pilots::ForId::Parameters params;
+            params.authorization       = token_.get().id();
+            params.retrieve_statistics = true;
+            client_->pilots().for_id(
+                params, std::bind(&Pilot::handle_for_id_pilot_result, this, std::placeholders::_1, std::ref(ctxt)));
+          } else {
+            Pilots::Authenticated::Parameters params;
+            params.authorization       = token_.get().id();
+            params.retrieve_statistics = true;
+            client_->pilots().authenticated(params, std::bind(&Pilot::handle_authenticated_pilot_result, this,
+                                                              std::placeholders::_1, std::ref(ctxt)));
+          }
+        });
 
     return context_->exec({SIGINT, SIGQUIT},
                           [this](int sig) {
@@ -124,7 +148,8 @@ cmd::Pilot::Pilot()
   });
 }
 
-void cmd::Pilot::handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result) {
+void cmd::Pilot::handle_authenticated_pilot_result(const Pilots::Authenticated::Result& result,
+                                                   ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully queried pilot profile for authenticated user");
     Pilots::Aircrafts::Parameters params;
@@ -132,14 +157,14 @@ void cmd::Pilot::handle_authenticated_pilot_result(const Pilots::Authenticated::
     params.authorization = token_.get().id();
 
     client_->pilots().aircrafts(
-        params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1));
+        params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1, context));
   } else {
     log_.errorf(component, "failed to query information about pilot: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
 
-void cmd::Pilot::handle_for_id_pilot_result(const Pilots::ForId::Result& result) {
+void cmd::Pilot::handle_for_id_pilot_result(const Pilots::ForId::Result& result, ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully queried pilot profile for id");
     Pilots::Aircrafts::Parameters params;
@@ -147,16 +172,17 @@ void cmd::Pilot::handle_for_id_pilot_result(const Pilots::ForId::Result& result)
     params.authorization = token_.get().id();
 
     client_->pilots().aircrafts(
-        params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1));
+        params, std::bind(&Pilot::handle_aircrafts_result, this, result.value(), std::placeholders::_1, context));
   } else {
     log_.errorf(component, "failed to query information about pilot: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
 
-void cmd::Pilot::handle_aircrafts_result(const ::airmap::Pilot& pilot, const Pilots::Aircrafts::Result& result) {
+void cmd::Pilot::handle_aircrafts_result(const ::airmap::Pilot& pilot, const Pilots::Aircrafts::Result& result,
+                                         ConstContextRef context) {
   if (result) {
-    print_pilot_and_aircrafts(log_, pilot, result.value());
+    print_pilot_and_aircrafts(context.get().cout, pilot, result.value());
     context_->stop();
   } else {
     log_.errorf(component, "failed to query information about aircrafts: %s", result.error());

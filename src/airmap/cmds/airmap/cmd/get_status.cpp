@@ -16,19 +16,27 @@ using json = nlohmann::json;
 namespace {
 
 void print_status(std::ostream& out, const airmap::Status::Report& report) {
-  out << "Received status:     " << std::endl
-      << "  max-safe-distance: " << report.max_safe_distance << std::endl
-      << "  advisory-color:    " << report.advisory_color << std::endl
-      << "  Advisories:        " << std::endl;
-  for (const auto& a : report.advisories) {
-    out << "    Name:            " << a.airspace.name() << std::endl << "    Color:           " << a.color << std::endl;
+  cli::TabWriter tw;
+
+  tw << "max-safe-distance"
+     << "advisory-color" << cli::TabWriter::NewLine{} << report.max_safe_distance << report.advisory_color;
+
+  if (!report.advisories.empty()) {
+    tw << cli::TabWriter::NewLine{} << "name"
+       << "color";
+    for (const auto& a : report.advisories) {
+      tw << cli::TabWriter::NewLine{} << a.airspace.name() << a.color;
+    }
   }
+
   if (report.weather.condition != "") {
-    out << "  Weather:           " << std::endl
-        << "    condition:       " << report.weather.condition << std::endl
-        << "    temperature:     " << report.weather.temperature << std::endl
-        << "    wind-speed:      " << report.weather.wind.speed << std::endl;
+    tw << cli::TabWriter::NewLine{} << "condition"
+       << "temperature"
+       << "wind-speed" << cli::TabWriter::NewLine{} << report.weather.condition << report.weather.temperature
+       << report.weather.wind.speed;
   }
+
+  tw.flush(out);
 }
 
 constexpr const char* component{"get-status"};
@@ -48,7 +56,7 @@ cmd::GetStatus::GetStatus()
   flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cerr))};
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -83,7 +91,7 @@ cmd::GetStatus::GetStatus()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -111,8 +119,7 @@ cmd::GetStatus::GetStatus()
 
           auto handler = [this, &ctxt, context, client](const Status::GetStatus::Result& result) {
             if (result) {
-              log_.infof(component, "successfully received status with max-safe-distance: %d and advisory-color: %s\n",
-                         result.value().max_safe_distance, result.value().advisory_color);
+              log_.infof(component, "successfully received status");
               print_status(ctxt.cout, result.value());
               context->stop();
             } else {

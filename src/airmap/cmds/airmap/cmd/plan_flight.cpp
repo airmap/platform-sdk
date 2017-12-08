@@ -15,6 +15,28 @@ using json = nlohmann::json;
 
 namespace {
 constexpr const char* component{"plan-flight"};
+
+void print_flight_plan(std::ostream& out, const airmap::FlightPlan& fp) {
+  cli::TabWriter tw;
+
+  tw << "id"
+     << "pilot-id"
+     << "aircraft-id"
+     << "takeoff-latitude"
+     << "takeoff-longitude"
+     << "max-altitude"
+     << "min-altitude"
+     << "buffer"
+     << "start-time"
+     << "end-time";
+  tw << cli::TabWriter::NewLine{};
+  tw << fp.id << fp.pilot.id << fp.aircraft.id << fp.takeoff.latitude << fp.takeoff.longitude << fp.altitude_agl.max
+     << fp.altitude_agl.min << fp.buffer << airmap::iso8601::generate(fp.start_time)
+     << airmap::iso8601::generate(fp.end_time);
+
+  tw.flush(out);
+}
+
 }  // namespace
 
 cmd::PlanFlight::PlanFlight()
@@ -27,7 +49,7 @@ cmd::PlanFlight::PlanFlight()
   flag(cli::make_flag("plan", "flight plan file", plan_file_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
+    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -68,7 +90,7 @@ cmd::PlanFlight::PlanFlight()
     auto result               = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -95,25 +117,11 @@ cmd::PlanFlight::PlanFlight()
 
           auto handler = [this, &ctxt, context, client](const auto& result) {
             if (result) {
-              log_.infof(component,
-                         "successfully created flight plan:\n"
-                         "  id:                %s\n"
-                         "  pilot.id:          %s\n"
-                         "  aircraft.id:       %s\n"
-                         "  takeoff_latitude:  %f\n"
-                         "  takeoff_longitude: %f\n"
-                         "  max_altitude:      %f\n"
-                         "  min_altitude:      %f\n"
-                         "  buffer:            %f\n"
-                         "  start time:        %s\n"
-                         "  end time:          %s",
-                         result.value().id, result.value().pilot.id, result.value().aircraft.id,
-                         result.value().takeoff.latitude, result.value().takeoff.longitude,
-                         result.value().altitude_agl.max, result.value().altitude_agl.min, result.value().buffer,
-                         iso8601::generate(result.value().start_time), iso8601::generate(result.value().end_time));
+              log_.infof(component, "successfully created flight plan");
+              print_flight_plan(ctxt.cout, result.value());
               context->stop();
             } else {
-              log_.errorf(component, "failed to create flight: %s", result.error());
+              log_.errorf(component, "failed to create flight plan: %s", result.error());
               context->stop(::airmap::Context::ReturnCode::error);
             }
           };
