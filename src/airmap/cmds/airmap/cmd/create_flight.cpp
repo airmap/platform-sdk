@@ -55,7 +55,7 @@ cmd::CreateFlight::CreateFlight()
   flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
+    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};

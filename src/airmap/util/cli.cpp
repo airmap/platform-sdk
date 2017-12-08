@@ -124,6 +124,12 @@ cli::TabWriter& cli::operator<<(TabWriter& w, const std::string& value) {
   return w.write(value);
 }
 
+cli::TabWriter& cli::operator<<(TabWriter& w, bool value) {
+  std::ostringstream ss;
+  ss << std::boolalpha << value;
+  return w.write(ss.str());
+}
+
 cli::TabWriter& cli::operator<<(TabWriter& w, const TabWriter::NewLine&) {
   return w.new_line();
 }
