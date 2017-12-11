@@ -17,14 +17,6 @@ void encode(nlohmann::json& j, const FlightPlan& p);
 
 void decode(const nlohmann::json& j, FlightPlan::Briefing& b);
 void decode(const nlohmann::json& j, FlightPlan::Briefing::AdvisoryStatus& a);
-void decode(const nlohmann::json& j, FlightPlan::Briefing::Authority& a);
-void decode(const nlohmann::json& j, FlightPlan::Briefing::Authorization& a);
-void decode(const nlohmann::json& j, std::vector<FlightPlan::Briefing::Authorization>& v);
-void decode(const nlohmann::json& j, FlightPlan::Briefing::Authorization::Status& s);
-void decode(const nlohmann::json& j, FlightPlan::Briefing::Validation& v);
-void decode(const nlohmann::json& j, std::vector<FlightPlan::Briefing::Validation>& v);
-void decode(const nlohmann::json& j, FlightPlan::Briefing::Validation::Feature& f);
-void decode(const nlohmann::json& j, FlightPlan::Briefing::Validation::Status& s);
 
 }  // namespace json
 }  // namespace codec

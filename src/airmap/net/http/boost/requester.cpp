@@ -3,8 +3,9 @@
 #include <airmap/net/http/boost/requester.h>
 #include <airmap/net/http/user_agent.h>
 
-#include <network/uri.hpp>
+#include <network/uri/detail/encode.hpp>
 
+#include <iterator>
 #include <stdexcept>
 
 namespace asio = boost::asio;
@@ -17,6 +18,23 @@ airmap::Error wrap_error_code(const boost::system::error_code& ec) {
   return airmap::Error{ec.message()};
 }
 
+namespace uri {
+
+std::string encode_query(const std::unordered_map<std::string, std::string>& q) {
+  std::stringstream ss;
+
+  for (auto it = q.begin(); it != q.end(); ++it) {
+    if (it != q.begin())
+      ss << "&";
+
+    auto p = it->first + "=" + it->second;
+    network::detail::encode_query(p.begin(), p.end(), std::ostream_iterator<char>(ss));
+  }
+
+  return ss.str();
+}
+
+}  // namespace uri
 }  // namespace
 
 airmap::net::http::boost::Requester::RequestFactory airmap::net::http::boost::Requester::request_factory_for_protocol(
@@ -60,13 +78,9 @@ airmap::net::http::boost::Requester::Requester(const std::string& host, std::uin
 void airmap::net::http::boost::Requester::delete_(const std::string& path,
                                                   std::unordered_map<std::string, std::string>&& query,
                                                   std::unordered_map<std::string, std::string>&& headers, Callback cb) {
-  network::uri_builder uri_builder;
-  for (const auto& pair : query)
-    uri_builder.append_query_key_value_pair(pair.first, pair.second);
-  auto uri = uri_builder.uri();
   ::boost::beast::http::request<::boost::beast::http::string_body> request;
   request.method(::http::verb::delete_);
-  request.target(fmt::sprintf("%s?%s", path, uri.query()));
+  request.target(fmt::sprintf("%s?%s", path, uri::encode_query(query)));
   request.set(::http::to_string(::http::field::user_agent), user_agent());
   request.set(::http::to_string(::http::field::accept), "application/json");
   request.set(::http::to_string(::http::field::host), host_);
@@ -88,13 +102,9 @@ void airmap::net::http::boost::Requester::delete_(const std::string& path,
 void airmap::net::http::boost::Requester::get(const std::string& path,
                                               std::unordered_map<std::string, std::string>&& query,
                                               std::unordered_map<std::string, std::string>&& headers, Callback cb) {
-  network::uri_builder uri_builder;
-  for (const auto& pair : query)
-    uri_builder.append_query_key_value_pair(pair.first, pair.second);
-  auto uri = uri_builder.uri();
   ::boost::beast::http::request<::boost::beast::http::string_body> request;
   request.method(::http::verb::get);
-  request.target(fmt::sprintf("%s?%s", path, uri.query()));
+  request.target(fmt::sprintf("%s?%s", path, uri::encode_query(query)));
   request.set(::http::to_string(::http::field::user_agent), user_agent());
   request.set(::http::to_string(::http::field::accept), "application/json");
   request.set(::http::to_string(::http::field::host), host_);

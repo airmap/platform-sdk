@@ -212,7 +212,7 @@ airmap::Geometry airmap::Geometry::point(double lat, double lon) {
 }
 
 airmap::Geometry airmap::Geometry::polygon(const std::vector<Coordinate>& coordinates) {
-  Geometry::Polygon polygon{{coordinates}};
+  Geometry::Polygon polygon{{coordinates}, {}};
   return Geometry{polygon};
 }
 

@@ -21,8 +21,8 @@ constexpr const char* component{"monitor-mids"};
 }
 
 cmd::MonitorMids::MonitorMids()
-    : cli::CommandWithFlagsAndAction{"monitor-mids", "monitor traffic visible to mids",
-                                     "monitor traffic visible to mids"} {
+    : cli::CommandWithFlagsAndAction{"monitor-mids", "monitors traffic visible to mids",
+                                     "monitors traffic visible to mids"} {
   flag(flags::log_level(params_.log_level));
   flag(cli::make_flag("mids", "comma-separated list of mids", params_.mids));
   flag(cli::make_flag("mqtt-host", "host address of the mqtt broker", params_.mqtt.host));
@@ -31,7 +31,7 @@ cmd::MonitorMids::MonitorMids()
   flag(cli::make_flag("mqtt-password", "password for accessing the mqtt broker", params_.mqtt.password));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cerr))};
 
     if (!params_.mqtt.host || !params_.mqtt.host.get().validate()) {
       log_.errorf(component, "missing parameter 'mqtt-host'");

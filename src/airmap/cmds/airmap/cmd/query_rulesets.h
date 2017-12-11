@@ -22,11 +22,12 @@ class QueryRuleSets : public util::cli::CommandWithFlagsAndAction {
   QueryRuleSets();
 
  private:
-  using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using RuleSetId    = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
+  using GeometryFile    = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using RuleSetId       = util::TaggedString<util::tags::MustNotBeEmpty>;
 
-  void handle_ruleset_for_id_result(const RuleSets::ForId::Result& result);
-  void handle_ruleset_search_result(const RuleSets::Search::Result& result);
+  void handle_ruleset_for_id_result(const RuleSets::ForId::Result& result, ConstContextRef context);
+  void handle_ruleset_search_result(const RuleSets::Search::Result& result, ConstContextRef context);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};

@@ -1,5 +1,8 @@
+#include <airmap/cmds/airmap/cmd/add_aircraft.h>
+#include <airmap/cmds/airmap/cmd/aircraft_models.h>
 #include <airmap/cmds/airmap/cmd/create_flight.h>
 #include <airmap/cmds/airmap/cmd/daemon.h>
+#include <airmap/cmds/airmap/cmd/end_flight.h>
 #include <airmap/cmds/airmap/cmd/evaluate_rulesets.h>
 #include <airmap/cmds/airmap/cmd/fetch_rules.h>
 #include <airmap/cmds/airmap/cmd/get_status.h>
@@ -31,8 +34,11 @@ class Airmap : airmap::DoNotCopyOrMove {
   Airmap()
       : cmd_{cli::Name{"airmap"}, cli::Usage{"interacts with AirMap services"},
              cli::Description{"interacts with AirMap services"}} {
+    cmd_.command(std::make_shared<cmd::AddAircraft>());
+    cmd_.command(std::make_shared<cmd::AircraftModels>());
     cmd_.command(std::make_shared<cmd::CreateFlight>());
     cmd_.command(std::make_shared<cmd::Daemon>());
+    cmd_.command(std::make_shared<cmd::EndFlight>());
     cmd_.command(std::make_shared<cmd::FetchRules>());
     cmd_.command(std::make_shared<cmd::GetStatus>());
     cmd_.command(std::make_shared<cmd::EvaluateRuleSets>());
@@ -53,7 +59,7 @@ class Airmap : airmap::DoNotCopyOrMove {
   }
 
   int run(const std::vector<std::string>& args) {
-    return cmd_.run(cli::Command::Context{std::cin, std::cout, args});
+    return cmd_.run(cli::Command::Context{std::cin, std::cout, std::cerr, args});
   }
 
  private:

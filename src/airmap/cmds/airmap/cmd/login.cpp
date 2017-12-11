@@ -15,6 +15,40 @@ using json    = nlohmann::json;
 
 namespace {
 constexpr const char* component{"login"};
+
+void print_token(std::ostream& out, const airmap::Token& token) {
+  cli::TabWriter tw;
+  tw << "type"
+     << "id"
+     << "access"
+     << "refresh"
+     << "expires-in-seconds" << cli::TabWriter::NewLine{};
+
+  switch (token.type()) {
+    case airmap::Token::Type::anonymous:
+      tw << token.type() << token.anonymous().id << "n/a"
+         << "n/a"
+         << "n/a";
+      break;
+    case airmap::Token::Type::oauth:
+      tw << token.type() << token.oauth().id << token.oauth().access << token.oauth().refresh << "n/a";
+      break;
+    case airmap::Token::Type::refreshed:
+      tw << token.type() << token.refreshed().id << "n/a"
+         << "n/a" << token.refreshed().expires_in.count();
+      break;
+    case airmap::Token::Type::unknown:
+      tw << "n/a"
+         << "n/a"
+         << "n/a"
+         << "n/a"
+         << "n/a";
+      break;
+  }
+
+  tw.flush(out);
+}
+
 }  // namespace
 
 cmd::Login::Login()
@@ -26,7 +60,7 @@ cmd::Login::Login()
   flag(cli::make_flag("renew", "renew the current token", renew_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cerr))};
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -39,7 +73,7 @@ cmd::Login::Login()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -79,14 +113,14 @@ cmd::Login::Login()
                   log_.errorf(component, "token file %s does not hold renewable token", token_file_.get());
                   context_->stop(::airmap::Context::ReturnCode::error);
                 } else {
-                  renew_authentication(config.credentials, token);
+                  renew_authentication(config.credentials, token, std::ref(ctxt));
                 }
               } else if (token.type() == Token::Type::refreshed) {
                 if (!token.refreshed().original_token) {
                   log_.errorf(component, "token file %s does not hold renewable token", token_file_.get());
                   context_->stop(::airmap::Context::ReturnCode::error);
                 } else {
-                  renew_authentication(config.credentials, token);
+                  renew_authentication(config.credentials, token, std::ref(ctxt));
                 }
               } else {
                 log_.errorf(component, "token file %s does not hold renewable token", token_file_.get());
@@ -97,7 +131,7 @@ cmd::Login::Login()
               context_->stop(::airmap::Context::ReturnCode::error);
             }
           } else {
-            request_authentication(config.credentials);
+            request_authentication(config.credentials, std::ref(ctxt));
           }
         });
 
@@ -111,7 +145,7 @@ cmd::Login::Login()
   });
 }
 
-void cmd::Login::renew_authentication(const Credentials& credentials, const Token& token) {
+void cmd::Login::renew_authentication(const Credentials& credentials, const Token& token, ConstContextRef context) {
   Authenticator::RenewAuthentication::Params params;
   params.client_id = credentials.oauth.get().client_id;
 
@@ -122,28 +156,31 @@ void cmd::Login::renew_authentication(const Credentials& credentials, const Toke
   }
 
   client_->authenticator().renew_authentication(
-      params, std::bind(&Login::handle_result_for_renewed_authentication, this, ph::_1, token));
+      params, std::bind(&Login::handle_result_for_renewed_authentication, this, ph::_1, token, context));
 }
 
-void cmd::Login::request_authentication(const Credentials& credentials) {
+void cmd::Login::request_authentication(const Credentials& credentials, ConstContextRef context) {
   if (credentials.oauth) {
     Authenticator::AuthenticateWithPassword::Params params;
     params.oauth = credentials.oauth.get();
     client_->authenticator().authenticate_with_password(
-        params, std::bind(&Login::handle_result_for_authentication_with_password, this, ph::_1));
+        params, std::bind(&Login::handle_result_for_authentication_with_password, this, ph::_1, context));
   } else if (credentials.anonymous) {
     client_->authenticator().authenticate_anonymously(
-        {credentials.anonymous.get().id}, std::bind(&Login::handle_result_for_anonymous_authentication, this, ph::_1));
+        {credentials.anonymous.get().id},
+        std::bind(&Login::handle_result_for_anonymous_authentication, this, ph::_1, context));
   }
 }
 
 void cmd::Login::handle_result_for_authentication_with_password(
-    const Authenticator::AuthenticateWithPassword::Result& result) {
+    const Authenticator::AuthenticateWithPassword::Result& result, ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully authenticated with the AirMap services");
+    auto token = Token{result.value()};
+    print_token(context.get().cout, token);
     auto tfn = token_file_.get().string();
     if (std::ofstream token_file{tfn}) {
-      nlohmann::json j = Token{result.value()};
+      nlohmann::json j = token;
       token_file << j.dump(2);
       log_.infof(component, "successfully persisted login token to %s", tfn);
       context_->stop(::airmap::Context::ReturnCode::success);
@@ -152,18 +189,20 @@ void cmd::Login::handle_result_for_authentication_with_password(
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
+    log_.errorf(component, "failed to authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
 
 void cmd::Login::handle_result_for_anonymous_authentication(
-    const Authenticator::AuthenticateAnonymously::Result& result) {
+    const Authenticator::AuthenticateAnonymously::Result& result, ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully authenticated with the AirMap services");
+    auto token = Token{result.value()};
+    print_token(context.get().cout, token);
     auto tfn = token_file_.get().string();
     if (std::ofstream token_file{tfn}) {
-      nlohmann::json j = Token{result.value()};
+      nlohmann::json j = token;
       token_file << j.dump(2);
       log_.infof(component, "successfully persisted login token to %s", tfn);
       context_->stop(::airmap::Context::ReturnCode::success);
@@ -172,26 +211,29 @@ void cmd::Login::handle_result_for_anonymous_authentication(
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
+    log_.errorf(component, "failed to authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }
 
 void cmd::Login::handle_result_for_renewed_authentication(const Authenticator::RenewAuthentication::Result& result,
-                                                          const Token& previous_token) {
+                                                          const Token& previous_token, ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully authenticated with the AirMap services");
+    auto t = result.value();
+
+    if (previous_token.type() == Token::Type::oauth) {
+      t.original_token = previous_token.oauth();
+    } else if (previous_token.type() == Token::Type::refreshed) {
+      t.original_token = previous_token.refreshed().original_token.get();
+    }
+
+    auto token = Token{t};
+    print_token(context.get().cout, token);
+
     auto tfn = token_file_.get().string();
     if (std::ofstream token_file{tfn}) {
-      auto token = result.value();
-
-      if (previous_token.type() == Token::Type::oauth) {
-        token.original_token = previous_token.oauth();
-      } else if (previous_token.type() == Token::Type::refreshed) {
-        token.original_token = previous_token.refreshed().original_token.get();
-      }
-
-      nlohmann::json j = Token{token};
+      nlohmann::json j = token;
       token_file << j.dump(2);
       log_.infof(component, "successfully persisted login token to %s", tfn);
       context_->stop(::airmap::Context::ReturnCode::success);
@@ -200,7 +242,7 @@ void cmd::Login::handle_result_for_renewed_authentication(const Authenticator::R
       context_->stop(::airmap::Context::ReturnCode::error);
     }
   } else {
-    log_.errorf(component, "could not authenticate with the Airmap services: %s", result.error());
+    log_.errorf(component, "failed to authenticate with the Airmap services: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
   }
 }

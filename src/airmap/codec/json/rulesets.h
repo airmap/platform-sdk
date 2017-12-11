@@ -12,8 +12,9 @@ namespace airmap {
 namespace codec {
 namespace json {
 
+void decode(const nlohmann::json& j, RuleSets::EvaluateRules::Parameters& p);
+void encode(nlohmann::json& j, const RuleSets::EvaluateRules::Parameters& p);
 void encode(nlohmann::json& j, const RuleSets::Search::Parameters& p);
-void encode(nlohmann::json& j, const RuleSets::Evaluation::Parameters& p);
 
 }  // namespace json
 }  // namespace codec

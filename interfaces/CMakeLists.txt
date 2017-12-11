@@ -73,5 +73,5 @@ target_include_directories(
 
 target_link_libraries(
     airmap-interfaces-grpc
-    PUBLIC gRPC::grpc++
+    gRPC::grpc++
 )

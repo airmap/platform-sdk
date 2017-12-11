@@ -49,16 +49,8 @@ endif()
 
 message(STATUS "Enabling platform ${AIRMAP_PLATFORM}")
 
-# All vendored dependencies should be listed here
-set(SPDLOG_BUILD_TESTING OFF CACHE BOOL "Build the spdlog tests")
-set(Uri_BUILD_DOCS OFF CACHE BOOL "Build the URI docs")
-set(Uri_BUILD_TESTS OFF CACHE BOOL "Build the URI tests")
-set(XDG_BUILD_TESTS OFF CACHE BOOL "Build the xdg tests")
-
-add_subdirectory(vendor/fmt EXCLUDE_FROM_ALL)
-add_subdirectory(vendor/spdlog EXCLUDE_FROM_ALL)
-add_subdirectory(vendor/uri EXCLUDE_FROM_ALL)
-add_subdirectory(vendor/xdg EXCLUDE_FROM_ALL)
+# vendor-specific setup goes here
+add_definitions(-DFMT_HEADER_ONLY)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra -fPIC")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing -pedantic -Wextra -fPIC")
@@ -79,8 +71,7 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
 
-  ${OPENSSL_INCLUDE_DIRS}
-  ${PROTOBUF_INCLUDE_DIRS})
+  ${OPENSSL_INCLUDE_DIRS})
 
 add_subdirectory(doc)
 add_subdirectory(interfaces)

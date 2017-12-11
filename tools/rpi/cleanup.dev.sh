@@ -10,12 +10,6 @@ apt remove -y \
   cmake \
   git \
   ninja-build \
-  libboost-date-time1.62-dev \
-  libboost-filesystem1.62-dev \
-  libboost-program-options1.62-dev \
-  libboost-system1.62-dev \
-  libboost-test1.62-dev \
-  libc-ares-dev \
   libssl-dev \
   pkg-config \
   qtbase5-dev \
@@ -24,13 +18,7 @@ apt remove -y \
 apt autoremove -y
 
 # Now reinstall all our runtime dependencies
-apt install -y \
-  libboost-date-time1.62.0 \
-  libboost-filesystem1.62.0 \
-  libboost-program-options1.62.0 \
-  libboost-system1.62.0 \
-  libprotobuf10 \
-  libssl1.1
+apt install -y libssl1.1
 
 # And remove all cached debian packages
 apt clean

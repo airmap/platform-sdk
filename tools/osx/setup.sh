@@ -6,7 +6,6 @@ brew update
 
 brew install \
   cmake \
-  boost \
   pkgconfig \
   openssl \
   qt \

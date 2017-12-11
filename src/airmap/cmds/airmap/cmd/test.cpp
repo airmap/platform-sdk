@@ -43,7 +43,7 @@ cmd::Test::Test() : cli::CommandWithFlagsAndAction{"test", "executes runtime tes
   };
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
+    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
 
     if (!test_suite_ || !test_suite_.get().validate()) {
       auto record = log_.error(component);
@@ -58,7 +58,7 @@ cmd::Test::Test() : cli::CommandWithFlagsAndAction{"test", "executes runtime tes
 
     auto it = test_suite_registry_.find(test_suite_.get());
     if (it == test_suite_registry_.end()) {
-      log_.errorf(component, "unknown test suite %s", test_suite_.get());
+      log_.errorf(component, "failed to identify test suite %s", test_suite_.get());
       return 1;
     }
 
@@ -89,7 +89,7 @@ cmd::Test::Test() : cli::CommandWithFlagsAndAction{"test", "executes runtime tes
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 

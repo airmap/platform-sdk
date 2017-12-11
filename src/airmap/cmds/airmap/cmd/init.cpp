@@ -27,7 +27,7 @@ cmd::Init::Init()
   flag(cli::make_flag("interactive", "enable interactive editing of the final configuration file", interactive_));
 
   action([this](const cli::Command::Context& ctxt) {
-    util::FormattingLogger log{create_default_logger(ctxt.cout)};
+    util::FormattingLogger log{create_default_logger(ctxt.cerr)};
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -60,7 +60,7 @@ cmd::Init::Init()
       json j = Client::default_configuration(version_, credentials);
       config_file << j.dump(2);
 
-      log.infof(component, "persisted configuration to %s", config_file_.get());
+      log.infof(component, "successfully persisted configuration to %s", config_file_.get());
     }
 
     if (interactive_) {

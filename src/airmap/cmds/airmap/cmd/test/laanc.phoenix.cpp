@@ -29,7 +29,7 @@ laanc::Suite::EvaluationResult laanc::Suite::evaluate_initial_flight_plan(const 
 laanc::Suite::EvaluationResult laanc::Suite::evaluate_initial_briefing(const FlightPlan::Briefing& briefing) {
   std::size_t laanc_conflicted = 0;
 
-  for (const auto& ruleset : briefing.rulesets) {
+  for (const auto& ruleset : briefing.evaluation.rulesets) {
     for (const auto& rule : ruleset.rules) {
       for (const auto& feature : rule.features) {
         if (feature.name == "flight_authorized" && feature.code &&
@@ -53,13 +53,13 @@ laanc::Suite::EvaluationResult laanc::Suite::evaluate_submitted_briefing(const F
 }
 
 laanc::Suite::EvaluationResult laanc::Suite::evaluate_final_briefing(const FlightPlan::Briefing& b) {
-  if (b.authorizations.empty()) {
+  if (b.evaluation.authorizations.empty()) {
     return EvaluationResult::error;
   }
 
-  auto auth = b.authorizations.front();
+  auto auth = b.evaluation.authorizations.front();
 
-  if (auth.status != FlightPlan::Briefing::Authorization::Status::accepted || auth.authority.id != "faa-laanc") {
+  if (auth.status != Evaluation::Authorization::Status::accepted || auth.authority.id != "faa-laanc") {
     return EvaluationResult::error;
   }
 
@@ -706,13 +706,13 @@ airmap::FlightPlans::Create::Parameters laanc::KentuckyFlorence::parameters() {
 }
 
 laanc::Suite::EvaluationResult laanc::NevadaReno::evaluate_final_briefing(const FlightPlan::Briefing& b) {
-  if (b.authorizations.empty()) {
+  if (b.evaluation.authorizations.empty()) {
     return EvaluationResult::error;
   }
 
-  auto auth = b.authorizations.front();
+  auto auth = b.evaluation.authorizations.front();
 
-  if (auth.status != FlightPlan::Briefing::Authorization::Status::rejected || auth.authority.id != "faa-laanc") {
+  if (auth.status != Evaluation::Authorization::Status::rejected || auth.authority.id != "faa-laanc") {
     return EvaluationResult::error;
   }
 

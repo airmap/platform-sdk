@@ -3,6 +3,7 @@
 
 #include <airmap/cmds/airmap/cmd/test.h>
 
+#include <airmap/evaluation.h>
 #include <airmap/flight_plans.h>
 #include <airmap/flights.h>
 #include <airmap/pilots.h>

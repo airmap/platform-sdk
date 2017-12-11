@@ -16,8 +16,8 @@ void airmap::codec::json::encode(nlohmann::json& j, const Pilots::FinishVerifyPi
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Pilots::AddAircraft::Parameters& parameters) {
-  j["model_id"]  = parameters.model_id;
-  j["nick_name"] = parameters.nick_name;
+  j["model_id"] = parameters.model_id;
+  j["nickname"] = parameters.nick_name;
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const Pilots::DeleteAircraft::Parameters& parameters) {

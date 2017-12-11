@@ -61,6 +61,47 @@ class ProgressBar {
   /// @endcond
 };
 
+/// TabWriter helps in producing tabulated output with aligned columns.
+class TabWriter {
+ public:
+  /// NewLine creates a new row for a TabWriter instance.
+  struct NewLine {};
+
+  /// flush flushes the content of a TabWriter instance to 'out'.
+  std::ostream& flush(std::ostream& out);
+
+  /// fill_with adjusts the fill character to 'fill_character'.
+  TabWriter& fill_with(char fill_character);
+  /// separate_columns_with adjusts the column to separator to 'column_separator'.
+  TabWriter& separate_columns_with(char column_separator);
+  /// write pushes 'line' to TabWriter;
+  TabWriter& write(const std::string& cell);
+  /// new_line adds a new row.
+  TabWriter& new_line();
+
+ private:
+  char fill_{' '};
+  char column_separator_{' '};
+  std::vector<std::size_t> column_width_;
+  std::vector<std::size_t>::iterator current_column_{column_width_.end()};
+  std::vector<std::vector<std::string>> table_{1};
+};
+
+/// operator<< pushes 'value' to the current row in 'w'.
+template <typename T>
+inline TabWriter& operator<<(TabWriter& w, const T& value) {
+  std::ostringstream ss;
+  ss << value;
+  return w.write(ss.str());
+}
+
+/// operator<< pushes 'value' to the current row in 'w'.
+TabWriter& operator<<(TabWriter& w, const std::string& value);
+/// operator<< pushes 'value' to the current row in 'w'.
+TabWriter& operator<<(TabWriter& w, bool value);
+/// operator<< adds a new row to 'w'.
+TabWriter& operator<<(TabWriter& w, const TabWriter::NewLine&);
+
 template <std::size_t max>
 class SizeConstrainedString {
  public:
@@ -249,6 +290,7 @@ class Command {
   struct Context {
     std::istream& cin;              ///< The std::istream that should be used for reading.
     std::ostream& cout;             ///< The std::ostream that should be used for writing.
+    std::ostream& cerr;             ///< The std::ostream that should be used for logging/reporting.
     std::vector<std::string> args;  ///< The command line args.
   };
 

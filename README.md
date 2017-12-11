@@ -39,7 +39,7 @@ The implementation is structured as followed:
 git clone --recursive https://github.com/airmap/airmapd.git
 # Update Submodules
 git submodule update --init --recursive
-# Please execute these commands at the root of the source tree
+# Please execute these commands at the root of the source tree (DON'T FOLLOW the commands below if you intend to build airmapd in Ubuntu/Docker)
 mkdir build
 cd build && cmake .. && make
 # Do some changes, iterate, be happy, get ready to issue a PR
@@ -60,10 +60,11 @@ make
 ```
 
 ### Docker with Ubuntu
+Make sure that you start with a clean environment (fresh clone of airmapd and no attempts to build outside of docker)
 Run the following commands from the top-level `airmapd` folder:
 
 ```
-docker run -v $(PWD):/airmapd -it ubuntu:17.04 bash
+docker run -v $(pwd):/airmapd -it ubuntu:17.04 bash
 tools/ubuntu/setup.dev.sh
 mkdir build
 cd build

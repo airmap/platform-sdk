@@ -2,6 +2,7 @@
 
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
+#include <airmap/net/http/middleware.h>
 
 #include <fmt/printf.h>
 
@@ -29,23 +30,12 @@ void airmap::rest::Airspaces::search(const Search::Parameters& parameters, const
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  requester_->get("/search", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::to_outcome<std::vector<Airspace>>(json::parse(result.value().body)));
-    } else {
-      cb(Search::Result{result.error()});
-    }
-  });
+  requester_->get("/search", std::move(query), std::move(headers),
+                  net::http::jsend_parsing_request_callback<std::vector<Airspace>>(cb));
 }
 
 void airmap::rest::Airspaces::for_ids(const ForIds::Parameters& parameters, const ForIds::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   requester_->get(fmt::sprintf("/%s", parameters.id), std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      cb(jsend::to_outcome<std::vector<Airspace>>(json::parse(result.value().body)));
-                    } else {
-                      cb(ForIds::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<std::vector<Airspace>>(cb));
 }

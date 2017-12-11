@@ -16,23 +16,26 @@ using json = nlohmann::json;
 namespace {
 
 void print_flight(std::ostream& out, const airmap::Flight& flight) {
-  out << "Created flight with: " << std::endl
-      << "  id:         " << flight.id << std::endl
-      << "  pilot:      " << flight.pilot.id << std::endl
-      << "  aircraft:   " << flight.aircraft.id << std::endl
-      << "  latitude:   " << flight.latitude << std::endl
-      << "  longitude:  " << flight.longitude << std::endl
-      << "  created-at: " << airmap::iso8601::generate(flight.created_at) << std::endl
-      << "  start-time: " << airmap::iso8601::generate(flight.start_time) << std::endl
-      << "  end-time:   " << airmap::iso8601::generate(flight.end_time) << std::endl;
+  cli::TabWriter tw;
+  tw << "id"
+     << "pilot"
+     << "aircraft"
+     << "latitude"
+     << "longitude"
+     << "created-at"
+     << "start-time"
+     << "end-time" << cli::TabWriter::NewLine{} << flight.id << flight.pilot.id << flight.aircraft.id << flight.latitude
+     << flight.longitude << airmap::iso8601::generate(flight.created_at) << airmap::iso8601::generate(flight.start_time)
+     << airmap::iso8601::generate(flight.end_time);
+  tw.flush(out);
 }
 
 constexpr const char* component{"create-flight"};
 }  // namespace
 
 cmd::CreateFlight::CreateFlight()
-    : cli::CommandWithFlagsAndAction{"create-flight", "creates a flight and registers it with the airmap services",
-                                     "creates a flight and registers it with the airmap services"} {
+    : cli::CommandWithFlagsAndAction{"create-flight", "creates a flight and registers it with the AirMap services",
+                                     "creates a flight and registers it with the AirMap services"} {
   params_.start_time = Clock::universal_time();
   params_.end_time   = params_.start_time + Minutes(5);
 
@@ -52,7 +55,7 @@ cmd::CreateFlight::CreateFlight()
   flag(cli::make_flag("geometry-file", "use the polygon defined in this geojson file", geometry_file_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
+    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -101,7 +104,7 @@ cmd::CreateFlight::CreateFlight()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 

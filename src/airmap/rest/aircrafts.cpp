@@ -2,6 +2,7 @@
 
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
+#include <airmap/net/http/middleware.h>
 
 #include <fmt/printf.h>
 #include <nlohmann/json.hpp>
@@ -30,37 +31,20 @@ void airmap::rest::Aircrafts::manufacturers(const Manufacturers::Parameters& par
   codec::http::query::encode(query, parameters);
 
   requester_->get("/manufacturer", std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      cb(jsend::parse_to_outcome<std::vector<Aircraft::Manufacturer>>(result.value().body));
-                    } else {
-                      cb(Manufacturers::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<std::vector<Aircraft::Manufacturer>>(cb));
 }
 
 void airmap::rest::Aircrafts::models(const Models::Parameters& parameters, const Models::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  requester_->get("/model", std::move(query), std::move(headers), [cb](const net::http::Requester::Result& result) {
-    if (result) {
-      cb(jsend::parse_to_outcome<std::vector<Aircraft>>(result.value().body));
-    } else {
-      cb(Models::Result{result.error()});
-    }
-  });
+  requester_->get("/model", std::move(query), std::move(headers),
+                  net::http::jsend_parsing_request_callback<std::vector<Aircraft>>(cb));
 }
 
 void airmap::rest::Aircrafts::model_for_id(const ModelForId::Parameters& parameters, const ModelForId::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
 
   requester_->get(fmt::sprintf("/model/%s", parameters.id), std::move(query), std::move(headers),
-                  [cb](const net::http::Requester::Result& result) {
-                    if (result) {
-                      cb(jsend::parse_to_outcome<Aircraft>(result.value().body));
-                    } else {
-                      cb(ModelForId::Result{result.error()});
-                    }
-                  });
+                  net::http::jsend_parsing_request_callback<Aircraft>(cb));
 }

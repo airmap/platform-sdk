@@ -1,3 +1,24 @@
+function (build_boost)
+  if (EXISTS ${AIRMAP_BOOST_OUTPUT_PATH})
+    return()
+  endif()
+
+  set(trigger_build_dir ${CMAKE_BINARY_DIR}/force_boost)
+  file(MAKE_DIRECTORY ${trigger_build_dir} ${trigger_build_dir}/build)
+
+  execute_process(
+    COMMAND ${CMAKE_COMMAND}
+      -G${CMAKE_GENERATOR}
+      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+      ${CMAKE_SOURCE_DIR}/cmake/external/boost
+    WORKING_DIRECTORY ${trigger_build_dir}/build
+  )
+
+  execute_process(COMMAND ${CMAKE_COMMAND} --build .
+    WORKING_DIRECTORY ${trigger_build_dir}/build
+  )
+endfunction()
+
 function (build_protobuf)
   if (EXISTS ${AIRMAP_PROTOBUF_OUTPUT_PATH})
     return()
@@ -60,6 +81,7 @@ function (build_grpc)
 endfunction()
 
 # Please note that the order of these invocations is important
+build_boost()
 build_protobuf()
 build_cares()
 build_grpc()

@@ -15,6 +15,20 @@ using json = nlohmann::json;
 
 namespace {
 constexpr const char* component{"render-briefing"};
+
+void print_briefing(std::ostream& out, const airmap::FlightPlan::Briefing& briefing) {
+  cli::TabWriter tw;
+
+  tw << "created-at"
+     << "validations-count"
+     << "authorizations-count"
+     << "advisory-status-color" << cli::TabWriter::NewLine{} << briefing.created_at
+     << briefing.evaluation.rulesets.size() << briefing.evaluation.validations.size()
+     << briefing.evaluation.authorizations.size() << briefing.airspace.color;
+
+  tw.flush(out);
+}
+
 }  // namespace
 
 cmd::RenderBriefing::RenderBriefing()
@@ -27,7 +41,7 @@ cmd::RenderBriefing::RenderBriefing()
   flag(cli::make_flag("id", "flight plan id", flight_plan_id_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cout)));
+    log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -61,7 +75,7 @@ cmd::RenderBriefing::RenderBriefing()
     auto result               = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -88,16 +102,8 @@ cmd::RenderBriefing::RenderBriefing()
 
           auto handler = [this, &ctxt, context, client](const auto& result) {
             if (result) {
-              log_.infof(component,
-                         "successfully rendered flight brief:\n"
-                         "  created at:       %s\n"
-                         "  # rulesets:       %d\n"
-                         "  # validations:    %d\n"
-                         "  # authorizations: %d\n"
-                         "  advisory status:\n"
-                         "    color:          %s\n",
-                         result.value().created_at, result.value().rulesets.size(), result.value().validations.size(),
-                         result.value().authorizations.size(), result.value().airspace.color);
+              log_.infof(component, "successfully rendered flight briefing");
+              print_briefing(ctxt.cout, result.value());
               context->stop();
             } else {
               log_.errorf(component, "failed to render flight briefing: %s", result.error());

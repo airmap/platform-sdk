@@ -77,6 +77,63 @@ void airmap::util::cli::ProgressBar::update(double percentage) {
       << percentage * 100 << " %" << std::flush;
 }
 
+std::ostream& cli::TabWriter::flush(std::ostream& out) {
+  for (auto itr = table_.begin(); itr != table_.end(); ++itr) {
+    if (itr != table_.begin())
+      out << '\n';
+    for (auto itc = itr->begin(); itc != itr->end(); ++itc) {
+      if (itc != itr->begin())
+        out << column_separator_;
+      out << std::left << std::setw(column_width_[std::distance(itr->begin(), itc)]) << std::setfill(fill_) << *itc;
+    }
+  }
+
+  return out << std::flush;
+}
+
+cli::TabWriter& cli::TabWriter::fill_with(char fill) {
+  fill_ = fill;
+  return *this;
+}
+
+cli::TabWriter& cli::TabWriter::separate_columns_with(char column_separator) {
+  column_separator_ = column_separator;
+  return *this;
+}
+
+cli::TabWriter& cli::TabWriter::write(const std::string& cell) {
+  if (current_column_ == column_width_.end()) {
+    column_width_.emplace_back(0);
+    current_column_ = column_width_.end() - 1;
+  }
+
+  *current_column_ = std::max(*current_column_, cell.size());
+  table_.back().push_back(cell);
+  ++current_column_;
+
+  return *this;
+}
+
+cli::TabWriter& cli::TabWriter::new_line() {
+  table_.emplace_back();
+  current_column_ = column_width_.begin();
+  return *this;
+}
+
+cli::TabWriter& cli::operator<<(TabWriter& w, const std::string& value) {
+  return w.write(value);
+}
+
+cli::TabWriter& cli::operator<<(TabWriter& w, bool value) {
+  std::ostringstream ss;
+  ss << std::boolalpha << value;
+  return w.write(ss.str());
+}
+
+cli::TabWriter& cli::operator<<(TabWriter& w, const TabWriter::NewLine&) {
+  return w.new_line();
+}
+
 std::vector<std::string> cli::args(int argc, char** argv) {
   std::vector<std::string> result;
   for (int i = 1; i < argc; i++)
@@ -184,8 +241,8 @@ int cli::CommandWithSubcommands::run(const cli::Command::Context& ctxt) {
     po::store(parsed, vm);
     po::notify(vm);
 
-    return commands_[vm["command"].as<std::string>()]->run(
-        cli::Command::Context{ctxt.cin, ctxt.cout, po::collect_unrecognized(parsed.options, po::include_positional)});
+    return commands_[vm["command"].as<std::string>()]->run(cli::Command::Context{
+        ctxt.cin, ctxt.cout, ctxt.cerr, po::collect_unrecognized(parsed.options, po::include_positional)});
   } catch (const po::error& e) {
     ctxt.cout << e.what() << std::endl;
     help(ctxt.cout);
@@ -233,8 +290,8 @@ int cli::CommandWithFlagsAndAction::run(const Context& ctxt) {
       return EXIT_SUCCESS;
     }
 
-    return action_(
-        cli::Command::Context{ctxt.cin, ctxt.cout, po::collect_unrecognized(parsed.options, po::exclude_positional)});
+    return action_(cli::Command::Context{ctxt.cin, ctxt.cout, ctxt.cerr,
+                                         po::collect_unrecognized(parsed.options, po::exclude_positional)});
   } catch (const po::error& e) {
     ctxt.cout << e.what() << std::endl;
     help(ctxt.cout);

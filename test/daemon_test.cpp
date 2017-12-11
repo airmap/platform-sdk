@@ -1,4 +1,3 @@
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE daemon
 
 #include <airmap/boost/context.h>
@@ -100,7 +99,8 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   credentials.api_key   = api_key;
   credentials.anonymous = anon;
 
-  airmap::monitor::Daemon::Configuration config{credentials, aircraft_id, logger, channel, context, client, "0.0.0.0:9292"};
+  airmap::monitor::Daemon::Configuration config{credentials, aircraft_id, logger,        channel,
+                                                context,     client,      "0.0.0.0:9292"};
 
   auto daemon = airmap::monitor::Daemon::create(config);
   daemon->start();

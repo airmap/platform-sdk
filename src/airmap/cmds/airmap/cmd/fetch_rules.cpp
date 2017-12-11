@@ -18,13 +18,12 @@ namespace {
 constexpr const char* component{"fetch-rules"};
 
 void print_rulesets(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
-  for (const auto& r : v) {
-    out << std::endl;
-    out << "    id:           " << r.id << std::endl;
-    out << "    # rules:      " << r.rules.size() << std::endl;
-    // TBD - print rules
-  }
-  out << std::endl;
+  cli::TabWriter tw;
+  tw << "id"
+     << "# rules" << cli::TabWriter::NewLine{};
+  for (const auto& r : v)
+    tw << r.id << r.rules.size() << cli::TabWriter::NewLine{};
+  tw.flush(out);
 }
 
 }  // namespace
@@ -32,14 +31,14 @@ void print_rulesets(std::ostream& out, const std::vector<airmap::RuleSet>& v) {
 cmd::FetchRules::FetchRules()
     : cli::CommandWithFlagsAndAction{
           "fetch-rules", "fetches the rules that apply to the rulesets",
-          "fetches the rules that apply to the rulesets as well as the corresponding flight_features"} {
+          "fetches the rules that apply to the rulesets as well as the corresponding flight features"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
   flag(cli::make_flag("rulesets", "comma-separated list of rulesets", rulesets_));
 
   action([this](const cli::Command::Context& ctxt) {
-    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cout))};
+    log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cerr))};
 
     if (!config_file_) {
       config_file_ = ConfigFile{paths::config_file(version_).string()};
@@ -59,7 +58,7 @@ cmd::FetchRules::FetchRules()
     auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
-      log_.errorf(component, "Could not acquire resources for accessing AirMap services");
+      log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
@@ -98,9 +97,7 @@ cmd::FetchRules::FetchRules()
           };
 
           params_.rulesets = rulesets_.get();
-
           client->rulesets().fetch_rules(params_, handler);
-
         });
 
     return context->exec({SIGINT, SIGQUIT},
