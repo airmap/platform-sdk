@@ -2,53 +2,40 @@ cmake_minimum_required(VERSION 3.5)
 
 project(airmap C CXX)
 
-set(AIRMAP_EXTERNAL_DEPENDENCIES_OUTPUT_PATH "${CMAKE_BINARY_DIR}/external")
+set(AIRMAPD_VERSION_MAJOR 0)
+set(AIRMAPD_VERSION_MINOR 0)
+set(AIRMAPD_VERSION_PATCH 1)
 
-set(AIRMAP_BOOST_OUTPUT_PATH "${AIRMAP_EXTERNAL_DEPENDENCIES_OUTPUT_PATH}/boost")
-set(AIRMAP_CARES_OUTPUT_PATH "${AIRMAP_EXTERNAL_DEPENDENCIES_OUTPUT_PATH}/cares")
-set(AIRMAP_GRPC_OUTPUT_PATH "${AIRMAP_EXTERNAL_DEPENDENCIES_OUTPUT_PATH}/grpc")
-set(AIRMAP_PROTOBUF_OUTPUT_PATH "${AIRMAP_EXTERNAL_DEPENDENCIES_OUTPUT_PATH}/protobuf")
+find_package(Git)
 
-set(ENV{AIRMAP_BOOST_OUTPUT_PATH}    ${AIRMAP_BOOST_OUTPUT_PATH})
-set(ENV{AIRMAP_CARES_OUTPUT_PATH}    ${AIRMAP_CARES_OUTPUT_PATH})
-set(ENV{AIRMAP_GRPC_OUTPUT_PATH}     ${AIRMAP_GRPC_OUTPUT_PATH})
-set(ENV{AIRMAP_PROTOBUF_OUTPUT_PATH} ${AIRMAP_PROTOBUF_OUTPUT_PATH})
+if (GIT_FOUND)
+  execute_process(
+    COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE AIRMAPD_VERSION_GIT_REVISION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(ENV{CMAKE_PREFIX_PATH} "${AIRMAP_BOOST_OUTPUT_PATH}:${AIRMAP_CARES_OUTPUT_PATH}:${AIRMAP_GRPC_OUTPUT_PATH}:${AIRMAP_PROTOBUF_OUTPUT_PATH}")
+  message(STATUS "Building in git revision ${AIRMAPD_VERSION_GIT_REVISION}")
+else()
+  set(AIRMAPD_VERSION_GIT_REVISION "n/a")
+  message(STATUS "Executable git is missing, choosing default value for git revision")
+endif()
 
-list(
-  APPEND CMAKE_PREFIX_PATH
 
-  ${AIRMAP_BOOST_OUTPUT_PATH}
-  ${AIRMAP_GRPC_OUTPUT_PATH}
-  ${AIRMAP_CARES_OUTPUT_PATH} 
-  ${AIRMAP_PROTOBUF_OUTPUT_PATH}
-)
+string(TIMESTAMP AIRMAPD_VERSION_BUILD_TIMESTAMP "%Y-%m-%dT%H:%M:%S.000000Z" UTC)
+message(STATUS "Building in build timestamp ${AIRMAPD_VERSION_BUILD_TIMESTAMP}")
+
+# Detecting the platform at build time and exposing
+# information on the platform to the platform
+set(AIRMAP_PLATFORM "null")
+
+if (UNIX)
+  # We are treating OS X as a proper Linux-like operating system and store
+  # configuration files according to the XDG directory standard.
+  set(AIRMAP_PLATFORM "linux")
+endif()
+
+message(STATUS "Enabling platform ${AIRMAP_PLATFORM}")
 
 include(external.cmake)
-
-include(GNUInstallDirs)
-
-find_file(
-  AIRMAP_PROTOBUF_CMAKE_CONFIG protobuf-config.cmake
-  PATHS ${AIRMAP_PROTOBUF_OUTPUT_PATH}/lib/cmake/protobuf ${AIRMAP_PROTOBUF_OUTPUT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/protobuf
-  NO_DEFAULT_PATH)
-
-if (NOT AIRMAP_PROTOBUF_CMAKE_CONFIG)
-  message(FATAL_ERROR "Failed to find protobuf cmake config file")
-endif()
-
-include(${AIRMAP_PROTOBUF_CMAKE_CONFIG})
-
-find_file(
-  AIRMAP_GRPC_CMAKE_CONFIG gRPCConfig.cmake
-  PATHS ${AIRMAP_GRPC_OUTPUT_PATH}/lib/cmake/grpc ${AIRMAP_GRPC_OUTPUT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/grpc
-  NO_DEFAULT_PATH)
-
-if (NOT AIRMAP_GRPC_CMAKE_CONFIG)
-  message(FATAL_ERROR "Failed to find grpc cmake config file")
-endif()
-
-include(${AIRMAP_GRPC_CMAKE_CONFIG})
-
 include(airmapd.cmake)

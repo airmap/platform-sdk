@@ -8,7 +8,10 @@
 #include <airmap/grpc/method_invocation.h>
 #include <airmap/util/formatting_logger.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "grpc/airmap/monitor/monitor.grpc.pb.h"
+#pragma GCC diagnostic pop
 
 #include <mutex>
 #include <set>

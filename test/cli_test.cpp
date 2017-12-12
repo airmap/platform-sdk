@@ -2,7 +2,7 @@
 
 #include <airmap/util/cli.h>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE(version_is_read_correctly_from_input_stream) {
   std::stringstream result;

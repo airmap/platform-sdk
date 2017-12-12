@@ -57,7 +57,7 @@ void airmap::net::http::boost::NonEncryptingRequest::handle_read(const ::boost::
     return;
   }
 
-  cb_(Result{Response{response_.version, response_.result_int(), {}, response_.body}});
+  cb_(Result{Response{response_.version(), response_.result_int(), {}, response_.body()}});
 }
 
 std::shared_ptr<airmap::net::http::boost::EncryptingRequest> airmap::net::http::boost::EncryptingRequest::create(
@@ -115,5 +115,5 @@ void airmap::net::http::boost::EncryptingRequest::handle_read(const ::boost::sys
     return;
   }
 
-  cb_(Result{Response{response_.version, response_.result_int(), {}, response_.body}});
+  cb_(Result{Response{response_.version(), response_.result_int(), {}, response_.body()}});
 }

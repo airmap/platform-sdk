@@ -135,7 +135,7 @@ void airmap::net::http::boost::Requester::patch(const std::string& path,
   request.set(::http::to_string(::http::field::host), host_);
   for (const auto& pair : headers)
     request.set(pair.first, pair.second);
-  request.body = std::move(body);
+  request.body() = std::move(body);
   request.prepare_payload();
 
   resolver_.async_resolve(tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive), [
@@ -161,7 +161,7 @@ void airmap::net::http::boost::Requester::post(const std::string& path,
   request.set(::http::to_string(::http::field::host), host_);
   for (const auto& pair : headers)
     request.set(pair.first, pair.second);
-  request.body = std::move(body);
+  request.body() = std::move(body);
   request.prepare_payload();
 
   resolver_.async_resolve(tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive), [

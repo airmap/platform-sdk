@@ -9,7 +9,7 @@
 
 #include <airmap/codec.h>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 #include <trompeloeil/trompeloeil.hpp>
 
 namespace mock = trompeloeil;

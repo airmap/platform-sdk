@@ -44,7 +44,7 @@ set(
 add_custom_command(
   OUTPUT ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
 
-  COMMAND $<TARGET_FILE:protobuf::protoc> 
+  COMMAND $<TARGET_FILE:protobuf::protoc>
     --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
     --proto_path ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/
     --proto_path ${CMAKE_CURRENT_SOURCE_DIR}/rest/
@@ -396,19 +396,45 @@ add_executable(
 )
 
 target_include_directories(
-  airmap-client 
+  airmap-client
   PRIVATE $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>)
 
-set_property(TARGET airmap-client PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-client PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(TARGET airmap-grpc PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-grpc PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(TARGET airmap-monitor PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-monitor PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(TARGET airmap-qt PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-mavlink PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-mavlink PROPERTY COMPILE_OPTIONS "-Wno-pedantic")
-set_property(TARGET airmap PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-client
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-client
+  PROPERTY COMPILE_OPTIONS -fPIC)
+set_property(
+  TARGET airmap-grpc
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-grpc
+  PROPERTY COMPILE_OPTIONS -fPIC)
+set_property(
+  TARGET airmap-monitor
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-monitor
+  PROPERTY COMPILE_OPTIONS -fPIC)
+set_property(
+  TARGET airmap-qt
+  PROPERTY CXX_STANDARD 14)
+  set_property(
+    TARGET airmap-qt
+    PROPERTY VERSION "${AIRMAPD_VERSION_MAJOR}")
+set_property(
+  TARGET airmap-qt
+  PROPERTY SOVERSION "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}")
+set_property(
+  TARGET airmap-mavlink
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-mavlink
+  PROPERTY COMPILE_OPTIONS "-Wno-pedantic")
+set_property(
+  TARGET airmap
+  PROPERTY CXX_STANDARD 14)
 
 target_link_libraries(
   airmap-grpc
@@ -425,7 +451,7 @@ target_link_libraries(
 
 target_link_libraries(
   airmap-qt
-  
+
   airmap-grpc
   airmap-monitor
 
@@ -437,7 +463,7 @@ target_link_libraries(
 
 target_link_libraries(
   airmap
-  
+
   airmap-grpc
   airmap-monitor
 

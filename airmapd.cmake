@@ -1,7 +1,3 @@
-set(AIRMAPD_VERSION_MAJOR 0)
-set(AIRMAPD_VERSION_MINOR 0)
-set(AIRMAPD_VERSION_PATCH 1)
-
 include(CTest)
 
 # Cmake find modules
@@ -9,51 +5,17 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access" ON)
 
-find_program(GIT_EXECUTABLE
-  NAMES git
-  DOC "git executable"
-)
-
-if (GIT_EXECUTABLE)
-  execute_process(
-    COMMAND git rev-parse HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE AIRMAPD_VERSION_GIT_REVISION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-  message(STATUS "Building in git revision ${AIRMAPD_VERSION_GIT_REVISION}")
-else()
-  set(AIRMAPD_VERSION_GIT_REVISION "n/a")
-  message(STATUS "Executable git is missing, choosing default value for git revision")
-endif()
-
-
-string(TIMESTAMP AIRMAPD_VERSION_BUILD_TIMESTAMP "%Y-%m-%dT%H:%M:%S.000000Z" UTC)
-message(STATUS "Building in build timestamp ${AIRMAPD_VERSION_BUILD_TIMESTAMP}")
-
-find_package(Boost REQUIRED date_time filesystem program_options system unit_test_framework)
+find_package(Boost 1.65.1 REQUIRED date_time filesystem program_options system)
 find_package(PkgConfig)
 find_package(Qt5Core)
 
 pkg_check_modules(OPENSSL REQUIRED openssl)
 
-# Detecting the platform at build time and exposing
-# information on the platform to the platform
-set(AIRMAP_PLATFORM "null")
-
-if (UNIX)
-  # We are treating OS X as a proper Linux-like operating system and store
-  # configuration files according to the XDG directory standard.
-  set(AIRMAP_PLATFORM "linux")
-endif()
-
-message(STATUS "Enabling platform ${AIRMAP_PLATFORM}")
-
 # vendor-specific setup goes here
 add_definitions(-DFMT_HEADER_ONLY)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra -fPIC")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing -pedantic -Wextra -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing -pedantic -Wextra -Wno-implicit-fallthrough -fPIC")
 
 include_directories(
   include
@@ -71,6 +33,7 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
 
+  ${Boost_INCLUDE_DIRS}
   ${OPENSSL_INCLUDE_DIRS})
 
 add_subdirectory(doc)

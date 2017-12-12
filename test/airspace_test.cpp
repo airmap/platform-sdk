@@ -2,7 +2,7 @@
 
 #include <airmap/airspace.h>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE(default_ctor_yields_an_invalid_airspace) {
   airmap::Airspace airspace;

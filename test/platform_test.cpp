@@ -5,7 +5,7 @@
 
 #include <airmap/platform/null/interface.h>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE(scope_is_inserted_correctly_into_output_stream) {
   {
