@@ -65,6 +65,7 @@ add_library(
 add_library(
   airmap-client
 
+  ${CMAKE_SOURCE_DIR}/include/airmap/advisory.h
   ${CMAKE_SOURCE_DIR}/include/airmap/aircraft.h
   ${CMAKE_SOURCE_DIR}/include/airmap/aircrafts.h
   ${CMAKE_SOURCE_DIR}/include/airmap/airspace.h
