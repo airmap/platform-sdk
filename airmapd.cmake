@@ -5,11 +5,11 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access" ON)
 
-find_package(Boost 1.65.1 REQUIRED date_time filesystem program_options system)
-find_package(PkgConfig)
-find_package(Qt5Core)
+set(OPENSSL_USE_STATIC_LIBS TRUE)
 
-pkg_check_modules(OPENSSL REQUIRED openssl)
+find_package(Boost 1.65.1 QUIET REQUIRED date_time filesystem program_options system)
+find_package(OpenSSL QUIET REQUIRED)
+find_package(Qt5Core QUIET)
 
 # vendor-specific setup goes here
 add_definitions(-DFMT_HEADER_ONLY)

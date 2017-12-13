@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 
-project(external-boost)
+project(external-boost C CXX)
 
 include(ExternalProject)
-
 include(ProcessorCount)
+
+find_package(Git QUIET REQUIRED)
+
 ProcessorCount(NUM_CPUS)
 
 if(UNIX)
@@ -21,10 +23,10 @@ endif()
 ExternalProject_Add(boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
   GIT_TAG boost-1.65.1
-  GIT_SUBMODULES libs/asio libs/chrono libs/config libs/date_time libs/filesystem libs/optional libs/program_options libs/system libs/test libs/timer tools/build
   BUILD_IN_SOURCE 1
   UPDATE_COMMAND ""
-  PATCH_COMMAND ""
+  PATCH_COMMAND
+    ${GIT_EXECUTABLE} apply --directory=libs/asio -p1 ${CMAKE_CURRENT_SOURCE_DIR}/patches/libressl.patch
   CONFIGURE_COMMAND ${AIRMAP_BOOST_BOOTSTRAP_COMMAND}
   BUILD_COMMAND
     ${AIRMAP_BOOST_B2_COMMAND} headers 

@@ -305,6 +305,12 @@ add_library(
 )
 
 add_library(
+  airmap-cpp SHARED
+
+  $<TARGET_OBJECTS:airmap-client>
+)
+
+add_library(
   airmap-qt SHARED
 
   $<TARGET_OBJECTS:airmap-client>
@@ -418,6 +424,15 @@ set_property(
   TARGET airmap-monitor
   PROPERTY COMPILE_OPTIONS -fPIC)
 set_property(
+  TARGET airmap-cpp
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-cpp
+  PROPERTY VERSION "${AIRMAPD_VERSION_MAJOR}")
+set_property(
+  TARGET airmap-cpp
+  PROPERTY SOVERSION "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}")
+set_property(
   TARGET airmap-qt
   PROPERTY CXX_STANDARD 14)
   set_property(
@@ -450,13 +465,27 @@ target_link_libraries(
 )
 
 target_link_libraries(
+  airmap-cpp
+
+  airmap-grpc
+  airmap-monitor
+
+  ${Boost_LIBRARIES}
+
+  OpenSSL::Crypto
+  OpenSSL::SSL
+)
+
+target_link_libraries(
   airmap-qt
 
   airmap-grpc
   airmap-monitor
 
   ${Boost_LIBRARIES}
-  ${OPENSSL_LDFLAGS}
+
+  OpenSSL::Crypto
+  OpenSSL::SSL
 
   Qt5::Core
 )
@@ -468,7 +497,9 @@ target_link_libraries(
   airmap-monitor
 
   ${Boost_LIBRARIES}
-  ${OPENSSL_LDFLAGS}
+
+  OpenSSL::Crypto
+  OpenSSL::SSL
 )
 
 install(TARGETS airmap RUNTIME DESTINATION bin)
