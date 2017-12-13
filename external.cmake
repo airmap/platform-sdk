@@ -10,7 +10,7 @@ function (build_boost)
     COMMAND ${CMAKE_COMMAND}
       -G${CMAKE_GENERATOR}
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-      ${CMAKE_SOURCE_DIR}/cmake/external/boost
+      ${CMAKE_SOURCE_DIR}/vendor/boost
     WORKING_DIRECTORY ${trigger_build_dir}/build
   )
 
@@ -31,7 +31,7 @@ function (build_protobuf)
     COMMAND ${CMAKE_COMMAND}
       -G${CMAKE_GENERATOR}
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-      ${CMAKE_SOURCE_DIR}/cmake/external/protobuf
+      ${CMAKE_SOURCE_DIR}/vendor/protobuf
     WORKING_DIRECTORY ${trigger_build_dir}/build
   )
 
@@ -51,7 +51,7 @@ function (build_cares)
     COMMAND ${CMAKE_COMMAND}
       -G${CMAKE_GENERATOR}
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-      ${CMAKE_SOURCE_DIR}/cmake/external/cares
+      ${CMAKE_SOURCE_DIR}/vendor/cares
     WORKING_DIRECTORY ${trigger_build_dir}/build
   )
 
@@ -71,7 +71,7 @@ function (build_grpc)
     COMMAND ${CMAKE_COMMAND}
       -G${CMAKE_GENERATOR}
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-      ${CMAKE_SOURCE_DIR}/cmake/external/grpc
+      ${CMAKE_SOURCE_DIR}/vendor/grpc
     WORKING_DIRECTORY ${trigger_build_dir}/build
   )
 
