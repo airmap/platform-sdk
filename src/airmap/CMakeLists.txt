@@ -423,24 +423,23 @@ set_property(
 set_property(
   TARGET airmap-monitor
   PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(
-  TARGET airmap-cpp
-  PROPERTY CXX_STANDARD 14)
-set_property(
-  TARGET airmap-cpp
-  PROPERTY VERSION "${AIRMAPD_VERSION_MAJOR}")
-set_property(
-  TARGET airmap-cpp
-  PROPERTY SOVERSION "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}")
-set_property(
-  TARGET airmap-qt
-  PROPERTY CXX_STANDARD 14)
-  set_property(
-    TARGET airmap-qt
-    PROPERTY VERSION "${AIRMAPD_VERSION_MAJOR}")
-set_property(
-  TARGET airmap-qt
-  PROPERTY SOVERSION "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}")
+
+set_target_properties(
+  airmap-cpp PROPERTIES
+
+  CXX_STANDARD      14
+  SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
+  VERSION           "${AIRMAPD_VERSION_MAJOR}"
+)
+
+set_target_properties(
+  airmap-qt PROPERTIES
+
+  CXX_STANDARD      14
+  SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
+  VERSION           "${AIRMAPD_VERSION_MAJOR}"
+)
+
 set_property(
   TARGET airmap-mavlink
   PROPERTY CXX_STANDARD 14)
@@ -502,4 +501,22 @@ target_link_libraries(
   OpenSSL::SSL
 )
 
-install(TARGETS airmap RUNTIME DESTINATION bin)
+install(
+  TARGETS airmap
+  RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+install(
+  TARGETS airmap-cpp
+  LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  TARGETS airmap-qt
+  LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  DIRECTORY ${CMAKE_SOURCE_DIR}/include/airmap
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
