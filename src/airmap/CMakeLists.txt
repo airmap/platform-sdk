@@ -193,6 +193,8 @@ add_library(
   rest/client.h
   rest/client.cpp
 
+  rest/advisory.h
+  rest/advisory.cpp
   rest/aircrafts.h
   rest/aircrafts.cpp
   rest/airspaces.h
