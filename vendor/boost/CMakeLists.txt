@@ -21,12 +21,12 @@ else()
 endif()
 
 ExternalProject_Add(boost
-  GIT_REPOSITORY https://github.com/boostorg/boost.git
-  GIT_TAG boost-1.65.1
+  URL http://dl.bintray.com/boostorg/release/1.65.0/source/boost_1_65_0.tar.bz2
+  URL_HASH SHA256=ea26712742e2fb079c2a566a31f3266973b76e38222b9f88b387e3c8b2f9902c
   BUILD_IN_SOURCE 1
   UPDATE_COMMAND ""
   PATCH_COMMAND
-    ${GIT_EXECUTABLE} apply --directory=libs/asio -p1 ${CMAKE_CURRENT_SOURCE_DIR}/patches/libressl.patch
+    ${GIT_EXECUTABLE} apply -p2 ${CMAKE_CURRENT_SOURCE_DIR}/patches/libressl.patch
   CONFIGURE_COMMAND ${AIRMAP_BOOST_BOOTSTRAP_COMMAND}
   BUILD_COMMAND
     ${AIRMAP_BOOST_B2_COMMAND} headers 

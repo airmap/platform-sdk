@@ -7,6 +7,7 @@ include(ExternalProject)
 ExternalProject_add(
     protobuf
     GIT_REPOSITORY https://github.com/airmap/protobuf.git
+    GIT_SHALLOW 1
     PREFIX protobuf
     CONFIGURE_COMMAND ${CMAKE_COMMAND}
       -DCMAKE_INSTALL_PREFIX:PATH=$ENV{AIRMAP_PROTOBUF_OUTPUT_PATH}
