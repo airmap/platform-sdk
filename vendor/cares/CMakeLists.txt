@@ -8,7 +8,6 @@ ExternalProject_add(
     cares
     GIT_REPOSITORY https://github.com/c-ares/c-ares.git
     GIT_TAG cares-1_13_0
-    GIT_SHALLOW 1
     PREFIX cares
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=$ENV{AIRMAP_CARES_OUTPUT_PATH}
