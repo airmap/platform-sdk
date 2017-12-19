@@ -26,7 +26,6 @@ include_directories(
   vendor/beast/include
   vendor/fmt
   vendor/mavlink
-  vendor/spdlog/include
   vendor/uri/include
   vendor/mqtt_client_cpp/include
 

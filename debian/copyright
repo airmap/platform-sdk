@@ -47,10 +47,6 @@ Files: vendor/mqtt_client_cpp/*
 Copyright: 2015 Takatoshi Kondo
 License: Boost Software License
 
-Files: vendor/spdlog/*
-Copyright: 2015 Gabi Melman
-License: Expat
-
 Files: vendor/uri/*
 Copyright: 2012-2016 Glyn Matthews
 License: Boost Software License
