@@ -85,7 +85,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Airspace::RelatedGeome
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::map<std::string, Airspace::RelatedGeometry>& rg) {
-  for (auto it = j.begin(); it != j.end(); ++it)
+  for (auto it   = j.begin(); it != j.end(); ++it)
     rg[it.key()] = it.value();
 }
 

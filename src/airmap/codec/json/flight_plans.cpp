@@ -48,7 +48,7 @@ void airmap::codec::json::encode(nlohmann::json& j, const FlightPlans::Create::P
   j["pilot_id"]          = p.pilot.id;
   if (p.aircraft)
     j["aircraft_id"] = p.aircraft.get().id;
-  j["buffer"] = p.buffer;
+  j["buffer"]        = p.buffer;
 
   for (const auto& id : p.rulesets)
     j["rulesets"].push_back(id);

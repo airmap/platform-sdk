@@ -2,20 +2,37 @@
 
 #include <airmap/date_time.h>
 
-#include <fmt/format.h>
-#include <spdlog/async_logger.h>
-#include <spdlog/sinks/ostream_sink.h>
 #include <boost/asio.hpp>
+
+#include <boost/core/null_deleter.hpp>
+#include <boost/log/attributes/attribute_name.hpp>
+#include <boost/log/attributes/attribute_value.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/sinks.hpp>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/trivial.hpp>
+
 #include <nlohmann/json.hpp>
 
 #include <unistd.h>
 
 #include <map>
 
-namespace ip = boost::asio::ip;
-using json   = nlohmann::json;
+namespace ip      = boost::asio::ip;
+namespace logging = boost::log;
+namespace sinks   = logging::sinks;
+namespace srcs    = logging::sources;
+
+using json = nlohmann::json;
 
 namespace {
+namespace key {
+
+static const logging::attribute_name severity{"severity"};
+static const logging::attribute_name component{"component"};
+static const logging::attribute_name message{"message"};
+
+}  // namespace key
 
 struct NullLogger : public airmap::Logger {
   NullLogger() = default;
@@ -26,7 +43,7 @@ struct NullLogger : public airmap::Logger {
   }
 };
 
-class BunyanFormatter : public spdlog::formatter {
+class BunyanFormatter {
  public:
   static uint bunyan_version() {
     return 0;
@@ -39,50 +56,73 @@ class BunyanFormatter : public spdlog::formatter {
       hostname_ = "unknown";
   }
 
-  void format(spdlog::details::log_msg& msg) override {
+  void format(const logging::record_view& rec, logging::formatting_ostream& strm) const {
     json j;
 
-    j["v"]        = bunyan_version();
-    j["level"]    = severity_lut_.at(msg.level);
-    j["name"]     = msg.logger_name ? *msg.logger_name : "undefined";
+    j["v"] = bunyan_version();
+    j["level"] =
+        severity_lut_.at(rec.attribute_values()[key::severity].extract<logging::trivial::severity_level>().get());
+    j["name"]     = rec.attribute_values()[key::component].extract<std::string>().get();
     j["hostname"] = hostname_;
     j["pid"]      = pid_;
     j["time"]     = airmap::iso8601::generate(airmap::Clock::local_time());
-    j["msg"]      = msg.raw.str();
+    j["msg"]      = rec.attribute_values()[key::message].extract<std::string>().get();
 
-    msg.formatted << j.dump() << '\n';
+    strm << j.dump();
+    strm.flush();
   }
 
  private:
-  std::map<spdlog::level::level_enum, uint> severity_lut_{
-      {spdlog::level::trace, 10}, {spdlog::level::debug, 20}, {spdlog::level::info, 30},
-      {spdlog::level::warn, 40},  {spdlog::level::err, 50},   {spdlog::level::critical, 60},
+  std::map<logging::trivial::severity_level, uint> severity_lut_{
+      {logging::trivial::severity_level::trace, 10}, {logging::trivial::severity_level::debug, 20},
+      {logging::trivial::severity_level::info, 30},  {logging::trivial::severity_level::warning, 40},
+      {logging::trivial::severity_level::error, 50}, {logging::trivial::severity_level::fatal, 60},
   };
+
   std::string hostname_;
   pid_t pid_;
 };
 
 class DefaultLogger : public airmap::Logger {
  public:
-  explicit DefaultLogger(std::ostream& out) : logger_{"airmap", std::make_shared<spdlog::sinks::ostream_sink_mt>(out)} {
-    logger_.set_formatter(std::make_shared<BunyanFormatter>());
-    logger_.set_level(spdlog::level::debug);
+  explicit DefaultLogger(std::ostream& out) : sink_{new Sink{true}} {
+    sink_->locked_backend()->add_stream(boost::shared_ptr<std::ostream>{&out, boost::null_deleter()});
+
+    sink_->set_formatter(
+        [this](const logging::record_view& rec, logging::formatting_ostream& strm) { formatter_.format(rec, strm); });
+
+    logging::core::get()->add_sink(sink_);
   }
 
   // From airmap::Logger
-  void log(Severity severity, const char* message, const char*) override {
+  void log(Severity severity, const char* message, const char* component) override {
+    auto record = logger_.open_record();
+
     switch (severity) {
       case Severity::debug:
-        logger_.log(spdlog::level::debug, message);
+        record.attribute_values().insert(
+            key::severity, logging::attributes::make_attribute_value(logging::trivial::severity_level::debug));
         break;
       case Severity::info:
-        logger_.log(spdlog::level::info, message);
+        record.attribute_values().insert(
+            key::severity, logging::attributes::make_attribute_value(logging::trivial::severity_level::info));
         break;
       case Severity::error:
-        logger_.log(spdlog::level::err, message);
+        record.attribute_values().insert(
+            key::severity, logging::attributes::make_attribute_value(logging::trivial::severity_level::error));
         break;
     }
-    logger_.flush();
+
+    if (component) {
+      record.attribute_values().insert(key::component,
+                                       logging::attributes::make_attribute_value(std::string{component}));
+    }
+
+    if (message) {
+      record.attribute_values().insert(key::message, logging::attributes::make_attribute_value(std::string{message}));
+    }
+
+    logger_.push_record(std::move(record));
   }
 
   bool should_log(Severity, const char*, const char*) override {
@@ -90,7 +130,11 @@ class DefaultLogger : public airmap::Logger {
   }
 
  private:
-  spdlog::logger logger_;
+  using Sink = sinks::asynchronous_sink<sinks::text_ostream_backend>;
+
+  BunyanFormatter formatter_;
+  boost::shared_ptr<Sink> sink_;
+  srcs::logger_mt logger_;
 };
 
 class FilteringLogger : public airmap::Logger {
