@@ -2,9 +2,6 @@
 	path = vendor/fmt
 	url = https://github.com/fmtlib/fmt.git
 	branch = release-4.0
-[submodule "vendor/spdlog"]
-	path = vendor/spdlog
-	url = https://github.com/gabime/spdlog.git
 [submodule "vendor/beast"]
 	path = vendor/beast
 	url = https://github.com/boostorg/beast.git
