@@ -23,7 +23,6 @@ include_directories(
   test
 
   vendor/
-  vendor/beast/include
   vendor/fmt
   vendor/mavlink
   vendor/uri/include

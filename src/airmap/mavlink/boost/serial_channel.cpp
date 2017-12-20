@@ -23,7 +23,7 @@ void airmap::mavlink::boost::SerialChannel::stop_impl() {
 }
 
 void airmap::mavlink::boost::SerialChannel::flush() {
-  ::tcflush(serial_port_.native(), TCIOFLUSH);
+  ::tcflush(serial_port_.native_handle(), TCIOFLUSH);
 }
 
 void airmap::mavlink::boost::SerialChannel::start_read() {
