@@ -2,9 +2,6 @@
 	path = vendor/fmt
 	url = https://github.com/fmtlib/fmt.git
 	branch = release-4.0
-[submodule "vendor/beast"]
-	path = vendor/beast
-	url = https://github.com/boostorg/beast.git
 [submodule "vendor/uri"]
 	path = vendor/uri
 	url = https://github.com/cpp-netlib/uri.git
