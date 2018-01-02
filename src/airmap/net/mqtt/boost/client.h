@@ -22,8 +22,8 @@ namespace boost {
 
 class Client : public mqtt::Client, public std::enable_shared_from_this<Client> {
  public:
-  using TlsClient =
-      ::mqtt::client<::mqtt::tcp_endpoint<::boost::asio::ssl::stream<::boost::asio::ip::tcp::socket>, ::boost::asio::io_service::strand>>;
+  using TlsClient    = ::mqtt::client<::mqtt::tcp_endpoint<::boost::asio::ssl::stream<::boost::asio::ip::tcp::socket>,
+                                                        ::boost::asio::io_service::strand>>;
   using Unsubscriber = std::function<void()>;
 
   class Subscription : public mqtt::Client::Subscription {

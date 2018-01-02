@@ -10,6 +10,7 @@
 
 namespace asio = boost::asio;
 namespace http = boost::beast::http;
+namespace fmt  = airmap::util::fmt;
 using tcp      = boost::asio::ip::tcp;
 
 namespace {

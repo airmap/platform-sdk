@@ -2,8 +2,7 @@
 #define AIRMAP_UTIL_FORMATTING_LOGGER_H_
 
 #include <airmap/logger.h>
-
-#include <fmt/printf.h>
+#include <airmap/util/fmt.h>
 
 #include <sstream>
 
@@ -29,7 +28,7 @@ class FormattingLogger {
 
     template <typename... Args>
     inline Record& printf(const char* format, Args... args) {
-      fmt::fprintf(oss_, format, std::forward<Args>(args)...);
+      oss_ << fmt::sprintf(format, std::forward<Args>(args)...);
       return *this;
     }
 

@@ -2,8 +2,6 @@
 
 #include <airmap/grpc/method_invocation.h>
 
-#include <fmt/printf.h>
-
 airmap::grpc::server::Executor::Executor(const Configuration& c) : context_{c.context}, services_{c.services} {
   grpc_init();
   ::grpc::ServerBuilder builder;
