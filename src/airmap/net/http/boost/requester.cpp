@@ -3,8 +3,6 @@
 #include <airmap/net/http/boost/requester.h>
 #include <airmap/net/http/user_agent.h>
 
-#include <network/uri/detail/encode.hpp>
-
 #include <iterator>
 #include <stdexcept>
 
@@ -21,6 +19,52 @@ airmap::Error wrap_error_code(const boost::system::error_code& ec) {
 
 namespace uri {
 
+template <typename CharT>
+inline CharT hex_to_letter(CharT in) {
+  if ((in >= 0) && (in < 10)) {
+    return in + '0';
+  }
+
+  if ((in >= 10) && (in < 16)) {
+    return in - 10 + 'A';
+  }
+
+  return in;
+}
+
+template <class charT, class OutputIterator>
+void encode_char(charT in, OutputIterator &out, const char *ignore = "") {
+  if (((in >= 'a') && (in <= 'z')) ||
+      ((in >= 'A') && (in <= 'Z')) ||
+      ((in >= '0') && (in <= '9')) ||
+      (in == '-') ||
+      (in == '.') ||
+      (in == '_') ||
+      (in == '~')) {
+    out++ = in;
+  } else {
+    auto first = ignore, last = ignore + std::strlen(ignore);
+    if (std::find(first, last, in) != last) {
+      out++ = in;
+    } else {
+      out++ = '%';
+      out++ = hex_to_letter((in >> 4) & 0x0f);
+      out++ = hex_to_letter(in & 0x0f);
+    }
+  }
+}
+
+template <typename InputIterator, typename OutputIterator>
+OutputIterator encode_query(InputIterator first, InputIterator last,
+                            OutputIterator out) {
+  auto it = first;
+  while (it != last) {
+    encode_char(*it, out, "/.@&%;=");
+    ++it;
+  }
+  return out;
+}
+
 std::string encode_query(const std::unordered_map<std::string, std::string>& q) {
   std::stringstream ss;
 
@@ -29,7 +73,7 @@ std::string encode_query(const std::unordered_map<std::string, std::string>& q) 
       ss << "&";
 
     auto p = it->first + "=" + it->second;
-    network::detail::encode_query(p.begin(), p.end(), std::ostream_iterator<char>(ss));
+    encode_query(p.begin(), p.end(), std::ostream_iterator<char>(ss));
   }
 
   return ss.str();
