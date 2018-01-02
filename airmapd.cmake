@@ -23,7 +23,6 @@ include_directories(
   test
 
   vendor/
-  vendor/fmt
   vendor/mavlink
   vendor/uri/include
   vendor/mqtt_client_cpp/include
