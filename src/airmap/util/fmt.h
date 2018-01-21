@@ -9,24 +9,24 @@ namespace airmap {
 namespace util {
 namespace fmt {
 
-template<typename Head>
+template <typename Head>
 std::string sprintf(boost::format& fmt, Head&& head) {
-    return (fmt % head).str();
+  return (fmt % head).str();
 }
 
-template<typename Head, typename... Tail>
+template <typename Head, typename... Tail>
 std::string sprintf(boost::format& fmt, Head&& head, Tail&&... tail) {
-    return sprintf(fmt % head, std::forward<Tail>(tail)...);
+  return sprintf(fmt % head, std::forward<Tail>(tail)...);
 }
 
-template<typename... Args>
+template <typename... Args>
 inline std::string sprintf(const char* format, Args&&... args) {
-    boost::format fmt{format};
-    return sprintf(fmt, std::forward<Args>(args)...);
+  boost::format fmt{format};
+  return sprintf(fmt, std::forward<Args>(args)...);
 }
 
 inline std::string sprintf(const char* format) {
-    return format;
+  return format;
 }
 
 }  // namespace fmt
