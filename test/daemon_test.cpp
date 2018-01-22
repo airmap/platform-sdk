@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   router.start();
 
   auto search_flight_response = airmap::Flights::Search::Response{};
-  auto search_flights_result = airmap::Flights::Search::Result{search_flight_response};
+  auto search_flights_result  = airmap::Flights::Search::Result{search_flight_response};
 
   auto token                 = airmap::Token::Anonymous{user_id};
   auto authentication_result = airmap::Authenticator::AuthenticateAnonymously::Result{token};
