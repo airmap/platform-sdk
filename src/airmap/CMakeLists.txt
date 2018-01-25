@@ -15,6 +15,8 @@ if (${AIRMAP_PLATFORM} STREQUAL "linux")
     platform/linux/interface.cpp
     platform/linux/standard_paths.h
     platform/linux/standard_paths.cpp
+    platform/linux/xdg.h
+    platform/linux/xdg.cpp
   )
   set(AIRMAP_PLATFORM_LIBRARIES ${AIRMAP_PLATFORM_LIBRARIES} xdg)
 else()
@@ -23,17 +25,44 @@ endif()
 
 configure_file(version.cpp.in version.cpp)
 
-protobuf_generate_cpp(
-  TELEMETRY_PROTOBUF_SOURCES
-  TELEMETRY_PROTOBUF_HEADERS
-  rest/telemetry.proto)
+set(
+  AIRMAP_TELEMETRY_PROTOBUF_PROTOS
 
-protobuf_generate_cpp(
-  AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_SOURCES
-  AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_HEADERS
-  ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/amd_uav_flight_update.proto)
+  ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/amd_uav_flight_update.proto
+  ${CMAKE_CURRENT_SOURCE_DIR}/rest/telemetry.proto
+)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+set(
+  AIRMAP_TELEMETRY_PROTOBUF_SOURCES
+
+  ${CMAKE_CURRENT_BINARY_DIR}/telemetry.pb.h
+  ${CMAKE_CURRENT_BINARY_DIR}/telemetry.pb.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/amd_uav_flight_update.pb.h
+  ${CMAKE_CURRENT_BINARY_DIR}/amd_uav_flight_update.pb.cc
+)
+
+add_custom_command(
+  OUTPUT ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
+
+  COMMAND $<TARGET_FILE:protobuf::protoc>
+    --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
+    --proto_path ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/
+    --proto_path ${CMAKE_CURRENT_SOURCE_DIR}/rest/
+    ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
+
+  DEPENDS $<TARGET_FILE:protobuf::protoc> ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
+  COMMENT "Generating C++ code for AirMap telemetry interfaces"
+  VERBATIM)
+
+set_source_files_properties(
+  ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
+  PROPERTIES GENERATED TRUE
+)
+
+include_directories(
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/interfaces
+)
 
 add_library(
   airmap-mavlink
@@ -63,7 +92,7 @@ add_library(
 )
 
 add_library(
-  airmap-client
+  airmap-client OBJECT
 
   ${CMAKE_SOURCE_DIR}/include/airmap/advisory.h
   ${CMAKE_SOURCE_DIR}/include/airmap/aircraft.h
@@ -123,6 +152,11 @@ add_library(
   codec/http/query/rulesets.cpp
   codec/http/query/status.h
   codec/http/query/status.cpp
+
+  codec/grpc/date_time.h
+  codec/grpc/date_time.cpp
+  codec/grpc/traffic.h
+  codec/grpc/traffic.cpp
 
   codec/json/aircraft.h
   codec/json/aircraft.cpp
@@ -234,8 +268,25 @@ add_library(
 
   ${AIRMAP_PLATFORM_SRCS}
 
-  ${TELEMETRY_PROTOBUF_SOURCES}
-  ${TELEMETRY_PROTOBUF_HEADERS}
+  ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
+  ${AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_SOURCES}
+  ${AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_HEADERS}
+)
+
+add_library(
+  airmap-grpc
+
+  grpc/init.h
+  grpc/init.cpp
+  grpc/method_invocation.h
+  grpc/method_invocation.cpp
+
+  grpc/client/executor.h
+  grpc/client/executor.cpp
+
+  grpc/server/executor.h
+  grpc/server/executor.cpp
+  grpc/server/service.h
 )
 
 add_library(
@@ -243,14 +294,29 @@ add_library(
 
   monitor/daemon.h
   monitor/daemon.cpp
+  monitor/fan_out_traffic_monitor.h
+  monitor/fan_out_traffic_monitor.cpp
   monitor/submitting_vehicle_monitor.h
   monitor/submitting_vehicle_monitor.cpp
   monitor/telemetry_submitter.h
   monitor/telemetry_submitter.cpp
+
+  monitor/grpc/client.h
+  monitor/grpc/client.cpp
+  monitor/grpc/service.h
+  monitor/grpc/service.cpp
 )
 
 add_library(
-  airmap-qt
+  airmap-cpp SHARED
+
+  $<TARGET_OBJECTS:airmap-client>
+)
+
+add_library(
+  airmap-qt SHARED
+
+  $<TARGET_OBJECTS:airmap-client>
 
   qt/client.cpp
   qt/dispatcher.h
@@ -282,6 +348,8 @@ add_library(
 
 add_executable(
   airmap
+
+  $<TARGET_OBJECTS:airmap-client>
 
   cmds/airmap/airmap.cpp
   cmds/airmap/cmd/add_aircraft.h
@@ -334,46 +402,124 @@ add_executable(
   cmds/airmap/cmd/test/laanc.phoenix.cpp
   cmds/airmap/cmd/version.h
   cmds/airmap/cmd/version.cpp
-
-  ${AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_SOURCES}
-  ${AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_HEADERS}
 )
 
-set_property(TARGET airmap-client PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-client PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(TARGET airmap-monitor PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-monitor PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(TARGET airmap-qt PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-mavlink PROPERTY CXX_STANDARD 14)
-set_property(TARGET airmap-mavlink PROPERTY COMPILE_OPTIONS "-Wno-pedantic")
-set_property(TARGET airmap PROPERTY CXX_STANDARD 14)
+target_include_directories(
+  airmap-client
+  PRIVATE $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>)
+
+set_property(
+  TARGET airmap-client
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-client
+  PROPERTY COMPILE_OPTIONS -fPIC)
+set_property(
+  TARGET airmap-grpc
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-grpc
+  PROPERTY COMPILE_OPTIONS -fPIC)
+set_property(
+  TARGET airmap-monitor
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-monitor
+  PROPERTY COMPILE_OPTIONS -fPIC)
+
+set_target_properties(
+  airmap-cpp PROPERTIES
+
+  CXX_STANDARD      14
+  SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
+  VERSION           "${AIRMAPD_VERSION_MAJOR}"
+)
+
+set_target_properties(
+  airmap-qt PROPERTIES
+
+  CXX_STANDARD      14
+  SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
+  VERSION           "${AIRMAPD_VERSION_MAJOR}"
+)
+
+set_property(
+  TARGET airmap-mavlink
+  PROPERTY CXX_STANDARD 14)
+set_property(
+  TARGET airmap-mavlink
+  PROPERTY COMPILE_OPTIONS "-Wno-pedantic")
+set_property(
+  TARGET airmap
+  PROPERTY CXX_STANDARD 14)
 
 target_link_libraries(
-  airmap-client
+  airmap-grpc
 
-  ${AIRMAP_PLATFORM_LIBRARIES}
-  airmap-mavlink
-
-  fmt
-  network-uri
-  spdlog
-  ${Boost_LIBRARIES}
-  ${OPENSSL_LDFLAGS}
-  ${PROTOBUF_LIBRARIES})
+  airmap-interfaces-grpc
+)
 
 target_link_libraries(
   airmap-monitor
 
-  airmap-client
+  airmap-grpc
+  airmap-mavlink
+)
+
+target_link_libraries(
+  airmap-cpp
+
+  airmap-grpc
+  airmap-monitor
+
+  ${Boost_LIBRARIES}
+
+  OpenSSL::Crypto
+  OpenSSL::SSL
 )
 
 target_link_libraries(
   airmap-qt
 
-  airmap-client
+  airmap-grpc
+  airmap-monitor
 
-  Qt5::Core)
+  ${Boost_LIBRARIES}
 
-target_link_libraries(airmap airmap-client airmap-monitor)
+  OpenSSL::Crypto
+  OpenSSL::SSL
 
-install(TARGETS airmap RUNTIME DESTINATION bin)
+  Qt5::Core
+)
+
+target_link_libraries(
+  airmap
+
+  airmap-grpc
+  airmap-monitor
+
+  ${Boost_LIBRARIES}
+
+  OpenSSL::Crypto
+  OpenSSL::SSL
+)
+
+install(
+  TARGETS airmap
+  RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+install(
+  TARGETS airmap-cpp
+  LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  TARGETS airmap-qt
+  LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  DIRECTORY ${CMAKE_SOURCE_DIR}/include/airmap
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

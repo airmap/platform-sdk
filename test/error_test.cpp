@@ -1,9 +1,8 @@
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE error
 
 #include <airmap/error.h>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE(error_value_default_ctor_yields_correct_type) {
   airmap::Error::Value value;

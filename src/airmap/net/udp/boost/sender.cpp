@@ -1,6 +1,8 @@
 #include <airmap/net/udp/boost/sender.h>
 
-#include <fmt/printf.h>
+#include <airmap/util/fmt.h>
+
+namespace fmt = airmap::util::fmt;
 
 std::shared_ptr<airmap::net::udp::boost::Sender::Session> airmap::net::udp::boost::Sender::Session::create(
     const std::shared_ptr<::boost::asio::io_service>& io_service, const ::boost::asio::ip::udp::endpoint& endpoint,

@@ -1,10 +1,9 @@
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE issue_38
 
 #include <airmap/airspace.h>
 #include <airmap/codec.h>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE(prevent_regression_for_issue_38) {
   constexpr const char* reply = R"__(

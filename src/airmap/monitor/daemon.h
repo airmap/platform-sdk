@@ -3,15 +3,20 @@
 
 #include <airmap/authenticator.h>
 #include <airmap/client.h>
+#include <airmap/context.h>
 #include <airmap/flights.h>
+#include <airmap/grpc/server/executor.h>
 #include <airmap/logger.h>
 #include <airmap/mavlink/channel.h>
 #include <airmap/mavlink/vehicle.h>
 #include <airmap/mavlink/vehicle_tracker.h>
+#include <airmap/monitor/fan_out_traffic_monitor.h>
+
 #include <airmap/monitor/telemetry_submitter.h>
 #include <airmap/util/formatting_logger.h>
 
 #include <memory>
+#include <thread>
 
 namespace airmap {
 /// namespace monitor bundles up all types and functions used in running AirMap's monitor daemon.
@@ -24,12 +29,15 @@ namespace monitor {
 /// in its operations.
 class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_shared_from_this<Daemon> {
  public:
+  /// Configuration bundles up construction time parameters.
   struct Configuration {
-    Credentials credentials;
-    std::string aircraft_id;
-    std::shared_ptr<Logger> logger;
-    std::shared_ptr<mavlink::Channel> channel;
-    std::shared_ptr<Client> client;
+    Credentials credentials;                    ///< Credentials used to authenticate with the AirMap services.
+    std::string aircraft_id;                    ///< The id of the aircraft that the monitor runs on.
+    std::shared_ptr<Logger> logger;             ///< The logger instance.
+    std::shared_ptr<mavlink::Channel> channel;  ///< The MavLink channel that should be monitored.
+    std::shared_ptr<Context> context;           ///< Target context for incoming calls.
+    std::shared_ptr<airmap::Client> client;     ///< The client used to communicate with the AirMap cloud services.
+    std::string grpc_endpoint;                  ///< The local endpoint that the service should be exposed on.
   };
 
   // create returns a new Daemon instance ready for startup.
@@ -59,6 +67,9 @@ class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_share
   Configuration configuration_;
 
   util::FormattingLogger log_;
+  std::shared_ptr<FanOutTrafficMonitor> fan_out_traffic_monitor_;
+  std::shared_ptr<grpc::server::Executor> executor_;
+  std::thread executor_worker_;
   std::shared_ptr<mavlink::LoggingVehicleTrackerMonitor> vehicle_tracker_monitor_;
   mavlink::VehicleTracker vehicle_tracker_;
   mavlink::Channel::Subscription mavlink_channel_subscription_;

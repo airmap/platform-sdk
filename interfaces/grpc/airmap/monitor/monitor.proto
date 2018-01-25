@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "grpc/airmap/traffic.proto";
+
+package grpc.airmap.monitor;
+
+// Update bundles up data streamed by a MonitorService.
+message Update {
+  repeated grpc.airmap.Traffic.Update traffic = 1;  // 0 or more traffic updates.
+}
+
+// Placeholder for parameters.
+message ConnectToUpdatesParameters {
+}
+
+// Monitor streams flight-relevant updates.
+service Monitor {
+  // ConnectToUpdates provides a stream of updates to callers.
+  rpc ConnectToUpdates(ConnectToUpdatesParameters) returns (stream Update);
+}

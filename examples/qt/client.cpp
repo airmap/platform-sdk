@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 
   airmap::qt::register_types();
 
-  auto client = new airmap::examples::qt::Client{&app};
+  auto client  = new airmap::examples::qt::Client{&app};
   auto qlogger = std::make_shared<airmap::qt::Logger>();
 
   if (!client->test()) {
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
   auto credentials    = airmap::Credentials{};
   credentials.api_key = api_key;
-  auto dlogger         = std::make_shared<airmap::qt::DispatchingLogger>(qlogger);
+  auto dlogger        = std::make_shared<airmap::qt::DispatchingLogger>(qlogger);
   auto configuration  = airmap::Client::default_production_configuration(credentials);
 
   airmap::qt::Client::create(configuration, dlogger, &app, [](const auto& result) {
@@ -67,63 +67,119 @@ airmap::examples::qt::Client::Client(QObject* parent) : QObject{parent} {
 
 bool airmap::examples::qt::Client::test() {
   bool result = true;
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Aircraft&)), this, SLOT(slot_(const Aircraft&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Airspace&)), this, SLOT(slot_(const Airspace&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Credentials&)), this, SLOT(slot_(const Credentials&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const DateTime&)), this, SLOT(slot_(const DateTime&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const FlightPlan&)), this, SLOT(slot_(const FlightPlan&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Flight&)), this, SLOT(slot_(const Flight&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Geometry&)), this, SLOT(slot_(const Geometry&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Pilot&)), this, SLOT(slot_(const Pilot&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Rule&)), this, SLOT(slot_(const Rule&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const RuleSet&)), this, SLOT(slot_(const RuleSet&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const RuleSet::Rule&)), this, SLOT(slot_(const RuleSet::Rule&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Status::Advisory&)), this, SLOT(slot_(const Status::Advisory&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Status::Wind&)), this, SLOT(slot_(const Status::Wind&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Status::Weather&)), this, SLOT(slot_(const Status::Weather&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Status::Report&)), this, SLOT(slot_(const Status::Report&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Position&)), this, SLOT(slot_(const Telemetry::Position&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Speed&)), this, SLOT(slot_(const Telemetry::Speed&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Attitude&)), this, SLOT(slot_(const Telemetry::Attitude&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Barometer&)), this, SLOT(slot_(const Telemetry::Barometer&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Optional<Telemetry::Update>&)), this, SLOT(slot_(const Optional<Telemetry::Update>&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Token::Type&)), this, SLOT(slot_(const Token::Type&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Token::Anonymous&)), this, SLOT(slot_(const Token::Anonymous&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Token::OAuth&)), this, SLOT(slot_(const Token::OAuth&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Token::Refreshed&)), this, SLOT(slot_(const Token::Refreshed&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Token&)), this, SLOT(slot_(const Token&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Traffic::Update::Type&)), this, SLOT(slot_(const Traffic::Update::Type&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Traffic::Update&)), this, SLOT(slot_(const Traffic::Update&)), Qt::QueuedConnection));
-  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Version&)), this, SLOT(slot_(const Version&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Aircraft&)), this, SLOT(slot_(const Aircraft&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Airspace&)), this, SLOT(slot_(const Airspace&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Credentials&)), this, SLOT(slot_(const Credentials&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const DateTime&)), this, SLOT(slot_(const DateTime&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const FlightPlan&)), this, SLOT(slot_(const FlightPlan&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Flight&)), this, SLOT(slot_(const Flight&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Geometry&)), this, SLOT(slot_(const Geometry&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Pilot&)), this, SLOT(slot_(const Pilot&)), Qt::QueuedConnection));
+  result &=
+      static_cast<bool>(connect(this, SIGNAL(sig_(const Rule&)), this, SLOT(slot_(const Rule&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const RuleSet&)), this, SLOT(slot_(const RuleSet&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const RuleSet::Rule&)), this, SLOT(slot_(const RuleSet::Rule&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Status::Advisory&)), this,
+                                      SLOT(slot_(const Status::Advisory&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Status::Wind&)), this, SLOT(slot_(const Status::Wind&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Status::Weather&)), this,
+                                      SLOT(slot_(const Status::Weather&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Status::Report&)), this,
+                                      SLOT(slot_(const Status::Report&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Position&)), this,
+                                      SLOT(slot_(const Telemetry::Position&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Speed&)), this,
+                                      SLOT(slot_(const Telemetry::Speed&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Attitude&)), this,
+                                      SLOT(slot_(const Telemetry::Attitude&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Telemetry::Barometer&)), this,
+                                      SLOT(slot_(const Telemetry::Barometer&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Optional<Telemetry::Update>&)), this,
+                                      SLOT(slot_(const Optional<Telemetry::Update>&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Token::Type&)), this, SLOT(slot_(const Token::Type&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Token::Anonymous&)), this,
+                                      SLOT(slot_(const Token::Anonymous&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Token::OAuth&)), this, SLOT(slot_(const Token::OAuth&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Token::Refreshed&)), this,
+                                      SLOT(slot_(const Token::Refreshed&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Token&)), this, SLOT(slot_(const Token&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Traffic::Update::Type&)), this,
+                                      SLOT(slot_(const Traffic::Update::Type&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(connect(this, SIGNAL(sig_(const Traffic::Update&)), this,
+                                      SLOT(slot_(const Traffic::Update&)), Qt::QueuedConnection));
+  result &= static_cast<bool>(
+      connect(this, SIGNAL(sig_(const Version&)), this, SLOT(slot_(const Version&)), Qt::QueuedConnection));
 
   return result;
 }
 
-void airmap::examples::qt::Client::slot_(const Aircraft&) {}
-void airmap::examples::qt::Client::slot_(const Airspace&) {}
-void airmap::examples::qt::Client::slot_(const Credentials&) {}
-void airmap::examples::qt::Client::slot_(const DateTime&) {}
-void airmap::examples::qt::Client::slot_(const FlightPlan&) {}
-void airmap::examples::qt::Client::slot_(const Flight&) {}
-void airmap::examples::qt::Client::slot_(const Geometry&) {}
-void airmap::examples::qt::Client::slot_(const Pilot&) {}
-void airmap::examples::qt::Client::slot_(const Rule&) {}
-void airmap::examples::qt::Client::slot_(const RuleSet&) {}
-void airmap::examples::qt::Client::slot_(const RuleSet::Rule&) {}
-void airmap::examples::qt::Client::slot_(const Status::Advisory&) {}
-void airmap::examples::qt::Client::slot_(const Status::Wind&) {}
-void airmap::examples::qt::Client::slot_(const Status::Weather&) {}
-void airmap::examples::qt::Client::slot_(const Status::Report&) {}
-void airmap::examples::qt::Client::slot_(const Telemetry::Position&) {}
-void airmap::examples::qt::Client::slot_(const Telemetry::Speed&) {}
-void airmap::examples::qt::Client::slot_(const Telemetry::Attitude&) {}
-void airmap::examples::qt::Client::slot_(const Telemetry::Barometer&) {}
-void airmap::examples::qt::Client::slot_(const Optional<Telemetry::Update>&) {}
-void airmap::examples::qt::Client::slot_(const Token::Type&) {}
-void airmap::examples::qt::Client::slot_(const Token::Anonymous&) {}
-void airmap::examples::qt::Client::slot_(const Token::OAuth&) {}
-void airmap::examples::qt::Client::slot_(const Token::Refreshed&) {}
-void airmap::examples::qt::Client::slot_(const Token&) {}
-void airmap::examples::qt::Client::slot_(const Traffic::Update::Type&) {}
-void airmap::examples::qt::Client::slot_(const Traffic::Update&) {}
-void airmap::examples::qt::Client::slot_(const Version&) {}
+void airmap::examples::qt::Client::slot_(const Aircraft&) {
+}
+void airmap::examples::qt::Client::slot_(const Airspace&) {
+}
+void airmap::examples::qt::Client::slot_(const Credentials&) {
+}
+void airmap::examples::qt::Client::slot_(const DateTime&) {
+}
+void airmap::examples::qt::Client::slot_(const FlightPlan&) {
+}
+void airmap::examples::qt::Client::slot_(const Flight&) {
+}
+void airmap::examples::qt::Client::slot_(const Geometry&) {
+}
+void airmap::examples::qt::Client::slot_(const Pilot&) {
+}
+void airmap::examples::qt::Client::slot_(const Rule&) {
+}
+void airmap::examples::qt::Client::slot_(const RuleSet&) {
+}
+void airmap::examples::qt::Client::slot_(const RuleSet::Rule&) {
+}
+void airmap::examples::qt::Client::slot_(const Status::Advisory&) {
+}
+void airmap::examples::qt::Client::slot_(const Status::Wind&) {
+}
+void airmap::examples::qt::Client::slot_(const Status::Weather&) {
+}
+void airmap::examples::qt::Client::slot_(const Status::Report&) {
+}
+void airmap::examples::qt::Client::slot_(const Telemetry::Position&) {
+}
+void airmap::examples::qt::Client::slot_(const Telemetry::Speed&) {
+}
+void airmap::examples::qt::Client::slot_(const Telemetry::Attitude&) {
+}
+void airmap::examples::qt::Client::slot_(const Telemetry::Barometer&) {
+}
+void airmap::examples::qt::Client::slot_(const Optional<Telemetry::Update>&) {
+}
+void airmap::examples::qt::Client::slot_(const Token::Type&) {
+}
+void airmap::examples::qt::Client::slot_(const Token::Anonymous&) {
+}
+void airmap::examples::qt::Client::slot_(const Token::OAuth&) {
+}
+void airmap::examples::qt::Client::slot_(const Token::Refreshed&) {
+}
+void airmap::examples::qt::Client::slot_(const Token&) {
+}
+void airmap::examples::qt::Client::slot_(const Traffic::Update::Type&) {
+}
+void airmap::examples::qt::Client::slot_(const Traffic::Update&) {
+}
+void airmap::examples::qt::Client::slot_(const Version&) {
+}

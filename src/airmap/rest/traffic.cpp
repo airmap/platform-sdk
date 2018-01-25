@@ -2,14 +2,15 @@
 
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
+#include <airmap/util/fmt.h>
 
 #include <nlohmann/json.hpp>
 
-#include <fmt/printf.h>
 #include <mqtt/client.hpp>
 
-namespace ph = std::placeholders;
-using json   = nlohmann::json;
+namespace fmt = airmap::util::fmt;
+namespace ph  = std::placeholders;
+using json    = nlohmann::json;
 
 namespace {
 constexpr const char* component{"rest::Traffic::Monitor"};

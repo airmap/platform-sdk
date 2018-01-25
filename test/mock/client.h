@@ -2,6 +2,7 @@
 #define MOCK_CLIENT_H_
 
 #include <airmap/client.h>
+#include <airmap/context.h>
 
 #include <airmap/authenticator.h>
 #include <airmap/flights.h>
@@ -45,6 +46,20 @@ struct Telemetry : public airmap::Telemetry {
   Telemetry() = default;
 
   MAKE_MOCK3(submit_updates, void(const airmap::Flight&, const std::string&, const std::initializer_list<Update>&),
+             override);
+};
+
+struct Traffic : public airmap::Traffic {
+  struct Monitor : public airmap::Traffic::Monitor {
+    Monitor() = default;
+
+    MAKE_MOCK1(subscribe, void(const std::shared_ptr<airmap::Traffic::Monitor::Subscriber>&), override);
+    MAKE_MOCK1(unsubscribe, void(const std::shared_ptr<airmap::Traffic::Monitor::Subscriber>&), override);
+  };
+
+  Traffic() = default;
+
+  MAKE_MOCK2(monitor, void(const airmap::Traffic::Monitor::Params&, const airmap::Traffic::Monitor::Callback&),
              override);
 };
 

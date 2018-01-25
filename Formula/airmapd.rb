@@ -5,10 +5,11 @@ class Airmapd < Formula
 
   depends_on "cmake" => :build
   depends_on "boost"
+  depends_on "c-ares"
   depends_on "pkgconfig"
-  depends_on "protobuf"
   depends_on "openssl"
   depends_on "qt@5.7"
+  depends_on "zlib"
 
   def install
     Dir.mkdir("build")

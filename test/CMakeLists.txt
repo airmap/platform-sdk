@@ -12,9 +12,24 @@ add_library(
 )
 
 function(airmap_add_test name source)
-  add_executable(${name} ${source})
+  add_executable(
+    ${name}
+
+    $<TARGET_OBJECTS:airmap-client>  
+
+    ${source})
+
   set_property(TARGET ${name} PROPERTY CXX_STANDARD 14)
-  target_link_libraries(${name} airmap-client airmap-monitor airmap-test-helper ${Boost_LIBRARIES})
+  target_link_libraries(
+    ${name} 
+    
+    airmap-grpc
+    airmap-monitor
+    airmap-test-helper
+
+    ${Boost_LIBRARIES}
+    ${OPENSSL_LDFLAGS})
+
   add_test(${name} ${name} --color_output=false --logger=XML,all,${AIRMAP_TEST_OUTPUT_DIRECTORY}/${name}.xml)
 endfunction (airmap_add_test)
 

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package grpc.airmap;
+
+// Degrees models a quantity in [°].
+message Degrees {
+  double value = 1;  // The value of the quantity.
+}
+
+// DegreesCelsius models a quantity in [°C].
+message DegreesCelsius {
+  double value = 1;  // The value of the quantity.
+}
+
+// DegreesPerSecond models a quantity in [°/s].
+message DegreesPerSecond {
+  double value = 1;  // The value of the quantity.
+}
+
+// MetersPerSecond models a quantity in [m/s].
+message Meters {
+  double value = 1;  // The value of the quantity.
+}
+
+// MetersPerSecond models a quantity in [m/s].
+message MetersPerSecond {
+  double value = 1;  // The value of the quantity.
+}
+
+// Pascal models a quantity in [Pa].
+message Pascal {
+  double value = 1;  // The value of the quantity.
+}
+
+// Percent models a quantity in [%].
+message Percent {
+  double value = 1;  // The value of the quantity.
+}

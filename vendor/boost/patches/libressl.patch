@@ -1,0 +1,120 @@
+diff --git a/boost/asio/ssl/detail/impl/engine.ipp b/boost/asio/ssl/detail/impl/engine.ipp
+index 3133f913..aa89691a 100644
+--- a/boost/asio/ssl/detail/impl/engine.ipp
++++ b/boost/asio/ssl/detail/impl/engine.ipp
+@@ -204,10 +204,10 @@ const boost::system::error_code& engine::map_error_code(
+ 
+   // SSL v2 doesn't provide a protocol-level shutdown, so an eof on the
+   // underlying transport is passed through.
+-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#if (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+   if (SSL_version(ssl_) == SSL2_VERSION)
+     return ec;
+-#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+ 
+   // Otherwise, the peer should have negotiated a proper shutdown.
+   if ((::SSL_get_shutdown(ssl_) & SSL_RECEIVED_SHUTDOWN) == 0)
+diff --git a/boost/asio/ssl/detail/impl/openssl_init.ipp b/boost/asio/ssl/detail/impl/openssl_init.ipp
+index dd3dd328..994c71b1 100644
+--- a/boost/asio/ssl/detail/impl/openssl_init.ipp
++++ b/boost/asio/ssl/detail/impl/openssl_init.ipp
+@@ -36,7 +36,7 @@ class openssl_init_base::do_init
+ public:
+   do_init()
+   {
+-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#if (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+     ::SSL_library_init();
+     ::SSL_load_error_strings();        
+     ::OpenSSL_add_all_algorithms();
+@@ -45,7 +45,7 @@ public:
+     for (size_t i = 0; i < mutexes_.size(); ++i)
+       mutexes_[i].reset(new boost::asio::detail::mutex);
+     ::CRYPTO_set_locking_callback(&do_init::openssl_locking_func);
+-#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+ #if (OPENSSL_VERSION_NUMBER < 0x10000000L)
+     ::CRYPTO_set_id_callback(&do_init::openssl_id_func);
+ #endif // (OPENSSL_VERSION_NUMBER < 0x10000000L)
+@@ -68,30 +68,30 @@ public:
+ #if (OPENSSL_VERSION_NUMBER < 0x10000000L)
+     ::CRYPTO_set_id_callback(0);
+ #endif // (OPENSSL_VERSION_NUMBER < 0x10000000L)
+-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#if (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+     ::CRYPTO_set_locking_callback(0);
+     ::ERR_free_strings();
+     ::EVP_cleanup();
+     ::CRYPTO_cleanup_all_ex_data();
+-#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+ #if (OPENSSL_VERSION_NUMBER < 0x10000000L)
+     ::ERR_remove_state(0);
+-#elif (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#elif (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+     ::ERR_remove_thread_state(NULL);
+ #endif // (OPENSSL_VERSION_NUMBER < 0x10000000L)
+ #if (OPENSSL_VERSION_NUMBER >= 0x10002000L) \
+     && (OPENSSL_VERSION_NUMBER < 0x10100000L)
+     ::SSL_COMP_free_compression_methods();
+ #endif // (OPENSSL_VERSION_NUMBER >= 0x10002000L)
+-       // && (OPENSSL_VERSION_NUMBER < 0x10100000L)
++       // && ((OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER))
+ #if !defined(OPENSSL_IS_BORINGSSL)
+     ::CONF_modules_unload(1);
+ #endif // !defined(OPENSSL_IS_BORINGSSL)
+ #if !defined(OPENSSL_NO_ENGINE) \
+-  && (OPENSSL_VERSION_NUMBER < 0x10100000L)
++  && ((OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER))
+     ::ENGINE_cleanup();
+ #endif // !defined(OPENSSL_NO_ENGINE)
+-       // && (OPENSSL_VERSION_NUMBER < 0x10100000L)
++       // && ((OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER))
+   }
+ 
+ #if !defined(SSL_OP_NO_COMPRESSION) \
+@@ -117,7 +117,7 @@ private:
+   }
+ #endif // (OPENSSL_VERSION_NUMBER < 0x10000000L)
+ 
+-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#if (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+   static void openssl_locking_func(int mode, int n, 
+     const char* /*file*/, int /*line*/)
+   {
+@@ -130,7 +130,7 @@ private:
+   // Mutexes to be used in locking callbacks.
+   std::vector<boost::asio::detail::shared_ptr<
+         boost::asio::detail::mutex> > mutexes_;
+-#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L)
++#endif // (OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)
+ 
+ #if !defined(SSL_OP_NO_COMPRESSION) \
+   && (OPENSSL_VERSION_NUMBER >= 0x00908000L)
+diff --git a/boost/asio/ssl/error.hpp b/boost/asio/ssl/error.hpp
+index 968902c5..210dbf2e 100644
+--- a/boost/asio/ssl/error.hpp
++++ b/boost/asio/ssl/error.hpp
+@@ -46,7 +46,7 @@ enum stream_errors
+ #if defined(GENERATING_DOCUMENTATION)
+   /// The underlying stream closed before the ssl stream gracefully shut down.
+   stream_truncated
+-#elif (OPENSSL_VERSION_NUMBER < 0x10100000L) && !defined(OPENSSL_IS_BORINGSSL)
++#elif ((OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)) && !defined(OPENSSL_IS_BORINGSSL)
+   stream_truncated = ERR_PACK(ERR_LIB_SSL, 0, SSL_R_SHORT_READ)
+ #else
+   stream_truncated = 1
+diff --git a/boost/asio/ssl/impl/error.ipp b/boost/asio/ssl/impl/error.ipp
+index bdbd836f..e15b4636 100644
+--- a/boost/asio/ssl/impl/error.ipp
++++ b/boost/asio/ssl/impl/error.ipp
+@@ -53,7 +53,7 @@ const boost::system::error_category& get_ssl_category()
+ namespace ssl {
+ namespace error {
+ 
+-#if (OPENSSL_VERSION_NUMBER < 0x10100000L) && !defined(OPENSSL_IS_BORINGSSL)
++#if ((OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER)) && !defined(OPENSSL_IS_BORINGSSL)
+ 
+ const boost::system::error_category& get_stream_category()
+ {

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+import "grpc/airmap/geometry.proto";
+import "grpc/airmap/ids.proto";
+import "grpc/airmap/units.proto";
+import "grpc/airmap/wgs84.proto";
+
+package grpc.airmap;
+
+// Traffic bundles up types used for communicating information about surrounding traffic to ongoing flights.
+message Traffic {
+  // Update models an individual update to the state of surrounding traffic.
+  message Update {
+    // Type enumerates all known types of Traffic::Update.
+    enum Type {
+      unknown_type          = 0;  // Marks the unknown type.
+      situational_awareness = 1;  // Marks updates that provide planning information to operators and vehicles.
+      alert                 = 2;  // Marks updates about aircrafts that are likely to collide with the current aircraft.
+    }
+
+    Type type                           = 1;  // The type of the update.
+    TrackID track                       = 2;  // The unique id of the underlying track in the context of AirMap.
+    string aircraft_id                  = 3;  // The 'other' aircraft's id.
+    Coordinate position                 = 4;  // The position of the other aircraft.
+    MetersPerSecond ground_speed        = 5;  // The speed over ground of the other aircraft in [m/s].
+    Degrees heading                     = 6;  // The heading of the other aircraft in [°].
+    Degrees direction                   = 7;  // The direction of the other aircraft in relation to the current aircraft in [°].
+    google.protobuf.Timestamp recorded  = 8;  // The time when the datum triggering the udpate was recorded.
+    google.protobuf.Timestamp generated = 9;  // The time when the update was generated.
+  }
+}

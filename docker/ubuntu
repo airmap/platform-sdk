@@ -14,10 +14,10 @@ COPY . /usr/src/app
 RUN tools/ubuntu/setup.dev.sh
 RUN mkdir build
 WORKDIR build
-RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
-RUN ninja
+RUN cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+RUN make
 RUN ctest -V
-RUN ninja install
+RUN make install
 WORKDIR /usr/src/app
 RUN tools/ubuntu/cleanup.dev.sh
 WORKDIR /tmp

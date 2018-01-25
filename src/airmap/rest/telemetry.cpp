@@ -1,10 +1,10 @@
 #include <airmap/rest/telemetry.h>
 
 #include <airmap/flight.h>
+#include <airmap/util/fmt.h>
 
 #include "telemetry.pb.h"
 
-#include <fmt/printf.h>
 #include <boost/beast/core/detail/base64.hpp>
 
 #include <openssl/conf.h>
@@ -15,12 +15,12 @@
 
 #include <arpa/inet.h>
 
-#include <stdlib.h>
-
 #include <cstdint>
+#include <cstdlib>
 #include <sstream>
 
 namespace base64 = boost::beast::detail::base64;
+namespace fmt    = airmap::util::fmt;
 
 namespace {
 

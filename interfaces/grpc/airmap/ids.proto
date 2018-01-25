@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package grpc.airmap;
+
+// AircraftID models the unique id of an aircraft in the context of AirMap.
+message AircraftID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// AircraftModelID models the unique id of an aircraft model in the context of AirMap.
+message AircraftModelID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// AircraftManufacturerID models the unique id of an aircraft manufacturer in the context of AirMap.
+message AircraftManufacturerID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// AirspaceID models the unique id of an airspace in the context of AirMap.
+message AirspaceID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// AuthorityID models the unique id of an authority in the context of AirMap.
+message AuthorityID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// ClientID models the unique id of a client application in the context of AirMap.
+message ClientID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// DeviceID models the unique id of a device in the context of AirMap.
+message DeviceID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// FeatureID models the unique id of a feature in the context of AirMap.
+message FeatureID {
+  uint32 as_uint32 = 1;  // The numeric representation of the id.
+}
+
+// FlightID models the unique id of a flight in the context of AirMap.
+message FlightID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// FlightPlanID models the unique id of a flight plan in the context of AirMap.
+message FlightPlanID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// JurisdictionID models the unique id of a jurisdiction in the context of AirMap.
+message JurisdictionID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// PilotID models the unique id of a pilot in the context of AirMap.
+message PilotID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// PilotAircraftID models the unique id of an aircraft owned by a pilot in the context of AirMap.
+message PilotAircraftID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// RuleSetID models the unique id of a rule set in the context of AirMap.
+message RuleSetID {
+  string as_string = 1;  // The textual representation of the id.
+}
+
+// TrackID models the unique id of a traffic track in the context of AirMap.
+message TrackID {
+  string as_string = 1;  // The textual representation of the id.
+}

@@ -12,15 +12,21 @@ constexpr const char* component{"airmap::monitor::TelemetrySubmitter"};
 
 std::shared_ptr<airmap::monitor::TelemetrySubmitter> airmap::monitor::TelemetrySubmitter::create(
     const Credentials& credentials, const std::string& aircraft_id, const std::shared_ptr<Logger>& logger,
-    const std::shared_ptr<Client>& client) {
+    const std::shared_ptr<airmap::Client>& client,
+    const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber) {
   return std::shared_ptr<airmap::monitor::TelemetrySubmitter>{
-      new airmap::monitor::TelemetrySubmitter{credentials, aircraft_id, logger, client}};
+      new airmap::monitor::TelemetrySubmitter{credentials, aircraft_id, logger, client, traffic_subscriber}};
 }
 
-airmap::monitor::TelemetrySubmitter::TelemetrySubmitter(const Credentials& credentials, const std::string& aircraft_id,
-                                                        const std::shared_ptr<Logger>& logger,
-                                                        const std::shared_ptr<Client>& client)
-    : log_{logger}, client_{client}, credentials_{credentials}, aircraft_id_{aircraft_id} {
+airmap::monitor::TelemetrySubmitter::TelemetrySubmitter(
+    const Credentials& credentials, const std::string& aircraft_id, const std::shared_ptr<Logger>& logger,
+    const std::shared_ptr<airmap::Client>& client,
+    const std::shared_ptr<Traffic::Monitor::Subscriber>& traffic_subscriber)
+    : log_{logger},
+      client_{client},
+      traffic_subscriber_{traffic_subscriber},
+      credentials_{credentials},
+      aircraft_id_{aircraft_id} {
 }
 
 void airmap::monitor::TelemetrySubmitter::activate() {
@@ -48,10 +54,12 @@ void airmap::monitor::TelemetrySubmitter::deactivate() {
 
   authorization_requested_      = false;
   create_flight_requested_      = false;
+  traffic_monitoring_requested_ = false;
   start_flight_comms_requested_ = false;
 
   authorization_.reset();
   flight_.reset();
+  traffic_monitor_.reset();
   encryption_key_.reset();
 }
 
@@ -146,7 +154,41 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
 void airmap::monitor::TelemetrySubmitter::handle_request_create_flight_finished(Flight flight) {
   log_.infof(component, "successfully created flight: %s", flight.id);
   flight_ = flight;
+
+  request_monitor_traffic();
   request_start_flight_comms();
+}
+
+void airmap::monitor::TelemetrySubmitter::request_monitor_traffic() {
+  if (traffic_monitor_) {
+    handle_request_monitor_traffic_finished(traffic_monitor_.get());
+    return;
+  }
+
+  if (traffic_monitoring_requested_)
+    return;
+
+  traffic_monitoring_requested_ = true;
+
+  Traffic::Monitor::Params params;
+  params.flight_id     = flight_.get().id;
+  params.authorization = authorization_.get();
+
+  client_->traffic().monitor(params, [sp = shared_from_this()](const auto& result) {
+    if (result) {
+      sp->handle_request_monitor_traffic_finished(result.value());
+    } else {
+      sp->traffic_monitoring_requested_ = false;
+      sp->log_.errorf(component, "failed to start monitoring traffic: %s", result.error());
+    }
+  });
+}
+
+void airmap::monitor::TelemetrySubmitter::handle_request_monitor_traffic_finished(
+    std::shared_ptr<Traffic::Monitor> monitor) {
+  log_.infof(component, "successfully started to monitor traffic");
+  traffic_monitor_ = monitor;
+  traffic_monitor_.get()->subscribe(traffic_subscriber_);
 }
 
 void airmap::monitor::TelemetrySubmitter::request_start_flight_comms() {

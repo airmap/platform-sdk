@@ -5,6 +5,7 @@
 #include <airmap/mavlink/boost/tcp_channel.h>
 #include <airmap/mavlink/boost/udp_channel.h>
 #include <airmap/monitor/daemon.h>
+
 #include <airmap/paths.h>
 
 #include <signal.h>
@@ -23,6 +24,7 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
   flag(flags::telemetry_host(telemetry_host_));
   flag(flags::telemetry_port(telemetry_port_));
   flag(cli::make_flag("aircraft-id", "id of the device the daemon runs on", aircraft_id_));
+  flag(cli::make_flag("grpc-endpoint", "grpc endpoint address", grpc_endpoint_));
   flag(cli::make_flag("serial-device", "the device file to read mavlink messages from", serial_device_));
   flag(cli::make_flag("tcp-endpoint-ip", "the ip of the tcp endpoint to read mavlink messages from", tcp_endpoint_ip_));
   flag(cli::make_flag("tcp-endpoint-port", "the port of the tcp endpoint to read mavlink messages from",
@@ -85,13 +87,15 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
       config.telemetry.port = telemetry_port_.get();
 
     log_.infof(component,
-               "client configuration:\n"
+               "configuration:\n"
                "  host:                %s\n"
                "  version:             %s\n"
                "  telemetry.host:      %s\n"
                "  telemetry.port:      %d\n"
+               "  grpc endpoint:       %s\n"
                "  credentials.api_key: %s",
-               config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
+               config.host, config.version, config.telemetry.host, config.telemetry.port, grpc_endpoint_,
+               config.credentials.api_key);
 
     context->create_client_with_configuration(
         config, [this, context, config, channel](const ::airmap::Context::ClientCreateResult& result) {
@@ -101,8 +105,8 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
             return;
           }
 
-          ::airmap::monitor::Daemon::Configuration configuration{config.credentials, aircraft_id_, log_.logger(),
-                                                                 channel, result.value()};
+          ::airmap::monitor::Daemon::Configuration configuration{
+              config.credentials, aircraft_id_, log_.logger(), channel, context, result.value(), grpc_endpoint_};
 
           ::airmap::monitor::Daemon::create(configuration)->start();
         });

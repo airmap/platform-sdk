@@ -5,6 +5,7 @@
 
 #include <airmap/boost/context.h>
 #include <airmap/net/mqtt/boost/broker.h>
+#include <airmap/util/fmt.h>
 
 #include "amd_uav_flight_update.pb.h"
 
@@ -15,6 +16,7 @@
 
 namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
+namespace fmt = airmap::util::fmt;
 
 namespace {
 constexpr const char* component{"monitor-mids"};

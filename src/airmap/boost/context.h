@@ -29,12 +29,14 @@ class Context : public airmap::Context, public std::enable_shared_from_this<Cont
   // From airmap::Context
   void create_client_with_configuration(const Client::Configuration& configuration,
                                         const ClientCreateCallback& cb) override;
+  void create_monitor_client_with_configuration(const monitor::Client::Configuration& configuration,
+                                                const MonitorClientCreateCallback& cb) override;
 
   ReturnCode exec(const SignalSet& signal_set, const SignalHandler& signal_handler) override;
   ReturnCode run() override;
   void stop(ReturnCode rc) override;
   void schedule_in(const Microseconds& wait_for, const std::function<void()>& functor) override;
-  void dispatch(const std::function<void()>& task);
+  void dispatch(const std::function<void()>& task) override;
 
  private:
   enum class State { stopped, stopping, running };

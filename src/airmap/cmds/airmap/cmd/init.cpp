@@ -3,6 +3,9 @@
 #include <airmap/codec.h>
 #include <airmap/paths.h>
 #include <airmap/version.h>
+
+#include <airmap/util/fmt.h>
+
 #include <nlohmann/json.hpp>
 
 #include <cstdlib>
@@ -11,6 +14,7 @@
 
 namespace cli = airmap::util::cli;
 namespace cmd = airmap::cmds::airmap::cmd;
+namespace fmt = airmap::util::fmt;
 using json    = nlohmann::json;
 
 namespace {

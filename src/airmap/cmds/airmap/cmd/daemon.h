@@ -28,6 +28,7 @@ class Daemon : public util::cli::CommandWithFlagsAndAction {
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
   std::string aircraft_id_;
+  std::string grpc_endpoint_{"0.0.0.0:9090"};
   Required<SerialDevice> serial_device_;
   Required<TelemetryHost> telemetry_host_;
   Required<std::uint16_t> telemetry_port_;

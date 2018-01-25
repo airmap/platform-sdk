@@ -1,4 +1,3 @@
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE rest
 
 #include <airmap/net/http/requester.h>
@@ -10,7 +9,7 @@
 
 #include <airmap/codec.h>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 #include <trompeloeil/trompeloeil.hpp>
 
 namespace mock = trompeloeil;

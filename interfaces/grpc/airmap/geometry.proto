@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "grpc/airmap/wgs84.proto";
+
+package grpc.airmap;
+
+// Geometry is a discriminated union of different types of geometries.
+message Geometry {
+  message Point {
+    Coordinate coordinate = 1;
+  }
+
+  message Points {
+    repeated Coordinate coordinates = 1;
+  }
+
+  message MultiPoint {
+    repeated Coordinate coordinates = 1;
+  }
+
+  message LineString {
+    repeated Coordinate coordinates = 1;
+  }
+
+  message MultiLineString {
+    repeated LineString line_strings = 1;
+  }
+
+  message Polygon {
+    repeated Points points = 1;
+  }
+
+  message MultiPolygon {
+    repeated Polygon polygons = 1;
+  }
+
+  oneof details {
+    Point point                       = 1;
+    MultiPoint multi_point            = 2;
+    LineString line_string            = 3;
+    MultiLineString multi_line_string = 4;
+    Polygon polygon                   = 5;
+    MultiPolygon multi_polygon        = 6;
+  }
+}

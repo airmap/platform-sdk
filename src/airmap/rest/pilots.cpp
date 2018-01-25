@@ -3,11 +3,12 @@
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
 #include <airmap/net/http/middleware.h>
+#include <airmap/util/fmt.h>
 
-#include <fmt/printf.h>
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
+namespace fmt = airmap::util::fmt;
+using json    = nlohmann::json;
 
 std::string airmap::rest::Pilots::default_route_for_version(Client::Version version) {
   static constexpr const char* pattern{"/pilot/%s"};

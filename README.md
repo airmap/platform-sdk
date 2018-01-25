@@ -64,7 +64,7 @@ Make sure that you start with a clean environment (fresh clone of airmapd and no
 Run the following commands from the top-level `airmapd` folder:
 
 ```
-docker run -v $(pwd):/airmapd -it ubuntu:17.04 bash
+docker run -v $(pwd):/airmapd -it ubuntu:17.10 bash
 tools/ubuntu/setup.dev.sh
 mkdir build
 cd build
