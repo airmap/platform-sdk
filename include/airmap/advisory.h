@@ -62,7 +62,7 @@ class Advisory : DoNotCopyOrMove {
     struct Parameters {
       Optional<DateTime> start;  ///< Search for advisories before this time.
       Optional<DateTime> end;    ///< Search for advisories after this time.
-      FlightPlan::Id id;
+      FlightPlan::Id id;         ///< Search for advisories relating to this flight plan.
     };
     /// Result models the outcome of calling Advisory::for_id.
     using Result = Outcome<std::vector<AirspaceAdvisory>, Error>;
@@ -76,9 +76,7 @@ class Advisory : DoNotCopyOrMove {
   struct Search {
     /// Parameters bundles up input parameters.
     struct Parameters {
-      Required<Geometry> geometry;  ///< Evaluate rulesets intersecting this geometry.
-      std::unordered_map<std::string, RuleSet::Feature::Value>
-          features;                    ///< Additional properties of the planned flight.
+      Required<Geometry> geometry;     ///< Evaluate rulesets intersecting this geometry.
       Required<std::string> rulesets;  ///< Evaluate these rulesets.
       Optional<DateTime> start;        ///< Search for advisories after this time.
       Optional<DateTime> end;          ///< Search for advisories before this time.

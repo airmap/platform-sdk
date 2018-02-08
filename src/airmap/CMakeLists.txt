@@ -378,6 +378,8 @@ add_executable(
   cmds/airmap/cmd/fetch_rules.cpp
   cmds/airmap/cmd/flags.h
   cmds/airmap/cmd/flags.cpp
+  cmds/airmap/cmd/get_advisories.h
+  cmds/airmap/cmd/get_advisories.cpp
   cmds/airmap/cmd/get_status.h
   cmds/airmap/cmd/get_status.cpp
   cmds/airmap/cmd/init.h
