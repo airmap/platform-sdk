@@ -13,6 +13,36 @@ This project has two main deliverables:
  - the executable `airmap` featuring a `git`-like layout of subcommands
  - the shared library `libairmap` (with a platform-specific suffix)
 
+## Integration With Other Projects
+
+This section describes the steps to integrate and use airmapd in the scope of another project, e.g., a mission planner.
+Please note that our primary development and deployment targets are Linux and MacOS at this point in time. We are actively working on builds for:
+
+ * MS Windows
+ * iOS
+ * Android
+
+The following steps provide you with a set of libraries and headers ready for consumption in your project:
+ * Install build dependencies following the guidelines in section 'Setup & Dependencies'
+ * Clone the `airmapd` repo: `git clone https://github.com/airmap/airmapd.git`
+ * Build & install `airmapd`: `mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/choose/the/install/path .. && make && make doc && make install`
+ * Find the API documentation in `build/doc/html/index.html`
+
+Adjust the build configuration of your project:
+   * Add `/choose/the/install/path/include` to your include paths
+   * Add `/choose/the/install/path/lib/${ARCHITECTURE_TRIPLET_IF_REQUIRED}/{libairmap-qt.*.so,libairmap-cpp.*.so}` to your linker configuration
+     * Note that you only need to add `libairmap-qt.*.so` if you intend to consume the qt-specific functionality in `include/airmap/qt`
+
+Pull in `airmap` services and functionality following the examples given in:
+  * `examples/qt/client.cpp`: Illustrates use of the Qt binding layer
+  * `src/airmap/cmds/airmap/cmd/simulate_scenario.{h,cpp}`: Illustrates the complete flow of:
+    * authenticating with AirMap
+    * creating a flight
+    * querying flight status
+    * starting the flight and telemetry submission
+    * submitting telemetry and receiving traffic information
+    * stopping and properly ending the flight
+
 ## Source Code Layout
 
 The public facing API of `airmapd` can be found in `${AIRMAPD_ROOT}/include/airmap`. At this point in time, the interface

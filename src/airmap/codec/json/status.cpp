@@ -32,7 +32,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Status::Ad
 
 void airmap::codec::json::decode(const nlohmann::json& j, Status::Weather& weather) {
   get(weather.condition, j, "condition");
-  get(weather.condition, j, "icon");
+  get(weather.icon, j, "icon");
   get(weather.wind, j, "wind");
   get(weather.humidity, j, "humidity");
   get(weather.visibility, j, "visibility");
