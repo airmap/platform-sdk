@@ -140,6 +140,8 @@ add_library(
   boost/context.h
   boost/context.cpp
 
+  codec/http/query/advisories.h
+  codec/http/query/advisories.cpp
   codec/http/query/aircrafts.h
   codec/http/query/aircrafts.cpp
   codec/http/query/airspaces.h
@@ -158,6 +160,10 @@ add_library(
   codec/grpc/traffic.h
   codec/grpc/traffic.cpp
 
+  codec/json/advisory.h
+  codec/json/advisory.cpp
+  codec/json/advisories.h
+  codec/json/advisories.cpp
   codec/json/aircraft.h
   codec/json/aircraft.cpp
   codec/json/airspace.h
@@ -323,6 +329,8 @@ add_library(
   qt/dispatcher.cpp
   qt/logger.cpp
 
+  qt/advisory.h
+  qt/advisory.cpp
   qt/aircrafts.h
   qt/aircrafts.cpp
   qt/airspaces.h
@@ -384,6 +392,8 @@ add_executable(
   cmds/airmap/cmd/query_rulesets.cpp
   cmds/airmap/cmd/render_briefing.h
   cmds/airmap/cmd/render_briefing.cpp
+  cmds/airmap/cmd/report_weather.h
+  cmds/airmap/cmd/report_weather.cpp
   cmds/airmap/cmd/simulate_scenario.h
   cmds/airmap/cmd/simulate_scenario.cpp
   cmds/airmap/cmd/simulate_telemetry.h

@@ -7,6 +7,7 @@
 #include <airmap/net/http/requester_with_api_key.h>
 #include <airmap/net/mqtt/broker.h>
 
+#include <airmap/rest/advisory.h>
 #include <airmap/rest/aircrafts.h>
 #include <airmap/rest/airspaces.h>
 #include <airmap/rest/authenticator.h>
@@ -26,6 +27,7 @@ namespace rest {
 class Client : public airmap::Client {
  public:
   struct Requesters {
+    std::shared_ptr<net::http::Requester> advisory;
     std::shared_ptr<net::http::Requester> aircrafts;
     std::shared_ptr<net::http::Requester> airspaces;
     std::shared_ptr<net::http::Requester> authenticator;
@@ -42,6 +44,7 @@ class Client : public airmap::Client {
                   const std::shared_ptr<net::mqtt::Broker>& broker);
 
   // From airmap::Client
+  airmap::Advisory& advisory() override;
   airmap::Aircrafts& aircrafts() override;
   airmap::Airspaces& airspaces() override;
   airmap::Authenticator& authenticator() override;
@@ -63,6 +66,7 @@ class Client : public airmap::Client {
   } http_;
   std::shared_ptr<net::mqtt::Broker> mqtt_broker_;
 
+  rest::Advisory advisory_;
   rest::Aircrafts aircrafts_;
   rest::Airspaces airspaces_;
   rest::Authenticator authenticator_;

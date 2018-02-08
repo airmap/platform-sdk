@@ -1,6 +1,7 @@
 #ifndef AIRMAP_CODEC_H_
 #define AIRMAP_CODEC_H_
 
+#include <airmap/codec/http/query/advisories.h>
 #include <airmap/codec/http/query/aircrafts.h>
 #include <airmap/codec/http/query/airspaces.h>
 #include <airmap/codec/http/query/flights.h>
@@ -11,6 +12,8 @@
 #include <airmap/codec/grpc/date_time.h>
 #include <airmap/codec/grpc/traffic.h>
 
+#include <airmap/codec/json/advisory.h>
+#include <airmap/codec/json/advisories.h>
 #include <airmap/codec/json/aircraft.h>
 #include <airmap/codec/json/airspace.h>
 #include <airmap/codec/json/authenticator.h>

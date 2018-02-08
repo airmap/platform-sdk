@@ -2,6 +2,7 @@
 
 #include <airmap/qt/dispatcher.h>
 
+#include <airmap/qt/advisory.h>
 #include <airmap/qt/aircrafts.h>
 #include <airmap/qt/airspaces.h>
 #include <airmap/qt/authenticator.h>
@@ -52,6 +53,7 @@ struct airmap::qt::Client::Private {
         context_runner_{context_runner},
         dispatcher_{dispatcher},
         client_{client},
+        advisory_{airmap::qt::Advisory::create(dispatcher_, client_)},
         aircrafts_{airmap::qt::Aircrafts::create(dispatcher_, client_)},
         airspaces_{airmap::qt::Airspaces::create(dispatcher_, client_)},
         authenticator_{airmap::qt::Authenticator::create(dispatcher_, client_)},
@@ -72,6 +74,7 @@ struct airmap::qt::Client::Private {
   std::shared_ptr<ContextRunner> context_runner_;
   std::shared_ptr<airmap::qt::Dispatcher> dispatcher_;
   std::shared_ptr<airmap::Client> client_;
+  std::shared_ptr<airmap::qt::Advisory> advisory_;
   std::shared_ptr<airmap::qt::Aircrafts> aircrafts_;
   std::shared_ptr<airmap::qt::Airspaces> airspaces_;
   std::shared_ptr<airmap::qt::Authenticator> authenticator_;
@@ -120,6 +123,10 @@ airmap::qt::Client::~Client() = default;
 // From airmap::Client
 airmap::Authenticator& airmap::qt::Client::authenticator() {
   return *d_->authenticator_;
+}
+
+airmap::Advisory& airmap::qt::Client::advisory() {
+  return *d_->advisory_;
 }
 
 airmap::Aircrafts& airmap::qt::Client::aircrafts() {

@@ -52,6 +52,7 @@ void airmap::boost::Context::create_client_with_configuration(const Client::Conf
       net::udp::boost::Sender::create(configuration.telemetry.host, configuration.telemetry.port, io_service_);
 
   rest::Client::Requesters requesters;
+  requesters.advisory      = advisory(configuration);
   requesters.aircrafts     = aircrafts(configuration);
   requesters.airspaces     = airspaces(configuration);
   requesters.authenticator = authenticator(configuration);
@@ -139,6 +140,19 @@ void airmap::boost::Context::schedule_in(const Microseconds& wait_for, const std
 
 void airmap::boost::Context::dispatch(const std::function<void()>& task) {
   io_service_->post(task);
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::advisory(
+    const airmap::Client::Configuration& configuration) {
+  auto protocol = env::get("AIRMAP_PROTOCOL_ADVISORY", "https");
+  auto host     = env::get("AIRMAP_HOST_ADVISORY", configuration.host);
+  auto port     = env::get("AIRMAP_PORT_ADVISORY", ::boost::lexical_cast<std::string>(443));
+  auto route    = env::get("AIRMAP_ROUTE_ADVISORY", rest::Advisory::default_route_for_version(configuration.version));
+  return std::make_shared<net::http::RoutingRequester>(
+      route, std::make_shared<net::http::LoggingRequester>(
+                 log_.logger(), net::http::boost::Requester::create(
+                                    host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(), io_service_,
+                                    net::http::boost::Requester::request_factory_for_protocol(protocol))));
 }
 
 std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::aircrafts(

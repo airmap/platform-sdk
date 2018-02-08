@@ -3,11 +3,12 @@
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
 #include <airmap/net/http/middleware.h>
+#include <airmap/util/fmt.h>
 
-#include <fmt/printf.h>
 #include <boost/format.hpp>
 #include <nlohmann/json.hpp>
 
+namespace fmt = airmap::util::fmt;
 using json = nlohmann::json;
 
 std::string airmap::rest::Advisory::default_route_for_version(Client::Version version) {
@@ -31,7 +32,7 @@ void airmap::rest::Advisory::for_id(const ForId::Parameters& parameters, const F
   codec::http::query::encode(query, parameters);
 
   requester_->get(fmt::sprintf("/%s", parameters.id), std::move(query), std::move(headers),
-                  net::http::jsend_parsing_request_callback<std::std::vector<Advisory>>(cb));
+                  net::http::jsend_parsing_request_callback<std::vector<AirspaceAdvisory>>(cb));
 }
 
 void airmap::rest::Advisory::search(const Search::Parameters& parameters, const Search::Callback& cb) {
@@ -40,10 +41,10 @@ void airmap::rest::Advisory::search(const Search::Parameters& parameters, const 
   json j = parameters;
 
   requester_->post("/", std::move(headers), j.dump(),
-                   net::http::jsend_parsing_request_callback<std::vector<Advisory>>(cb));
+                   net::http::jsend_parsing_request_callback<std::vector<AirspaceAdvisory>>(cb));
 }
 
-void airmap::rest::Status::report_weather(const ReportWeather::Parameters& parameters,
+void airmap::rest::Advisory::report_weather(const ReportWeather::Parameters& parameters,
                                           const ReportWeather::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);

@@ -7,30 +7,33 @@
 #include <airmap/codec/json/optional.h>
 #include <airmap/codec/json/status.h>
 
-void airmap::codec::json::decode(const nlohmann::json& j, Advisory::Advisory& advisory) {
+void airmap::codec::json::decode(const nlohmann::json& j, Advisory::AirspaceAdvisory& advisory) {
   get(advisory.color, j, "color");
+  get(advisory.rule_id, j, "rule_id");
+  get(advisory.ruleset_id, j, "ruleset_id");
   decode(j, advisory.advisory);
 }
 
-void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Advisory::Advisory>& v) {
+void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Advisory::AirspaceAdvisory>& v) {
   for (auto element : j) {
-    v.push_back(Advisory::Advisory{});
+    v.push_back(Advisory::AirspaceAdvisory{});
     v.back() = element;
   }
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Advisory::Weather& weather) {
-  get(weather.condition, j, "condition");
-  get(weather.condition, j, "icon");
-  get(weather.wind, j, "wind");
-  get(weather.humidity, j, "humidity");
-  get(weather.visibility, j, "visibility");
-  get(weather.precipitation, j, "precipitation");
-  get(weather.temperature, j, "temperature");
-  get(weather.timezone, j, "timezone");
-  get(weather.time, j, "time");
+  auto jw = j["weather"][0];
+  get(weather.condition, jw, "condition");
+  get(weather.icon, jw, "icon");
+  get(weather.wind, jw, "wind");
+  get(weather.humidity, jw, "humidity");
+  get(weather.visibility, jw, "visibility");
+  get(weather.precipitation, jw, "precipitation");
+  get(weather.temperature, jw, "temperature");
+  get(weather.timezone, jw, "timezone");
+  get(weather.time, jw, "time");
   get(weather.dew_point, j, "dew_point");
-  get(weather.mslp, j, "mslp");
+  get(weather.mslp, jw, "mslp");
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Advisory::Wind& wind) {

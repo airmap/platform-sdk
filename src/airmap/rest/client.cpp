@@ -7,6 +7,8 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       parent_{parent},
       udp_sender_{sender},
       mqtt_broker_{broker},
+      advisory_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
+                                                                          requesters.advisory)},
       aircrafts_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
                                                                           requesters.aircrafts)},
       airspaces_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
@@ -26,6 +28,10 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
                                                                        requesters.status)},
       telemetry_{std::make_shared<detail::OpenSSLAES256Encryptor>(), udp_sender_},
       traffic_{mqtt_broker_} {
+}
+
+airmap::Advisory& airmap::rest::Client::advisory() {
+  return advisory_;
 }
 
 airmap::Aircrafts& airmap::rest::Client::aircrafts() {

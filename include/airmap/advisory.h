@@ -26,7 +26,7 @@ class Advisory : DoNotCopyOrMove {
  public:
   /// Advisory bundles together airspace information and its evaluation in terms
   /// good to fly/needs information or feedback/conflict.
-  struct Advisory {
+  struct AirspaceAdvisory {
     Status::Advisory advisory;  /// Airspace information.
     Status::Color color;        /// The evaluation of the airspace.
     std::string rule_id;        /// The id of the ruleset.
@@ -65,7 +65,7 @@ class Advisory : DoNotCopyOrMove {
       FlightPlan::Id id;
     };
     /// Result models the outcome of calling Advisory::for_id.
-    using Result = Outcome<std::vector<Advisory>, Error>;
+    using Result = Outcome<std::vector<AirspaceAdvisory>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Advisory::for_id finishes.
     using Callback = std::function<void(const Result&)>;
@@ -84,7 +84,7 @@ class Advisory : DoNotCopyOrMove {
       Optional<DateTime> end;          ///< Search for advisories before this time.
     };
     /// Result models the outcome of calling Advisory::search.
-    using Result = Outcome<std::vector<Advisory>, Error>;
+    using Result = Outcome<std::vector<AirspaceAdvisory>, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Advisory::_search finishes.
     using Callback = std::function<void(const Result&)>;
