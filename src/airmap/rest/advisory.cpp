@@ -31,7 +31,7 @@ void airmap::rest::Advisory::for_id(const ForId::Parameters& parameters, const F
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 
-  requester_->get(fmt::sprintf("/%s", parameters.id), std::move(query), std::move(headers),
+  requester_->get(fmt::sprintf("/airspace/%s", parameters.id), std::move(query), std::move(headers),
                   net::http::jsend_parsing_request_callback<std::vector<AirspaceAdvisory>>(cb));
 }
 
@@ -40,7 +40,7 @@ void airmap::rest::Advisory::search(const Search::Parameters& parameters, const 
 
   json j = parameters;
 
-  requester_->post("/", std::move(headers), j.dump(),
+  requester_->post("/airspace", std::move(headers), j.dump(),
                    net::http::jsend_parsing_request_callback<std::vector<AirspaceAdvisory>>(cb));
 }
 

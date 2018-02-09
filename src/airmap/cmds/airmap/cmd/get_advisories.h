@@ -25,9 +25,12 @@ class GetAdvisories : public util::cli::CommandWithFlagsAndAction {
   using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
   using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
   using FlightPlanId = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using RuleSets = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using StartTime = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using EndTime = util::TaggedString<util::tags::MustNotBeEmpty>;
 
-  void handle_advisory_for_id_result(const RuleSets::ForId::Result& result, ConstContextRef context);
-  void handle_advisory_search_result(const RuleSets::Search::Result& result, ConstContextRef context);
+  void handle_advisory_for_id_result(const Advisory::ForId::Result& result, ConstContextRef context);
+  void handle_advisory_search_result(const Advisory::Search::Result& result, ConstContextRef context);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
@@ -36,7 +39,10 @@ class GetAdvisories : public util::cli::CommandWithFlagsAndAction {
   std::shared_ptr<::airmap::Client> client_;
   Required<ConfigFile> config_file_;
   Optional<GeometryFile> geometry_file_;
-  Optional<FlightPlanId> flight_plan_id;
+  Optional<RuleSets> rulesets_;
+  Optional<FlightPlanId> flight_plan_id_;
+  Optional<StartTime> start_;
+  Optional<EndTime> end_;
 };
 
 }  // namespace cmd
