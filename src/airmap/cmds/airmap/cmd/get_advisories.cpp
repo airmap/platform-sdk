@@ -100,6 +100,9 @@ cmd::GetAdvisories::GetAdvisories()
             if (start_ && end_) {
               params.start = iso8601::parse(start_.get());
               params.end = iso8601::parse(end_.get());
+            } else {
+              params.start = DateTime(Clock::universal_time().date());
+              params.end = params.start;
             }
             client_->advisory().for_id(params, std::bind(&GetAdvisories::handle_advisory_for_id_result, this,
                                                          std::placeholders::_1, std::ref(ctxt)));
@@ -116,6 +119,9 @@ cmd::GetAdvisories::GetAdvisories()
             if (start_ && end_) {
               params.start = iso8601::parse(start_.get());
               params.end = iso8601::parse(end_.get());
+            } else {
+              params.start = DateTime(Clock::universal_time().date());
+              params.end = params.start;
             }
             client_->advisory().search(params, std::bind(&GetAdvisories::handle_advisory_search_result, this,
                                                          std::placeholders::_1, std::ref(ctxt)));
