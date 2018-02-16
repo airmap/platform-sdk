@@ -64,6 +64,7 @@ struct Traffic : public airmap::Traffic {
 };
 
 struct Client : public airmap::Client {
+  MAKE_MOCK0(advisory, airmap::Advisory&(), override);
   MAKE_MOCK0(authenticator, airmap::Authenticator&(), override);
   MAKE_MOCK0(aircrafts, airmap::Aircrafts&(), override);
   MAKE_MOCK0(airspaces, airmap::Airspaces&(), override);
