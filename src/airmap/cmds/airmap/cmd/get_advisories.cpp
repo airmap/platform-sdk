@@ -36,7 +36,8 @@ void print_advisories(std::ostream& out, const std::vector<airmap::Advisory::Air
 }  // namespace
 
 cmd::GetAdvisories::GetAdvisories()
-    : cli::CommandWithFlagsAndAction{"get-advisories", "searches for advisories by geometry or flight plan id from the AirMap services",
+    : cli::CommandWithFlagsAndAction{"get-advisories",
+                                     "searches for advisories by geometry or flight plan id from the AirMap services",
                                      "searches for advisories by geometry or flight plan id from the AirMap services"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
@@ -99,10 +100,10 @@ cmd::GetAdvisories::GetAdvisories()
             params.id = flight_plan_id_.get();
             if (start_ && end_) {
               params.start = iso8601::parse(start_.get());
-              params.end = iso8601::parse(end_.get());
+              params.end   = iso8601::parse(end_.get());
             } else {
               params.start = DateTime(Clock::universal_time().date());
-              params.end = params.start;
+              params.end   = params.start;
             }
             client_->advisory().for_id(params, std::bind(&GetAdvisories::handle_advisory_for_id_result, this,
                                                          std::placeholders::_1, std::ref(ctxt)));
@@ -118,10 +119,10 @@ cmd::GetAdvisories::GetAdvisories()
             params.rulesets = rulesets_.get();
             if (start_ && end_) {
               params.start = iso8601::parse(start_.get());
-              params.end = iso8601::parse(end_.get());
+              params.end   = iso8601::parse(end_.get());
             } else {
               params.start = DateTime(Clock::universal_time().date());
-              params.end = params.start;
+              params.end   = params.start;
             }
             client_->advisory().search(params, std::bind(&GetAdvisories::handle_advisory_search_result, this,
                                                          std::placeholders::_1, std::ref(ctxt)));
@@ -150,7 +151,8 @@ void cmd::GetAdvisories::handle_advisory_for_id_result(const Advisory::ForId::Re
   }
 }
 
-void cmd::GetAdvisories::handle_advisory_search_result(const Advisory::Search::Result& result, ConstContextRef context) {
+void cmd::GetAdvisories::handle_advisory_search_result(const Advisory::Search::Result& result,
+                                                       ConstContextRef context) {
   if (result) {
     log_.infof(component, "successfully obtained advisories");
     print_advisories(context.get().cout, result.value());

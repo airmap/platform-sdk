@@ -23,11 +23,11 @@ class GetAdvisories : public util::cli::CommandWithFlagsAndAction {
 
  private:
   using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
-  using GeometryFile = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using FlightPlanId = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using RuleSets = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using StartTime = util::TaggedString<util::tags::MustNotBeEmpty>;
-  using EndTime = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using GeometryFile    = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using FlightPlanId    = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using RuleSets        = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using StartTime       = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using EndTime         = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   void handle_advisory_for_id_result(const Advisory::ForId::Result& result, ConstContextRef context);
   void handle_advisory_search_result(const Advisory::Search::Result& result, ConstContextRef context);

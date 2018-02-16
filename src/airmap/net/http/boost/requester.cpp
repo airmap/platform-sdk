@@ -33,14 +33,9 @@ inline CharT hex_to_letter(CharT in) {
 }
 
 template <class charT, class OutputIterator>
-void encode_char(charT in, OutputIterator &out, const char *ignore = "") {
-  if (((in >= 'a') && (in <= 'z')) ||
-      ((in >= 'A') && (in <= 'Z')) ||
-      ((in >= '0') && (in <= '9')) ||
-      (in == '-') ||
-      (in == '.') ||
-      (in == '_') ||
-      (in == '~')) {
+void encode_char(charT in, OutputIterator& out, const char* ignore = "") {
+  if (((in >= 'a') && (in <= 'z')) || ((in >= 'A') && (in <= 'Z')) || ((in >= '0') && (in <= '9')) || (in == '-') ||
+      (in == '.') || (in == '_') || (in == '~')) {
     out++ = in;
   } else {
     auto first = ignore, last = ignore + std::strlen(ignore);
@@ -55,8 +50,7 @@ void encode_char(charT in, OutputIterator &out, const char *ignore = "") {
 }
 
 template <typename InputIterator, typename OutputIterator>
-OutputIterator encode_query(InputIterator first, InputIterator last,
-                            OutputIterator out) {
+OutputIterator encode_query(InputIterator first, InputIterator last, OutputIterator out) {
   auto it = first;
   while (it != last) {
     encode_char(*it, out, "/.@&%;=");

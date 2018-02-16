@@ -12,8 +12,8 @@
 #include <airmap/codec/grpc/date_time.h>
 #include <airmap/codec/grpc/traffic.h>
 
-#include <airmap/codec/json/advisory.h>
 #include <airmap/codec/json/advisories.h>
+#include <airmap/codec/json/advisory.h>
 #include <airmap/codec/json/aircraft.h>
 #include <airmap/codec/json/airspace.h>
 #include <airmap/codec/json/authenticator.h>

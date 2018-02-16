@@ -9,7 +9,7 @@
 #include <nlohmann/json.hpp>
 
 namespace fmt = airmap::util::fmt;
-using json = nlohmann::json;
+using json    = nlohmann::json;
 
 std::string airmap::rest::Advisory::default_route_for_version(Client::Version version) {
   static constexpr const char* pattern{"/advisory/%s"};
@@ -45,7 +45,7 @@ void airmap::rest::Advisory::search(const Search::Parameters& parameters, const 
 }
 
 void airmap::rest::Advisory::report_weather(const ReportWeather::Parameters& parameters,
-                                          const ReportWeather::Callback& cb) {
+                                            const ReportWeather::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   codec::http::query::encode(query, parameters);
 

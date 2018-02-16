@@ -21,8 +21,8 @@ void print_weather(std::ostream& out, const airmap::Advisory::Weather& report) {
   if (report.condition != "") {
     tw << cli::TabWriter::NewLine{} << "condition"
        << "temperature"
-       << "wind-speed" << cli::TabWriter::NewLine{} << report.condition << report.temperature
-       << report.wind.speed << cli::TabWriter::NewLine{} << cli::TabWriter::NewLine{};
+       << "wind-speed" << cli::TabWriter::NewLine{} << report.condition << report.temperature << report.wind.speed
+       << cli::TabWriter::NewLine{} << cli::TabWriter::NewLine{};
   }
 
   tw.flush(out);

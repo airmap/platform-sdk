@@ -8,7 +8,7 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       udp_sender_{sender},
       mqtt_broker_{broker},
       advisory_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
-                                                                          requesters.advisory)},
+                                                                         requesters.advisory)},
       aircrafts_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
                                                                           requesters.aircrafts)},
       airspaces_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,

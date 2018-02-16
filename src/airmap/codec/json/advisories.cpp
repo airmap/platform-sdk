@@ -9,6 +9,6 @@
 void airmap::codec::json::encode(nlohmann::json& j, const Advisory::Search::Parameters& p) {
   j["geometry"] = p.geometry;
   j["rulesets"] = p.rulesets;
-  j["start"] = p.start;
-  j["end"] = p.end;
+  j["start"]    = p.start;
+  j["end"]      = p.end;
 }
