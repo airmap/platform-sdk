@@ -153,7 +153,6 @@ void cmd::QueryRuleSets::handle_ruleset_for_id_result(const RuleSets::ForId::Res
   } else {
     log_.errorf(component, "failed to query for rulesets: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
-    return;
   }
 }
 
@@ -165,6 +164,5 @@ void cmd::QueryRuleSets::handle_ruleset_search_result(const RuleSets::Search::Re
   } else {
     log_.errorf(component, "failed to query for rulesets: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
-    return;
   }
 }

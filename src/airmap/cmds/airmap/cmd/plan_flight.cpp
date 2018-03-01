@@ -47,6 +47,7 @@ cmd::PlanFlight::PlanFlight()
   flag(flags::config_file(config_file_));
   flag(flags::token_file(token_file_));
   flag(cli::make_flag("plan", "flight plan file", plan_file_));
+  flag(cli::make_flag("update", "update the current flight plan", update_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger(create_filtering_logger(log_level_, create_default_logger(ctxt.cerr)));
@@ -67,34 +68,19 @@ cmd::PlanFlight::PlanFlight()
 
     auto config = Client::load_configuration_from_json(in_config);
 
-    std::ifstream in_token{token_file_.get()};
-    if (!in_token) {
-      log_.errorf(component, "failed to open token file %s for reading", token_file_);
-      return 1;
-    }
-
     if (!plan_file_ || !plan_file_.get().validate()) {
       log_.errorf(component, "missing parameter 'plan'");
       return 1;
     }
 
-    std::ifstream plan_in{plan_file_.get()};
-    if (!plan_in) {
-      log_.errorf(component, "failed to open %s for reading", plan_file_.get());
-      return 1;
-    }
-    parameters_               = json::parse(plan_in);
-    parameters_.authorization = Token::load_from_json(in_token).id();
-    parameters_.start_time    = Clock::universal_time();
-    parameters_.end_time      = Clock::universal_time() + Minutes{5};
-    auto result               = ::airmap::Context::create(log_.logger());
+    auto result = ::airmap::Context::create(log_.logger());
 
     if (!result) {
       log_.errorf(component, "failed to acquire resources for accessing AirMap services");
       return 1;
     }
 
-    auto context = result.value();
+    context_ = result.value();
 
     log_.infof(component,
                "client configuration:\n"
@@ -105,36 +91,76 @@ cmd::PlanFlight::PlanFlight()
                "  credentials.api_key: %s\n",
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
-    context->create_client_with_configuration(
-        config, [this, &ctxt, config, context](const ::airmap::Context::ClientCreateResult& result) {
+    context_->create_client_with_configuration(
+        config, [this, &ctxt, config](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
             log_.errorf(component, "failed to create client: %s", result.error());
-            context->stop(::airmap::Context::ReturnCode::error);
+            context_->stop(::airmap::Context::ReturnCode::error);
             return;
           }
 
-          auto client = result.value();
+          client_ = result.value();
 
-          auto handler = [this, &ctxt, context, client](const auto& result) {
-            if (result) {
-              log_.infof(component, "successfully created flight plan");
-              print_flight_plan(ctxt.cout, result.value());
-              context->stop();
-            } else {
-              log_.errorf(component, "failed to create flight plan: %s", result.error());
-              context->stop(::airmap::Context::ReturnCode::error);
-            }
-          };
+          std::ifstream in_token{token_file_.get()};
+          if (!in_token) {
+            log_.errorf(component, "failed to open token file %s for reading", token_file_);
+            return;
+          }
 
-          client->flight_plans().create_by_polygon(parameters_, handler);
+          std::ifstream plan_in{plan_file_.get()};
+          if (!plan_in) {
+            log_.errorf(component, "failed to open %s for reading", plan_file_.get());
+            return;
+          }
+
+          if (update_) {
+            FlightPlans::Update::Parameters params;
+            params.flight_plan   = json::parse(plan_in);
+            params.authorization = Token::load_from_json(in_token).id();
+            client_->flight_plans().update(params, std::bind(&PlanFlight::handle_flight_plan_update_result, this,
+                                                             std::placeholders::_1, std::ref(ctxt)));
+          } else {
+            FlightPlans::Create::Parameters params;
+            params               = json::parse(plan_in);
+            params.authorization = Token::load_from_json(in_token).id();
+            params.start_time    = Clock::universal_time();
+            params.end_time      = Clock::universal_time() + Minutes{5};
+            client_->flight_plans().create_by_polygon(params, std::bind(&PlanFlight::handle_flight_plan_create_result,
+                                                                        this, std::placeholders::_1, std::ref(ctxt)));
+          }
+
         });
 
-    return context->exec({SIGINT, SIGQUIT},
-                         [this, context](int sig) {
-                           log_.infof(component, "received [%s], shutting down", ::strsignal(sig));
-                           context->stop();
-                         }) == ::airmap::Context::ReturnCode::success
+    return context_->exec({SIGINT, SIGQUIT},
+                          [this](int sig) {
+                            log_.infof(component, "received [%s], shutting down", ::strsignal(sig));
+                            context_->stop();
+                          }) == ::airmap::Context::ReturnCode::success
                ? 0
                : 1;
   });
+}
+
+void cmd::PlanFlight::handle_flight_plan_create_result(const FlightPlans::Create::Result& result,
+                                                       ConstContextRef context) {
+  if (result) {
+    log_.infof(component, "successfully created flight plan");
+    print_flight_plan(context.get().cout, result.value());
+    context_->stop();
+  } else {
+    log_.errorf(component, "failed to create flight plan: %s", result.error());
+    context_->stop(::airmap::Context::ReturnCode::error);
+  }
+}
+
+void cmd::PlanFlight::handle_flight_plan_update_result(const FlightPlans::Update::Result& result,
+                                                       ConstContextRef context) {
+  if (result) {
+    log_.infof(component, "successfully updated flight plan");
+    print_flight_plan(context.get().cout, result.value());
+    context_->stop();
+  } else {
+    log_.errorf(component, "failed to update flight plan: %s", result.error());
+    context_->stop(::airmap::Context::ReturnCode::error);
+  }
 }

@@ -4,6 +4,7 @@
 #include <airmap/cmds/airmap/cmd/flags.h>
 
 #include <airmap/client.h>
+#include <airmap/context.h>
 #include <airmap/flight_plans.h>
 #include <airmap/logger.h>
 #include <airmap/optional.h>
@@ -21,15 +22,21 @@ class PlanFlight : public util::cli::CommandWithFlagsAndAction {
   PlanFlight();
 
  private:
-  using PlanFile = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using ConstContextRef = std::reference_wrapper<const util::cli::Command::Context>;
+  using PlanFile        = util::TaggedString<util::tags::MustNotBeEmpty>;
+
+  void handle_flight_plan_create_result(const FlightPlans::Create::Result& result, ConstContextRef context);
+  void handle_flight_plan_update_result(const FlightPlans::Update::Result& result, ConstContextRef context);
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
+  std::shared_ptr<::airmap::Context> context_;
+  std::shared_ptr<::airmap::Client> client_;
   Optional<ConfigFile> config_file_;
   Optional<TokenFile> token_file_;
   Optional<PlanFile> plan_file_;
-  FlightPlans::Create::Parameters parameters_;
+  bool update_{false};
 };
 
 }  // namespace cmd
