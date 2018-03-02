@@ -37,6 +37,7 @@ struct Scenario {
     Optional<User> user;
     Geometry geometry;
     double velocity;
+    std::uint64_t duration;
 
     Optional<std::string> authentication;
     Optional<Flight> flight;

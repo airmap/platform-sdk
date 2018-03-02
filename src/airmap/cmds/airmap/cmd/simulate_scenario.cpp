@@ -40,7 +40,7 @@ constexpr float heading                   = 180.;
 }  // namespace mavlink
 
 const std::string device_name = boost::asio::ip::host_name();
-const airmap::Microseconds duration{60 * 1000 * 1000};
+const airmap::Microseconds default_duration{60 * 1000 * 1000};
 constexpr const char* component{"simulate-scenario-cli"};
 
 class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
@@ -319,6 +319,11 @@ void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participan
   const auto& polygon  = participant->geometry.details_for_polygon();
   params.authorization = participant->authentication.get();
   params.start_time    = Clock::universal_time();
+  Microseconds duration{0};
+  if (participant->duration)
+    duration = Microseconds((participant->duration)*1000*1000);
+  else
+    duration = Microseconds(default_duration);
   params.end_time      = Clock::universal_time() + duration;
   params.aircraft_id   = participant->aircraft.id;
   params.latitude      = polygon.outer_ring.coordinates[0].latitude;
@@ -336,7 +341,11 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     collector_->collect_flight_id_for(participant, result.value());
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
-
+    Microseconds duration{0};
+    if (participant->duration)
+      duration = Microseconds((participant->duration)*1000*1000);
+    else
+      duration = Microseconds(default_duration);
     context_->schedule_in(duration, [this, participant]() {
       client_->flights().end_flight_communications(
           {participant->authentication.get(), participant->flight.get().id},
@@ -428,7 +437,7 @@ void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iter
                                               const Flights::EndFlight::Result& result) {
   if (result) {
     log_.infof(component, "successfully ended flight: %s", participant->flight.get().id);
-    context_->stop(::airmap::Context::ReturnCode::success);
+    //context_->stop(::airmap::Context::ReturnCode::success);
   } else {
     log_.errorf(component, "failed to end flight: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
