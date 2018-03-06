@@ -42,6 +42,7 @@ constexpr float heading                   = 180.;
 const std::string device_name = boost::asio::ip::host_name();
 const airmap::Microseconds default_duration{60 * 1000 * 1000};
 constexpr const char* component{"simulate-scenario-cli"};
+std::set<std::uint64_t> durations;
 
 class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
  public:
@@ -219,8 +220,11 @@ cmd::SimulateScenario::SimulateScenario()
 
       while (it != itE) {
         this->request_authentication_for(it);
+        durations.insert(it->duration);
         ++it;
       }
+      if (durations.empty())
+        durations.insert(60);
     });
 
     return context_->exec({SIGINT, SIGQUIT},
@@ -437,7 +441,8 @@ void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iter
                                               const Flights::EndFlight::Result& result) {
   if (result) {
     log_.infof(component, "successfully ended flight: %s", participant->flight.get().id);
-    //context_->stop(::airmap::Context::ReturnCode::success);
+    if (participant->duration == *(durations.rbegin()))
+      context_->stop(::airmap::Context::ReturnCode::success);
   } else {
     log_.errorf(component, "failed to end flight: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
