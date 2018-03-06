@@ -22,6 +22,15 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan& p) {
   get(p.pilot.id, j, "pilot_id");
   get(p.aircraft.id, j, "aircraft_id");
   get(p.buffer, j, "buffer");
+  get(p.rulesets, j, "rulesets");
+  if (j.count("flight_features") > 0) {
+    auto ff = j["flight_features"];
+
+    for (auto it = ff.begin(); it != ff.end(); ++it) {
+      RuleSet::Feature::Value value = it.value();
+      p.features.emplace(it.key(), value);
+    }
+  }
 }
 
 void airmap::codec::json::encode(nlohmann::json& j, const FlightPlan& p) {
@@ -36,8 +45,14 @@ void airmap::codec::json::encode(nlohmann::json& j, const FlightPlan& p) {
   j["start_time"]        = p.start_time;
   j["end_time"]          = p.end_time;
   j["pilot_id"]          = p.pilot.id;
-  j["aircraft_id"]       = p.aircraft.id;
+  if (p.aircraft.id != "")
+    j["aircraft_id"]     = p.aircraft.id;
   j["buffer"]            = p.buffer;
+  j["rulesets"] = p.rulesets;
+
+  for (const auto& pair : p.features) {
+    j["flight_features"][pair.first] = pair.second;
+  }
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, FlightPlan::Briefing& b) {
