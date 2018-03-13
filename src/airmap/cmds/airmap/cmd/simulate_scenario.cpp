@@ -40,7 +40,7 @@ constexpr float heading                   = 180.;
 }  // namespace mavlink
 
 const std::string device_name = boost::asio::ip::host_name();
-const airmap::Microseconds default_duration{60 * 1000 * 1000};
+airmap::Microseconds default_duration{60 * 1000 * 1000};
 constexpr const char* component{"simulate-scenario-cli"};
 std::set<std::uint64_t> durations;
 
@@ -146,6 +146,7 @@ cmd::SimulateScenario::SimulateScenario()
   flag(cli::make_flag("mavlink-router-endpoint-port", "export a mavlink router on this ip",
                       params_.mavlink_router_endpoint_port));
   flag(cli::make_flag("scenario-file", "use the scenario defined in this json file", params_.scenario_file));
+  flag(cli::make_flag("duration", "duration of the scenario in seconds", params_.duration));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cerr))};
@@ -162,6 +163,10 @@ cmd::SimulateScenario::SimulateScenario()
     if (!params_.scenario_file) {
       log_.errorf(component, "missing parameter 'scenario-file'");
       return 1;
+    }
+
+    if (params_.duration) {
+      default_duration = Microseconds(params_.duration*1000*1000);
     }
 
     std::ifstream in{params_.scenario_file.get()};
@@ -224,7 +229,10 @@ cmd::SimulateScenario::SimulateScenario()
         ++it;
       }
       if (durations.empty())
-        durations.insert(60);
+        if (params_.duration)
+          durations.insert(params_.duration);
+        else
+          durations.insert(60);
     });
 
     return context_->exec({SIGINT, SIGQUIT},
@@ -324,7 +332,7 @@ void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participan
   params.authorization = participant->authentication.get();
   params.start_time    = Clock::universal_time();
   Microseconds duration{0};
-  if (participant->duration)
+  if (!params_.duration && participant->duration)
     duration = Microseconds((participant->duration)*1000*1000);
   else
     duration = Microseconds(default_duration);
@@ -346,7 +354,7 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
     Microseconds duration{0};
-    if (participant->duration)
+    if (!params_.duration && participant->duration)
       duration = Microseconds((participant->duration)*1000*1000);
     else
       duration = Microseconds(default_duration);
