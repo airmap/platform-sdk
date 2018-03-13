@@ -166,7 +166,7 @@ cmd::SimulateScenario::SimulateScenario()
     }
 
     if (params_.duration) {
-      default_duration = Microseconds(params_.duration*1000*1000);
+      default_duration = Microseconds(params_.duration * 1000 * 1000);
     }
 
     std::ifstream in{params_.scenario_file.get()};
@@ -333,14 +333,14 @@ void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participan
   params.start_time    = Clock::universal_time();
   Microseconds duration{0};
   if (!params_.duration && participant->duration)
-    duration = Microseconds((participant->duration)*1000*1000);
+    duration = Microseconds((participant->duration) * 1000 * 1000);
   else
     duration = Microseconds(default_duration);
-  params.end_time      = Clock::universal_time() + duration;
-  params.aircraft_id   = participant->aircraft.id;
-  params.latitude      = polygon.outer_ring.coordinates[0].latitude;
-  params.longitude     = polygon.outer_ring.coordinates[0].longitude;
-  params.geometry      = participant->geometry;
+  params.end_time    = Clock::universal_time() + duration;
+  params.aircraft_id = participant->aircraft.id;
+  params.latitude    = polygon.outer_ring.coordinates[0].latitude;
+  params.longitude   = polygon.outer_ring.coordinates[0].longitude;
+  params.geometry    = participant->geometry;
 
   client_->flights().create_flight_by_polygon(
       params, std::bind(&SimulateScenario::handle_create_flight_result_for, this, participant, ph::_1));
@@ -355,7 +355,7 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     request_start_flight_comms_for(participant);
     Microseconds duration{0};
     if (!params_.duration && participant->duration)
-      duration = Microseconds((participant->duration)*1000*1000);
+      duration = Microseconds((participant->duration) * 1000 * 1000);
     else
       duration = Microseconds(default_duration);
     context_->schedule_in(duration, [this, participant]() {
