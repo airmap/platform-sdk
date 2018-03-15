@@ -90,6 +90,7 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
     Required<std::uint16_t> port;
     std::uint16_t mavlink_router_endpoint_port{9090};
     Required<ScenarioFile> scenario_file;
+    std::uint64_t duration{0};
   } params_;
   std::shared_ptr<util::ScenarioSimulator::Runner> runner_;
   util::FormattingLogger log_{create_null_logger()};

@@ -40,8 +40,9 @@ constexpr float heading                   = 180.;
 }  // namespace mavlink
 
 const std::string device_name = boost::asio::ip::host_name();
-const airmap::Microseconds duration{60 * 1000 * 1000};
+airmap::Microseconds default_duration{60 * 1000 * 1000};
 constexpr const char* component{"simulate-scenario-cli"};
+std::set<std::uint64_t> durations;
 
 class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
  public:
@@ -145,6 +146,7 @@ cmd::SimulateScenario::SimulateScenario()
   flag(cli::make_flag("mavlink-router-endpoint-port", "export a mavlink router on this ip",
                       params_.mavlink_router_endpoint_port));
   flag(cli::make_flag("scenario-file", "use the scenario defined in this json file", params_.scenario_file));
+  flag(cli::make_flag("duration", "duration of the scenario in seconds", params_.duration));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(params_.log_level, create_default_logger(ctxt.cerr))};
@@ -161,6 +163,10 @@ cmd::SimulateScenario::SimulateScenario()
     if (!params_.scenario_file) {
       log_.errorf(component, "missing parameter 'scenario-file'");
       return 1;
+    }
+
+    if (params_.duration) {
+      default_duration = Microseconds(params_.duration * 1000 * 1000);
     }
 
     std::ifstream in{params_.scenario_file.get()};
@@ -219,8 +225,14 @@ cmd::SimulateScenario::SimulateScenario()
 
       while (it != itE) {
         this->request_authentication_for(it);
+        durations.insert(it->duration);
         ++it;
       }
+      if (durations.empty())
+        if (params_.duration)
+          durations.insert(params_.duration);
+        else
+          durations.insert(60);
     });
 
     return context_->exec({SIGINT, SIGQUIT},
@@ -319,11 +331,16 @@ void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participan
   const auto& polygon  = participant->geometry.details_for_polygon();
   params.authorization = participant->authentication.get();
   params.start_time    = Clock::universal_time();
-  params.end_time      = Clock::universal_time() + duration;
-  params.aircraft_id   = participant->aircraft.id;
-  params.latitude      = polygon.outer_ring.coordinates[0].latitude;
-  params.longitude     = polygon.outer_ring.coordinates[0].longitude;
-  params.geometry      = participant->geometry;
+  Microseconds duration{0};
+  if (!params_.duration && participant->duration)
+    duration = Microseconds((participant->duration) * 1000 * 1000);
+  else
+    duration = Microseconds(default_duration);
+  params.end_time    = Clock::universal_time() + duration;
+  params.aircraft_id = participant->aircraft.id;
+  params.latitude    = polygon.outer_ring.coordinates[0].latitude;
+  params.longitude   = polygon.outer_ring.coordinates[0].longitude;
+  params.geometry    = participant->geometry;
 
   client_->flights().create_flight_by_polygon(
       params, std::bind(&SimulateScenario::handle_create_flight_result_for, this, participant, ph::_1));
@@ -336,7 +353,11 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     collector_->collect_flight_id_for(participant, result.value());
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
-
+    Microseconds duration{0};
+    if (!params_.duration && participant->duration)
+      duration = Microseconds((participant->duration) * 1000 * 1000);
+    else
+      duration = Microseconds(default_duration);
     context_->schedule_in(duration, [this, participant]() {
       client_->flights().end_flight_communications(
           {participant->authentication.get(), participant->flight.get().id},
@@ -428,7 +449,8 @@ void cmd::SimulateScenario::handle_end_flight(util::Scenario::Participants::iter
                                               const Flights::EndFlight::Result& result) {
   if (result) {
     log_.infof(component, "successfully ended flight: %s", participant->flight.get().id);
-    context_->stop(::airmap::Context::ReturnCode::success);
+    if (participant->duration == *(durations.rbegin()))
+      context_->stop(::airmap::Context::ReturnCode::success);
   } else {
     log_.errorf(component, "failed to end flight: %s", result.error());
     context_->stop(::airmap::Context::ReturnCode::error);
