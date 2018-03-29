@@ -6,6 +6,7 @@
 #include <airmap/util/formatting_logger.h>
 
 #include <airmap/mavlink/global_position_int.h>
+#include <airmap/mavlink/mission.h>
 #include <airmap/mavlink/state.h>
 
 #include <cstdint>
@@ -44,6 +45,8 @@ class Vehicle {
 
   State system_status_;
   Optional<GlobalPositionInt> global_position_int_;
+
+  Mission mission_;
 };
 
 class LoggingVehicleMonitor : public Vehicle::Monitor {

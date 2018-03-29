@@ -18,7 +18,11 @@ void airmap::mavlink::Vehicle::update(const mavlink_message_t& msg) {
     case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
       handle_msg_global_position_int(msg);
       break;
+    default:
+      mission_.update(msg);
+      break;
   }
+
 }
 
 void airmap::mavlink::Vehicle::register_monitor(const std::shared_ptr<Monitor>& monitor) {

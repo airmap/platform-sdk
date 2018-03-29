@@ -73,6 +73,8 @@ add_library(
   mavlink/global_position_int.cpp
   mavlink/heartbeat.h
   mavlink/heartbeat.cpp
+  mavlink/mission.h
+  mavlink/mission.cpp
   mavlink/router.h
   mavlink/router.cpp
   mavlink/state.h
