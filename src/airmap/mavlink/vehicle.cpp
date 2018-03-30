@@ -87,4 +87,3 @@ void airmap::mavlink::LoggingVehicleMonitor::on_mission_received(const airmap::G
   log_.infof(component_, "mission received with geometry");
   next_->on_mission_received(geometry);
 }
-

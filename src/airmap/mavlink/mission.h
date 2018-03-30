@@ -6,9 +6,7 @@
 #include <airmap/util/formatting_logger.h>
 
 #include <airmap/geometry.h>
-#include <airmap/mavlink/global_position_int.h>
 #include <airmap/mavlink/state.h>
-
 #include <cstdint>
 
 #include <memory>
@@ -21,6 +19,7 @@ class Mission {
  public:
   bool update(const mavlink_message_t& msg);
   airmap::Geometry get_plan_geometry();
+
  private:
   void handle_msg_mission_count(const mavlink_message_t& msg);
   bool handle_msg_mission_item(const mavlink_message_t& msg);
