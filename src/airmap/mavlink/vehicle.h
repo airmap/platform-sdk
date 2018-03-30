@@ -24,6 +24,7 @@ class Vehicle {
     virtual void on_system_status_changed(const Optional<State>& old_state, State new_state) = 0;
     virtual void on_position_changed(const Optional<GlobalPositionInt>& old_position,
                                      const GlobalPositionInt& new_position)                  = 0;
+    virtual void on_mission_received(const airmap::Geometry geometry) = 0;
 
    protected:
     Monitor() = default;
@@ -39,6 +40,7 @@ class Vehicle {
  protected:
   void handle_msg_global_position_int(const mavlink_message_t& msg);
   void handle_msg_heartbeat(const mavlink_message_t& msg);
+  void handle_msg_mission(const mavlink_message_t& msg);
 
   std::uint8_t system_id_;
   std::unordered_set<std::shared_ptr<Monitor>> monitors_;
@@ -58,6 +60,7 @@ class LoggingVehicleMonitor : public Vehicle::Monitor {
   void on_system_status_changed(const Optional<State>& old_state, State new_state) override;
   void on_position_changed(const Optional<GlobalPositionInt>& old_position,
                            const GlobalPositionInt& new_position) override;
+  void on_mission_received(const airmap::Geometry geometry) override;
 
  private:
   const char* component_;
