@@ -60,7 +60,8 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
 
       // {
       //   mavlink_message_t msg;
-      //   mavlink_msg_global_position_int_pack(p.id, mavlink::component_id, &msg, airmap::milliseconds_since_epoch(now),
+      //   mavlink_msg_global_position_int_pack(p.id, mavlink::component_id, &msg,
+      //   airmap::milliseconds_since_epoch(now),
       //                                        to.latitude * 1E7, to.longitude * 1E7, mavlink::altitude_msl * 1E3,
       //                                        mavlink::altitude_gl * 1E3, mavlink::vx, mavlink::vy, mavlink::vz,
       //                                        mavlink::heading * 1E2);
@@ -76,13 +77,28 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
 
       {
         mavlink_message_t msg;
-        mavlink_msg_mission_count_pack(p.id, mavlink::component_id, &msg, 0, 0, 1, 0);
+        mavlink_msg_mission_count_pack(p.id, mavlink::component_id, &msg, 0, 0, 3, 0);
         session->process(msg);
       }
 
       {
         mavlink_message_t msg;
-        mavlink_msg_mission_item_pack(p.id, mavlink::component_id, &msg, 0, 0, 0, 0, 0, 0, 0, 0., 0., 0., 0., 47.39768937, 8.54548034, 0, MAV_CMD_NAV_WAYPOINT);
+        mavlink_msg_mission_item_pack(p.id, mavlink::component_id, &msg, 0, 0, 0, 0, 0, 0, 0, 0., 0., 0., 0.,
+                                      47.39768937, 8.54548034, 0, MAV_CMD_NAV_WAYPOINT);
+        session->process(msg);
+      }
+
+      {
+        mavlink_message_t msg;
+        mavlink_msg_mission_item_pack(p.id, mavlink::component_id, &msg, 0, 0, 1, 0, 0, 0, 0, 0., 0., 0., 0.,
+                                      47.39868937, 8.54548034, 0, MAV_CMD_NAV_WAYPOINT);
+        session->process(msg);
+      }
+
+      {
+        mavlink_message_t msg;
+        mavlink_msg_mission_item_pack(p.id, mavlink::component_id, &msg, 0, 0, 2, 0, 0, 0, 0, 0., 0., 0., 0.,
+                                      47.39768937, 8.54548034, 0, MAV_CMD_NAV_WAYPOINT);
         session->process(msg);
       }
     }
@@ -230,7 +246,7 @@ cmd::SimulateScenario::SimulateScenario()
       auto itE = collector_->scenario().participants.end();
 
       while (it != itE) {
-        //this->request_authentication_for(it);
+        // this->request_authentication_for(it);
         ++it;
       }
     });

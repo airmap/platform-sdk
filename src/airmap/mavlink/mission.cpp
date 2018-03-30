@@ -12,29 +12,29 @@ bool airmap::mavlink::Mission::update(const mavlink_message_t& msg) {
 }
 
 airmap::Geometry airmap::mavlink::Mission::get_plan_geometry() {
-	return Geometry::polygon(coordinates_);
+  return Geometry::polygon(coordinates_);
 }
 
 void airmap::mavlink::Mission::handle_msg_mission_count(const mavlink_message_t& msg) {
-  	mavlink_mission_count_t mc;
-  	mavlink_msg_mission_count_decode(&msg, &mc);
-	max_count_ = mc.count;
-	curr_count_ = 0;
-	coordinates_.clear();
+  mavlink_mission_count_t mc;
+  mavlink_msg_mission_count_decode(&msg, &mc);
+  max_count_  = mc.count;
+  curr_count_ = 0;
+  coordinates_.clear();
 }
 
 bool airmap::mavlink::Mission::handle_msg_mission_item(const mavlink_message_t& msg) {
-	mavlink_mission_item_t mi;
-  	mavlink_msg_mission_item_decode(&msg, &mi);
-  	if (mi.seq == curr_count_) {
-		curr_count_++;
-		if (mi.mission_type == MAV_CMD_NAV_WAYPOINT) {
-			Geometry::Coordinate c = { mi.x, mi.y };
-			coordinates_.push_back(c);
-			if (curr_count_ == max_count_) {
-				return true;
-			}
-		}
-  	}
-  	return false;
+  mavlink_mission_item_t mi;
+  mavlink_msg_mission_item_decode(&msg, &mi);
+  if (mi.seq == curr_count_) {
+    curr_count_++;
+    if (mi.mission_type == MAV_CMD_NAV_WAYPOINT) {
+      Geometry::Coordinate c = {mi.x, mi.y};
+      coordinates_.push_back(c);
+      if (curr_count_ == max_count_) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

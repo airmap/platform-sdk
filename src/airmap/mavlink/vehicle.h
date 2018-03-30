@@ -24,7 +24,7 @@ class Vehicle {
     virtual void on_system_status_changed(const Optional<State>& old_state, State new_state) = 0;
     virtual void on_position_changed(const Optional<GlobalPositionInt>& old_position,
                                      const GlobalPositionInt& new_position)                  = 0;
-    virtual void on_mission_received(const airmap::Geometry geometry) = 0;
+    virtual void on_mission_received(const airmap::Geometry geometry)                        = 0;
 
    protected:
     Monitor() = default;
