@@ -39,3 +39,7 @@ void airmap::monitor::SubmittingVehicleMonitor::on_position_changed(
     const Optional<mavlink::GlobalPositionInt>& old_position, const mavlink::GlobalPositionInt& new_position) {
   submitter_->submit(new_position);
 }
+
+void airmap::monitor::SubmittingVehicleMonitor::on_mission_received(const airmap::Geometry geometry) {
+  submitter_->execute_mission(geometry);
+}

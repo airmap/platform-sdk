@@ -5,7 +5,8 @@
 #include <airmap/optional.h>
 #include <airmap/util/formatting_logger.h>
 
-#include <airmap/mavlink/global_position_int.h>
+#include <airmap/geometry.h>
+#include <airmap/mavlink/vehicle.h>
 #include <airmap/mavlink/state.h>
 
 #include <cstdint>
@@ -18,8 +19,10 @@ namespace mavlink {
 
 class Mission {
  public:
+  explicit Mission(std::shared_ptr<Vehicle> v);
   void update(const mavlink_message_t& msg);
- private:
+
+ protected:
   void handle_msg_mission_count(const mavlink_message_t& msg);
   void handle_msg_mission_item(const mavlink_message_t& msg);
   void send_msg_mission_request();
@@ -30,7 +33,9 @@ class Mission {
   uint16_t max_count_ = 0;
   uint16_t curr_count_ = 0;
 
-  std::vector<mavlink_mission_item_t> mission_items_;
+  std::vector<Geometry::Coordinate> coordinates_;
+
+  std::shared_ptr<Vehicle> vehicle_;
 };
 
 }  // namespace mavlink
