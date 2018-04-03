@@ -56,6 +56,8 @@ class SimulateScenario : public util::cli::CommandWithFlagsAndAction {
     util::Scenario scenario_;
   };
 
+  void deactivate(util::Scenario::Participants::iterator participant);
+
   void request_authentication_for(util::Scenario::Participants::iterator participant);
   void handle_authenticated_with_password_result_for(util::Scenario::Participants::iterator participant,
                                                      const Authenticator::AuthenticateWithPassword::Result& result);

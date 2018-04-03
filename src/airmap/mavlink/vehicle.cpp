@@ -20,7 +20,6 @@ void airmap::mavlink::Vehicle::update(const mavlink_message_t& msg) {
       break;
     case MAVLINK_MSG_ID_MISSION_COUNT:
     case MAVLINK_MSG_ID_MISSION_ITEM:
-      std::cout << "got mission \n\n";
       handle_msg_mission(msg);
       break;
   }

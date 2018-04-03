@@ -13,6 +13,7 @@
 #include <airmap/util/telemetry_simulator.h>
 
 #include <boost/asio.hpp>
+#include <boost/thread/thread.hpp>
 
 #include <signal.h>
 
@@ -80,6 +81,7 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
         session->process(msg);
       }
 
+      // Send geometry as sequence of waypoints as part of mavlink mission
       uint16_t seq = 0;
       for (auto c : outer_ring.coordinates) {
         {
@@ -236,8 +238,10 @@ cmd::SimulateScenario::SimulateScenario()
 
       while (it != itE) {
         // this->request_authentication_for(it);
+        this->deactivate(it);
         ++it;
       }
+
     });
 
     return context_->exec({SIGINT, SIGQUIT},
@@ -247,6 +251,15 @@ cmd::SimulateScenario::SimulateScenario()
                           }) == ::airmap::Context::ReturnCode::success
                ? 0
                : 1;
+  });
+}
+
+void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator participant) {
+  context_->schedule_in(Microseconds(1000 * 1000 * 10), [this, participant]() {
+    mavlink_message_t msg;
+    mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,
+                               MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED, ::mavlink::custom_mode, MAV_STATE_STANDBY);
+    router_->route(msg);
   });
 }
 
