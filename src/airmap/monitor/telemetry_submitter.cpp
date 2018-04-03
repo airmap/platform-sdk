@@ -53,6 +53,8 @@ void airmap::monitor::TelemetrySubmitter::deactivate() {
   }
 
   authorization_requested_      = false;
+  active_flights_requested_     = false;
+  end_active_flights_requested_ = false;
   create_flight_requested_      = false;
   traffic_monitoring_requested_ = false;
   start_flight_comms_requested_ = false;
@@ -117,7 +119,7 @@ void airmap::monitor::TelemetrySubmitter::request_authorization() {
 void airmap::monitor::TelemetrySubmitter::handle_request_authorization_finished(std::string authorization) {
   log_.infof(component, "successfully requested authorization from AirMap services %s", authorization);
   authorization_ = authorization;
-  request_create_flight();
+  request_active_flights();
 }
 
 void airmap::monitor::TelemetrySubmitter::request_create_flight() {
@@ -149,6 +151,84 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
       }
     });
   }
+}
+
+void airmap::monitor::TelemetrySubmitter::request_active_flights() {
+  if (active_flights_) {
+    handle_request_active_flights_finished(active_flights_.get());
+    return;
+  }
+
+  if (active_flights_requested_) {
+    return;
+  }
+
+  active_flights_requested_ = true;
+
+  Flights::Search::Parameters params;
+  params.start_before = Clock::universal_time();
+  params.end_after    = Clock::universal_time();
+
+  client_->flights().search(params, [sp = shared_from_this()](const auto& result) {
+    if (result) {
+      sp->handle_request_active_flights_finished(result.value().flights);
+    } else {
+      sp->active_flights_requested_ = false;
+      sp->log_.errorf(component, "failed to request active flights: %s", result.error());
+    }
+  });
+}
+
+void airmap::monitor::TelemetrySubmitter::handle_request_active_flights_finished(std::vector<Flight> flights) {
+  active_flights_ = flights;
+  request_end_active_flights();
+}
+
+void airmap::monitor::TelemetrySubmitter::request_end_active_flights() {
+  if (active_flights_ && active_flights_.get().empty()) {
+    handle_request_end_active_flights_finished();
+    return;
+  }
+
+  if (end_active_flights_requested_)
+    return;
+
+  end_active_flights_requested_ = true;
+
+  for (const auto& flight : active_flights_.get()) {
+    Flights::EndFlight::Parameters params;
+    params.authorization = authorization_.get();
+    params.id            = flight.id;
+
+    client_->flights().end_flight(params, [ sp = shared_from_this(), id = flight.id ](const auto& result) {
+      if (result) {
+        sp->handle_request_end_active_flight_finished(id);
+      } else {
+        sp->end_active_flights_requested_ = false;
+        sp->log_.errorf(component, "failed to end active flight %s: %s", id, result.error());
+      }
+    });
+  }
+}
+
+void airmap::monitor::TelemetrySubmitter::handle_request_end_active_flight_finished(std::string id) {
+  log_.infof(component, "successfully ended active flight: %s", id);
+
+  auto it = std::find_if(active_flights_.get().begin(), active_flights_.get().end(),
+                         [id](const auto& flight) { return flight.id == id; });
+
+  if (it != active_flights_.get().end()) {
+    active_flights_.get().erase(it);
+  }
+
+  if (active_flights_.get().empty()) {
+    handle_request_end_active_flights_finished();
+  }
+}
+
+void airmap::monitor::TelemetrySubmitter::handle_request_end_active_flights_finished() {
+  log_.infof(component, "successfully ended all active flights");
+  request_create_flight();
 }
 
 void airmap::monitor::TelemetrySubmitter::handle_request_create_flight_finished(Flight flight) {
