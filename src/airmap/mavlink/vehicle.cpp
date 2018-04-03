@@ -84,7 +84,7 @@ void airmap::mavlink::LoggingVehicleMonitor::on_position_changed(const Optional<
   next_->on_position_changed(old_position, new_position);
 }
 
-void airmap::mavlink::LoggingVehicleMonitor::on_mission_received(const airmap::Geometry geometry) {
+void airmap::mavlink::LoggingVehicleMonitor::on_mission_received(const airmap::Geometry& geometry) {
   log_.infof(component_, "mission received with geometry");
   next_->on_mission_received(geometry);
 }

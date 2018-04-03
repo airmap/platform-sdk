@@ -31,7 +31,7 @@ class SubmittingVehicleMonitor : public mavlink::Vehicle::Monitor {
   void on_system_status_changed(const Optional<mavlink::State>& old_state, mavlink::State new_state) override;
   void on_position_changed(const Optional<mavlink::GlobalPositionInt>& old_position,
                            const mavlink::GlobalPositionInt& new_position) override;
-  void on_mission_received(const airmap::Geometry geometry) override;
+  void on_mission_received(const airmap::Geometry& geometry) override;
 
  private:
   /// @cond

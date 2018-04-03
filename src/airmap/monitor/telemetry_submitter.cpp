@@ -31,7 +31,13 @@ airmap::monitor::TelemetrySubmitter::TelemetrySubmitter(
 
 void airmap::monitor::TelemetrySubmitter::activate() {
   state_ = State::active;
-  request_authorization();
+  // request_authorization();
+}
+
+void airmap::monitor::TelemetrySubmitter::execute_mission(const Geometry& geometry) {
+  geometry_ = geometry;
+  if (state_ == State::active)
+    request_authorization();
 }
 
 void airmap::monitor::TelemetrySubmitter::deactivate() {
@@ -117,7 +123,8 @@ void airmap::monitor::TelemetrySubmitter::request_authorization() {
 void airmap::monitor::TelemetrySubmitter::handle_request_authorization_finished(std::string authorization) {
   log_.infof(component, "successfully requested authorization from AirMap services %s", authorization);
   authorization_ = authorization;
-  request_create_flight();
+  // request_create_flight();
+  request_create_plan();
 }
 
 void airmap::monitor::TelemetrySubmitter::request_create_flight() {
@@ -152,6 +159,46 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
 }
 
 void airmap::monitor::TelemetrySubmitter::handle_request_create_flight_finished(Flight flight) {
+  log_.infof(component, "successfully created flight: %s", flight.id);
+  flight_ = flight;
+
+  request_monitor_traffic();
+  request_start_flight_comms();
+}
+
+void airmap::monitor::TelemetrySubmitter::request_create_plan() {
+  if (flight_) {
+    handle_request_create_plan_finished(flight_.get());
+    return;
+  }
+
+  if (create_plan_requested_)
+    return;
+
+  create_plan_requested_ = true;
+
+  if (geometry_ && current_position_) {
+    Flights::CreateFlight::Parameters params;
+    params.authorization = authorization_.get();
+    params.latitude      = current_position_.get().lat / 1E7;
+    params.longitude     = current_position_.get().lon / 1E7;
+    params.aircraft_id   = aircraft_id_;
+    params.start_time    = Clock::universal_time();
+    params.end_time      = params.start_time + Hours{1};
+    params.geometry      = geometry_.get();
+
+    client_->flights().create_flight_by_polygon(params, [sp = shared_from_this()](const auto& result) {
+      if (result) {
+        sp->handle_request_create_plan_finished(result.value());
+      } else {
+        sp->create_plan_requested_ = false;
+        sp->log_.errorf(component, "failed to create flight by point: %s", result.error());
+      }
+    });
+  }
+}
+
+void airmap::monitor::TelemetrySubmitter::handle_request_create_plan_finished(Flight flight) {
   log_.infof(component, "successfully created flight: %s", flight.id);
   flight_ = flight;
 

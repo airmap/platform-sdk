@@ -40,7 +40,7 @@ void airmap::monitor::SubmittingVehicleMonitor::on_position_changed(
   submitter_->submit(new_position);
 }
 
-void airmap::monitor::SubmittingVehicleMonitor::on_mission_received(const airmap::Geometry geometry) {
-  // submitter_->execute_mission(geometry);
+void airmap::monitor::SubmittingVehicleMonitor::on_mission_received(const airmap::Geometry& geometry) {
+  submitter_->execute_mission(geometry);
   std::cout << "execute mission \n\n";
 }
