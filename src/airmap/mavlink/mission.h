@@ -21,6 +21,7 @@ class Mission {
   airmap::Geometry get_plan_geometry();
 
  private:
+  void handle_msg_mission_clear_all();
   void handle_msg_mission_count(const mavlink_message_t& msg);
   bool handle_msg_mission_item(const mavlink_message_t& msg);
 

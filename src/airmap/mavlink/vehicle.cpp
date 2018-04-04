@@ -18,6 +18,7 @@ void airmap::mavlink::Vehicle::update(const mavlink_message_t& msg) {
     case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
       handle_msg_global_position_int(msg);
       break;
+    case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
     case MAVLINK_MSG_ID_MISSION_COUNT:
     case MAVLINK_MSG_ID_MISSION_ITEM:
       handle_msg_mission(msg);

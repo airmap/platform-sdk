@@ -2,6 +2,9 @@
 
 bool airmap::mavlink::Mission::update(const mavlink_message_t& msg) {
   switch (msg.msgid) {
+    case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
+      handle_msg_mission_clear_all();
+      break;
     case MAVLINK_MSG_ID_MISSION_COUNT:
       handle_msg_mission_count(msg);
       break;
@@ -13,6 +16,12 @@ bool airmap::mavlink::Mission::update(const mavlink_message_t& msg) {
 
 airmap::Geometry airmap::mavlink::Mission::get_plan_geometry() {
   return Geometry::polygon(coordinates_);
+}
+
+void airmap::mavlink::Mission::handle_msg_mission_clear_all() {
+  max_count_  = 0;
+  curr_count_ = 0;
+  coordinates_.clear();
 }
 
 void airmap::mavlink::Mission::handle_msg_mission_count(const mavlink_message_t& msg) {
