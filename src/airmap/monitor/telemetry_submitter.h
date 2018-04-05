@@ -82,9 +82,6 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void request_create_flight();
   void handle_request_create_flight_finished(Flight flight);
 
-  void request_create_flight_polygon();
-  void handle_request_create_flight_polygon_finished(Flight flight);
-
   void request_monitor_traffic();
   void handle_request_monitor_traffic_finished(std::shared_ptr<Traffic::Monitor> traffic_monitor);
 
@@ -96,7 +93,6 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   State state_{State::inactive};
   bool authorization_requested_{false};
   bool create_flight_requested_{false};
-  bool create_flight_polygon_requested_{false};
   bool traffic_monitoring_requested_{false};
   bool start_flight_comms_requested_{false};
 

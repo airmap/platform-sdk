@@ -14,8 +14,8 @@ bool airmap::mavlink::Mission::update(const mavlink_message_t& msg) {
   return false;
 }
 
-airmap::Geometry airmap::mavlink::Mission::get_plan_geometry() {
-  return Geometry::polygon(coordinates_);
+const std::vector<airmap::Geometry::Coordinate>& airmap::mavlink::Mission::coordinates() const {
+  return coordinates_;
 }
 
 void airmap::mavlink::Mission::handle_msg_mission_clear_all() {

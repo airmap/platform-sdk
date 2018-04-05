@@ -18,15 +18,15 @@ namespace mavlink {
 class Mission {
  public:
   bool update(const mavlink_message_t& msg);
-  airmap::Geometry get_plan_geometry();
+  const std::vector<Geometry::Coordinate>& coordinates() const;
 
  private:
   void handle_msg_mission_clear_all();
   void handle_msg_mission_count(const mavlink_message_t& msg);
   bool handle_msg_mission_item(const mavlink_message_t& msg);
 
-  uint16_t max_count_  = 0;
-  uint16_t curr_count_ = 0;
+  std::uint16_t max_count_  = 0;
+  std::uint16_t curr_count_ = 0;
 
   std::vector<Geometry::Coordinate> coordinates_;
 };
