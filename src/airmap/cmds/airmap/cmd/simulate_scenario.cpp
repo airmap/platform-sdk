@@ -51,7 +51,7 @@ constexpr float p4                        = 0.;
 }  // namespace mavlink
 
 const std::string device_name = boost::asio::ip::host_name();
-const airmap::Microseconds duration{60 * 1000 * 1000};
+const airmap::Seconds duration{60};
 constexpr const char* component{"simulate-scenario-cli"};
 
 class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
@@ -201,6 +201,10 @@ cmd::SimulateScenario::SimulateScenario()
       return 1;
     }
     util::Scenario scenario = json::parse(in);
+
+    if (!scenario.duration) {
+      scenario.duration = duration;
+    }
 
     collector_ = std::make_shared<Collector>(scenario);
     runner_    = std::make_shared<util::ScenarioSimulator::Runner>(5);
@@ -363,7 +367,7 @@ void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participan
   const auto& polygon  = participant->geometry.details_for_polygon();
   params.authorization = participant->authentication.get();
   params.start_time    = Clock::universal_time();
-  params.end_time      = Clock::universal_time() + duration;
+  params.end_time      = Clock::universal_time() + collector_->scenario().duration.get();
   params.aircraft_id   = participant->aircraft.id;
   params.latitude      = polygon.outer_ring.coordinates[0].latitude;
   params.longitude     = polygon.outer_ring.coordinates[0].longitude;
@@ -381,7 +385,7 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
 
-    context_->schedule_in(duration, [this, participant]() {
+    context_->schedule_in(Microseconds(collector_->scenario().duration.get().total_microseconds()), [this, participant]() {
       client_->flights().end_flight_communications(
           {participant->authentication.get(), participant->flight.get().id},
           std::bind(&SimulateScenario::handle_end_flight_comms, this, participant, ph::_1));
