@@ -237,9 +237,10 @@ cmd::SimulateScenario::SimulateScenario()
                "  telemetry.host:            %s\n"
                "  telemetry.port:            %d\n"
                "  mavlink router (tcp) port: %d\n"
-               "  credentials.api_key:       %s",
+               "  credentials.api_key:       %s\n"
+               "  duration:                  %s",
                config.host, config.version, config.telemetry.host, config.telemetry.port,
-               params_.mavlink_router_endpoint_port, config.credentials.api_key);
+               params_.mavlink_router_endpoint_port, config.credentials.api_key, scenario.duration);
 
     context_->create_client_with_configuration(config, [this](const auto& result) mutable {
       if (not result) {

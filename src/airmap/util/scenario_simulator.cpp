@@ -67,7 +67,7 @@ void airmap::util::from_json(const nlohmann::json& j, Scenario& s) {
   codec::json::get(s.name, j, "name");
   codec::json::get(s.description, j, "description");
   codec::json::get(s.participants, j, "participants");
-  codec::json::get(s.participants, j, "duration");
+  codec::json::get(s.duration, j, "duration");
 }
 
 void airmap::util::from_json(const nlohmann::json& j, Scenario::Participant& p) {
