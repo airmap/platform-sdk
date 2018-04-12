@@ -31,15 +31,17 @@ airmap::monitor::TelemetrySubmitter::TelemetrySubmitter(
 
 void airmap::monitor::TelemetrySubmitter::activate() {
   state_ = State::active;
+  request_authorization();
 }
 
-void airmap::monitor::TelemetrySubmitter::execute_mission(const Geometry& geometry) {
+void airmap::monitor::TelemetrySubmitter::load_mission(const Geometry& geometry) {
   geometry_ = geometry;
-  if (state_ == State::active)
+  if (state_ == State::active) {
     if (flight_) {
-      request_end_flight();
+      deactivate();
     }
-  request_authorization();
+    activate();
+  }
 }
 
 void airmap::monitor::TelemetrySubmitter::deactivate() {
@@ -227,6 +229,23 @@ void airmap::monitor::TelemetrySubmitter::request_start_flight_comms() {
 void airmap::monitor::TelemetrySubmitter::handle_request_start_flight_comms_finished(std::string key) {
   log_.infof(component, "successfully started flight comms: %s", key);
   encryption_key_ = key;
+}
+
+void airmap::monitor::TelemetrySubmitter::request_end_flight_comms() {
+  Flights::EndFlightCommunications::Parameters params{authorization_.get(), flight_.get().id};
+
+  client_->flights().end_flight_communications(params, [sp = shared_from_this()](const auto& result) {
+    if (result) {
+      sp->handle_request_end_flight_comms_finished(result.value().key);
+    } else {
+      sp->log_.errorf(component, "failed to end flight communications: %s", result.error());
+    }
+  });
+}
+
+void airmap::monitor::TelemetrySubmitter::handle_request_end_flight_comms_finished(std::string key) {
+  log_.infof(component, "successfully ended flight comms: %s", key);
+  request_end_flight();
 }
 
 void airmap::monitor::TelemetrySubmitter::request_end_flight() {

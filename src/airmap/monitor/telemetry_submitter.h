@@ -63,13 +63,8 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   /// submit requests an instance to submit a telemetry update.
   void submit(const mavlink::GlobalPositionInt&);
 
-  /// execute_mission accepts a geometry and begins a mavlink mission.
-  ///
-  /// The following sequence of actions is triggered:
-  ///   * request authorization
-  ///   * request flight creation
-  ///   * request to start flight communications
-  void execute_mission(const Geometry& geometry);
+  /// load_mission accepts a geometry and stores it as a mavlink mission.
+  void load_mission(const Geometry& geometry);
 
  private:
   explicit TelemetrySubmitter(const Credentials& credentials, const std::string& aircraft_id,
@@ -87,6 +82,9 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
 
   void request_start_flight_comms();
   void handle_request_start_flight_comms_finished(std::string key);
+
+  void request_end_flight_comms();
+  void handle_request_end_flight_comms_finished(std::string key);
 
   void request_end_flight();
 

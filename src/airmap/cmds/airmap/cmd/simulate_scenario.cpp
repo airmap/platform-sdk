@@ -80,13 +80,6 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
 
       {
         mavlink_message_t msg;
-        mavlink_msg_heartbeat_pack(p.id, mavlink::component_id, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
-                                   MAV_MODE_GUIDED_ARMED, mavlink::custom_mode, MAV_STATE_ACTIVE);
-        session->process(msg);
-      }
-
-      {
-        mavlink_message_t msg;
         mavlink_msg_mission_count_pack(p.id, mavlink::component_id, &msg, mavlink::target_system,
                                        mavlink::target_component, outer_ring.coordinates.size(), mavlink::mission_type);
         session->process(msg);
@@ -104,6 +97,22 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
           session->process(msg);
           seq++;
         }
+      }
+
+      {
+        mavlink_message_t msg;
+        mavlink_msg_heartbeat_pack(p.id, mavlink::component_id, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
+                                   MAV_MODE_GUIDED_ARMED, mavlink::custom_mode, MAV_STATE_ACTIVE);
+        session->process(msg);
+      }
+
+      {
+        mavlink_message_t msg;
+        mavlink_msg_global_position_int_pack(p.id, mavlink::component_id, &msg, airmap::milliseconds_since_epoch(now),
+                                             to.latitude * 1E7, to.longitude * 1E7, mavlink::altitude_msl * 1E3,
+                                             mavlink::altitude_gl * 1E3, mavlink::vx, mavlink::vy, mavlink::vz,
+                                             mavlink::heading * 1E2);
+        session->process(msg);
       }
     }
   }
@@ -250,8 +259,8 @@ cmd::SimulateScenario::SimulateScenario()
       auto itE = collector_->scenario().participants.end();
 
       while (it != itE) {
-        this->request_authentication_for(it);
-        // this->deactivate(it);
+        //this->request_authentication_for(it);
+        this->deactivate(it);
         ++it;
       }
 
