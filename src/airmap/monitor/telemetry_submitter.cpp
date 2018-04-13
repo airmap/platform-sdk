@@ -38,19 +38,18 @@ void airmap::monitor::TelemetrySubmitter::load_mission(const Geometry& geometry)
   geometry_ = geometry;
   if (state_ == State::active) {
     if (flight_) {
-      deactivate();
+      deactivate(true);
     }
-    activate();
   }
 }
 
-void airmap::monitor::TelemetrySubmitter::deactivate() {
+void airmap::monitor::TelemetrySubmitter::deactivate(bool newFlight) {
   if (state_ == State::inactive)
     return;
 
   state_ = State::inactive;
 
-  request_end_flight();
+  request_end_flight(newFlight);
 
   authorization_requested_      = false;
   create_flight_requested_      = false;
@@ -232,33 +231,37 @@ void airmap::monitor::TelemetrySubmitter::handle_request_start_flight_comms_fini
 }
 
 void airmap::monitor::TelemetrySubmitter::request_end_flight_comms() {
-  Flights::EndFlightCommunications::Parameters params{authorization_.get(), flight_.get().id};
+  if (authorization_ && flight_) {
+    Flights::EndFlightCommunications::Parameters params{authorization_.get(), flight_.get().id};
 
-  client_->flights().end_flight_communications(params, [sp = shared_from_this()](const auto& result) {
-    if (result) {
-      sp->handle_request_end_flight_comms_finished(result.value().key);
-    } else {
-      sp->log_.errorf(component, "failed to end flight communications: %s", result.error());
-    }
-  });
+    client_->flights().end_flight_communications(params, [sp = shared_from_this()](const auto& result) {
+      if (result) {
+        sp->handle_request_end_flight_comms_finished();
+      } else {
+        sp->log_.errorf(component, "failed to end flight communications: %s", result.error());
+      }
+    });
+  }
 }
 
-void airmap::monitor::TelemetrySubmitter::handle_request_end_flight_comms_finished(std::string key) {
-  log_.infof(component, "successfully ended flight comms: %s", key);
-  request_end_flight();
+void airmap::monitor::TelemetrySubmitter::handle_request_end_flight_comms_finished() {
+  log_.infof(component, "successfully ended flight comms");
+  request_end_flight(false);
 }
 
-void airmap::monitor::TelemetrySubmitter::request_end_flight() {
+void airmap::monitor::TelemetrySubmitter::request_end_flight(bool newFlight) {
   if (authorization_ && flight_) {
     Flights::EndFlight::Parameters parameters;
     parameters.authorization = authorization_.get();
     parameters.id            = flight_.get().id;
 
-    client_->flights().end_flight(parameters, [sp = shared_from_this()](const auto& result) {
+    client_->flights().end_flight(parameters, [this, newFlight, sp = shared_from_this()](const auto& result) {
       if (!result) {
         sp->log_.errorf(component, "failed to end flight: %s", result.error());
       } else {
         sp->log_.infof(component, "successfully ended flight");
+        if (newFlight)
+          this->request_authorization();
       }
     });
   }

@@ -58,7 +58,7 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   /// The following sequence of actions is triggered:
   ///   * request to end flight communications
   ///   * request to end the flight
-  void deactivate();
+  void deactivate(bool newFlight);
 
   /// submit requests an instance to submit a telemetry update.
   void submit(const mavlink::GlobalPositionInt&);
@@ -84,9 +84,9 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void handle_request_start_flight_comms_finished(std::string key);
 
   void request_end_flight_comms();
-  void handle_request_end_flight_comms_finished(std::string key);
+  void handle_request_end_flight_comms_finished();
 
-  void request_end_flight();
+  void request_end_flight(bool newFlight);
 
   State state_{State::inactive};
   bool authorization_requested_{false};

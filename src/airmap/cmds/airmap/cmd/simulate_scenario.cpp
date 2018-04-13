@@ -105,15 +105,6 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
                                    MAV_MODE_GUIDED_ARMED, mavlink::custom_mode, MAV_STATE_ACTIVE);
         session->process(msg);
       }
-
-      {
-        mavlink_message_t msg;
-        mavlink_msg_global_position_int_pack(p.id, mavlink::component_id, &msg, airmap::milliseconds_since_epoch(now),
-                                             to.latitude * 1E7, to.longitude * 1E7, mavlink::altitude_msl * 1E3,
-                                             mavlink::altitude_gl * 1E3, mavlink::vx, mavlink::vy, mavlink::vz,
-                                             mavlink::heading * 1E2);
-        session->process(msg);
-      }
     }
   }
 
@@ -277,12 +268,40 @@ cmd::SimulateScenario::SimulateScenario()
 }
 
 void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator participant) {
+
   context_->schedule_in(Microseconds(1000 * 1000 * 10), [this, participant]() {
-    mavlink_message_t msg;
-    mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,
-                               MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_DISARMED, ::mavlink::custom_mode,
-                               MAV_STATE_STANDBY);
-    router_->route(msg);
+
+    const auto& g          = participant->geometry;
+    const auto& outer_ring = g.details_for_polygon().outer_ring;
+    const auto& to         = outer_ring.coordinates.at(0);
+
+    {
+      mavlink_message_t msg;
+      mavlink_msg_mission_count_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
+                                     ::mavlink::target_component, outer_ring.coordinates.size(), ::mavlink::mission_type);
+      router_->route(msg);
+    }
+
+    // Send geometry as sequence of waypoints as part of mavlink mission
+    uint16_t seq = 0;
+    for (const auto& c : outer_ring.coordinates) {
+      {
+        mavlink_message_t msg;
+        mavlink_msg_mission_item_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
+                                      ::mavlink::target_component, seq, ::mavlink::frame, ::mavlink::command,
+                                      ::mavlink::current, ::mavlink::autocontinue, ::mavlink::p1, ::mavlink::p2, ::mavlink::p3,
+                                      ::mavlink::p4, c.longitude, c.latitude, ::mavlink::vz, MAV_CMD_NAV_WAYPOINT);
+        router_->route(msg);
+        seq++;
+      }
+    }
+
+    // mavlink_message_t msg;
+    // mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,
+    //                            MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_DISARMED, ::mavlink::custom_mode,
+    //                            MAV_STATE_STANDBY);
+    // router_->route(msg);
+    
   });
 }
 
