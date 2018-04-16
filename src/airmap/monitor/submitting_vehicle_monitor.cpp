@@ -25,7 +25,7 @@ void airmap::monitor::SubmittingVehicleMonitor::on_system_status_changed(const O
           case MAV_STATE_BOOT:
           case MAV_STATE_CALIBRATING:
           case MAV_STATE_STANDBY:
-            submitter_->deactivate(false);
+            submitter_->deactivate();
             break;
         }
         break;

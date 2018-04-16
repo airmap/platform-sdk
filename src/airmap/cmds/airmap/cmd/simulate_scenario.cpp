@@ -271,36 +271,36 @@ void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator pa
 
   context_->schedule_in(Microseconds(1000 * 1000 * 10), [this, participant]() {
 
-    const auto& g          = participant->geometry;
-    const auto& outer_ring = g.details_for_polygon().outer_ring;
-    const auto& to         = outer_ring.coordinates.at(0);
+    // const auto& g          = participant->geometry;
+    // const auto& outer_ring = g.details_for_polygon().outer_ring;
+    // const auto& to         = outer_ring.coordinates.at(0);
 
-    {
-      mavlink_message_t msg;
-      mavlink_msg_mission_count_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
-                                     ::mavlink::target_component, outer_ring.coordinates.size(), ::mavlink::mission_type);
-      router_->route(msg);
-    }
+    // {
+    //   mavlink_message_t msg;
+    //   mavlink_msg_mission_count_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
+    //                                  ::mavlink::target_component, outer_ring.coordinates.size(), ::mavlink::mission_type);
+    //   router_->route(msg);
+    // }
 
-    // Send geometry as sequence of waypoints as part of mavlink mission
-    uint16_t seq = 0;
-    for (const auto& c : outer_ring.coordinates) {
-      {
-        mavlink_message_t msg;
-        mavlink_msg_mission_item_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
-                                      ::mavlink::target_component, seq, ::mavlink::frame, ::mavlink::command,
-                                      ::mavlink::current, ::mavlink::autocontinue, ::mavlink::p1, ::mavlink::p2, ::mavlink::p3,
-                                      ::mavlink::p4, c.longitude, c.latitude, ::mavlink::vz, MAV_CMD_NAV_WAYPOINT);
-        router_->route(msg);
-        seq++;
-      }
-    }
+    // // Send geometry as sequence of waypoints as part of mavlink mission
+    // uint16_t seq = 0;
+    // for (const auto& c : outer_ring.coordinates) {
+    //   {
+    //     mavlink_message_t msg;
+    //     mavlink_msg_mission_item_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
+    //                                   ::mavlink::target_component, seq, ::mavlink::frame, ::mavlink::command,
+    //                                   ::mavlink::current, ::mavlink::autocontinue, ::mavlink::p1, ::mavlink::p2, ::mavlink::p3,
+    //                                   ::mavlink::p4, c.longitude, c.latitude, ::mavlink::vz, MAV_CMD_NAV_WAYPOINT);
+    //     router_->route(msg);
+    //     seq++;
+    //   }
+    // }
 
-    // mavlink_message_t msg;
-    // mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,
-    //                            MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_DISARMED, ::mavlink::custom_mode,
-    //                            MAV_STATE_STANDBY);
-    // router_->route(msg);
+    mavlink_message_t msg;
+    mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,
+                               MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_DISARMED, ::mavlink::custom_mode,
+                               MAV_STATE_STANDBY);
+    router_->route(msg);
     
   });
 }

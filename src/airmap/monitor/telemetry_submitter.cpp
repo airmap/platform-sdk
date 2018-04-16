@@ -36,28 +36,25 @@ void airmap::monitor::TelemetrySubmitter::activate() {
 
 void airmap::monitor::TelemetrySubmitter::load_mission(const Geometry& geometry) {
   geometry_ = geometry;
-  if (state_ == State::active) {
-    if (flight_) {
-      deactivate(true);
-    }
+  if (state_ == State::active && flight_) {
+    new_flight_plan_requested_ = true;
+    deactivate();
   }
 }
 
-void airmap::monitor::TelemetrySubmitter::deactivate(bool newFlight) {
+void airmap::monitor::TelemetrySubmitter::deactivate() {
   if (state_ == State::inactive)
     return;
 
   state_ = State::inactive;
 
-  request_end_flight(newFlight);
+  request_end_flight_comms();
 
   authorization_requested_      = false;
   create_flight_requested_      = false;
   traffic_monitoring_requested_ = false;
   start_flight_comms_requested_ = false;
 
-  authorization_.reset();
-  flight_.reset();
   traffic_monitor_.reset();
   encryption_key_.reset();
 }
@@ -246,22 +243,26 @@ void airmap::monitor::TelemetrySubmitter::request_end_flight_comms() {
 
 void airmap::monitor::TelemetrySubmitter::handle_request_end_flight_comms_finished() {
   log_.infof(component, "successfully ended flight comms");
-  request_end_flight(false);
+  request_end_flight();
 }
 
-void airmap::monitor::TelemetrySubmitter::request_end_flight(bool newFlight) {
+void airmap::monitor::TelemetrySubmitter::request_end_flight() {
   if (authorization_ && flight_) {
     Flights::EndFlight::Parameters parameters;
     parameters.authorization = authorization_.get();
     parameters.id            = flight_.get().id;
 
-    client_->flights().end_flight(parameters, [this, newFlight, sp = shared_from_this()](const auto& result) {
+    client_->flights().end_flight(parameters, [this, sp = shared_from_this()](const auto& result) {
       if (!result) {
         sp->log_.errorf(component, "failed to end flight: %s", result.error());
       } else {
         sp->log_.infof(component, "successfully ended flight");
-        if (newFlight)
-          this->request_authorization();
+        sp->authorization_.reset();
+        sp->flight_.reset();
+        if (sp->new_flight_plan_requested_) {
+          sp->request_authorization();
+          sp->new_flight_plan_requested_ = false;
+        }
       }
     });
   }
