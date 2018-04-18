@@ -250,7 +250,7 @@ cmd::SimulateScenario::SimulateScenario()
       auto itE = collector_->scenario().participants.end();
 
       while (it != itE) {
-        //this->request_authentication_for(it);
+        // this->request_authentication_for(it);
         this->deactivate(it);
         ++it;
       }
@@ -268,7 +268,6 @@ cmd::SimulateScenario::SimulateScenario()
 }
 
 void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator participant) {
-
   context_->schedule_in(Microseconds(1000 * 1000 * 10), [this, participant]() {
 
     // const auto& g          = participant->geometry;
@@ -278,7 +277,8 @@ void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator pa
     // {
     //   mavlink_message_t msg;
     //   mavlink_msg_mission_count_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
-    //                                  ::mavlink::target_component, outer_ring.coordinates.size(), ::mavlink::mission_type);
+    //                                  ::mavlink::target_component, outer_ring.coordinates.size(),
+    //                                  ::mavlink::mission_type);
     //   router_->route(msg);
     // }
 
@@ -289,7 +289,8 @@ void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator pa
     //     mavlink_message_t msg;
     //     mavlink_msg_mission_item_pack(participant->id, ::mavlink::component_id, &msg, ::mavlink::target_system,
     //                                   ::mavlink::target_component, seq, ::mavlink::frame, ::mavlink::command,
-    //                                   ::mavlink::current, ::mavlink::autocontinue, ::mavlink::p1, ::mavlink::p2, ::mavlink::p3,
+    //                                   ::mavlink::current, ::mavlink::autocontinue, ::mavlink::p1, ::mavlink::p2,
+    //                                   ::mavlink::p3,
     //                                   ::mavlink::p4, c.longitude, c.latitude, ::mavlink::vz, MAV_CMD_NAV_WAYPOINT);
     //     router_->route(msg);
     //     seq++;
@@ -301,7 +302,7 @@ void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator pa
                                MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_DISARMED, ::mavlink::custom_mode,
                                MAV_STATE_STANDBY);
     router_->route(msg);
-    
+
   });
 }
 
