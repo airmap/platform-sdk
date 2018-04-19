@@ -250,8 +250,8 @@ cmd::SimulateScenario::SimulateScenario()
       auto itE = collector_->scenario().participants.end();
 
       while (it != itE) {
-        this->request_authentication_for(it);
-        // this->deactivate(it);
+        // this->request_authentication_for(it);
+        this->deactivate(it);
         ++it;
       }
 
@@ -268,7 +268,7 @@ cmd::SimulateScenario::SimulateScenario()
 }
 
 void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator participant) {
-  context_->schedule_in(Microseconds(1000 * 1000 * 10), [this, participant]() {
+  context_->schedule_in(Microseconds(1000 * 1000 * 60), [this, participant]() {
 
     mavlink_message_t msg;
     mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,

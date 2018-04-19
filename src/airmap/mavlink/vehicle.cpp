@@ -58,9 +58,9 @@ void airmap::mavlink::Vehicle::handle_msg_global_position_int(const mavlink_mess
 
 void airmap::mavlink::Vehicle::handle_msg_mission(const mavlink_message_t& msg) {
   if (mission_.update(msg)) {
-    Geometry geometry = Geometry::polygon(mission_.coordinates());
+    Geometry::LineString line_string{{mission_.coordinates()}};
     for (const auto& monitor : monitors_) {
-      monitor->on_mission_received(geometry);
+      monitor->on_mission_received(Geometry(line_string));
     }
   }
 }

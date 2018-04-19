@@ -265,13 +265,13 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
 
     if (geometry_) {
       params.geometry         = geometry_.get();
-      const auto& coordinates = geometry_.get().details_for_polygon().outer_ring.coordinates;
+      const auto& coordinates = geometry_.get().details_for_line_string().coordinates;
       auto it                 = std::max_element(coordinates.begin(), coordinates.end(),
                                  [](Geometry::Coordinate const& lhs, Geometry::Coordinate const& rhs) {
                                    return lhs.altitude.get() < rhs.altitude.get();
                                  });
       params.max_altitude = it->altitude.get();
-      client_->flights().create_flight_by_polygon(params, [sp = shared_from_this()](const auto& result) {
+      client_->flights().create_flight_by_path(params, [sp = shared_from_this()](const auto& result) {
         if (result) {
           sp->handle_request_create_flight_finished(result.value());
         } else {

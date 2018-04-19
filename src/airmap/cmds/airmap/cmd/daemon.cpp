@@ -31,6 +31,7 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
                       tcp_endpoint_port_));
   flag(cli::make_flag("udp-endpoint-port", "the port of the udp endpoint to read mavlink messages from",
                       udp_endpoint_port_));
+  flag(cli::make_flag("sys-id", "system id of the device", system_id_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cerr))};
@@ -106,7 +107,8 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
           }
 
           ::airmap::monitor::Daemon::Configuration configuration{
-              config.credentials, aircraft_id_, log_.logger(), channel, context, result.value(), grpc_endpoint_};
+              config.credentials, aircraft_id_,   log_.logger(), channel, context,
+              result.value(),     grpc_endpoint_, system_id_};
 
           ::airmap::monitor::Daemon::create(configuration)->start();
         });
