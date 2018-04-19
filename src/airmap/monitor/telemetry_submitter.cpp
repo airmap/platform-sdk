@@ -179,7 +179,7 @@ void airmap::monitor::TelemetrySubmitter::request_active_flights() {
   Flights::Search::Parameters params;
   params.start_before = Clock::universal_time();
   params.end_after    = Clock::universal_time();
-  params.pilot_id = pilot_id_;
+  params.pilot_id     = pilot_id_;
 
   client_->flights().search(params, [sp = shared_from_this()](const auto& result) {
     if (result) {
@@ -264,10 +264,12 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
     params.end_time      = params.start_time + Hours{1};
 
     if (geometry_) {
-      params.geometry = geometry_.get();
+      params.geometry         = geometry_.get();
       const auto& coordinates = geometry_.get().details_for_polygon().outer_ring.coordinates;
-      auto it = std::max_element(coordinates.begin(), coordinates.end(),
-         [] (Geometry::Coordinate const& lhs, Geometry::Coordinate const& rhs) {return lhs.altitude.get() < rhs.altitude.get();});
+      auto it                 = std::max_element(coordinates.begin(), coordinates.end(),
+                                 [](Geometry::Coordinate const& lhs, Geometry::Coordinate const& rhs) {
+                                   return lhs.altitude.get() < rhs.altitude.get();
+                                 });
       params.max_altitude = it->altitude.get();
       client_->flights().create_flight_by_polygon(params, [sp = shared_from_this()](const auto& result) {
         if (result) {
@@ -357,38 +359,3 @@ void airmap::monitor::TelemetrySubmitter::handle_request_start_flight_comms_fini
   log_.infof(component, "successfully started flight comms: %s", key);
   encryption_key_ = key;
 }
-
-// void airmap::monitor::TelemetrySubmitter::request_end_flight_comms(std::string authorization, std::string id) {
-//   if (authorization && id) {
-//     Flights::EndFlightCommunications::Parameters params{authorization, id};
-
-//     client_->flights().end_flight_communications(params, [sp = shared_from_this()](const auto& result) {
-//       if (result) {
-//         sp->handle_request_end_flight_comms_finished(authorization, id);
-//       } else {
-//         sp->log_.errorf(component, "failed to end flight communications: %s", result.error());
-//       }
-//     });
-//   }
-// }
-
-// void airmap::monitor::TelemetrySubmitter::handle_request_end_flight_comms_finished(std::string authorization, std::string id) {
-//   log_.infof(component, "successfully ended flight comms");
-//   request_end_flight(authorization, id);
-// }
-
-// void airmap::monitor::TelemetrySubmitter::request_end_flight(std::string authorization, std::string id) {
-//   if (authorization && id) {
-//     Flights::EndFlight::Parameters parameters;
-//     parameters.authorization = authorization;
-//     parameters.id            = id;
-
-//     client_->flights().end_flight(parameters, [ this, sp = shared_from_this() ](const auto& result) {
-//       if (!result) {
-//         sp->log_.errorf(component, "failed to end flight: %s", result.error());
-//       } else {
-//         sp->log_.infof(component, "successfully ended flight");
-//       }
-//     });
-//   }
-// }

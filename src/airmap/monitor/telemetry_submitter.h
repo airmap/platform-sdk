@@ -95,11 +95,6 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void request_start_flight_comms();
   void handle_request_start_flight_comms_finished(std::string key);
 
-  // void request_end_flight_comms(std::string authorization, std::string id);
-  // void handle_request_end_flight_comms_finished(std::string authorization, std::string id);
-
-  // void request_end_flight(std::string authorization, std::string id);
-
   State state_{State::inactive};
   bool authorization_requested_{false};
   bool pilot_id_requested_{false};
