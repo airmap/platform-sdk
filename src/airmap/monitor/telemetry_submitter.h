@@ -10,6 +10,8 @@
 #include <airmap/flights.h>
 #include <airmap/logger.h>
 #include <airmap/optional.h>
+#include <airmap/pilot.h>
+#include <airmap/pilots.h>
 #include <airmap/telemetry.h>
 #include <airmap/traffic.h>
 
@@ -74,6 +76,9 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void request_authorization();
   void handle_request_authorization_finished(std::string authorization);
 
+  void request_pilot_id();
+  void handle_request_pilot_id_finished(std::string pilot_id);
+
   void request_active_flights();
   void handle_request_active_flights_finished(std::vector<Flight> flight);
 
@@ -90,19 +95,19 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void request_start_flight_comms();
   void handle_request_start_flight_comms_finished(std::string key);
 
-  void request_end_flight_comms();
-  void handle_request_end_flight_comms_finished();
+  // void request_end_flight_comms(std::string authorization, std::string id);
+  // void handle_request_end_flight_comms_finished(std::string authorization, std::string id);
 
-  void request_end_flight();
+  // void request_end_flight(std::string authorization, std::string id);
 
   State state_{State::inactive};
   bool authorization_requested_{false};
+  bool pilot_id_requested_{false};
   bool active_flights_requested_{false};
   bool end_active_flights_requested_{false};
   bool create_flight_requested_{false};
   bool traffic_monitoring_requested_{false};
   bool start_flight_comms_requested_{false};
-  bool new_flight_plan_requested_{false};
 
   util::FormattingLogger log_;
   std::shared_ptr<airmap::Client> client_;
@@ -117,6 +122,7 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   Optional<std::shared_ptr<Traffic::Monitor>> traffic_monitor_;
   Optional<std::string> encryption_key_;
   Optional<Geometry> geometry_;
+  Optional<std::string> pilot_id_;
 };
 
 }  // namespace monitor

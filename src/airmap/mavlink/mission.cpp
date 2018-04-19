@@ -38,7 +38,7 @@ bool airmap::mavlink::Mission::handle_msg_mission_item(const mavlink_message_t& 
   if (mi.seq == curr_count_) {
     curr_count_++;
     if (mi.mission_type == MAV_CMD_NAV_WAYPOINT) {
-      Geometry::Coordinate c = {mi.x, mi.y};
+      Geometry::Coordinate c = {mi.x, mi.y, mi.z};
       coordinates_.push_back(c);
       if (curr_count_ == max_count_) {
         return true;
