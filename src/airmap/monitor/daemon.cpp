@@ -68,7 +68,6 @@ void airmap::monitor::Daemon::start() {
 }
 
 void airmap::monitor::Daemon::handle_mavlink_message(const mavlink_message_t& msg) {
-  // if (msg.sysid == configuration_.system_id)
   vehicle_tracker_.update(msg);
 }
 

@@ -38,7 +38,6 @@ class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_share
     std::shared_ptr<Context> context;           ///< Target context for incoming calls.
     std::shared_ptr<airmap::Client> client;     ///< The client used to communicate with the AirMap cloud services.
     std::string grpc_endpoint;                  ///< The local endpoint that the service should be exposed on.
-    std::uint8_t system_id;                     ///< The system id of the drone.
   };
 
   // create returns a new Daemon instance ready for startup.
