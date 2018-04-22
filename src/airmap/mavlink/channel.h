@@ -17,6 +17,7 @@
 
 #include <functional>
 #include <list>
+#include <memory>
 #include <mutex>
 #include <set>
 #include <stdexcept>
@@ -66,6 +67,23 @@ class Channel : DoNotCopyOrMove {
     mavlink_message_t msg;
     mavlink_status_t status;
   } parse_out_;
+};
+
+class FilteringChannel : public Channel, public std::enable_shared_from_this<FilteringChannel> {
+public:
+  static std::shared_ptr<FilteringChannel> create(const std::shared_ptr<Channel>& next, std::uint8_t system_id);
+  ~FilteringChannel();
+
+protected:
+  void start_impl();
+  void stop_impl();
+
+private:
+  explicit FilteringChannel(const std::shared_ptr<Channel>& next, std::uint8_t system_id);
+
+  std::shared_ptr<Channel> next_;
+  std::uint8_t system_id_;
+  Subscription subscription_;
 };
 
 }  // namespace mavlink

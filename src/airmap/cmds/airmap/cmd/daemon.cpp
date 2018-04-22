@@ -82,6 +82,10 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
       channel =
           std::make_shared<mavlink::boost::UdpChannel>(log_.logger(), context->io_service(), udp_endpoint_port_.get());
 
+    if (system_id_) {
+      channel = mavlink::FilteringChannel::create(channel, system_id_.get());
+    }
+
     if (telemetry_host_)
       config.telemetry.host = telemetry_host_.get();
     if (telemetry_port_)
