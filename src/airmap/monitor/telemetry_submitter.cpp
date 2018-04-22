@@ -34,11 +34,8 @@ void airmap::monitor::TelemetrySubmitter::activate() {
   request_authorization();
 }
 
-void airmap::monitor::TelemetrySubmitter::load_mission(const Geometry& geometry) {
-  geometry_ = geometry;
-  if (state_ == State::active && flight_) {
-    request_authorization();
-  }
+void airmap::monitor::TelemetrySubmitter::set_mission_geometry(const Geometry& geometry) {
+  mission_geometry_ = geometry;
 }
 
 void airmap::monitor::TelemetrySubmitter::deactivate() {
@@ -263,9 +260,9 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
     params.start_time    = Clock::universal_time();
     params.end_time      = params.start_time + Hours{1};
 
-    if (geometry_) {
-      params.geometry         = geometry_.get();
-      const auto& coordinates = geometry_.get().details_for_line_string().coordinates;
+    if (mission_geometry_) {
+      params.geometry         = mission_geometry_.get();
+      const auto& coordinates = mission_geometry_.get().details_for_line_string().coordinates;
       auto it                 = std::max_element(coordinates.begin(), coordinates.end(),
                                  [](Geometry::Coordinate const& lhs, Geometry::Coordinate const& rhs) {
                                    return lhs.altitude.get() < rhs.altitude.get();
@@ -276,7 +273,7 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
           sp->handle_request_create_flight_finished(result.value());
         } else {
           sp->create_flight_requested_ = false;
-          sp->log_.errorf(component, "failed to create flight by polygon: %s", result.error());
+          sp->log_.errorf(component, "failed to create flight by path: %s", result.error());
         }
       });
     } else {
