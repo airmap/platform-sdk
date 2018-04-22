@@ -25,10 +25,9 @@ class Mission {
   void handle_msg_mission_count(const mavlink_message_t& msg);
   bool handle_msg_mission_item(const mavlink_message_t& msg);
 
-  std::uint16_t max_count_  = 0;
-  std::uint16_t curr_count_ = 0;
-
   std::vector<Geometry::Coordinate> coordinates_;
+  std::size_t counter_ = 0;
+  std::size_t mission_size_ = 0;
 };
 
 }  // namespace mavlink
