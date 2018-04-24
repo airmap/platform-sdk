@@ -68,6 +68,16 @@ void airmap::monitor::Daemon::start() {
 }
 
 void airmap::monitor::Daemon::handle_mavlink_message(const mavlink_message_t& msg) {
+  log_.debugf(component,
+              "received mavlink message:\n"
+              "  checksum: %d\n"
+              "  magic:    %d\n"
+              "  len:      %d\n"
+              "  seq:      %d\n"
+              "  sysid:    %d\n"
+              "  compid:   %d\n"
+              "  msgid:    %d",
+              msg.checksum, msg.magic, msg.len, msg.seq, msg.sysid, msg.compid, msg.msgid);
   vehicle_tracker_.update(msg);
 }
 
