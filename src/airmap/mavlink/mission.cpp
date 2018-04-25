@@ -43,7 +43,7 @@ bool airmap::mavlink::Mission::handle_msg_mission_item(const mavlink_message_t& 
 
     // This is relevant to our mission and we store the waypoint in memory.
     if (mi.mission_type == MAV_CMD_NAV_WAYPOINT) {
-      coordinates_.push_back({mi.x, mi.y, mi.z});
+      coordinates_.push_back({mi.y, mi.x, mi.z});
     }
 
     // Is the mission complete, yet?
