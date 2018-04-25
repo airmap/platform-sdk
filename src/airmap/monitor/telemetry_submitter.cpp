@@ -27,6 +27,17 @@ airmap::monitor::TelemetrySubmitter::TelemetrySubmitter(
       traffic_subscriber_{traffic_subscriber},
       credentials_{credentials},
       aircraft_id_{aircraft_id} {
+  std::vector<Geometry::Coordinate> coordinates;
+  coordinates.push_back({-80.57602643966675, 37.1989199718277, 546.5064});
+  coordinates.push_back({-80.57692766189575, 37.19840721241547, 546.5064});
+  coordinates.push_back({-80.57643413543701, 37.196937282797165, 546.5064});
+  coordinates.push_back({-80.57724952697752, 37.19584336311034, 546.5064});
+  coordinates.push_back({-80.57413816452026, 37.194390476520454, 546.5064});
+  coordinates.push_back({-80.57098388671874, 37.19639032493511, 546.5064});
+  coordinates.push_back({-80.57385921478271, 37.198595224604354, 546.5064});
+  coordinates.push_back({-80.57602643966675, 37.1989199718277, 546.5064});
+
+  mission_geometry_ = Geometry{Geometry::Polygon{coordinates}};
 }
 
 void airmap::monitor::TelemetrySubmitter::activate() {
@@ -34,8 +45,9 @@ void airmap::monitor::TelemetrySubmitter::activate() {
   request_authorization();
 }
 
-void airmap::monitor::TelemetrySubmitter::set_mission_geometry(const Geometry& geometry) {
-  mission_geometry_ = geometry;
+void airmap::monitor::TelemetrySubmitter::set_mission_geometry(const Geometry& geometry) {  
+  // mission_geometry_ = geometry;
+  log_.debugf(component, "mission geometry set properly");
 }
 
 void airmap::monitor::TelemetrySubmitter::deactivate() {
@@ -262,13 +274,13 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight() {
 
     if (mission_geometry_) {
       params.geometry         = mission_geometry_.get();
-      const auto& coordinates = mission_geometry_.get().details_for_line_string().coordinates;
+      const auto& coordinates = mission_geometry_.get().details_for_polygon().outer_ring.coordinates;
       auto it                 = std::max_element(coordinates.begin(), coordinates.end(),
                                  [](Geometry::Coordinate const& lhs, Geometry::Coordinate const& rhs) {
                                    return lhs.altitude.get() < rhs.altitude.get();
                                  });
       params.max_altitude = it->altitude.get();
-      client_->flights().create_flight_by_path(params, [sp = shared_from_this()](const auto& result) {
+      client_->flights().create_flight_by_polygon(params, [sp = shared_from_this()](const auto& result) {
         if (result) {
           sp->handle_request_create_flight_finished(result.value());
         } else {
