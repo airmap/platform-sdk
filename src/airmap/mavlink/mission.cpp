@@ -28,7 +28,7 @@ void airmap::mavlink::Mission::handle_msg_mission_count(const mavlink_message_t&
   mavlink_mission_count_t mc;
   mavlink_msg_mission_count_decode(&msg, &mc);
 
-  coordinates_.reserve(mc.count);
+  coordinates_.clear();
   counter_ = 0;
   mission_size_ = mc.count;
 }
