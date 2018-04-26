@@ -265,7 +265,7 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight_plan() {
       params.end_time         = params.start_time + Hours{1};
       params.geometry         = mission_geometry_.get();
       params.buffer           = 100;
-      const auto& coordinates = mission_geometry_.get().details_for_line_string().coordinates;
+      const auto& coordinates = mission_geometry_.get().details_for_polygon().outer_ring.coordinates;
       auto it                 = std::max_element(coordinates.begin(), coordinates.end(),
                                  [](Geometry::Coordinate const& lhs, Geometry::Coordinate const& rhs) {
                                    return lhs.altitude.get() < rhs.altitude.get();
