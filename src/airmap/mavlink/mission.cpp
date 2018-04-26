@@ -20,7 +20,7 @@ const std::vector<airmap::Geometry::Coordinate>& airmap::mavlink::Mission::coord
 
 void airmap::mavlink::Mission::handle_msg_mission_clear_all() {
   coordinates_.clear();
-  counter_ = 0;
+  counter_      = 0;
   mission_size_ = 0;
 }
 
@@ -29,7 +29,7 @@ void airmap::mavlink::Mission::handle_msg_mission_count(const mavlink_message_t&
   mavlink_msg_mission_count_decode(&msg, &mc);
 
   coordinates_.clear();
-  counter_ = 0;
+  counter_      = 0;
   mission_size_ = mc.count;
 }
 
@@ -43,7 +43,7 @@ bool airmap::mavlink::Mission::handle_msg_mission_item(const mavlink_message_t& 
 
     // This is relevant to our mission and we store the waypoint in memory.
     if (mi.mission_type == MAV_CMD_NAV_WAYPOINT) {
-      coordinates_.push_back({mi.y, mi.x, mi.z});
+      coordinates_.push_back({mi.x, mi.y, mi.z});
     }
 
     // Is the mission complete, yet?

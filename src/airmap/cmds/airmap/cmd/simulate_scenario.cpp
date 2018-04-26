@@ -93,7 +93,7 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
           mavlink_msg_mission_item_pack(p.id, mavlink::component_id, &msg, mavlink::target_system,
                                         mavlink::target_component, seq, mavlink::frame, mavlink::command,
                                         mavlink::current, mavlink::autocontinue, mavlink::p1, mavlink::p2, mavlink::p3,
-                                        mavlink::p4, c.longitude, c.latitude, mavlink::vz, MAV_CMD_NAV_WAYPOINT);
+                                        mavlink::p4, c.latitude, c.longitude, mavlink::vz, MAV_CMD_NAV_WAYPOINT);
           session->process(msg);
           seq++;
         }

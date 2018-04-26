@@ -70,15 +70,15 @@ class Channel : DoNotCopyOrMove {
 };
 
 class FilteringChannel : public Channel, public std::enable_shared_from_this<FilteringChannel> {
-public:
+ public:
   static std::shared_ptr<FilteringChannel> create(const std::shared_ptr<Channel>& next, std::uint8_t system_id);
   ~FilteringChannel();
 
-protected:
+ protected:
   void start_impl();
   void stop_impl();
 
-private:
+ private:
   explicit FilteringChannel(const std::shared_ptr<Channel>& next, std::uint8_t system_id);
 
   std::shared_ptr<Channel> next_;

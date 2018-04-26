@@ -26,7 +26,7 @@ class Mission {
   bool handle_msg_mission_item(const mavlink_message_t& msg);
 
   std::vector<Geometry::Coordinate> coordinates_;
-  std::size_t counter_ = 0;
+  std::size_t counter_      = 0;
   std::size_t mission_size_ = 0;
 };
 

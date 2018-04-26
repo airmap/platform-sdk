@@ -86,8 +86,11 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void handle_request_end_active_flight_finished(std::string id);
   void handle_request_end_active_flights_finished();
 
-  void request_create_flight();
-  void handle_request_create_flight_finished(Flight flight);
+  void request_create_flight_plan();
+  void handle_request_create_flight_plan_finished(FlightPlan plan);
+
+  void request_submit_flight_plan();
+  void handle_request_submit_flight_plan_finished(Flight flight);
 
   void request_monitor_traffic();
   void handle_request_monitor_traffic_finished(std::shared_ptr<Traffic::Monitor> traffic_monitor);
@@ -100,7 +103,8 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   bool pilot_id_requested_{false};
   bool active_flights_requested_{false};
   bool end_active_flights_requested_{false};
-  bool create_flight_requested_{false};
+  bool create_flight_plan_requested_{false};
+  bool submit_flight_plan_requested_{false};
   bool traffic_monitoring_requested_{false};
   bool start_flight_comms_requested_{false};
 
@@ -112,6 +116,7 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
 
   Optional<mavlink::GlobalPositionInt> current_position_;
   Optional<std::vector<Flight>> active_flights_;
+  Optional<FlightPlan> flight_plan_;
   Optional<Flight> flight_;
   Optional<std::string> authorization_;
   Optional<std::shared_ptr<Traffic::Monitor>> traffic_monitor_;

@@ -72,14 +72,16 @@ airmap::Optional<std::vector<mavlink_message_t>> airmap::mavlink::Channel::proce
   return result;
 }
 
-airmap::mavlink::FilteringChannel::FilteringChannel(const std::shared_ptr<airmap::mavlink::Channel>& next, std::uint8_t system_id)
-  : next_{next}, system_id_{system_id} {
+airmap::mavlink::FilteringChannel::FilteringChannel(const std::shared_ptr<airmap::mavlink::Channel>& next,
+                                                    std::uint8_t system_id)
+    : next_{next}, system_id_{system_id} {
 }
 
 airmap::mavlink::FilteringChannel::~FilteringChannel() {
 }
 
-std::shared_ptr<airmap::mavlink::FilteringChannel> airmap::mavlink::FilteringChannel::create(const std::shared_ptr<Channel>& next, std::uint8_t system_id) {
+std::shared_ptr<airmap::mavlink::FilteringChannel> airmap::mavlink::FilteringChannel::create(
+    const std::shared_ptr<Channel>& next, std::uint8_t system_id) {
   return std::shared_ptr<FilteringChannel>{new FilteringChannel{next, system_id}};
 }
 
@@ -88,7 +90,7 @@ void airmap::mavlink::FilteringChannel::start_impl() {
     if (msg.sysid != sp->system_id_)
       return
 
-    sp->invoke_subscribers({msg});
+          sp->invoke_subscribers({msg});
   });
 }
 
