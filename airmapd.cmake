@@ -53,7 +53,7 @@ if (CLANG_FORMAT_EXECUTABLE)
   file(
     GLOB_RECURSE AIRMAPD_SRCS
     examples/*.h examples/*.cpp
-    include/*.h 
+    include/*.h
     interfaces/*.proto
     src/*.h src/*.cpp
     test/*.h test/*.cpp)

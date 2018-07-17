@@ -15,14 +15,14 @@ function(airmap_add_test name source)
   add_executable(
     ${name}
 
-    $<TARGET_OBJECTS:airmap-client>  
+    $<TARGET_OBJECTS:airmap-client>
 
     ${source})
 
   set_property(TARGET ${name} PROPERTY CXX_STANDARD 14)
   target_link_libraries(
-    ${name} 
-    
+    ${name}
+
     airmap-grpc
     airmap-monitor
     airmap-test-helper
@@ -38,6 +38,7 @@ airmap_add_test(cli_test cli_test.cpp)
 airmap_add_test(client_test client_test.cpp)
 airmap_add_test(credentials_test credentials_test.cpp)
 airmap_add_test(daemon_test daemon_test.cpp)
+airmap_add_test(datetime_test datetime_test.cpp)
 airmap_add_test(error_test error_test.cpp)
 airmap_add_test(geometry_test geometry_test.cpp)
 airmap_add_test(platform_test platform_test.cpp)

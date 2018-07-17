@@ -33,11 +33,11 @@ void airmap::codec::json::decode(const nlohmann::json& j, Traffic::Update& updat
 
   std::string tss;
   get(tss, j, "recorded_time");
-  update.recorded = from_seconds_since_epoch(Seconds{boost::lexical_cast<std::int64_t>(tss)});
+  update.recorded = from_seconds_since_epoch(seconds(boost::lexical_cast<std::int64_t>(tss)));
 
   std::int64_t ts;
   get(ts, j, "timestamp");
-  update.timestamp = from_milliseconds_since_epoch(Milliseconds{ts});
+  update.timestamp = from_milliseconds_since_epoch(milliseconds(ts));
 
   update.altitude *= 0.3048;
   update.ground_speed *= 0.514444;

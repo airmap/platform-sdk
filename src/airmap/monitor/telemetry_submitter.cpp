@@ -256,14 +256,14 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight_plan() {
   if (current_position_) {
     if (mission_geometry_) {
       FlightPlans::Create::Parameters params;
-      params.authorization    = authorization_.get();
-      params.latitude         = current_position_.get().lat / 1E7;
-      params.longitude        = current_position_.get().lon / 1E7;
+      params.authorization = authorization_.get();
+      params.latitude      = current_position_.get().lat / 1E7;
+      params.longitude     = current_position_.get().lon / 1E7;
       if (!aircraft_id_.empty())
-        params.aircraft       = Pilot::Aircraft{aircraft_id_};
+        params.aircraft = Pilot::Aircraft{aircraft_id_};
       params.pilot            = Pilot{pilot_id_.get()};
       params.start_time       = Clock::universal_time();
-      params.end_time         = params.start_time + Hours{1};
+      params.end_time         = params.start_time + hours(1);
       params.geometry         = mission_geometry_.get();
       params.buffer           = 100;
       const auto& coordinates = mission_geometry_.get().details_for_polygon().outer_ring.coordinates;
@@ -287,7 +287,7 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight_plan() {
       params.longitude     = current_position_.get().lon / 1E7;
       params.aircraft_id   = aircraft_id_;
       params.start_time    = Clock::universal_time();
-      params.end_time      = params.start_time + Hours{1};
+      params.end_time      = params.start_time + hours(1);
       client_->flights().create_flight_by_point(params, [sp = shared_from_this()](const auto& result) {
         if (result) {
           sp->handle_request_submit_flight_plan_finished(result.value());

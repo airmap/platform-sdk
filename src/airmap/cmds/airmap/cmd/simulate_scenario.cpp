@@ -51,7 +51,7 @@ constexpr float p4                        = 0.;
 }  // namespace mavlink
 
 const std::string device_name = boost::asio::ip::host_name();
-const airmap::Microseconds duration{60 * 1000 * 1000};
+const airmap::Microseconds duration(airmap::microseconds(60 * 1000 * 1000));
 constexpr const char* component{"simulate-scenario-cli"};
 
 class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
@@ -250,11 +250,10 @@ cmd::SimulateScenario::SimulateScenario()
       auto itE = collector_->scenario().participants.end();
 
       while (it != itE) {
-        // this->request_authentication_for(it);
-        this->deactivate(it);
+        this->request_authentication_for(it);
+        // this->deactivate(it);
         ++it;
       }
-
     });
 
     return context_->exec({SIGINT, SIGQUIT},
@@ -268,14 +267,12 @@ cmd::SimulateScenario::SimulateScenario()
 }
 
 void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator participant) {
-  context_->schedule_in(Microseconds(1000 * 1000 * 60), [this, participant]() {
-
+  context_->schedule_in(microseconds(1000 * 1000 * 10), [this, participant]() {
     mavlink_message_t msg;
     mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,
                                MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_DISARMED, ::mavlink::custom_mode,
                                MAV_STATE_STANDBY);
     router_->route(msg);
-
   });
 }
 

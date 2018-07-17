@@ -37,7 +37,7 @@ cmd::CreateFlight::CreateFlight()
     : cli::CommandWithFlagsAndAction{"create-flight", "creates a flight and registers it with the AirMap services",
                                      "creates a flight and registers it with the AirMap services"} {
   params_.start_time = Clock::universal_time();
-  params_.end_time   = params_.start_time + Minutes(5);
+  params_.end_time   = params_.start_time + minutes(5);
 
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));

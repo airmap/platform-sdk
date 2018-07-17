@@ -186,7 +186,7 @@ void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBr
     auto er = evaluate_submitted_briefing(result.value());
 
     if (er == EvaluationResult::passed) {
-      static const Microseconds timeout{5 * 1000 * 1000};
+      static const Microseconds timeout(microseconds(5 * 1000 * 1000));
       log_.infof(component, "successfully rerendered flight briefing");
       log_.infof(component, "scheduling final rendering of flight plan");
       context_->schedule_in(timeout, [this]() { render_final_briefing(); });
@@ -340,8 +340,8 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixManual::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{40};
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(40);
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }
 
@@ -436,7 +436,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixZoo::parameters() {
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }
 
@@ -499,7 +499,7 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixSchwegg::parameters() {
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }
 
@@ -617,8 +617,8 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixUniversity::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }
 
@@ -700,8 +700,8 @@ airmap::FlightPlans::Create::Parameters laanc::KentuckyFlorence::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }
 
@@ -777,8 +777,8 @@ airmap::FlightPlans::Create::Parameters laanc::NevadaReno::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }
 
@@ -840,8 +840,8 @@ airmap::FlightPlans::Create::Parameters laanc::ArkansasPineBluff::parameters() {
   parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
-  parameters.start_time                      = DateTime(Clock::universal_time().date()) + Hours{16};
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }
 
@@ -908,6 +908,6 @@ airmap::FlightPlans::Create::Parameters laanc::WyomingTetonVillage::parameters()
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
-  parameters.end_time                        = parameters.start_time + Minutes{5};
+  parameters.end_time                        = parameters.start_time + minutes(5);
   return parameters;
 }

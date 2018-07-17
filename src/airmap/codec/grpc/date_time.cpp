@@ -2,7 +2,7 @@
 
 void airmap::codec::grpc::decode(const ::google::protobuf::Timestamp& from, DateTime& to) {
   auto us = (from.seconds() * 1000 * 1000) + (from.nanos() / 1000);
-  to      = from_microseconds_since_epoch(Microseconds{us});
+  to      = from_microseconds_since_epoch(microseconds(us));
 }
 
 void airmap::codec::grpc::encode(::google::protobuf::Timestamp& to, const DateTime& from) {
