@@ -15,7 +15,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Advisory::AirspaceAdvi
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Advisory::AirspaceAdvisory>& v) {
-  for (auto element : j) {
+  for (auto element : j["advisories"]) {
     v.push_back(Advisory::AirspaceAdvisory{});
     v.back() = element;
   }
