@@ -127,6 +127,22 @@ class Airspace {
           prison | school | hospital | fire | emergency
   };
 
+  /// Maps airspace types to associated hex color codes
+  const std::map<Airspace::Type, std::string> AirspaceColors = {{Airspace::Type::invalid, "#000000"},
+                                                                {Airspace::Type::airport, "#f6a517"},
+                                                                {Airspace::Type::controlled_airspace, "#9b6c9d"},
+                                                                {Airspace::Type::special_use_airspace, "#1b5acf"},
+                                                                {Airspace::Type::tfr, "#f44336"},
+                                                                {Airspace::Type::wildfire, "#f44336"},
+                                                                {Airspace::Type::park, "#e01212"},
+                                                                {Airspace::Type::power_plant, "#f6a517"},
+                                                                {Airspace::Type::heliport, "#f6a517"},
+                                                                {Airspace::Type::prison, "#f6a517"},
+                                                                {Airspace::Type::school, "#f6a517"},
+                                                                {Airspace::Type::hospital, "#f6a517"},
+                                                                {Airspace::Type::fire, "#f44336"},
+                                                                {Airspace::Type::emergency, "#f67117"}};
+
   using Id = std::string;
 
   /// @cond
@@ -194,6 +210,9 @@ class Airspace {
   const std::vector<Rule> &rules() const;
   /// set_rules adjusts the rules applying to this airspace instance to 'rules.
   void set_rules(const std::vector<Rule> &rules);
+
+  /// color for associated airspace type
+  const std::string get_color();
 
   /// details_for_airport returns an immutable reference to the details
   /// further describing this airspace instance.

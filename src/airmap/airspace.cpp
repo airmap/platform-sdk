@@ -182,6 +182,10 @@ void airmap::Airspace::set_rules(const std::vector<Rule> &rules) {
   rules_ = rules;
 }
 
+const std::string airmap::Airspace::get_color() {
+  return AirspaceColors.find(type_)->second;
+}
+
 const airmap::Airspace::Airport &airmap::Airspace::details_for_airport() const {
   return details_.airport;
 }
