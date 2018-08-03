@@ -30,6 +30,7 @@ void print_advisories(std::ostream& out, const std::vector<airmap::Advisory::Air
     tw << a.advisory.airspace.id() << a.advisory.airspace.name() << a.advisory.airspace.type() << a.advisory.color;
   }
 
+  tw << cli::TabWriter::NewLine{};
   tw.flush(out);
 }
 

@@ -48,7 +48,9 @@ class Airspace {
 
   /// ControlledAirspace bundles up properties describing
   /// a controlled airspace.
-  struct ControlledAirspace {};
+  struct ControlledAirspace {
+    std::string airspace_classification;  ///< The classification of the ControlledAirspace.
+  };
 
   /// SpecialUseAirspace bundles up properties describing
   /// a special use airspace.
@@ -127,22 +129,6 @@ class Airspace {
           prison | school | hospital | fire | emergency
   };
 
-  /// Maps airspace types to associated hex color codes
-  const std::map<Airspace::Type, std::string> AirspaceColors = {{Airspace::Type::invalid, "#000000"},
-                                                                {Airspace::Type::airport, "#f6a517"},
-                                                                {Airspace::Type::controlled_airspace, "#9b6c9d"},
-                                                                {Airspace::Type::special_use_airspace, "#1b5acf"},
-                                                                {Airspace::Type::tfr, "#f44336"},
-                                                                {Airspace::Type::wildfire, "#f44336"},
-                                                                {Airspace::Type::park, "#e01212"},
-                                                                {Airspace::Type::power_plant, "#f6a517"},
-                                                                {Airspace::Type::heliport, "#f6a517"},
-                                                                {Airspace::Type::prison, "#f6a517"},
-                                                                {Airspace::Type::school, "#f6a517"},
-                                                                {Airspace::Type::hospital, "#f6a517"},
-                                                                {Airspace::Type::fire, "#f44336"},
-                                                                {Airspace::Type::emergency, "#f67117"}};
-
   using Id = std::string;
 
   /// @cond
@@ -165,6 +151,12 @@ class Airspace {
   const std::string &name() const;
   /// set_name adjusts the name of this airspace to name.
   void set_name(const std::string &name);
+
+  /// color returns an immutable reference to the
+  /// human-readable color of this airspace.
+  const std::string &color() const;
+  /// set_color adjusts the color of this airspace to color.
+  void set_color(const std::string &color);
 
   /// type returns the Type of this airspace instance.
   Type type() const;
@@ -210,9 +202,6 @@ class Airspace {
   const std::vector<Rule> &rules() const;
   /// set_rules adjusts the rules applying to this airspace instance to 'rules.
   void set_rules(const std::vector<Rule> &rules);
-
-  /// color for associated airspace type
-  const std::string get_color();
 
   /// details_for_airport returns an immutable reference to the details
   /// further describing this airspace instance.
@@ -361,6 +350,7 @@ class Airspace {
 
   Id id_;
   std::string name_;
+  std::string color_;
   Type type_;
   std::string country_;  // TODO(tvoss): Investigate constraints on country names.
   std::string state_;    // TODO(tvoss): Investigate constraints on state names.

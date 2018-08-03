@@ -17,12 +17,13 @@ std::ostream &operator<<(std::ostream &out, Comma &comma) {
 
 }  // namespace
 
-airmap::Airspace::Airspace() : type_{Type::invalid} {
+airmap::Airspace::Airspace() : color_{"#f7de16"}, type_{Type::invalid} {
 }
 
 airmap::Airspace::Airspace(const Airspace &rhs)
     : id_{rhs.id_},
       name_{rhs.name_},
+      color_{rhs.color_},
       type_{Type::invalid},
       country_{rhs.country_},
       state_{rhs.state_},
@@ -43,6 +44,7 @@ airmap::Airspace &airmap::Airspace::operator=(const Airspace &rhs) {
 
   id_                 = rhs.id_;
   name_               = rhs.name_;
+  color_              = rhs.color_;
   type_               = rhs.type_;
   country_            = rhs.country_;
   state_              = rhs.state_;
@@ -58,10 +60,10 @@ airmap::Airspace &airmap::Airspace::operator=(const Airspace &rhs) {
 }
 
 bool airmap::Airspace::operator==(const Airspace &rhs) const {
-  auto members_equal = id() == rhs.id() && name() == rhs.name() && country() == rhs.country() &&
-                       state() == rhs.state() && city() == rhs.city() && last_updated() == rhs.last_updated() &&
-                       geometry() == rhs.geometry() && related_geometries() == rhs.related_geometries() &&
-                       rules() == rhs.rules();
+  auto members_equal = id() == rhs.id() && name() == rhs.name() && color() == rhs.color() &&
+                       country() == rhs.country() && state() == rhs.state() && city() == rhs.city() &&
+                       last_updated() == rhs.last_updated() && geometry() == rhs.geometry() &&
+                       related_geometries() == rhs.related_geometries() && rules() == rhs.rules();
 
   if (!members_equal)
     return false;
@@ -122,6 +124,14 @@ void airmap::Airspace::set_name(const std::string &name) {
   name_ = name;
 }
 
+const std::string &airmap::Airspace::color() const {
+  return color_;
+}
+
+void airmap::Airspace::set_color(const std::string &color) {
+  color_ = color;
+}
+
 airmap::Airspace::Type airmap::Airspace::type() const {
   return type_;
 }
@@ -180,10 +190,6 @@ const std::vector<airmap::Rule> &airmap::Airspace::rules() const {
 
 void airmap::Airspace::set_rules(const std::vector<Rule> &rules) {
   rules_ = rules;
-}
-
-const std::string airmap::Airspace::get_color() {
-  return AirspaceColors.find(type_)->second;
 }
 
 const airmap::Airspace::Airport &airmap::Airspace::details_for_airport() const {
@@ -339,67 +345,85 @@ void airmap::Airspace::set_details(const Airspace &detail) {
 }
 
 void airmap::Airspace::set_details(const Airport &detail) {
-  type_ = Type::airport;
+  type_  = Type::airport;
+  color_ = "#f6a517";
   new (&details_.airport) Airport(detail);
 }
 
 void airmap::Airspace::set_details(const ControlledAirspace &detail) {
   type_ = Type::controlled_airspace;
+  if (detail.airspace_classification == "B")
+    color_ = "#1fa0d3";
+  else if (detail.airspace_classification == "D")
+    color_ = "#1a74b3";
+  else
+    color_ = "#9b6c9d";
   new (&details_.controlled_airspace) ControlledAirspace{detail};
 }
 
 void airmap::Airspace::set_details(const SpecialUseAirspace &detail) {
-  type_ = Type::special_use_airspace;
+  type_  = Type::special_use_airspace;
+  color_ = "#1b5acf";
   new (&details_.special_use_airspace) SpecialUseAirspace{detail};
 }
 
 void airmap::Airspace::set_details(const TemporaryFlightRestriction &detail) {
-  type_ = Type::tfr;
+  type_  = Type::tfr;
+  color_ = "#f44336";
   new (&details_.tfr) TemporaryFlightRestriction(detail);
 }
 
 void airmap::Airspace::set_details(const Wildfire &detail) {
-  type_ = Type::wildfire;
+  type_  = Type::wildfire;
+  color_ = "#f44336";
   new (&details_.wildfire) Wildfire{detail};
 }
 
 void airmap::Airspace::set_details(const Park &detail) {
-  type_ = Type::park;
+  type_  = Type::park;
+  color_ = "#e01212";
   new (&details_.park) Park{detail};
 }
 
 void airmap::Airspace::set_details(const PowerPlant &detail) {
-  type_ = Type::power_plant;
+  type_  = Type::power_plant;
+  color_ = "#f6a517";
   new (&details_.power_plant) PowerPlant{detail};
 }
 
 void airmap::Airspace::set_details(const Heliport &detail) {
-  type_ = Type::heliport;
+  type_  = Type::heliport;
+  color_ = "#f6a517";
   new (&details_.heliport) Heliport{detail};
 }
 
 void airmap::Airspace::set_details(const Prison &detail) {
-  type_ = Type::prison;
+  type_  = Type::prison;
+  color_ = "#f6a517";
   new (&details_.prison) Prison{detail};
 }
 
 void airmap::Airspace::set_details(const School &detail) {
-  type_ = Type::school;
+  type_  = Type::school;
+  color_ = "#f6a517";
   new (&details_.school) School{detail};
 }
 
 void airmap::Airspace::set_details(const Hospital &detail) {
-  type_ = Type::hospital;
+  type_  = Type::hospital;
+  color_ = "#f6a517";
   new (&details_.hospital) Hospital{detail};
 }
 
 void airmap::Airspace::set_details(const Fire &detail) {
-  type_ = Type::fire;
+  type_  = Type::fire;
+  color_ = "#f44336";
   new (&details_.fire) Fire{detail};
 }
 
 void airmap::Airspace::set_details(const Emergency &detail) {
-  type_ = Type::emergency;
+  type_  = Type::emergency;
+  color_ = "#f67117";
   new (&details_.emergency) Emergency{detail};
 }
 
