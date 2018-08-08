@@ -48,7 +48,9 @@ class Airspace {
 
   /// ControlledAirspace bundles up properties describing
   /// a controlled airspace.
-  struct ControlledAirspace {};
+  struct ControlledAirspace {
+    std::string airspace_classification;  ///< The classification of the ControlledAirspace.
+  };
 
   /// SpecialUseAirspace bundles up properties describing
   /// a special use airspace.
@@ -149,6 +151,12 @@ class Airspace {
   const std::string &name() const;
   /// set_name adjusts the name of this airspace to name.
   void set_name(const std::string &name);
+
+  /// color returns an immutable reference to the
+  /// human-readable color of this airspace.
+  const std::string &color() const;
+  /// set_color adjusts the color of this airspace to color.
+  void set_color(const std::string &color);
 
   /// type returns the Type of this airspace instance.
   Type type() const;
@@ -342,6 +350,7 @@ class Airspace {
 
   Id id_;
   std::string name_;
+  std::string color_;
   Type type_;
   std::string country_;  // TODO(tvoss): Investigate constraints on country names.
   std::string state_;    // TODO(tvoss): Investigate constraints on state names.

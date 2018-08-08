@@ -151,7 +151,8 @@ void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Airspace::
 
 void airmap::codec::json::decode(const nlohmann::json&, Airspace::Airport::Use&) {
 }
-void airmap::codec::json::decode(const nlohmann::json&, Airspace::ControlledAirspace&) {
+void airmap::codec::json::decode(const nlohmann::json& j, Airspace::ControlledAirspace& ca) {
+  get(ca.airspace_classification, j, "airspace_classification");
 }
 void airmap::codec::json::decode(const nlohmann::json& j, Airspace::SpecialUseAirspace& sua) {
   sua.type = j["type"].get<Airspace::SpecialUseAirspace::Type>();
