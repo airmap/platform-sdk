@@ -7,7 +7,7 @@
 #include <airmap/codec/json/rule.h>
 
 void airmap::codec::json::decode(const nlohmann::json& j, Airspace& airspace) {
-  airspace.set_id(j["airspace_uuid"].get<std::string>());
+  airspace.set_id(j["id"].get<std::string>());
   if (j.count("name") > 0 && !j["name"].is_null())
     airspace.set_name(j["name"].get<std::string>());
   if (j.count("country") > 0 && !j["country"].is_null())
