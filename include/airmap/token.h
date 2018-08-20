@@ -63,6 +63,8 @@ class Token {
 
   /// type returns the Type of this Token instance.
   Type type() const;
+  /// pilot_id returns the pilot id of this Token instance.
+  const std::string pilot_id() const;
   /// id returns the common id of this Token instance.
   const std::string& id() const;
   /// anonymous returns the details for a Type::anonymous Token instance.
