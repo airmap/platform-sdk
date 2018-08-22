@@ -20,6 +20,17 @@ else()
   endif()
 endif()
 
+message(STATUS ${ANDROID_ABI})
+message(STATUS ${CMAKE_C_COMPILER})
+message(STATUS ${CMAKE_C_FLAGS})
+message(STATUS ${CMAKE_CXX_COMPILER})
+message(STATUS ${CMAKE_CXX_FLAGS})
+message(STATUS ${CMAKE_AR})
+message(STATUS ${CMAKE_RANLIB})
+
+
+include(prepare_user_config.cmake)
+
 ExternalProject_Add(boost
   URL https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
   URL_HASH SHA256=5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9
@@ -27,6 +38,8 @@ ExternalProject_Add(boost
   UPDATE_COMMAND ""
   PATCH_COMMAND
     patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/patches/libressl.patch
+  COMMAND ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/tools/build/src/user-config.jam
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/user-config.jam <SOURCE_DIR>/tools/build/src/user-config.jam
   CONFIGURE_COMMAND ${AIRMAP_BOOST_BOOTSTRAP_COMMAND}
   BUILD_COMMAND
     ${AIRMAP_BOOST_B2_COMMAND} --with-date_time --with-filesystem --with-log --with-program_options --with-system --with-test --with-thread --disable-icu --prefix=$ENV{AIRMAP_BOOST_OUTPUT_PATH} ${AIRMAP_BOOST_CXX_FLAGS} threading=multi link=static variant=release -j${NUM_CPUS}

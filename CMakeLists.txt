@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-
+include(prepare_toolchain.cmake)
 project(airmap C CXX)
 
 set(AIRMAPD_VERSION_MAJOR 0)
@@ -40,4 +40,4 @@ endif()
 message(STATUS "Enabling platform ${AIRMAP_PLATFORM}")
 
 include(external.cmake)
-include(airmapd.cmake)
+#include(airmapd.cmake)

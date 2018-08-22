@@ -10,6 +10,12 @@ function (build_boost)
     COMMAND ${CMAKE_COMMAND}
       -G${CMAKE_GENERATOR}
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+      -DAIRMAPD_TARGET_PLATFORM=${AIRMAPD_TARGET_PLATFORM}
+      -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+      -DANDROID_STL=${ANDROID_STL}
+      -DANDROID_ABI=${ANDROID_ABI}
+      -DANDROID_PLATFORM=${ANDROID_PLATFORM}
+      -DIOS_PLATFORM=${IOS_PLATFORM}
       ${CMAKE_SOURCE_DIR}/vendor/boost
     WORKING_DIRECTORY ${trigger_build_dir}/build
   )
@@ -108,34 +114,34 @@ list(
 set(BOOST_ROOT ${AIRMAP_BOOST_OUTPUT_PATH})
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_NO_SYSTEM_PATHS ON)
-set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS OFF)
 
 # Please note that the order of these invocations is important
 build_boost()
-build_protobuf()
-build_cares()
-build_grpc()
+#build_protobuf()
+#build_cares()
+#build_grpc()
 
 include(GNUInstallDirs)
 
-find_file(
-  AIRMAP_PROTOBUF_CMAKE_CONFIG protobuf-config.cmake
-  PATHS ${AIRMAP_PROTOBUF_OUTPUT_PATH}/lib/cmake/protobuf ${AIRMAP_PROTOBUF_OUTPUT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/protobuf
-  NO_DEFAULT_PATH)
-
-if (NOT AIRMAP_PROTOBUF_CMAKE_CONFIG)
-  message(FATAL_ERROR "Failed to find protobuf cmake config file")
-endif()
-
-include(${AIRMAP_PROTOBUF_CMAKE_CONFIG})
-
-find_file(
-  AIRMAP_GRPC_CMAKE_CONFIG gRPCConfig.cmake
-  PATHS ${AIRMAP_GRPC_OUTPUT_PATH}/lib/cmake/grpc ${AIRMAP_GRPC_OUTPUT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/grpc
-  NO_DEFAULT_PATH)
-
-if (NOT AIRMAP_GRPC_CMAKE_CONFIG)
-  message(FATAL_ERROR "Failed to find grpc cmake config file")
-endif()
-
-include(${AIRMAP_GRPC_CMAKE_CONFIG})
+#find_file(
+#  AIRMAP_PROTOBUF_CMAKE_CONFIG protobuf-config.cmake
+#  PATHS ${AIRMAP_PROTOBUF_OUTPUT_PATH}/lib/cmake/protobuf ${AIRMAP_PROTOBUF_OUTPUT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/protobuf
+#  NO_DEFAULT_PATH)
+#
+#if (NOT AIRMAP_PROTOBUF_CMAKE_CONFIG)
+#  message(FATAL_ERROR "Failed to find protobuf cmake config file")
+#endif()
+#
+#include(${AIRMAP_PROTOBUF_CMAKE_CONFIG})
+#
+#find_file(
+#  AIRMAP_GRPC_CMAKE_CONFIG gRPCConfig.cmake
+#  PATHS ${AIRMAP_GRPC_OUTPUT_PATH}/lib/cmake/grpc ${AIRMAP_GRPC_OUTPUT_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake/grpc
+#  NO_DEFAULT_PATH)
+#
+#if (NOT AIRMAP_GRPC_CMAKE_CONFIG)
+#  message(FATAL_ERROR "Failed to find grpc cmake config file")
+#endif()
+#
+#include(${AIRMAP_GRPC_CMAKE_CONFIG})
