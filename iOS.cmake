@@ -144,7 +144,7 @@ set (CMAKE_OSX_SYSROOT ${CMAKE_IOS_SDK_ROOT} CACHE PATH "Sysroot used for iOS su
 if (${IOS_PLATFORM} STREQUAL "OS")
     set (IOS_ARCH arm64) # Airmapd note: disabled armv7 because not supported by Qt: armv7 armv7s arm64)
 elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR")
-    set (IOS_ARCH i386 x86_64)
+    set (IOS_ARCH x86_64) #Airmapd note: disabled i386 because not supported by Qt: i386 x86_64)
 endif (${IOS_PLATFORM} STREQUAL "OS")
 
 set (CMAKE_OSX_ARCHITECTURES ${IOS_ARCH} CACHE string  "Build architecture for iOS")
