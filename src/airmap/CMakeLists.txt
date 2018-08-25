@@ -506,6 +506,11 @@ target_link_libraries(
   OpenSSL::SSL
 
   Qt5::Core
+  "-framework CoreFoundation"
+  "-framework Foundation"
+  "-framework MobileCoreServices"
+  "-framework UIKit"
+  /Users/jones/Applications/Qt/5.11.0/ios/lib/libqtpcre2.a
 )
 
 target_link_libraries(
