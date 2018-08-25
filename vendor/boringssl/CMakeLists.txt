@@ -7,7 +7,7 @@ include(ExternalProject)
 ExternalProject_add(
     boringssl
     GIT_REPOSITORY https://github.com/google/boringssl.git
-    GIT_TAG 38c20fe8d514a5328f5db404e116af8e9136c7f8
+    GIT_TAG 7f4f41fa81c03e0f8ef1ab5b3d1d566b5968f107
     PREFIX boringssl
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=$ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}

@@ -21,15 +21,15 @@ include_directories(
   test
 
   vendor/
-  vendor/mavlink
+  SYSTEM vendor/mavlink
   vendor/uri/include
   vendor/mqtt_client_cpp/include
 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
 
-  ${Boost_INCLUDE_DIRS}
-  ${OPENSSL_INCLUDE_DIRS})
+  SYSTEM ${Boost_INCLUDE_DIRS}
+  SYSTEM ${OPENSSL_INCLUDE_DIR})
 
 add_subdirectory(doc)
 add_subdirectory(interfaces)

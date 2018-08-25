@@ -44,13 +44,13 @@ set(
 add_custom_command(
   OUTPUT ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
 
-  COMMAND $<TARGET_FILE:protobuf::protoc>
+  COMMAND /tmp/macos/airmapd/build/external/protobuf/bin/protoc
     --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
     --proto_path ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/
     --proto_path ${CMAKE_CURRENT_SOURCE_DIR}/rest/
     ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
 
-  DEPENDS $<TARGET_FILE:protobuf::protoc> ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
+  DEPENDS ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
   COMMENT "Generating C++ code for AirMap telemetry interfaces"
   VERBATIM)
 
@@ -422,7 +422,7 @@ add_executable(
 
 target_include_directories(
   airmap-client
-  PRIVATE $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>)
+  SYSTEM PRIVATE $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>)
 
 set_property(
   TARGET airmap-client

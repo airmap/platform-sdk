@@ -31,18 +31,18 @@ set(AIRMAP_INTERFACES_GRPC_SRCS
 add_custom_command(
   OUTPUT ${AIRMAP_INTERFACES_GRPC_SRCS}
 
-  COMMAND $<TARGET_FILE:protobuf::protoc>
+  COMMAND /tmp/macos/airmapd/build/external/protobuf/bin/protoc
     --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
     --proto_path ${CMAKE_CURRENT_SOURCE_DIR}
     ${AIRMAP_INTERFACES_GRPC_MESSAGE_PROTOS} ${AIRMAP_INTERFACES_GRPC_SERVICE_PROTOS}
 
-  COMMAND $<TARGET_FILE:protobuf::protoc> 
+  COMMAND /tmp/macos/airmapd/build/external/protobuf/bin/protoc
     --grpc_out ${CMAKE_CURRENT_BINARY_DIR}
     --proto_path ${CMAKE_CURRENT_SOURCE_DIR}
-    --plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>
+    --plugin=protoc-gen-grpc=/tmp/macos/airmapd/build/external/grpc/bin/grpc_cpp_plugin
     ${AIRMAP_INTERFACES_GRPC_SERVICE_PROTOS}
 
-  DEPENDS $<TARGET_FILE:protobuf::protoc> $<TARGET_FILE:gRPC::grpc_cpp_plugin> ${AIRMAP_INTERFACES_GRPC_PROTOS}
+  #DEPENDS grpc_cpp_plugin ${AIRMAP_INTERFACES_GRPC_PROTOS}
   COMMENT "Generating C++ code for AirMap gRPC interfaces"
   VERBATIM)
 

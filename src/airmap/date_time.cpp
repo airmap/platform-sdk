@@ -141,21 +141,21 @@ Microseconds DateTime::time_of_day() const {
 
 Hours hours(int64_t raw) {
   Hours hours;
-  hours.impl->time_duration = boost::posix_time::hours{raw};
+  hours.impl->time_duration = boost::posix_time::hours(raw);
 
   return hours;
 }
 
 Minutes minutes(int64_t raw) {
   Minutes minutes;
-  minutes.impl->time_duration = boost::posix_time::minutes{raw};
+  minutes.impl->time_duration = boost::posix_time::minutes(raw);
 
   return minutes;
 }
 
 Seconds seconds(int64_t raw) {
   Seconds seconds;
-  seconds.impl->time_duration = boost::posix_time::seconds{raw};
+  seconds.impl->time_duration = boost::posix_time::seconds(raw);
 
   return seconds;
 }
