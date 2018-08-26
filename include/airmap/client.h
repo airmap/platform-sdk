@@ -1,6 +1,7 @@
 #ifndef AIRMAP_CLIENT_H_
 #define AIRMAP_CLIENT_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/credentials.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/optional.h>
@@ -28,7 +29,7 @@ class Telemetry;
 class Traffic;
 
 /// Client enables applications to use the AirMap services and APIs.
-class Client : DoNotCopyOrMove {
+class AIRMAP_EXPORT Client : DoNotCopyOrMove {
  public:
   /// Version enumerates all known versions available to clients.
   enum class Version { production, staging };
@@ -140,8 +141,8 @@ class Client : DoNotCopyOrMove {
 };
 
 /// @cond
-std::istream& operator>>(std::istream& in, Client::Version& version);
-std::ostream& operator<<(std::ostream& out, Client::Version version);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, Client::Version& version);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Client::Version version);
 /// @endcond
 
 }  // namespace airmap

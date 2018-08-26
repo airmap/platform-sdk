@@ -1,6 +1,7 @@
 #ifndef AIRMAP_GEOMETRY_H_
 #define AIRMAP_GEOMETRY_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/optional.h>
 
 #include <vector>
@@ -8,7 +9,7 @@
 namespace airmap {
 
 /// Geometry bundles up different types of geometries.
-class Geometry {
+class AIRMAP_EXPORT Geometry {
  public:
   /// Type enumerates all known geometry types.
   enum class Type {
@@ -131,12 +132,12 @@ class Geometry {
 };
 
 /// @cond
-bool operator==(const Geometry::Coordinate& lhs, const Geometry::Coordinate& rhs);
+bool AIRMAP_EXPORT operator==(const Geometry::Coordinate& lhs, const Geometry::Coordinate& rhs);
 
-bool operator==(const Geometry::Polygon& lhs, const Geometry::Polygon& rhs);
+bool AIRMAP_EXPORT operator==(const Geometry::Polygon& lhs, const Geometry::Polygon& rhs);
 
 template <Geometry::Type tag>
-bool operator==(const Geometry::CoordinateVector<tag>& lhs, const Geometry::CoordinateVector<tag>& rhs) {
+bool AIRMAP_EXPORT operator==(const Geometry::CoordinateVector<tag>& lhs, const Geometry::CoordinateVector<tag>& rhs) {
   return lhs.coordinates == rhs.coordinates;
 }
 /// @endcond

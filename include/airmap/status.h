@@ -1,6 +1,7 @@
 #ifndef AIRMAP_STATUS_H_
 #define AIRMAP_STATUS_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/airspace.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
@@ -19,7 +20,7 @@ namespace airmap {
 
 /// Status provides functionality to query airspace and weather information about
 /// a geographic area.
-class Status : DoNotCopyOrMove {
+class AIRMAP_EXPORT Status : DoNotCopyOrMove {
  public:
   /// Color enumerates known colors assigned to advisories.
   enum class Color { green = 0, yellow = 1, orange = 2, red = 3 };
@@ -97,8 +98,8 @@ class Status : DoNotCopyOrMove {
 };
 
 /// @cond
-std::ostream& operator<<(std::ostream& out, Status::Color color);
-std::istream& operator>>(std::istream& in, Status::Color& color);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Status::Color color);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, Status::Color& color);
 /// @endcond
 
 }  // namespace airmap

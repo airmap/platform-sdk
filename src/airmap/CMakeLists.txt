@@ -1,3 +1,5 @@
+include(GenerateExportHeader)
+
 set(
   AIRMAP_PLATFORM_SRCS
   platform/null/interface.h
@@ -356,6 +358,8 @@ add_library(
   qt/types.cpp
 )
 
+generate_export_header(airmap-qt BASE_NAME airmap)
+
 add_executable(
   airmap
 
@@ -451,12 +455,15 @@ set_target_properties(
   VERSION           "${AIRMAPD_VERSION_MAJOR}"
 )
 
+  set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG 1)
 set_target_properties(
   airmap-qt PROPERTIES
 
   CXX_STANDARD      14
   SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
   VERSION           "${AIRMAPD_VERSION_MAJOR}"
+  BUILD_WITH_INSTALL_RPATH TRUE
+  INSTALL_NAME_DIR @rpath
 )
 
 set_property(
@@ -543,4 +550,9 @@ install(
 install(
   DIRECTORY ${CMAKE_SOURCE_DIR}/include/airmap
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+  FILES
+  ${PROJECT_BINARY_DIR}/airmap_export.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

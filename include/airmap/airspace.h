@@ -1,6 +1,7 @@
 #ifndef AIRMAP_AIRSPACE_H_
 #define AIRMAP_AIRSPACE_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/geometry.h>
 #include <airmap/optional.h>
 #include <airmap/rule.h>
@@ -16,7 +17,7 @@ namespace airmap {
 
 /// Airspace groups together general information about an airspace and
 /// in-depth information providing more details.
-class Airspace {
+class AIRMAP_EXPORT Airspace {
  public:
   /// Airport bundles up properties further describing an
   /// airspace around an airport.
@@ -356,28 +357,28 @@ class Airspace {
 };
 
 /// @cond
-bool operator==(const Airspace::RelatedGeometry &lhs, const Airspace::RelatedGeometry &rhs);
-bool operator==(const Airspace::Airport &lhs, const Airspace::Airport &rhs);
-bool operator==(const Airspace::Airport::Runway &lhs, const Airspace::Airport::Runway &rhs);
-bool operator==(const Airspace::ControlledAirspace &lhs, const Airspace::ControlledAirspace &rhs);
-bool operator==(const Airspace::SpecialUseAirspace &lhs, const Airspace::SpecialUseAirspace &rhs);
-bool operator==(const Airspace::TemporaryFlightRestriction &lhs, const Airspace::TemporaryFlightRestriction &rhs);
-bool operator==(const Airspace::Wildfire &lhs, const Airspace::Wildfire &rhs);
-bool operator==(const Airspace::Park &lhs, const Airspace::Park &rhs);
-bool operator==(const Airspace::Prison &lhs, const Airspace::Prison &rhs);
-bool operator==(const Airspace::School &lhs, const Airspace::School &rhs);
-bool operator==(const Airspace::Hospital &lhs, const Airspace::Hospital &rhs);
-bool operator==(const Airspace::Fire &lhs, const Airspace::Fire &rhs);
-bool operator==(const Airspace::Emergency &lhs, const Airspace::Emergency &rhs);
-bool operator==(const Airspace::Heliport &lhs, const Airspace::Heliport &rhs);
-bool operator==(const Airspace::PowerPlant &lhs, const Airspace::PowerPlant &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::RelatedGeometry &lhs, const Airspace::RelatedGeometry &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Airport &lhs, const Airspace::Airport &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Airport::Runway &lhs, const Airspace::Airport::Runway &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::ControlledAirspace &lhs, const Airspace::ControlledAirspace &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::SpecialUseAirspace &lhs, const Airspace::SpecialUseAirspace &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::TemporaryFlightRestriction &lhs, const Airspace::TemporaryFlightRestriction &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Wildfire &lhs, const Airspace::Wildfire &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Park &lhs, const Airspace::Park &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Prison &lhs, const Airspace::Prison &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::School &lhs, const Airspace::School &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Hospital &lhs, const Airspace::Hospital &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Fire &lhs, const Airspace::Fire &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Emergency &lhs, const Airspace::Emergency &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::Heliport &lhs, const Airspace::Heliport &rhs);
+bool AIRMAP_EXPORT operator==(const Airspace::PowerPlant &lhs, const Airspace::PowerPlant &rhs);
 
-Airspace::Type operator~(Airspace::Type);
-Airspace::Type operator|(Airspace::Type, Airspace::Type);
-Airspace::Type operator&(Airspace::Type, Airspace::Type);
+Airspace::Type AIRMAP_EXPORT operator~(Airspace::Type);
+Airspace::Type AIRMAP_EXPORT operator|(Airspace::Type, Airspace::Type);
+Airspace::Type AIRMAP_EXPORT operator&(Airspace::Type, Airspace::Type);
 
-std::ostream &operator<<(std::ostream &, const Airspace &);
-std::ostream &operator<<(std::ostream &, Airspace::Type);
+std::ostream AIRMAP_EXPORT &operator<<(std::ostream &, const Airspace &);
+std::ostream AIRMAP_EXPORT &operator<<(std::ostream &, Airspace::Type);
 /// @endcond
 
 }  // namespace airmap

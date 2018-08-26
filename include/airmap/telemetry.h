@@ -1,6 +1,7 @@
 #ifndef AIRMAP_TELEMETRY_H_
 #define AIRMAP_TELEMETRY_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 
@@ -14,7 +15,7 @@ struct Flight;
 
 /// Telemetry provides functionality to submit telemetry updates to the
 /// AirMap services during flight.
-class Telemetry : DoNotCopyOrMove {
+class AIRMAP_EXPORT Telemetry : DoNotCopyOrMove {
  public:
   /// Position describes a timestamped geographical position.
   struct Position {

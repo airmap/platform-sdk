@@ -1,6 +1,7 @@
 #ifndef AIRMAP_RULESETS_H_
 #define AIRMAP_RULESETS_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 #include <airmap/evaluation.h>
@@ -15,7 +16,7 @@
 namespace airmap {
 
 /// RuleSets provides functionality for managing contextual airspace.
-class RuleSets : DoNotCopyOrMove {
+class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
  public:
   /// Search bundles up types to ease interaction with
   /// RuleSets::search.

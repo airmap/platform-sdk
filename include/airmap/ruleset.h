@@ -1,6 +1,7 @@
 #ifndef AIRMAP_RULESET_H_
 #define AIRMAP_RULESET_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/date_time.h>
 #include <airmap/geometry.h>
 #include <airmap/optional.h>
@@ -17,7 +18,7 @@
 namespace airmap {
 
 /// RuleSet bundles together properties describing a ruleset.
-struct RuleSet {
+struct AIRMAP_EXPORT RuleSet {
   // Feature describes a flight feature modelled by a particular rule.
   struct Feature;
   /// Rule models the individual result of a Rule evaluation.
@@ -132,23 +133,23 @@ struct RuleSet {
   };
 };
 
-std::ostream& operator<<(std::ostream& out, RuleSet::Feature::Type type);
-std::istream& operator>>(std::istream& in, RuleSet::Feature::Type& type);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, RuleSet::Feature::Type type);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, RuleSet::Feature::Type& type);
 
-std::ostream& operator<<(std::ostream& out, RuleSet::Feature::Measurement measurement);
-std::istream& operator>>(std::istream& in, RuleSet::Feature::Measurement& measurement);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, RuleSet::Feature::Measurement measurement);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, RuleSet::Feature::Measurement& measurement);
 
-std::ostream& operator<<(std::ostream& out, RuleSet::Feature::Unit unit);
-std::istream& operator>>(std::istream& in, RuleSet::Feature::Unit& unit);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, RuleSet::Feature::Unit unit);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, RuleSet::Feature::Unit& unit);
 
-std::ostream& operator<<(std::ostream& out, RuleSet::Jurisdiction::Region region);
-std::istream& operator>>(std::istream& in, RuleSet::Jurisdiction::Region& region);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, RuleSet::Jurisdiction::Region region);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, RuleSet::Jurisdiction::Region& region);
 
-std::ostream& operator<<(std::ostream& out, RuleSet::SelectionType type);
-std::istream& operator>>(std::istream& in, RuleSet::SelectionType& type);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, RuleSet::SelectionType type);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, RuleSet::SelectionType& type);
 
-std::ostream& operator<<(std::ostream& out, RuleSet::Rule::Status status);
-std::istream& operator>>(std::istream& in, RuleSet::Rule::Status& status);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, RuleSet::Rule::Status status);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, RuleSet::Rule::Status& status);
 
 }  // namespace airmap
 

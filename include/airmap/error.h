@@ -1,6 +1,7 @@
 #ifndef AIRMAP_ERROR_H_
 #define AIRMAP_ERROR_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/optional.h>
 
@@ -15,7 +16,7 @@
 namespace airmap {
 
 /// Error models an error raised by an AirMap component.
-struct Error {
+struct AIRMAP_EXPORT Error {
   /// Value is a discriminated union type wrapping up multiple atomic types and
   /// their composition into a vector or a dictionary.
   class Value {
@@ -160,13 +161,13 @@ struct Error {
 };
 
 /// operator== returns true if both type and value of lhs and rhs compare equal.
-bool operator==(const Error::Value& lhs, const Error::Value& rhs);
+bool AIRMAP_EXPORT operator==(const Error::Value& lhs, const Error::Value& rhs);
 /// operator< returns true if type and value of lhs compare < than type and value of rhs.
-bool operator<(const Error::Value& lhs, const Error::Value& rhs);
+bool AIRMAP_EXPORT operator<(const Error::Value& lhs, const Error::Value& rhs);
 /// operator<< inserts 'value' into 'out'.
-std::ostream& operator<<(std::ostream& out, const Error::Value& value);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, const Error::Value& value);
 /// operator<< inserts 'error' into 'out'.
-std::ostream& operator<<(std::ostream& out, const Error& error);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, const Error& error);
 
 }  // namespace airmap
 

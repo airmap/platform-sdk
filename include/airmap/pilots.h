@@ -1,6 +1,7 @@
 #ifndef AIRMAP_PILOTS_H_
 #define AIRMAP_PILOTS_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/aircraft.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
@@ -16,7 +17,7 @@
 namespace airmap {
 
 /// Pilots provides functionality to manage (the authorized) pilot.
-class Pilots : DoNotCopyOrMove {
+class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
  public:
   /// Exclude enumerates fields that can be excluded when querying pilot and aircraft properties.
   enum class Exclude {
@@ -231,9 +232,9 @@ class Pilots : DoNotCopyOrMove {
 };
 
 /// @cond
-Pilots::Exclude operator|(Pilots::Exclude, Pilots::Exclude);
-Pilots::Exclude operator&(Pilots::Exclude, Pilots::Exclude);
-std::ostream& operator<<(std::ostream& out, Pilots::Exclude exclude);
+Pilots::Exclude AIRMAP_EXPORT operator|(Pilots::Exclude, Pilots::Exclude);
+Pilots::Exclude AIRMAP_EXPORT operator&(Pilots::Exclude, Pilots::Exclude);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Pilots::Exclude exclude);
 /// @endcond
 
 }  // namespace airmap

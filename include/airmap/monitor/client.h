@@ -1,6 +1,7 @@
 #ifndef AIRMAP_MONITOR_CLIENT_H_
 #define AIRMAP_MONITOR_CLIENT_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 #include <airmap/traffic.h>
@@ -14,7 +15,7 @@ namespace airmap {
 namespace monitor {
 
 /// Client provides access to the AirMap monitor service.
-class Client : DoNotCopyOrMove {
+class AIRMAP_EXPORT Client : DoNotCopyOrMove {
  public:
   /// Configuration bundles up creation-time parameters of a Client.
   struct Configuration {

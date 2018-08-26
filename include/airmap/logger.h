@@ -1,6 +1,7 @@
 #ifndef AIRMAP_LOGGER_H_
 #define AIRMAP_LOGGER_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/do_not_copy_or_move.h>
 
 #include <iostream>
@@ -10,7 +11,7 @@ namespace airmap {
 
 /// Logger abstracts logging of human-readable message
 /// providing details on the operation of the system.
-class Logger : DoNotCopyOrMove {
+class AIRMAP_EXPORT Logger : DoNotCopyOrMove {
  public:
   /// Severity enumerates all known levels of severity
   enum class Severity { debug = 0, info = 1, error = 2 };
@@ -41,22 +42,22 @@ class Logger : DoNotCopyOrMove {
 };
 
 /// operator< returns true iff the numeric value of lhs < rhs.
-bool operator<(Logger::Severity lhs, Logger::Severity rhs);
+bool AIRMAP_EXPORT operator<(Logger::Severity lhs, Logger::Severity rhs);
 
 /// operator>> parses severity from in.
-std::istream& operator>>(std::istream& in, Logger::Severity& severity);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, Logger::Severity& severity);
 
 /// create_default_logger returns a Logger implementation writing
 /// log messages to 'out'.
-std::shared_ptr<Logger> create_default_logger(std::ostream& out = std::cerr);
+std::shared_ptr<Logger> AIRMAP_EXPORT create_default_logger(std::ostream& out = std::cerr);
 
 /// create_filtering_logger returns a logger that filters out log entries
 /// with a severity smaller than the configurated severity.
-std::shared_ptr<Logger> create_filtering_logger(Logger::Severity severity, const std::shared_ptr<Logger>& logger);
+std::shared_ptr<Logger> AIRMAP_EXPORT create_filtering_logger(Logger::Severity severity, const std::shared_ptr<Logger>& logger);
 
 /// create_null_logger returns a logger that does the equivalent of
 /// > /dev/null.
-std::shared_ptr<Logger> create_null_logger();
+std::shared_ptr<Logger> AIRMAP_EXPORT create_null_logger();
 
 }  // namespace airmap
 

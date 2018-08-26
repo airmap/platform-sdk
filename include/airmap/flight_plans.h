@@ -1,6 +1,7 @@
 #ifndef AIRMAP_FLIGHT_PLANS_H_
 #define AIRMAP_FLIGHT_PLANS_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 #include <airmap/flight_plan.h>
@@ -13,7 +14,7 @@
 namespace airmap {
 
 /// FlightPlans provides functionality for managing flight plans.
-class FlightPlans : DoNotCopyOrMove {
+class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
  public:
   /// ForId bundles up types to ease interaction with
   /// FlightPlans::for_id.
