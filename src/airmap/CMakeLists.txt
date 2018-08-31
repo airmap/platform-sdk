@@ -67,7 +67,7 @@ include_directories(
 )
 
 add_library(
-  airmap-mavlink
+  airmap-mavlink STATIC
 
   mavlink/channel.h
   mavlink/channel.cpp
@@ -284,7 +284,7 @@ add_library(
 )
 
 add_library(
-  airmap-grpc
+  airmap-grpc STATIC
 
   grpc/init.h
   grpc/init.cpp
@@ -300,7 +300,7 @@ add_library(
 )
 
 add_library(
-  airmap-monitor
+  airmap-monitor STATIC
 
   monitor/daemon.h
   monitor/daemon.cpp
@@ -513,11 +513,6 @@ target_link_libraries(
   OpenSSL::SSL
 
   Qt5::Core
-  "-framework CoreFoundation"
-  "-framework Foundation"
-  "-framework MobileCoreServices"
-  "-framework UIKit"
-  /Users/jones/Applications/Qt/5.11.0/ios/lib/libqtpcre2.a
 )
 
 target_link_libraries(

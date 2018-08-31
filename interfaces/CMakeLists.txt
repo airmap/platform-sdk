@@ -52,7 +52,7 @@ set_source_files_properties(
 )
 
 add_library(
-    airmap-interfaces-grpc
+    airmap-interfaces-grpc STATIC
     ${AIRMAP_INTERFACES_GRPC_SRCS}
 )
 
