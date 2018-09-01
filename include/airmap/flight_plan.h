@@ -1,3 +1,10 @@
+//
+//  flight_plan.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_FLIGHT_PLAN_H_
 #define AIRMAP_FLIGHT_PLAN_H_
 

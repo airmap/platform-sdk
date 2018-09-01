@@ -1,3 +1,10 @@
+//
+//  flights.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 
 #ifndef AIRMAP_CODEC_JSON_FLIGHTS_H_
 #define AIRMAP_CODEC_JSON_FLIGHTS_H_

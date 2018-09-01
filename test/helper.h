@@ -1,3 +1,10 @@
+//
+//  helper.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef TEST_HELPER_H_
 #define TEST_HELPER_H_
 

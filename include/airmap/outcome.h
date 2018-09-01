@@ -1,3 +1,10 @@
+//
+//  outcome.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_OUTCOME_H_
 #define AIRMAP_OUTCOME_H_
 

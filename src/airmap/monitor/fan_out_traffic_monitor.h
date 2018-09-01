@@ -1,3 +1,10 @@
+//
+//  fan_out_traffic_monitor.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_MONITOR_FAN_OUT_TRAFFIC_MONITOR_H_
 #define AIRMAP_MONITOR_FAN_OUT_TRAFFIC_MONITOR_H_
 

@@ -1,3 +1,10 @@
+//
+//  context.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_CONTEXT_H_
 #define AIRMAP_CONTEXT_H_
 

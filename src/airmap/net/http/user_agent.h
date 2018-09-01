@@ -1,3 +1,10 @@
+//
+//  user_agent.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_NET_HTTP_USER_AGENT_H_
 #define AIRMAP_NET_HTTP_USER_AGENT_H_
 

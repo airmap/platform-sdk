@@ -1,3 +1,10 @@
+//
+//  fmt.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_UTIL_FMT_H_
 #define AIRMAP_UTIL_FMT_H_
 
