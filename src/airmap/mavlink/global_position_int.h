@@ -1,3 +1,10 @@
+//
+//  global_position_int.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_MAVLINK_GLOBAL_POSITION_INT_H_
 #define AIRMAP_MAVLINK_GLOBAL_POSITION_INT_H_
 

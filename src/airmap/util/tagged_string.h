@@ -1,3 +1,10 @@
+//
+//  tagged_string.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_UTIL_TAGGED_STRING_H_
 #define AIRMAP_UTIL_TAGGED_STRING_H_
 

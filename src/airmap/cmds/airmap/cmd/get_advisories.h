@@ -1,3 +1,10 @@
+//
+//  get_advisories.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_GET_ADVISORIES_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_GET_ADVISORIES_H_
 

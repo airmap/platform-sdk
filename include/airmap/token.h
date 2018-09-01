@@ -1,3 +1,10 @@
+//
+//  token.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_TOKEN_H_
 #define AIRMAP_TOKEN_H_
 

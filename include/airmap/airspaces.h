@@ -1,3 +1,10 @@
+//
+//  airspaces.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_AIRSPACES_H_
 #define AIRMAP_AIRSPACES_H_
 

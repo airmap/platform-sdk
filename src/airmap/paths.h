@@ -1,3 +1,10 @@
+//
+//  paths.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_PATHS_H_
 #define AIRMAP_PATHS_H_
 

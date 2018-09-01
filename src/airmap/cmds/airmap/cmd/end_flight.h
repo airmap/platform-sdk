@@ -1,3 +1,10 @@
+//
+//  end_flight.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_END_FLIGHT_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_END_FLIGHT_H_
 

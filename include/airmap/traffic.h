@@ -1,3 +1,10 @@
+//
+//  traffic.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_TRAFFIC_H_
 #define AIRMAP_TRAFFIC_H_
 
