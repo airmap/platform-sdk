@@ -1,3 +1,10 @@
+//
+//  sender.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_NET_UDP_SENDER_H_
 #define AIRMAP_NET_UDP_SENDER_H_
 

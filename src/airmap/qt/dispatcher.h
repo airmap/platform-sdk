@@ -1,3 +1,10 @@
+//
+//  dispatcher.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_QT_DISPATCHER_H_
 #define AIRMAP_QT_DISPATCHER_H_
 

@@ -1,3 +1,10 @@
+//
+//  status.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 
 #ifndef AIRMAP_CODEC_JSON_STATUS_H_
 #define AIRMAP_CODEC_JSON_STATUS_H_

@@ -1,3 +1,10 @@
+//
+//  method_invocation.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_GRPC_METHOD_INVICATION_H_
 #define AIRMAP_GRPC_METHOD_INVICATION_H_
 

@@ -1,3 +1,10 @@
+//
+//  client.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_EXAMPLES_QT_CLIENT_H_
 #define AIRMAP_EXAMPLES_QT_CLIENT_H_
 

@@ -1,3 +1,10 @@
+//
+//  aircrafts.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_AIRCRAFTS_H_
 #define AIRMAP_AIRCRAFTS_H_
 

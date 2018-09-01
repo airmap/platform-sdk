@@ -1,3 +1,10 @@
+//
+//  serial_channel.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_MAVLINK_BOOST_SERIAL_CHANNEL_H_
 #define AIRMAP_MAVLINK_BOOST_SERIAL_CHANNEL_H_
 

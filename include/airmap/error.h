@@ -1,3 +1,10 @@
+//
+//  error.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_ERROR_H_
 #define AIRMAP_ERROR_H_
 

@@ -1,3 +1,10 @@
+//
+//  mission.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_MAVLINK_MISSION_H_
 #define AIRMAP_MAVLINK_MISSION_H_
 

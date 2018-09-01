@@ -1,3 +1,10 @@
+//
+//  optional.h
+//  Airmap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_OPTIONAL_H_
 #define AIRMAP_OPTIONAL_H_
 
