@@ -1,3 +1,10 @@
+//
+//  service.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/monitor/grpc/service.h>
 
 #include <airmap/codec/grpc/traffic.h>

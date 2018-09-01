@@ -1,3 +1,10 @@
+//
+//  telemetry.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/telemetry.h>
 
 airmap::Telemetry::Update::Update(const Position& position) : type_{Type::position} {

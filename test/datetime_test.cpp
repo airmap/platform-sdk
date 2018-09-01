@@ -1,3 +1,10 @@
+//
+//  datetime_test.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #define BOOST_TEST_MODULE datetime
 
 #include <airmap/date_time.h>

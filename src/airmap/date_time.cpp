@@ -1,3 +1,10 @@
+//
+//  date_time.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/date_time.h>
 
 #include <boost/date_time.hpp>

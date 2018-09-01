@@ -1,3 +1,10 @@
+//
+//  airmap.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/add_aircraft.h>
 #include <airmap/cmds/airmap/cmd/aircraft_models.h>
 #include <airmap/cmds/airmap/cmd/create_flight.h>

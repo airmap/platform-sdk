@@ -1,3 +1,10 @@
+//
+//  geometry.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/geometry.h>
 
 airmap::Geometry::Geometry() : type_{Type::invalid} {

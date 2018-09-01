@@ -1,3 +1,10 @@
+//
+//  simulate_scenario.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/simulate_scenario.h>
 
 #include <airmap/client.h>

@@ -1,3 +1,10 @@
+//
+//  requester_with_api_key.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/net/http/requester_with_api_key.h>
 
 airmap::net::http::RequesterWithApiKey::RequesterWithApiKey(const std::string& api_key,

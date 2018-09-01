@@ -1,3 +1,10 @@
+//
+//  standard_paths.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/platform/standard_paths.h>
 
 #include <iostream>

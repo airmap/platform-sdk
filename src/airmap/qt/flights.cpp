@@ -1,3 +1,10 @@
+//
+//  flights.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/qt/flights.h>
 
 std::shared_ptr<airmap::qt::Flights> airmap::qt::Flights::create(const std::shared_ptr<Dispatcher>& dispatcher,

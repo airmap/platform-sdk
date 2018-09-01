@@ -1,3 +1,10 @@
+//
+//  vehicle.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/vehicle.h>
 
 #include <common/mavlink_msg_global_position_int.h>

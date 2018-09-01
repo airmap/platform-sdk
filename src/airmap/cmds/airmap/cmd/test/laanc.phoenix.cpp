@@ -1,3 +1,10 @@
+//
+//  laanc.phoenix.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/test/laanc.phoenix.h>
 
 #include <airmap/codec.h>

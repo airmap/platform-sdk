@@ -1,3 +1,10 @@
+//
+//  date_time.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/codec/json/date_time.h>
 
 void airmap::from_json(const nlohmann::json& j, airmap::DateTime& dt) {

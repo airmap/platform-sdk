@@ -1,3 +1,10 @@
+//
+//  advisory.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/qt/advisory.h>
 
 std::shared_ptr<airmap::qt::Advisory> airmap::qt::Advisory::create(const std::shared_ptr<Dispatcher>& dispatcher,

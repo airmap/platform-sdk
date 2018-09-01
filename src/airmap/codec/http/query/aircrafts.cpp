@@ -1,3 +1,10 @@
+//
+//  aircrafts.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/codec/http/query/aircrafts.h>
 
 void airmap::codec::http::query::encode(std::unordered_map<std::string, std::string>& query,

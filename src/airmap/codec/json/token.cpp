@@ -1,3 +1,10 @@
+//
+//  token.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/codec/json/token.h>
 
 #include <airmap/codec.h>
