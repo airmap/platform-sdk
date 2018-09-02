@@ -5,8 +5,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access" ON)
 
-set(OPENSSL_USE_STATIC_LIBS TRUE)
-
 find_package(Boost 1.65.1 QUIET REQUIRED date_time filesystem log program_options system thread)
 find_package(OpenSSL QUIET REQUIRED)
 find_package(Qt5Core QUIET)
@@ -26,6 +24,7 @@ include_directories(
   vendor/mavlink
   vendor/uri/include
   vendor/mqtt_client_cpp/include
+  vendor/cpp-jwt/include/
 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
@@ -53,7 +52,7 @@ if (CLANG_FORMAT_EXECUTABLE)
   file(
     GLOB_RECURSE AIRMAPD_SRCS
     examples/*.h examples/*.cpp
-    include/*.h 
+    include/*.h
     interfaces/*.proto
     src/*.h src/*.cpp
     test/*.h test/*.cpp)

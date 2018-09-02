@@ -1,3 +1,10 @@
+//
+//  plan_flight.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/plan_flight.h>
 
 #include <airmap/client.h>
@@ -124,11 +131,10 @@ cmd::PlanFlight::PlanFlight()
             params               = json::parse(plan_in);
             params.authorization = Token::load_from_json(in_token).id();
             params.start_time    = Clock::universal_time();
-            params.end_time      = Clock::universal_time() + Minutes{5};
+            params.end_time      = Clock::universal_time() + minutes(5);
             client_->flight_plans().create_by_polygon(params, std::bind(&PlanFlight::handle_flight_plan_create_result,
                                                                         this, std::placeholders::_1, std::ref(ctxt)));
           }
-
         });
 
     return context_->exec({SIGINT, SIGQUIT},

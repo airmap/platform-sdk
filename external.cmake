@@ -71,6 +71,8 @@ function (build_grpc)
     COMMAND ${CMAKE_COMMAND}
       -G${CMAKE_GENERATOR}
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+      -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
+      -DOPENSSL_USE_STATIC_LIBS=${OPENSSL_USE_STATIC_LIBS}
       ${CMAKE_SOURCE_DIR}/vendor/grpc
     WORKING_DIRECTORY ${trigger_build_dir}/build
   )

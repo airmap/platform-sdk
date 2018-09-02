@@ -1,3 +1,10 @@
+//
+//  submitting_vehicle_monitor.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/monitor/submitting_vehicle_monitor.h>
 
 airmap::monitor::SubmittingVehicleMonitor::SubmittingVehicleMonitor(
@@ -41,5 +48,5 @@ void airmap::monitor::SubmittingVehicleMonitor::on_position_changed(
 }
 
 void airmap::monitor::SubmittingVehicleMonitor::on_mission_received(const airmap::Geometry& geometry) {
-  submitter_->execute_mission(geometry);
+  submitter_->set_mission_geometry(geometry);
 }

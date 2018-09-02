@@ -1,3 +1,10 @@
+//
+//  timestamp.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_TIMESTAMP_H_
 #define AIRMAP_TIMESTAMP_H_
 

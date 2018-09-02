@@ -1,3 +1,10 @@
+//
+//  requester.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/net/http/boost/request.h>
 
 #include <airmap/net/http/boost/requester.h>

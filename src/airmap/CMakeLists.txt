@@ -398,6 +398,8 @@ add_executable(
   cmds/airmap/cmd/render_briefing.cpp
   cmds/airmap/cmd/report_weather.h
   cmds/airmap/cmd/report_weather.cpp
+  cmds/airmap/cmd/search_airspace.h
+  cmds/airmap/cmd/search_airspace.cpp
   cmds/airmap/cmd/simulate_scenario.h
   cmds/airmap/cmd/simulate_scenario.cpp
   cmds/airmap/cmd/simulate_telemetry.h

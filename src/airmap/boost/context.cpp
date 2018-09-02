@@ -1,3 +1,10 @@
+//
+//  context.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/boost/context.h>
 
 #include <airmap/monitor/grpc/client.h>
@@ -7,6 +14,8 @@
 #include <airmap/net/udp/boost/sender.h>
 
 #include <airmap/rest/client.h>
+
+#include <boost/lexical_cast.hpp>
 
 #include <cstdlib>
 
@@ -127,8 +136,9 @@ void airmap::boost::Context::stop(ReturnCode rc) {
 }
 
 void airmap::boost::Context::schedule_in(const Microseconds& wait_for, const std::function<void()>& functor) {
+  const ::boost::posix_time::microseconds boost_microseconds(wait_for.total_microseconds());
   auto timer = std::make_shared<::boost::asio::deadline_timer>(*io_service_);
-  timer->expires_from_now(wait_for);
+  timer->expires_from_now(boost_microseconds);
   timer->async_wait([this, timer, functor](const auto& error) {
     if (error) {
       log_.errorf(component, "error waiting for timer: %s", error.message());

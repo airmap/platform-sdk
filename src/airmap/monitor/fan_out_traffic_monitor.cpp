@@ -1,3 +1,10 @@
+//
+//  fan_out_traffic_monitor.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/monitor/fan_out_traffic_monitor.h>
 
 void airmap::monitor::FanOutTrafficMonitor::subscribe(const std::shared_ptr<Traffic::Monitor::Subscriber>& subscriber) {

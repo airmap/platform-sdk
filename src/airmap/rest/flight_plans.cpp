@@ -1,3 +1,10 @@
+//
+//  flight_plans.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/rest/flight_plans.h>
 
 #include <airmap/codec.h>

@@ -1,3 +1,10 @@
+//
+//  daemon.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_MONITOR_DAEMON_H_
 #define AIRMAP_MONITOR_DAEMON_H_
 
@@ -73,6 +80,7 @@ class Daemon : public mavlink::VehicleTracker::Monitor, public std::enable_share
   std::shared_ptr<mavlink::LoggingVehicleTrackerMonitor> vehicle_tracker_monitor_;
   mavlink::VehicleTracker vehicle_tracker_;
   mavlink::Channel::Subscription mavlink_channel_subscription_;
+  mavlink::Channel::Subscription logging_channel_subscription_;
 };
 
 }  // namespace monitor

@@ -1,3 +1,10 @@
+//
+//  types.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/qt/types.h>
 
 namespace {

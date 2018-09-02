@@ -1,3 +1,10 @@
+//
+//  advisory.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/codec/json/advisory.h>
 
 #include <airmap/codec.h>
@@ -15,7 +22,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, Advisory::AirspaceAdvi
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Advisory::AirspaceAdvisory>& v) {
-  for (auto element : j) {
+  for (auto element : j["advisories"]) {
     v.push_back(Advisory::AirspaceAdvisory{});
     v.back() = element;
   }

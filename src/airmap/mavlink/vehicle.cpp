@@ -1,3 +1,10 @@
+//
+//  vehicle.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/vehicle.h>
 
 #include <common/mavlink_msg_global_position_int.h>
@@ -58,9 +65,9 @@ void airmap::mavlink::Vehicle::handle_msg_global_position_int(const mavlink_mess
 
 void airmap::mavlink::Vehicle::handle_msg_mission(const mavlink_message_t& msg) {
   if (mission_.update(msg)) {
-    Geometry geometry = Geometry::polygon(mission_.coordinates());
+    Geometry::LineString line_string{{mission_.coordinates()}};
     for (const auto& monitor : monitors_) {
-      monitor->on_mission_received(geometry);
+      monitor->on_mission_received(Geometry(line_string));
     }
   }
 }

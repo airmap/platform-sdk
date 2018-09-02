@@ -1,3 +1,10 @@
+//
+//  client.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef MOCK_CLIENT_H_
 #define MOCK_CLIENT_H_
 

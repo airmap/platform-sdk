@@ -1,3 +1,10 @@
+//
+//  daemon.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_DAEMON_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_DAEMON_H_
 
@@ -35,6 +42,7 @@ class Daemon : public util::cli::CommandWithFlagsAndAction {
   Required<TcpEndpointIp> tcp_endpoint_ip_;
   Required<std::uint16_t> tcp_endpoint_port_;
   Required<std::uint16_t> udp_endpoint_port_;
+  Optional<std::uint8_t> system_id_;
 };
 
 }  // namespace cmd

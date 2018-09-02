@@ -1,3 +1,10 @@
+//
+//  types.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_QT_TYPES_H_
 #define AIRMAP_QT_TYPES_H_
 

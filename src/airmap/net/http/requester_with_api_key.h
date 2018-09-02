@@ -1,3 +1,10 @@
+//
+//  requester_with_api_key.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_NET_HTTP_REQUESTER_WITH_API_KEY_H_
 #define AIRMAP_NET_HTTP_REQUESTER_WITH_API_KEY_H_
 

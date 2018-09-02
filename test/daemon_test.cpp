@@ -1,3 +1,10 @@
+//
+//  daemon_test.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #define BOOST_TEST_MODULE daemon
 
 #include <airmap/boost/context.h>
@@ -55,6 +62,9 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   airmap::mavlink::Router router{{tcp_route}};
   router.start();
 
+  auto search_flight_response = airmap::Flights::Search::Response{};
+  auto search_flights_result  = airmap::Flights::Search::Result{search_flight_response};
+
   auto token                 = airmap::Token::Anonymous{user_id};
   auto authentication_result = airmap::Authenticator::AuthenticateAnonymously::Result{token};
 
@@ -70,6 +80,7 @@ BOOST_AUTO_TEST_CASE(daemon_creates_flights_for_state_change_to_active) {
   REQUIRE_CALL(authenticator, authenticate_anonymously(_, _)).SIDE_EFFECT(_2(authentication_result));
 
   mock::Flights flights;
+  REQUIRE_CALL(flights, search(_, _)).SIDE_EFFECT(_2(search_flights_result));
   REQUIRE_CALL(flights, create_flight_by_point(_, _)).SIDE_EFFECT(_2(create_flight_result));
   REQUIRE_CALL(flights, start_flight_communications(_, _)).SIDE_EFFECT(_2(start_flight_comms_result));
 

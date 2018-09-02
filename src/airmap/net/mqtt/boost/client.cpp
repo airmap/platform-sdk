@@ -1,3 +1,10 @@
+//
+//  client.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/net/mqtt/boost/client.h>
 
 #include <mqtt/str_connect_return_code.hpp>

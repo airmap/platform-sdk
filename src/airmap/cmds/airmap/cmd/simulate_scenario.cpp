@@ -1,3 +1,10 @@
+//
+//  simulate_scenario.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/simulate_scenario.h>
 
 #include <airmap/client.h>
@@ -35,7 +42,7 @@ constexpr float altitude_msl              = 100.;
 constexpr float altitude_gl               = 100.;
 constexpr float vx                        = 0.;
 constexpr float vy                        = 0.;
-constexpr float vz                        = 0.;
+constexpr float vz                        = 100.;
 constexpr float heading                   = 180.;
 constexpr std::uint8_t mission_type       = 0;
 constexpr std::uint8_t target_system      = 0;
@@ -51,7 +58,7 @@ constexpr float p4                        = 0.;
 }  // namespace mavlink
 
 const std::string device_name = boost::asio::ip::host_name();
-const airmap::Seconds duration{60};
+const airmap::Seconds duration(airmap::seconds(60));
 constexpr const char* component{"simulate-scenario-cli"};
 
 class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
@@ -80,13 +87,6 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
 
       {
         mavlink_message_t msg;
-        mavlink_msg_heartbeat_pack(p.id, mavlink::component_id, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
-                                   MAV_MODE_GUIDED_ARMED, mavlink::custom_mode, MAV_STATE_ACTIVE);
-        session->process(msg);
-      }
-
-      {
-        mavlink_message_t msg;
         mavlink_msg_mission_count_pack(p.id, mavlink::component_id, &msg, mavlink::target_system,
                                        mavlink::target_component, outer_ring.coordinates.size(), mavlink::mission_type);
         session->process(msg);
@@ -100,10 +100,17 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
           mavlink_msg_mission_item_pack(p.id, mavlink::component_id, &msg, mavlink::target_system,
                                         mavlink::target_component, seq, mavlink::frame, mavlink::command,
                                         mavlink::current, mavlink::autocontinue, mavlink::p1, mavlink::p2, mavlink::p3,
-                                        mavlink::p4, c.longitude, c.latitude, mavlink::vz, MAV_CMD_NAV_WAYPOINT);
+                                        mavlink::p4, c.latitude, c.longitude, mavlink::vz, MAV_CMD_NAV_WAYPOINT);
           session->process(msg);
           seq++;
         }
+      }
+
+      {
+        mavlink_message_t msg;
+        mavlink_msg_heartbeat_pack(p.id, mavlink::component_id, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
+                                   MAV_MODE_GUIDED_ARMED, mavlink::custom_mode, MAV_STATE_ACTIVE);
+        session->process(msg);
       }
     }
   }
@@ -259,7 +266,6 @@ cmd::SimulateScenario::SimulateScenario()
         // this->deactivate(it);
         ++it;
       }
-
     });
 
     return context_->exec({SIGINT, SIGQUIT},
@@ -273,7 +279,7 @@ cmd::SimulateScenario::SimulateScenario()
 }
 
 void cmd::SimulateScenario::deactivate(util::Scenario::Participants::iterator participant) {
-  context_->schedule_in(Microseconds(1000 * 1000 * 10), [this, participant]() {
+  context_->schedule_in(microseconds(1000 * 1000 * 10), [this, participant]() {
     mavlink_message_t msg;
     mavlink_msg_heartbeat_pack(participant->id, ::mavlink::component_id, &msg, MAV_TYPE_HELICOPTER,
                                MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_DISARMED, ::mavlink::custom_mode,
@@ -386,7 +392,8 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
     request_traffic_monitoring_for(participant);
     request_start_flight_comms_for(participant);
 
-    context_->schedule_in(Microseconds(collector_->scenario().duration.get().total_microseconds()), [this, participant]() {
+    context_->schedule_in(microseconds(collector_->scenario().duration.get().total_microseconds()), 
+[this, participant]() {
       client_->flights().end_flight_communications(
           {participant->authentication.get(), participant->flight.get().id},
           std::bind(&SimulateScenario::handle_end_flight_comms, this, participant, ph::_1));

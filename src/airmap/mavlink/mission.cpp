@@ -1,3 +1,10 @@
+//
+//  mission.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/mission.h>
 
 bool airmap::mavlink::Mission::update(const mavlink_message_t& msg) {
@@ -19,31 +26,38 @@ const std::vector<airmap::Geometry::Coordinate>& airmap::mavlink::Mission::coord
 }
 
 void airmap::mavlink::Mission::handle_msg_mission_clear_all() {
-  max_count_  = 0;
-  curr_count_ = 0;
   coordinates_.clear();
+  counter_      = 0;
+  mission_size_ = 0;
 }
 
 void airmap::mavlink::Mission::handle_msg_mission_count(const mavlink_message_t& msg) {
   mavlink_mission_count_t mc;
   mavlink_msg_mission_count_decode(&msg, &mc);
-  max_count_  = mc.count;
-  curr_count_ = 0;
+
   coordinates_.clear();
+  counter_      = 0;
+  mission_size_ = mc.count;
 }
 
 bool airmap::mavlink::Mission::handle_msg_mission_item(const mavlink_message_t& msg) {
   mavlink_mission_item_t mi;
   mavlink_msg_mission_item_decode(&msg, &mi);
-  if (mi.seq == curr_count_) {
-    curr_count_++;
+
+  // We have been expecting this element and start processing.
+  if (mi.seq == counter_) {
+    counter_++;
+
+    // This is relevant to our mission and we store the waypoint in memory.
     if (mi.mission_type == MAV_CMD_NAV_WAYPOINT) {
-      Geometry::Coordinate c = {mi.x, mi.y};
-      coordinates_.push_back(c);
-      if (curr_count_ == max_count_) {
-        return true;
-      }
+      coordinates_.push_back({mi.x, mi.y, mi.z});
+    }
+
+    // Is the mission complete, yet?
+    if (counter_ == mission_size_) {
+      return true;
     }
   }
+
   return false;
 }

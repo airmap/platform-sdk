@@ -1,3 +1,10 @@
+//
+//  response.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_NET_HTTP_RESPONSE_H_
 #define AIRMAP_NET_HTTP_RESPONSE_H_
 

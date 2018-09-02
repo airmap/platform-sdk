@@ -1,3 +1,10 @@
+//
+//  flight_plans.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/qt/flight_plans.h>
 
 std::shared_ptr<airmap::qt::FlightPlans> airmap::qt::FlightPlans::create(

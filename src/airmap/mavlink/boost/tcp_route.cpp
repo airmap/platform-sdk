@@ -1,3 +1,10 @@
+//
+//  tcp_route.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/boost/tcp_route.h>
 
 namespace {

@@ -1,3 +1,10 @@
+//
+//  telemetry_submitter.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_MONITOR_TELEMETRY_SUBMITTER_H_
 #define AIRMAP_MONITOR_TELEMETRY_SUBMITTER_H_
 
@@ -10,6 +17,8 @@
 #include <airmap/flights.h>
 #include <airmap/logger.h>
 #include <airmap/optional.h>
+#include <airmap/pilot.h>
+#include <airmap/pilots.h>
 #include <airmap/telemetry.h>
 #include <airmap/traffic.h>
 
@@ -63,13 +72,8 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   /// submit requests an instance to submit a telemetry update.
   void submit(const mavlink::GlobalPositionInt&);
 
-  /// execute_mission accepts a geometry and begins a mavlink mission.
-  ///
-  /// The following sequence of actions is triggered:
-  ///   * request authorization
-  ///   * request flight creation
-  ///   * request to start flight communications
-  void execute_mission(const Geometry& geometry);
+  /// set_mission_geometry announces the mission geometry.
+  void set_mission_geometry(const Geometry& geometry);
 
  private:
   explicit TelemetrySubmitter(const Credentials& credentials, const std::string& aircraft_id,
@@ -79,8 +83,21 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void request_authorization();
   void handle_request_authorization_finished(std::string authorization);
 
-  void request_create_flight();
-  void handle_request_create_flight_finished(Flight flight);
+  void request_pilot_id();
+  void handle_request_pilot_id_finished(std::string pilot_id);
+
+  void request_active_flights();
+  void handle_request_active_flights_finished(std::vector<Flight> flight);
+
+  void request_end_active_flights();
+  void handle_request_end_active_flight_finished(std::string id);
+  void handle_request_end_active_flights_finished();
+
+  void request_create_flight_plan();
+  void handle_request_create_flight_plan_finished(FlightPlan plan);
+
+  void request_submit_flight_plan();
+  void handle_request_submit_flight_plan_finished(Flight flight);
 
   void request_monitor_traffic();
   void handle_request_monitor_traffic_finished(std::shared_ptr<Traffic::Monitor> traffic_monitor);
@@ -88,11 +105,13 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   void request_start_flight_comms();
   void handle_request_start_flight_comms_finished(std::string key);
 
-  void request_end_flight();
-
   State state_{State::inactive};
   bool authorization_requested_{false};
-  bool create_flight_requested_{false};
+  bool pilot_id_requested_{false};
+  bool active_flights_requested_{false};
+  bool end_active_flights_requested_{false};
+  bool create_flight_plan_requested_{false};
+  bool submit_flight_plan_requested_{false};
   bool traffic_monitoring_requested_{false};
   bool start_flight_comms_requested_{false};
 
@@ -103,11 +122,14 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   std::string aircraft_id_;
 
   Optional<mavlink::GlobalPositionInt> current_position_;
+  Optional<std::vector<Flight>> active_flights_;
+  Optional<FlightPlan> flight_plan_;
   Optional<Flight> flight_;
   Optional<std::string> authorization_;
   Optional<std::shared_ptr<Traffic::Monitor>> traffic_monitor_;
   Optional<std::string> encryption_key_;
-  Optional<Geometry> geometry_;
+  Optional<Geometry> mission_geometry_;
+  Optional<std::string> pilot_id_;
 };
 
 }  // namespace monitor

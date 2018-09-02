@@ -1,3 +1,10 @@
+//
+//  daemon.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/daemon.h>
 
 #include <airmap/boost/context.h>
@@ -31,6 +38,7 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
                       tcp_endpoint_port_));
   flag(cli::make_flag("udp-endpoint-port", "the port of the udp endpoint to read mavlink messages from",
                       udp_endpoint_port_));
+  flag(cli::make_flag("system-id", "system id of the device", system_id_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cerr))};
@@ -80,6 +88,10 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
     if (has_valid_udp_endpoint)
       channel =
           std::make_shared<mavlink::boost::UdpChannel>(log_.logger(), context->io_service(), udp_endpoint_port_.get());
+
+    if (system_id_) {
+      channel = mavlink::FilteringChannel::create(channel, system_id_.get());
+    }
 
     if (telemetry_host_)
       config.telemetry.host = telemetry_host_.get();

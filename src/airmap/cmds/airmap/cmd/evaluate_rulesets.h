@@ -1,3 +1,10 @@
+//
+//  evaluate_rulesets.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_RULESETS_H_
 #define AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_RULESETS_H_
 

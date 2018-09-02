@@ -1,3 +1,10 @@
+//
+//  get_advisories.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/get_advisories.h>
 
 #include <airmap/client.h>
@@ -30,6 +37,7 @@ void print_advisories(std::ostream& out, const std::vector<airmap::Advisory::Air
     tw << a.advisory.airspace.id() << a.advisory.airspace.name() << a.advisory.airspace.type() << a.advisory.color;
   }
 
+  tw << cli::TabWriter::NewLine{};
   tw.flush(out);
 }
 

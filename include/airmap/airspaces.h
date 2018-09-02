@@ -1,3 +1,10 @@
+//
+//  airspaces.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_AIRSPACES_H_
 #define AIRMAP_AIRSPACES_H_
 
@@ -24,7 +31,7 @@ class Airspaces : DoNotCopyOrMove {
     };
 
     /// Result models the outcome of calling Airspaces::for_id.
-    using Result = Outcome<std::vector<Airspace>, Error>;
+    using Result = Outcome<Airspace, Error>;
     /// Callback describes the function signature of the callback that is
     /// invoked when a call to Airspaces::for_id finishes.
     using Callback = std::function<void(const Result&)>;

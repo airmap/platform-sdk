@@ -1,3 +1,10 @@
+//
+//  cli.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 /*
  * Copyright (C) 2016 Canonical, Ltd.
  * Copyright (C) 2017 AirMap Inc.

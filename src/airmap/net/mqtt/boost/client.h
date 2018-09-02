@@ -1,3 +1,10 @@
+//
+//  client.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_NET_MQTT_BOOST_CLIENT_H_
 #define AIRMAP_NET_MQTT_BOOST_CLIENT_H_
 

@@ -1,3 +1,10 @@
+//
+//  response.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/net/http/response.h>
 
 // classify returns the Classification of the status of this response.

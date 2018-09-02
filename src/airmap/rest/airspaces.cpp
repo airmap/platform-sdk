@@ -1,3 +1,10 @@
+//
+//  airspaces.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/rest/airspaces.h>
 
 #include <airmap/codec.h>
@@ -37,5 +44,5 @@ void airmap::rest::Airspaces::search(const Search::Parameters& parameters, const
 void airmap::rest::Airspaces::for_ids(const ForIds::Parameters& parameters, const ForIds::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
   requester_->get(fmt::sprintf("/%s", parameters.id), std::move(query), std::move(headers),
-                  net::http::jsend_parsing_request_callback<std::vector<Airspace>>(cb));
+                  net::http::jsend_parsing_request_callback<Airspace>(cb));
 }

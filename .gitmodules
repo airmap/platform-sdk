@@ -8,3 +8,6 @@
 [submodule "vendor/airmap/am-protos"]
 	path = vendor/airmap/am-protos
 	url = https://github.com/airmap/am-protos.git
+[submodule "vendor/cpp-jwt"]
+	path = vendor/cpp-jwt
+	url = https://github.com/arun11299/cpp-jwt.git

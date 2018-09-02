@@ -1,3 +1,10 @@
+//
+//  airmap.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/add_aircraft.h>
 #include <airmap/cmds/airmap/cmd/aircraft_models.h>
 #include <airmap/cmds/airmap/cmd/create_flight.h>
@@ -16,6 +23,7 @@
 #include <airmap/cmds/airmap/cmd/query_rulesets.h>
 #include <airmap/cmds/airmap/cmd/render_briefing.h>
 #include <airmap/cmds/airmap/cmd/report_weather.h>
+#include <airmap/cmds/airmap/cmd/search_airspace.h>
 #include <airmap/cmds/airmap/cmd/simulate_scenario.h>
 #include <airmap/cmds/airmap/cmd/simulate_telemetry.h>
 #include <airmap/cmds/airmap/cmd/start_flight_comms.h>
@@ -54,6 +62,7 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::QueryRuleSets>());
     cmd_.command(std::make_shared<cmd::RenderBriefing>());
     cmd_.command(std::make_shared<cmd::ReportWeather>());
+    cmd_.command(std::make_shared<cmd::SearchAirspace>());
     cmd_.command(std::make_shared<cmd::StartFlightComms>());
     cmd_.command(std::make_shared<cmd::SimulateScenario>());
     cmd_.command(std::make_shared<cmd::SimulateTelemetry>());

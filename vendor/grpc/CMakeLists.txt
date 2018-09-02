@@ -15,6 +15,8 @@ ExternalProject_add(
         -DgRPC_ZLIB_PROVIDER=package
         -DgRPC_CARES_PROVIDER=package
         -DgRPC_SSL_PROVIDER=package
+        -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}
+        -DOPENSSL_USE_STATIC_LIBS=${OPENSSL_USE_STATIC_LIBS}
         -DgRPC_PROTOBUF_PROVIDER=package
         -DgRPC_PROTOBUF_PACKAGE_TYPE=CONFIG
         -DgRPC_INSTALL_default=ON

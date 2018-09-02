@@ -1,3 +1,10 @@
+//
+//  airspace.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_AIRSPACE_H_
 #define AIRMAP_AIRSPACE_H_
 
@@ -34,21 +41,23 @@ class Airspace {
       public_  ///< The airport is available for public use.
     };
 
-    std::string iata;                    ///< IATA code of the airport.
-    std::string icao;                    ///< ICAO code of the airport.
-    bool paved;                          ///< True if the airport features paved runways.
-    std::string phone;                   ///< The phone number of the airport (typically the tower).
-    bool tower;                          ///< True if the airport features a tower.
-    std::vector<Runway> runways;         ///< Collection of runways available at the airport.
-    float elevation;                     ///< The elevation of the airport in [m].
-    float longest_runway;                ///< The lenght of th longest runway in [m].
-    bool instrument_approach_procedure;  ///< True if the airport features equipment supporting an IAP.
-    Use use;                             ///< Types of use offered by the airport.
+    std::string iata;                           ///< IATA code of the airport.
+    std::string icao;                           ///< ICAO code of the airport.
+    bool paved{false};                          ///< True if the airport features paved runways.
+    std::string phone;                          ///< The phone number of the airport (typically the tower).
+    bool tower{false};                          ///< True if the airport features a tower.
+    std::vector<Runway> runways;                ///< Collection of runways available at the airport.
+    float elevation{0.f};                       ///< The elevation of the airport in [m].
+    float longest_runway{0.f};                  ///< The lenght of th longest runway in [m].
+    bool instrument_approach_procedure{false};  ///< True if the airport features equipment supporting an IAP.
+    Use use{Use::public_};                      ///< Types of use offered by the airport.
   };
 
   /// ControlledAirspace bundles up properties describing
   /// a controlled airspace.
-  struct ControlledAirspace {};
+  struct ControlledAirspace {
+    std::string airspace_classification;  ///< The classification of the ControlledAirspace.
+  };
 
   /// SpecialUseAirspace bundles up properties describing
   /// a special use airspace.

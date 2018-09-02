@@ -1,3 +1,10 @@
+//
+//  do_not_copy_or_move.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_DO_NOT_COPY_OR_MOVE_H_
 #define AIRMAP_DO_NOT_COPY_OR_MOVE_H_
 

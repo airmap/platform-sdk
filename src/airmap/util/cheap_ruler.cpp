@@ -1,3 +1,10 @@
+//
+//  cheap_ruler.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/util/cheap_ruler.h>
 
 airmap::util::CheapRuler::CheapRuler(double latitude) {

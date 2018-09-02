@@ -1,3 +1,10 @@
+//
+//  broker.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_NET_MQTT_BROKER_H_
 #define AIRMAP_NET_MQTT_BROKER_H_
 

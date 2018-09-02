@@ -1,3 +1,10 @@
+//
+//  flags.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/flags.h>
 
 namespace cli   = airmap::util::cli;

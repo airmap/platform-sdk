@@ -6,6 +6,8 @@ set(AIRMAPD_VERSION_MAJOR 0)
 set(AIRMAPD_VERSION_MINOR 0)
 set(AIRMAPD_VERSION_PATCH 1)
 
+option(OPENSSL_USE_STATIC_LIBS "Link OpenSSL statically" FALSE)
+
 find_package(Git)
 
 if (GIT_FOUND)

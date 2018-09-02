@@ -1,3 +1,10 @@
+//
+//  rulesets.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/qt/rulesets.h>
 
 std::shared_ptr<airmap::qt::RuleSets> airmap::qt::RuleSets::create(const std::shared_ptr<Dispatcher>& dispatcher,
