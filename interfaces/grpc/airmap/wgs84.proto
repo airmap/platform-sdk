@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "grpc/airmap/units.proto";
+import "airmap/units.proto";
 
 package grpc.airmap;
 

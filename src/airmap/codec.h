@@ -9,8 +9,10 @@
 #include <airmap/codec/http/query/rulesets.h>
 #include <airmap/codec/http/query/status.h>
 
+#if defined (AIRMAP_ENABLE_GRPC)
 #include <airmap/codec/grpc/date_time.h>
 #include <airmap/codec/grpc/traffic.h>
+#endif  // AIRMAP_ENABLE_GRPC
 
 #include <airmap/codec/json/advisories.h>
 #include <airmap/codec/json/advisory.h>

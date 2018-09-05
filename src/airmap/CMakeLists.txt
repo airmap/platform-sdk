@@ -25,74 +25,6 @@ endif()
 
 configure_file(version.cpp.in version.cpp)
 
-set(
-  AIRMAP_TELEMETRY_PROTOBUF_PROTOS
-
-  ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/amd_uav_flight_update.proto
-  ${CMAKE_CURRENT_SOURCE_DIR}/rest/telemetry.proto
-)
-
-set(
-  AIRMAP_TELEMETRY_PROTOBUF_SOURCES
-
-  ${CMAKE_CURRENT_BINARY_DIR}/telemetry.pb.h
-  ${CMAKE_CURRENT_BINARY_DIR}/telemetry.pb.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/amd_uav_flight_update.pb.h
-  ${CMAKE_CURRENT_BINARY_DIR}/amd_uav_flight_update.pb.cc
-)
-
-add_custom_command(
-  OUTPUT ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
-
-  COMMAND $<TARGET_FILE:protobuf::protoc>
-    --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
-    --proto_path ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/
-    --proto_path ${CMAKE_CURRENT_SOURCE_DIR}/rest/
-    ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
-
-  DEPENDS $<TARGET_FILE:protobuf::protoc> ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
-  COMMENT "Generating C++ code for AirMap telemetry interfaces"
-  VERBATIM)
-
-set_source_files_properties(
-  ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
-  PROPERTIES GENERATED TRUE
-)
-
-include_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_BINARY_DIR}/interfaces
-)
-
-add_library(
-  airmap-mavlink
-
-  mavlink/channel.h
-  mavlink/channel.cpp
-  mavlink/global_position_int.h
-  mavlink/global_position_int.cpp
-  mavlink/heartbeat.h
-  mavlink/heartbeat.cpp
-  mavlink/mission.h
-  mavlink/mission.cpp
-  mavlink/router.h
-  mavlink/router.cpp
-  mavlink/state.h
-  mavlink/state.cpp
-  mavlink/vehicle.h
-  mavlink/vehicle.cpp
-  mavlink/vehicle_tracker.h
-  mavlink/vehicle_tracker.cpp
-  mavlink/boost/serial_channel.h
-  mavlink/boost/serial_channel.cpp
-  mavlink/boost/tcp_channel.h
-  mavlink/boost/tcp_channel.cpp
-  mavlink/boost/tcp_route.h
-  mavlink/boost/tcp_route.cpp
-  mavlink/boost/udp_channel.h
-  mavlink/boost/udp_channel.cpp
-)
-
 add_library(
   airmap-client OBJECT
 
@@ -156,11 +88,6 @@ add_library(
   codec/http/query/rulesets.cpp
   codec/http/query/status.h
   codec/http/query/status.cpp
-
-  codec/grpc/date_time.h
-  codec/grpc/date_time.cpp
-  codec/grpc/traffic.h
-  codec/grpc/traffic.cpp
 
   codec/json/advisory.h
   codec/json/advisory.cpp
@@ -276,264 +203,42 @@ add_library(
 
   ${AIRMAP_PLATFORM_SRCS}
 
-  ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
-  ${AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_SOURCES}
-  ${AIRMAP_TELEMETRY_AMD_UAV_FLIGHT_UPDATE_PROTOBUF_HEADERS}
+  pregenerated/amd_uav_flight_update.pb.h
+  pregenerated/amd_uav_flight_update.pb.cc
+  pregenerated/telemetry.pb.h
+  pregenerated/telemetry.pb.cc
 )
-
-add_library(
-  airmap-grpc
-
-  grpc/init.h
-  grpc/init.cpp
-  grpc/method_invocation.h
-  grpc/method_invocation.cpp
-
-  grpc/client/executor.h
-  grpc/client/executor.cpp
-
-  grpc/server/executor.h
-  grpc/server/executor.cpp
-  grpc/server/service.h
-)
-
-add_library(
-  airmap-monitor
-
-  monitor/daemon.h
-  monitor/daemon.cpp
-  monitor/fan_out_traffic_monitor.h
-  monitor/fan_out_traffic_monitor.cpp
-  monitor/submitting_vehicle_monitor.h
-  monitor/submitting_vehicle_monitor.cpp
-  monitor/telemetry_submitter.h
-  monitor/telemetry_submitter.cpp
-
-  monitor/grpc/client.h
-  monitor/grpc/client.cpp
-  monitor/grpc/service.h
-  monitor/grpc/service.cpp
-)
-
-add_library(
-  airmap-cpp SHARED
-
-  $<TARGET_OBJECTS:airmap-client>
-)
-
-add_library(
-  airmap-qt SHARED
-
-  $<TARGET_OBJECTS:airmap-client>
-
-  qt/client.cpp
-  qt/dispatcher.h
-  qt/dispatcher.cpp
-  qt/logger.cpp
-
-  qt/advisory.h
-  qt/advisory.cpp
-  qt/aircrafts.h
-  qt/aircrafts.cpp
-  qt/airspaces.h
-  qt/airspaces.cpp
-  qt/authenticator.h
-  qt/authenticator.cpp
-  qt/flight_plans.h
-  qt/flight_plans.cpp
-  qt/flights.h
-  qt/flights.cpp
-  qt/pilots.h
-  qt/pilots.cpp
-  qt/rulesets.h
-  qt/rulesets.cpp
-  qt/status.h
-  qt/status.cpp
-  qt/telemetry.h
-  qt/telemetry.cpp
-  qt/traffic.h
-  qt/traffic.cpp
-  qt/types.cpp
-)
-
-add_executable(
-  airmap
-
-  $<TARGET_OBJECTS:airmap-client>
-
-  cmds/airmap/airmap.cpp
-  cmds/airmap/cmd/add_aircraft.h
-  cmds/airmap/cmd/add_aircraft.cpp
-  cmds/airmap/cmd/aircraft_models.h
-  cmds/airmap/cmd/aircraft_models.cpp
-  cmds/airmap/cmd/create_flight.h
-  cmds/airmap/cmd/create_flight.cpp
-  cmds/airmap/cmd/daemon.h
-  cmds/airmap/cmd/daemon.cpp
-  cmds/airmap/cmd/end_flight.h
-  cmds/airmap/cmd/end_flight.cpp
-  cmds/airmap/cmd/end_flight_comms.h
-  cmds/airmap/cmd/end_flight_comms.cpp
-  cmds/airmap/cmd/evaluate_rulesets.h
-  cmds/airmap/cmd/evaluate_rulesets.cpp
-  cmds/airmap/cmd/fetch_rules.h
-  cmds/airmap/cmd/fetch_rules.cpp
-  cmds/airmap/cmd/flags.h
-  cmds/airmap/cmd/flags.cpp
-  cmds/airmap/cmd/get_advisories.h
-  cmds/airmap/cmd/get_advisories.cpp
-  cmds/airmap/cmd/get_status.h
-  cmds/airmap/cmd/get_status.cpp
-  cmds/airmap/cmd/init.h
-  cmds/airmap/cmd/init.cpp
-  cmds/airmap/cmd/login.h
-  cmds/airmap/cmd/login.cpp
-  cmds/airmap/cmd/pilot.h
-  cmds/airmap/cmd/pilot.cpp
-  cmds/airmap/cmd/plan_flight.h
-  cmds/airmap/cmd/plan_flight.cpp
-  cmds/airmap/cmd/query_rulesets.h
-  cmds/airmap/cmd/query_rulesets.cpp
-  cmds/airmap/cmd/render_briefing.h
-  cmds/airmap/cmd/render_briefing.cpp
-  cmds/airmap/cmd/report_weather.h
-  cmds/airmap/cmd/report_weather.cpp
-  cmds/airmap/cmd/search_airspace.h
-  cmds/airmap/cmd/search_airspace.cpp
-  cmds/airmap/cmd/simulate_scenario.h
-  cmds/airmap/cmd/simulate_scenario.cpp
-  cmds/airmap/cmd/simulate_telemetry.h
-  cmds/airmap/cmd/simulate_telemetry.cpp
-  cmds/airmap/cmd/start_flight_comms.h
-  cmds/airmap/cmd/start_flight_comms.cpp
-  cmds/airmap/cmd/submit_flight.h
-  cmds/airmap/cmd/submit_flight.cpp
-  cmds/airmap/cmd/monitor_mids.h
-  cmds/airmap/cmd/monitor_mids.cpp
-  cmds/airmap/cmd/monitor_traffic.h
-  cmds/airmap/cmd/monitor_traffic.cpp
-  cmds/airmap/cmd/test.h
-  cmds/airmap/cmd/test.cpp
-  cmds/airmap/cmd/test/laanc.phoenix.h
-  cmds/airmap/cmd/test/laanc.phoenix.cpp
-  cmds/airmap/cmd/version.h
-  cmds/airmap/cmd/version.cpp
-)
-
-target_include_directories(
-  airmap-client
-  PRIVATE $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>)
 
 set_property(
   TARGET airmap-client
-  PROPERTY CXX_STANDARD 14)
+  PROPERTY CXX_STANDARD 14
+)
+
 set_property(
   TARGET airmap-client
-  PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(
-  TARGET airmap-grpc
-  PROPERTY CXX_STANDARD 14)
-set_property(
-  TARGET airmap-grpc
-  PROPERTY COMPILE_OPTIONS -fPIC)
-set_property(
-  TARGET airmap-monitor
-  PROPERTY CXX_STANDARD 14)
-set_property(
-  TARGET airmap-monitor
-  PROPERTY COMPILE_OPTIONS -fPIC)
-
-set_target_properties(
-  airmap-cpp PROPERTIES
-
-  CXX_STANDARD      14
-  SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
-  VERSION           "${AIRMAPD_VERSION_MAJOR}"
+  PROPERTY COMPILE_OPTIONS -fPIC
 )
 
-set_target_properties(
-  airmap-qt PROPERTIES
+add_subdirectory(cmds/airmap)
+add_subdirectory(cpp)
+add_subdirectory(mavlink)
 
-  CXX_STANDARD      14
-  SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
-  VERSION           "${AIRMAPD_VERSION_MAJOR}"
-)
+if (AIRMAP_ENABLE_GRPC)
+  add_subdirectory(codec/grpc)
+  add_subdirectory(grpc)
+  add_subdirectory(monitor)
 
-set_property(
-  TARGET airmap-mavlink
-  PROPERTY CXX_STANDARD 14)
-set_property(
-  TARGET airmap-mavlink
-  PROPERTY COMPILE_OPTIONS "-Wno-pedantic")
-set_property(
-  TARGET airmap
-  PROPERTY CXX_STANDARD 14)
+  target_include_directories(
+    airmap-client
+    
+    PUBLIC ${CMAKE_BINARY_DIR}/interfaces
+    PUBLIC ${CMAKE_BINARY_DIR}/interfaces/grpc
+  )
+endif ()
 
-target_link_libraries(
-  airmap-grpc
-
-  airmap-interfaces-grpc
-)
-
-target_link_libraries(
-  airmap-monitor
-
-  airmap-grpc
-  airmap-mavlink
-)
-
-target_link_libraries(
-  airmap-cpp
-
-  airmap-grpc
-  airmap-monitor
-
-  ${Boost_LIBRARIES}
-
-  OpenSSL::Crypto
-  OpenSSL::SSL
-)
-
-target_link_libraries(
-  airmap-qt
-
-  airmap-grpc
-  airmap-monitor
-
-  ${Boost_LIBRARIES}
-
-  OpenSSL::Crypto
-  OpenSSL::SSL
-
-  Qt5::Core
-)
-
-target_link_libraries(
-  airmap
-
-  airmap-grpc
-  airmap-monitor
-
-  ${Boost_LIBRARIES}
-
-  OpenSSL::Crypto
-  OpenSSL::SSL
-)
-
-install(
-  TARGETS airmap
-  RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-install(
-  TARGETS airmap-cpp
-  LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-install(
-  TARGETS airmap-qt
-  LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
+if (AIRMAP_ENABLE_QT)
+  add_subdirectory(qt)
+endif ()
 
 install(
   DIRECTORY ${CMAKE_SOURCE_DIR}/include/airmap

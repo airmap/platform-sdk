@@ -3,11 +3,17 @@ include(CTest)
 # Cmake find modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access" ON)
-
 find_package(Boost 1.65.1 QUIET REQUIRED date_time filesystem log program_options system thread)
-find_package(OpenSSL QUIET REQUIRED)
-find_package(Qt5Core QUIET)
+find_package(OpenSSL REQUIRED)
+find_package(protobuf CONFIG REQUIRED)
+
+if (AIRMAP_ENABLE_GRPC)
+  find_package(gRPC CONFIG REQUIRED)
+endif ()
+
+if (AIRMAP_ENABLE_QT)
+  find_package(Qt5Core QUIET)
+endif()
 
 # vendor-specific setup goes here
 add_definitions(-DFMT_HEADER_ONLY)
@@ -22,7 +28,6 @@ include_directories(
 
   vendor/
   vendor/mavlink
-  vendor/uri/include
   vendor/mqtt_client_cpp/include
 
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -61,7 +66,3 @@ if (CLANG_FORMAT_EXECUTABLE)
 else()
   message(STATUS "Enabling format target")
 endif()
-
-set(CPACK_PACKAGE_NAME "airmap")
-set(CPACK_PACKAGE_FILE_NAME "airmap-installer")
-include (CPack)

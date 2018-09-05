@@ -1,0 +1,13 @@
+import os ;
+import toolset ;
+
+using clang : android : @CMAKE_CXX_COMPILER@ :
+    <cflags>-target <cflags>@CMAKE_C_COMPILER_TARGET@
+    <cflags>--sysroot=@CMAKE_SYSROOT@
+    @AIRMAP_BOOST_ANDROID_STANDARD_C_FLAGS@ <cflags>-fPIC
+    <cxxflags>-target <cxxflags>@CMAKE_CXX_COMPILER_TARGET@
+    <cxxflags>--sysroot=@CMAKE_SYSROOT@
+    @AIRMAP_BOOST_ANDROID_STANDARD_INCLUDE_DIRECTORIES@ 
+    @AIRMAP_BOOST_ANDROID_STANDARD_CXX_FLAGS@ 
+    <cxxflags>-std=c++14 <cxxflags>-fPIC
+    @AIRMAP_BOOST_ANDROID_STANDARD_CXX_LIBRARIES@ ;

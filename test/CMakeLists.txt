@@ -12,6 +12,13 @@ add_library(
 )
 
 function(airmap_add_test name source)
+  if (AIRMAP_ENABLE_GRPC)
+    list(
+      APPEND CONDITIONAL_LIBRARIES
+      airmap-grpc airmap-monitor
+    )
+  endif ()
+
   add_executable(
     ${name}
 
@@ -23,12 +30,16 @@ function(airmap_add_test name source)
   target_link_libraries(
     ${name}
 
-    airmap-grpc
-    airmap-monitor
     airmap-test-helper
 
+    ${CONDITIONAL_LIBRARIES}
+
     ${Boost_LIBRARIES}
-    ${OPENSSL_LDFLAGS})
+    OpenSSL::Crypto
+    OpenSSL::SSL
+
+    protobuf::libprotobuf
+  )
 
   add_test(${name} ${name} --color_output=false --logger=XML,all,${AIRMAP_TEST_OUTPUT_DIRECTORY}/${name}.xml)
 endfunction (airmap_add_test)
