@@ -37,6 +37,7 @@ function(airmap_add_test name source)
     ${Boost_LIBRARIES}
     OpenSSL::Crypto
     OpenSSL::SSL
+    ${WE_NEED_BORINGSSLS_LIB_DECREPIT}
 
     protobuf::libprotobuf
   )

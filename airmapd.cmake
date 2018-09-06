@@ -7,6 +7,15 @@ find_package(Boost 1.65.1 QUIET REQUIRED date_time filesystem log program_option
 find_package(OpenSSL REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 
+find_library(
+  WE_NEED_BORINGSSLS_LIB_DECREPIT libdecrepit.a
+  PATHS ${AIRMAP_EXTERNAL_DEPENDENCIES_OUTPUT_PATH}
+)
+
+if (NOT WE_NEED_BORINGSSLS_LIB_DECREPIT)
+  message(FATAL_ERROR "Failed to find libdecrepit.a")
+endif ()
+
 if (AIRMAP_ENABLE_GRPC)
   find_package(gRPC CONFIG REQUIRED)
 endif ()

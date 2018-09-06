@@ -21,9 +21,10 @@ ExternalProject_add(
     CMAKE_GENERATOR ${CMAKE_GENERATOR}
     UPDATE_COMMAND ""
     INSTALL_COMMAND 
-      ${CMAKE_COMMAND}                 -E copy_directory  <SOURCE_DIR>/include/openssl    $ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}/include/openssl
-      COMMAND         ${CMAKE_COMMAND} -E copy            <BINARY_DIR>/ssl/libssl.a       $ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}/lib/libssl.a
-      COMMAND         ${CMAKE_COMMAND} -E copy            <BINARY_DIR>/crypto/libcrypto.a $ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}/lib/libcrypto.a
+      ${CMAKE_COMMAND}                 -E copy_directory  <SOURCE_DIR>/include/openssl        $ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}/include/openssl
+      COMMAND         ${CMAKE_COMMAND} -E copy            <BINARY_DIR>/ssl/libssl.a           $ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}/lib/libssl.a
+      COMMAND         ${CMAKE_COMMAND} -E copy            <BINARY_DIR>/crypto/libcrypto.a     $ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}/lib/libcrypto.a
+      COMMAND         ${CMAKE_COMMAND} -E copy            <BINARY_DIR>/decrepit/libdecrepit.a $ENV{AIRMAP_BORINGSSL_OUTPUT_PATH}/lib/libdecrepit.a
 )
 
 add_custom_target(trigger-boringssl)

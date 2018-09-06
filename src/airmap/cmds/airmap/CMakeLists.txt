@@ -101,6 +101,7 @@ target_link_libraries(
 
   OpenSSL::Crypto
   OpenSSL::SSL
+  ${WE_NEED_BORINGSSLS_LIB_DECREPIT}
 
   protobuf::libprotobuf
 )
