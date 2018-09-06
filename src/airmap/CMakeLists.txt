@@ -219,6 +219,12 @@ set_property(
   PROPERTY COMPILE_OPTIONS -fPIC
 )
 
+target_compile_options(
+  airmap-client
+
+  PRIVATE -Wno-c++11-narrowing
+)
+
 add_subdirectory(cmds/airmap)
 add_subdirectory(cpp)
 add_subdirectory(mavlink)
