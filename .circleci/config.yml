@@ -7,7 +7,9 @@ jobs:
       - checkout
       - run: git submodule sync
       - run: git submodule update --init --recursive
-      - run: tools/circleci/compile.sh
-      - setup_remote_docker:
-        docker_layer_caching: true
+      - run: tools/ubuntu/setup.dev.sh
+      - run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/usr
+      - run: make -j4
+      - run: ctest -V
+      - run: make install
 
