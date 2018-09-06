@@ -10,6 +10,7 @@
 
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 #include <string>
@@ -21,10 +22,10 @@ struct Flight;
 
 /// Telemetry provides functionality to submit telemetry updates to the
 /// AirMap services during flight.
-class Telemetry : DoNotCopyOrMove {
+class AIRMAP_EXPORT Telemetry : DoNotCopyOrMove {
  public:
   /// Position describes a timestamped geographical position.
-  struct Position {
+  struct AIRMAP_EXPORT Position {
     std::uint64_t timestamp;     ///< Ingestion timestamp of the update.
     double latitude;             ///< The latitude of the position [°].
     double longitude;            ///< The longitude of the position in [°].
@@ -34,7 +35,7 @@ class Telemetry : DoNotCopyOrMove {
   };
 
   /// Speed describes the timestamped 3-dim velocity of a vehicle.
-  struct Speed {
+  struct AIRMAP_EXPORT Speed {
     std::uint64_t timestamp;  ///< Ingestion timestamp of the update.
     float velocity_x;         ///< The velocity of the vehicle in direction of the x axis in [m/s].
     float velocity_y;         ///< The velocity of the vehicle in direction of the y axis in [m/s].
@@ -42,7 +43,7 @@ class Telemetry : DoNotCopyOrMove {
   };
 
   /// Attitude describes the timestamped 3-dim orientation of a vehicle.
-  struct Attitude {
+  struct AIRMAP_EXPORT Attitude {
     std::uint64_t timestamp;  ///< Ingestion timestamp of the update.
     float yaw;                ///< The yaw of the vehicle in [°/s].
     float pitch;              ///< The pitch of the vehicle in [°/s].
@@ -50,7 +51,7 @@ class Telemetry : DoNotCopyOrMove {
   };
 
   /// Barometer describes the timestamped atmospheric pressurce conditions.
-  struct Barometer {
+  struct AIRMAP_EXPORT Barometer {
     std::uint64_t timestamp;  ///< Ingestion timestamp of the update.
     float pressure;           ///< The atmospheric pressure measurement in [Pa].
   };
@@ -64,7 +65,7 @@ class Telemetry : DoNotCopyOrMove {
 
   /// Update models an update of the current position, speed, attitude or atmospheric pressure
   /// measurement/estimate.
-  class Update {
+  class AIRMAP_EXPORT Update {
    public:
     /// Type enumerates all known update types.
     enum class Type : std::uint8_t {

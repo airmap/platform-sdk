@@ -12,6 +12,7 @@
 #include <airmap/error.h>
 #include <airmap/flight_plan.h>
 #include <airmap/outcome.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 #include <functional>
@@ -20,13 +21,13 @@
 namespace airmap {
 
 /// FlightPlans provides functionality for managing flight plans.
-class FlightPlans : DoNotCopyOrMove {
+class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
  public:
   /// ForId bundles up types to ease interaction with
   /// FlightPlans::for_id.
-  struct ForId {
+  struct AIRMAP_EXPORT ForId {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Search for the flight with this id.
     };
@@ -40,7 +41,7 @@ class FlightPlans : DoNotCopyOrMove {
 
   /// Create bundles up types to ease interaction with
   /// FlightPlans::create_by_point and FlightPlans::create_by_polygon.
-  struct Create {
+  struct AIRMAP_EXPORT Create {
     /// Parameters bundles up input parameters.
     struct Parameters {
       std::string authorization;           ///< Authorization token obtained by logging in to the AirMap services.
@@ -68,9 +69,9 @@ class FlightPlans : DoNotCopyOrMove {
 
   /// Update bundles up types to ease interaction with
   /// FlightPlans::update.
-  struct Update {
+  struct AIRMAP_EXPORT Update {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan flight_plan;  ///< The details of the plan that should be created with the AirMap services.
     };
@@ -83,15 +84,15 @@ class FlightPlans : DoNotCopyOrMove {
 
   /// Delete bundles up types to ease interaction with
   /// FlightPlans::delete_.
-  struct Delete {
+  struct AIRMAP_EXPORT Delete {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Id of the flight plan that should be deleted.
     };
 
     /// Response models the response from the AirMap services.
-    struct Response {
+    struct AIRMAP_EXPORT Response {
       FlightPlan::Id id;  ///< Id of the flight plan that was deleted.
     };
 
@@ -104,9 +105,9 @@ class FlightPlans : DoNotCopyOrMove {
 
   /// RenderBriefing bundles up types to ease interaction with
   /// FlightPlans::render_briefing.
-  struct RenderBriefing {
+  struct AIRMAP_EXPORT RenderBriefing {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Id of the flight plan that should be rendered as a briefing.
     };
@@ -119,9 +120,9 @@ class FlightPlans : DoNotCopyOrMove {
 
   /// Submit bundles up types to ease interaction with
   /// FlightPlans::submit.
-  struct Submit {
+  struct AIRMAP_EXPORT Submit {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Id of the flight plan that should be submitted.
     };

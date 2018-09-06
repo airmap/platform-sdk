@@ -15,6 +15,7 @@
 #include <airmap/geometry.h>
 #include <airmap/optional.h>
 #include <airmap/outcome.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 #include <functional>
@@ -26,27 +27,27 @@ namespace airmap {
 
 /// Status provides functionality to query airspace and weather information about
 /// a geographic area.
-class Status : DoNotCopyOrMove {
+class AIRMAP_EXPORT Status : DoNotCopyOrMove {
  public:
   /// Color enumerates known colors assigned to advisories.
   enum class Color { green = 0, yellow = 1, orange = 2, red = 3 };
 
   /// Advisory bundles together airspace information and its evaluation in terms
   /// good to fly/needs information or feedback/conflict.
-  struct Advisory {
+  struct AIRMAP_EXPORT Advisory {
     Airspace airspace;  /// The airspace that the advisory refers to.
     Color color;        /// The evaluation of the airspace.
   };
 
   /// Wind bundles up attributes describing a wind conditions.
-  struct Wind {
+  struct AIRMAP_EXPORT Wind {
     std::uint32_t heading = 0;  ///< The heading in [°].
     std::uint32_t speed   = 0;  ///< The speed in [°].
     std::uint32_t gusting = 0;
   };
 
   /// Weather bundles up attributes describing a weather condition.
-  struct Weather {
+  struct AIRMAP_EXPORT Weather {
     std::string condition;            ///< The overall weather condition.
     std::string icon;                 ///< The icon or class of icon that should be used for display purposes.
     Wind wind;                        ///< The details about the current wind conditions.
@@ -57,7 +58,7 @@ class Status : DoNotCopyOrMove {
   };
 
   /// Report summarizes information about a geographic area.
-  struct Report {
+  struct AIRMAP_EXPORT Report {
     std::uint32_t max_safe_distance = 0;  ///< The distance to the area that is considered safe in [m].
     Color advisory_color;                 ///< The overall evaluation of all advisories.
     std::vector<Advisory> advisories;     ///< All relevant advisories.
@@ -66,9 +67,9 @@ class Status : DoNotCopyOrMove {
 
   /// GetStatus bundles up types to ease interaction
   /// with Status::get_status*.
-  struct GetStatus {
+  struct AIRMAP_EXPORT GetStatus {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Required<float> latitude;                ///< The latitude of the center point of the query.
       Required<float> longitude;               ///< The longitude of the center point of the query.
       Optional<Airspace::Type> types;          ///< Query status information for these types of airspaces.
@@ -104,8 +105,8 @@ class Status : DoNotCopyOrMove {
 };
 
 /// @cond
-std::ostream& operator<<(std::ostream& out, Status::Color color);
-std::istream& operator>>(std::istream& in, Status::Color& color);
+AIRMAP_EXPORT std::ostream& operator<<(std::ostream& out, Status::Color color);
+AIRMAP_EXPORT std::istream& operator>>(std::istream& in, Status::Color& color);
 /// @endcond
 
 }  // namespace airmap

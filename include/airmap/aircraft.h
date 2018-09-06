@@ -8,14 +8,16 @@
 #ifndef AIRMAP_AIRCRAFT_H_
 #define AIRMAP_AIRCRAFT_H_
 
+#include <airmap/visibility.h>
+
 #include <string>
 
 namespace airmap {
 
 /// Aircraft describes an aircraft in terms of its model and its manufacturer.
-struct Aircraft {
+struct AIRMAP_EXPORT Aircraft {
   /// Model bundles up a model id and a product name.
-  struct Model {
+  struct AIRMAP_EXPORT Model {
     std::string id;    ///< The unique id of the model in the context of AirMap.
     std::string name;  ///< The human-readable name of the model.
   };
@@ -23,7 +25,7 @@ struct Aircraft {
   /// Manufacturer bundles up an id and a human-readable name.
   /// Please note that the id is only unique/relevant in the context of the
   /// AirMap services.
-  struct Manufacturer {
+  struct AIRMAP_EXPORT Manufacturer {
     std::string id;    ///< The unique id of the manufacturer in the context of AirMap.
     std::string name;  ///< The human-readable name of the manufacturer.
   };

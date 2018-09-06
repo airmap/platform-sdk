@@ -12,13 +12,14 @@
 #include <airmap/flight_plan.h>
 #include <airmap/geometry.h>
 #include <airmap/pilot.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 
 namespace airmap {
 
 /// Flight bundles together properties describing an individual flight.
-struct Flight {
+struct AIRMAP_EXPORT Flight {
   using Id = std::string;
 
   Id id;                                    ///< The unique identifier of a flight in the context of AirMap.

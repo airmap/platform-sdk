@@ -11,6 +11,7 @@
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 #include <airmap/traffic.h>
+#include <airmap/visibility.h>
 
 #include <memory>
 #include <vector>
@@ -21,24 +22,24 @@ namespace airmap {
 namespace monitor {
 
 /// Client provides access to the AirMap monitor service.
-class Client : DoNotCopyOrMove {
+class AIRMAP_EXPORT Client : DoNotCopyOrMove {
  public:
   /// Configuration bundles up creation-time parameters of a Client.
-  struct Configuration {
+  struct AIRMAP_EXPORT Configuration {
     std::string endpoint;            ///< The remote endpoint hosting the service.
     std::shared_ptr<Logger> logger;  ///< The logger instance.
   };
 
   /// Updates models updates delivered to clients.
-  struct Update {
+  struct AIRMAP_EXPORT Update {
     std::vector<Traffic::Update> traffic;  ///< Traffic updates.
   };
 
   /// UpdateStream abstracts a source of incoming updates.
-  class UpdateStream : DoNotCopyOrMove {
+  class AIRMAP_EXPORT UpdateStream : DoNotCopyOrMove {
    public:
     /// Reveiver models an entity interested in receiving updates.
-    class Receiver : DoNotCopyOrMove {
+    class AIRMAP_EXPORT Receiver : DoNotCopyOrMove {
      public:
       /// handle_update is invoked for every update sent out by the service.
       virtual void handle_update(const Update& update) = 0;
@@ -55,7 +56,7 @@ class Client : DoNotCopyOrMove {
   };
 
   /// ConnectToUpdates bundles up types for calls to Client::connect_to_updates.
-  struct ConnectToUpdates {
+  struct AIRMAP_EXPORT ConnectToUpdates {
     /// Result models the outcome of calling Client::connect_to_updates.
     using Result = Outcome<std::shared_ptr<UpdateStream>, Error>;
     /// Callback models the async receiver for a call to Client::connect_to_updates.
