@@ -1,0 +1,35 @@
+syntax = "proto3";
+package airmap.telemetry;
+
+
+message AmdUavFlightUpdates {
+    repeated AmdUavFlightUpdate updates = 1;
+}
+
+message AmdUavFlightUpdate {
+    // UNIX time in Milliseconds
+    uint64 timestamp = 1;
+
+    // The flight's id.
+    string flight_id = 2;
+
+    // The recorded latitude
+    // Decimal place requirement: 7 decimal places.
+    double latitude = 3;
+
+    // The recorded longitude
+    // Decimal place requirement: 7 decimal places.
+    double longitude = 4;
+
+    // The computed direction of travel of the aircraft in degrees relative to
+    // True North.
+    float course = 5;
+
+    // Altitude Above Ground Level, meters.
+    float altitude = 6;
+
+    // The computed speed over ground along the direction of travel of the
+    // aircraft, meters per second.
+    float speed = 7;
+
+}
