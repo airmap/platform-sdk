@@ -13,7 +13,6 @@ cmake_minimum_required(VERSION 3.5)
 project(external-boost C CXX)
 
 include(ExternalProject)
-include(ProcessorCount)
 
 set(
   AIRMAP_BOOST_COMPONENTS
@@ -73,8 +72,6 @@ else ()
   message(STATUS "  toolset:     not set")
 endif ()
 
-ProcessorCount(NUM_CPUS)
-
 if(UNIX)
   set(AIRMAP_BOOST_BOOTSTRAP_COMMAND ./bootstrap.sh)
   set(AIRMAP_BOOST_B2_COMMAND ./b2)
@@ -111,7 +108,7 @@ ExternalProject_Add(boost
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_TOOLSET} 
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE} 
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_TARGET_OS} 
-      threading=multi link=static variant=release -j${NUM_CPUS}
+      threading=multi link=static variant=release
   INSTALL_COMMAND
     ${AIRMAP_BOOST_B2_COMMAND} 
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_USER_CONFIG} 
