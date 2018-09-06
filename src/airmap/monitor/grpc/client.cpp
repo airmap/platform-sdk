@@ -1,3 +1,10 @@
+//
+//  client.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/monitor/grpc/client.h>
 
 #include <airmap/codec.h>
@@ -83,7 +90,7 @@ void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::proceed(bool res
         stream_->Finish(&status_, this);
       } else {
         update_stream_ = std::make_shared<UpdateStreamImpl>();
-        context_->dispatch([ cb = cb_, us = update_stream_ ]() { cb(ConnectToUpdates::Result{us}); });
+        context_->dispatch([cb = cb_, us = update_stream_]() { cb(ConnectToUpdates::Result{us}); });
         state_ = State::streaming;
         stream_->Read(&element_, this);
       }
@@ -101,7 +108,7 @@ void airmap::monitor::grpc::Client::ConnectToUpdatesInvocation::proceed(bool res
           u.traffic.push_back(to);
         }
 
-        context_->dispatch([ us = update_stream_, u ]() { us->write_update(u); });
+        context_->dispatch([us = update_stream_, u]() { us->write_update(u); });
         stream_->Read(&element_, this);
       }
       break;

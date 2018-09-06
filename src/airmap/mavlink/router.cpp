@@ -1,3 +1,10 @@
+//
+//  router.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/router.h>
 
 airmap::mavlink::Router::Router(const std::initializer_list<std::shared_ptr<Route>>& routes) : routes_{routes} {

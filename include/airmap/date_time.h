@@ -1,3 +1,10 @@
+//
+//  date_time.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_DATE_TIME_H_
 #define AIRMAP_DATE_TIME_H_
 
@@ -138,6 +145,8 @@ DateTime parse(const std::string &s);
 std::string generate(const DateTime &dt);
 
 }  // namespace iso8601
+
+std::ostream &operator<<(std::ostream &to, const detail::Duration &from);
 
 }  // namespace airmap
 

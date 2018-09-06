@@ -1,3 +1,10 @@
+//
+//  report_weather.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/report_weather.h>
 
 #include <airmap/client.h>
@@ -107,7 +114,6 @@ cmd::ReportWeather::ReportWeather()
           };
 
           client->advisory().report_weather(params_, handler);
-
         });
 
     return context->exec({SIGINT, SIGQUIT},

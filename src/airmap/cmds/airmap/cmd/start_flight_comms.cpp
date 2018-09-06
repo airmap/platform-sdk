@@ -1,3 +1,10 @@
+//
+//  start_flight_comms.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/start_flight_comms.h>
 
 #include <airmap/client.h>

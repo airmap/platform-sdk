@@ -1,3 +1,10 @@
+//
+//  daemon.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/monitor/daemon.h>
 #include <airmap/monitor/submitting_vehicle_monitor.h>
 
@@ -62,8 +69,8 @@ airmap::monitor::Daemon::~Daemon() {
 }
 
 void airmap::monitor::Daemon::start() {
-  mavlink_channel_subscription_ = configuration_.channel->subscribe([sp = shared_from_this()](
-      const mavlink_message_t& msg) { sp->handle_mavlink_message(msg); });
+  mavlink_channel_subscription_ = configuration_.channel->subscribe(
+      [sp = shared_from_this()](const mavlink_message_t& msg) { sp->handle_mavlink_message(msg); });
   configuration_.channel->start();
 }
 

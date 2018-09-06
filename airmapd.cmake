@@ -29,6 +29,7 @@ include_directories(
   vendor/
   vendor/mavlink
   vendor/mqtt_client_cpp/include
+  vendor/cpp-jwt/include/
 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src

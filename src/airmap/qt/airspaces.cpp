@@ -1,3 +1,10 @@
+//
+//  airspaces.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/qt/airspaces.h>
 
 std::shared_ptr<airmap::qt::Airspaces> airmap::qt::Airspaces::create(const std::shared_ptr<Dispatcher>& dispatcher,
@@ -11,7 +18,7 @@ airmap::qt::Airspaces::Airspaces(const std::shared_ptr<Dispatcher>& dispatcher,
 }
 
 void airmap::qt::Airspaces::search(const Search::Parameters& parameters, const Search::Callback& cb) {
-  dispatcher_->dispatch_to_native([ this, sp = shared_from_this(), parameters, cb ]() {
+  dispatcher_->dispatch_to_native([this, sp = shared_from_this(), parameters, cb]() {
     sp->client_->airspaces().search(parameters, [this, sp, cb](const auto& result) {
       sp->dispatcher_->dispatch_to_qt([sp, result, cb]() { cb(result); });
     });
@@ -19,7 +26,7 @@ void airmap::qt::Airspaces::search(const Search::Parameters& parameters, const S
 }
 
 void airmap::qt::Airspaces::for_ids(const ForIds::Parameters& parameters, const ForIds::Callback& cb) {
-  dispatcher_->dispatch_to_native([ this, sp = shared_from_this(), parameters, cb ]() {
+  dispatcher_->dispatch_to_native([this, sp = shared_from_this(), parameters, cb]() {
     sp->client_->airspaces().for_ids(parameters, [this, sp, cb](const auto& result) {
       sp->dispatcher_->dispatch_to_qt([sp, result, cb]() { cb(result); });
     });

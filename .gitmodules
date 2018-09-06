@@ -5,6 +5,6 @@
 	path = vendor/mqtt_client_cpp
 	url = https://github.com/airmap/mqtt_client_cpp.git
 	branch = 58c3017f6f8201627434fe1e8143bef5691fd66f
-[submodule "vendor/airmap/am-protos"]
-	path = vendor/airmap/am-protos
-	url = https://github.com/airmap/am-protos.git
+[submodule "vendor/cpp-jwt"]
+	path = vendor/cpp-jwt
+	url = https://github.com/arun11299/cpp-jwt.git

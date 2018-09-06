@@ -1,3 +1,10 @@
+//
+//  tcp_route.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/boost/tcp_route.h>
 
 namespace {
@@ -45,7 +52,7 @@ void airmap::mavlink::boost::TcpRoute::stop() {
 
 // From Route
 void airmap::mavlink::boost::TcpRoute::process(const mavlink_message_t& message) {
-  io_service_->post([ sp = shared_from_this(), message ]() {
+  io_service_->post([sp = shared_from_this(), message]() {
     for (const auto& session : sp->sessions_)
       session->process(message);
   });
@@ -83,7 +90,7 @@ void airmap::mavlink::boost::TcpRoute::Session::process(const mavlink_message_t&
   EncodedBuffer eb;
   eb.set_size(mavlink_msg_to_send_buffer(eb.data(), &message));
 
-  io_service_->post([ sp = shared_from_this(), eb = std::move(eb) ]() {
+  io_service_->post([sp = shared_from_this(), eb = std::move(eb)]() {
     sp->buffers_.emplace(eb);
     if (sp->buffers_.size() == 1)
       sp->process();
@@ -93,8 +100,8 @@ void airmap::mavlink::boost::TcpRoute::Session::process(const mavlink_message_t&
 void airmap::mavlink::boost::TcpRoute::Session::process() {
   const auto& eb = buffers_.front();
 
-  ::boost::asio::async_write(socket_, ::boost::asio::buffer(eb.data(), eb.size()),
-                             ::boost::asio::transfer_all(), [sp = shared_from_this()](const auto& error, auto) {
+  ::boost::asio::async_write(socket_, ::boost::asio::buffer(eb.data(), eb.size()), ::boost::asio::transfer_all(),
+                             [sp = shared_from_this()](const auto& error, auto) {
                                sp->buffers_.pop();
 
                                if (error) {

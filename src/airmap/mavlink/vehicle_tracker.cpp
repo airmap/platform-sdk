@@ -1,3 +1,10 @@
+//
+//  vehicle_tracker.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/vehicle_tracker.h>
 
 void airmap::mavlink::VehicleTracker::update(const mavlink_message_t& msg) {

@@ -1,3 +1,10 @@
+//
+//  request.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/net/http/boost/request.h>
 
 namespace asio = boost::asio;

@@ -1,3 +1,10 @@
+//
+//  telemetry_submitter.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/monitor/telemetry_submitter.h>
 
 #include <boost/uuid/uuid.hpp>
@@ -211,7 +218,7 @@ void airmap::monitor::TelemetrySubmitter::request_end_active_flights() {
     params.authorization = authorization_.get();
     params.id            = flight.id;
 
-    client_->flights().end_flight(params, [ sp = shared_from_this(), id = flight.id ](const auto& result) {
+    client_->flights().end_flight(params, [sp = shared_from_this(), id = flight.id](const auto& result) {
       if (result) {
         sp->handle_request_end_active_flight_finished(id);
       } else {
@@ -271,7 +278,7 @@ void airmap::monitor::TelemetrySubmitter::request_create_flight_plan() {
                                  [](Geometry::Coordinate const& lhs, Geometry::Coordinate const& rhs) {
                                    return lhs.altitude.get() < rhs.altitude.get();
                                  });
-      params.max_altitude = it->altitude.get();
+      params.max_altitude     = it->altitude.get();
       client_->flight_plans().create_by_polygon(params, [sp = shared_from_this()](const auto& result) {
         if (result) {
           sp->handle_request_create_flight_plan_finished(result.value());

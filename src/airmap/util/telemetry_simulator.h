@@ -1,3 +1,10 @@
+//
+//  telemetry_simulator.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_UTIL_TELEMETRY_SIMULATOR_H_
 #define AIRMAP_UTIL_TELEMETRY_SIMULATOR_H_
 

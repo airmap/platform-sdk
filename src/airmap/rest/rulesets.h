@@ -1,3 +1,10 @@
+//
+//  rulesets.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_REST_RULESETS_H_
 #define AIRMAP_REST_RULESETS_H_
 

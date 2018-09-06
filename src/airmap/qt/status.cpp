@@ -1,3 +1,10 @@
+//
+//  status.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/qt/status.h>
 
 std::shared_ptr<airmap::qt::Status> airmap::qt::Status::create(const std::shared_ptr<Dispatcher>& dispatcher,
@@ -10,7 +17,7 @@ airmap::qt::Status::Status(const std::shared_ptr<Dispatcher>& dispatcher, const 
 }
 
 void airmap::qt::Status::get_status_by_point(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) {
-  dispatcher_->dispatch_to_native([ this, sp = shared_from_this(), parameters, cb ]() {
+  dispatcher_->dispatch_to_native([this, sp = shared_from_this(), parameters, cb]() {
     sp->client_->status().get_status_by_point(parameters, [this, sp, cb](const auto& result) {
       sp->dispatcher_->dispatch_to_qt([sp, result, cb]() { cb(result); });
     });
@@ -18,7 +25,7 @@ void airmap::qt::Status::get_status_by_point(const GetStatus::Parameters& parame
 }
 
 void airmap::qt::Status::get_status_by_path(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) {
-  dispatcher_->dispatch_to_native([ this, sp = shared_from_this(), parameters, cb ]() {
+  dispatcher_->dispatch_to_native([this, sp = shared_from_this(), parameters, cb]() {
     sp->client_->status().get_status_by_path(parameters, [this, sp, cb](const auto& result) {
       sp->dispatcher_->dispatch_to_qt([sp, result, cb]() { cb(result); });
     });
@@ -26,7 +33,7 @@ void airmap::qt::Status::get_status_by_path(const GetStatus::Parameters& paramet
 }
 
 void airmap::qt::Status::get_status_by_polygon(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) {
-  dispatcher_->dispatch_to_native([ this, sp = shared_from_this(), parameters, cb ]() {
+  dispatcher_->dispatch_to_native([this, sp = shared_from_this(), parameters, cb]() {
     sp->client_->status().get_status_by_polygon(parameters, [this, sp, cb](const auto& result) {
       sp->dispatcher_->dispatch_to_qt([sp, result, cb]() { cb(result); });
     });

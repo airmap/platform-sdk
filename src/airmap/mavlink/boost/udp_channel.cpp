@@ -1,3 +1,10 @@
+//
+//  udp_channel.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/boost/udp_channel.h>
 
 namespace {

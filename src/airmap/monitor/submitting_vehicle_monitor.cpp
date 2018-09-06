@@ -1,3 +1,10 @@
+//
+//  submitting_vehicle_monitor.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/monitor/submitting_vehicle_monitor.h>
 
 airmap::monitor::SubmittingVehicleMonitor::SubmittingVehicleMonitor(

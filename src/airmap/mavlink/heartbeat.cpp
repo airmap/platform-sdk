@@ -1,3 +1,10 @@
+//
+//  heartbeat.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/heartbeat.h>
 
 #include <iostream>

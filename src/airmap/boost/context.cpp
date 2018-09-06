@@ -1,3 +1,10 @@
+//
+//  context.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/boost/context.h>
 
 #include <airmap/net/http/boost/requester.h>

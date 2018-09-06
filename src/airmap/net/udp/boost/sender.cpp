@@ -1,3 +1,10 @@
+//
+//  sender.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/net/udp/boost/sender.h>
 
 #include <airmap/util/fmt.h>
@@ -51,7 +58,7 @@ airmap::net::udp::boost::Sender::Sender(const std::string& host, std::uint16_t p
 void airmap::net::udp::boost::Sender::send(const std::string& message, const Callback& cb) {
   auto query = ::boost::asio::ip::udp::resolver::query{host_, std::to_string(port_),
                                                        ::boost::asio::ip::udp::resolver::query::passive};
-  resolver_.async_resolve(query, [ this, sp = shared_from_this(), message, cb ](const auto& ec, auto iterator) {
+  resolver_.async_resolve(query, [this, sp = shared_from_this(), message, cb](const auto& ec, auto iterator) {
     if (ec) {
       cb(Result{std::make_exception_ptr(std::runtime_error{fmt::sprintf("failed to resolve host: %s", ec.message())})});
     } else {

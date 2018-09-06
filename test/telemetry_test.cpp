@@ -1,3 +1,10 @@
+//
+//  telemetry_test.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/rest/telemetry.h>
 
 #include <boost/beast/core/detail/base64.hpp>

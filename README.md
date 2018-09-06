@@ -1,21 +1,25 @@
-# airmapd [ ![CircleCI](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd.svg?style=svg&circle-token=14a0fc3307775671f97988bd781b674977671dd8) ](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd) {#mainpage}
+# AirMap Platform SDK
 
-`airmapd` is the representation of AirMap's services on the client side, ranging from desktop machines running a ground-control station to drones featuring a companion computer. From a high-level point of view, `airmapd`
+<!-- [ ![CircleCI](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd.svg?style=svg&circle-token=14a0fc3307775671f97988bd781b674977671dd8) ](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd)-->
+
+
+The `AirMap Platform SDK` is the representation of AirMap's services on the client side, ranging from desktop machines running a ground-control station to drones featuring a companion computer. From a high-level point of view, The `AirMap Platform SDK`
+
  - exposes the AirMap services to client applications
  - constitutes a representation of AirMap on drones, taking on mission control and data acquisition tasks
 
-The following diagrams illustrate both perspectives:
+The following diagram illustrate both perspectives:
 
-![desktop perspective](doc/images/desktop-perspective.png)
-![vehicle perspective](doc/images/vehicle-perspective.png)
+![diagrams](doc/images/airmap-platform-sdk-diagrams.png)
 
 This project has two main deliverables:
+
  - the executable `airmap` featuring a `git`-like layout of subcommands
  - the shared library `libairmap` (with a platform-specific suffix)
 
 ## Integration With Other Projects
 
-This section describes the steps to integrate and use airmapd in the scope of another project, e.g., a mission planner.
+This section describes the steps to integrate and use the AirMap Platform SDK in the scope of another project, e.g., a mission planner.
 Please note that our primary development and deployment targets are Linux and MacOS at this point in time. We are actively working on builds for:
 
  * MS Windows
@@ -24,8 +28,8 @@ Please note that our primary development and deployment targets are Linux and Ma
 
 The following steps provide you with a set of libraries and headers ready for consumption in your project:
  * Install build dependencies following the guidelines in section 'Setup & Dependencies'
- * Clone the `airmapd` repo: `git clone https://github.com/airmap/airmapd.git`
- * Build & install `airmapd`: `mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/choose/the/install/path .. && make && make doc && make install`
+ * Clone the `airmap-platform-sdk` repo: `git clone https://github.com/airmap/platform-sdk.git`
+ * Build & install the `AirMap Platform SDK`: `mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/choose/the/install/path .. && make && make doc && make install`
  * Find the API documentation in `build/doc/html/index.html`
 
 Adjust the build configuration of your project:
@@ -45,13 +49,13 @@ Pull in `airmap` services and functionality following the examples given in:
 
 ## Source Code Layout
 
-The public facing API of `airmapd` can be found in `${AIRMAPD_ROOT}/include/airmap`. At this point in time, the interface
+The public facing API of the `AirMap Platform SDK` can be found in `${AIRMAPD_ROOT}/include/airmap`. At this point in time, the interface
 structure closely resembles the current ReST API exposed by AirMap. Going forward, the client-facing API will change, though,
 and expose higher-level concepts.
 
 The implementation is structured as followed:
  - `src/airmap`: General implementation, most importantly:
-   - `${AIRMAPD_ROOT}/src/airmap/daemon.h` and `${AIRMAPD_ROOT}/src/airmap/daemon.cpp` implementing `airmapd`
+   - `${AIRMAPD_ROOT}/src/airmap/daemon.h` and `${AIRMAPD_ROOT}/src/airmap/daemon.cpp` implementing the `AirMap Platform SDK`
  - `src/airmap/boost`: Point-of-entry to the boost-based implementation of core platform components
  - `src/airmap/cmds`: Command-line executables
  - `src/airmap/codec`: Encoding and decoding of core data types and structures into different formats
@@ -63,13 +67,13 @@ The implementation is structured as followed:
 
 ## Development Workflow
 
-`airmapd` uses CMake for building and testing. We envision the following development workflow:
-```
-# Clone airmapd and all its dependencies
-git clone --recursive https://github.com/airmap/airmapd.git
+The `AirMap Platform SDK` uses CMake for building and testing. We envision the following development workflow:
+
+```# Clone airmapd and all its dependencies
+git clone --recursive https://github.com/airmap/platform-sdk.git
 # Update Submodules
 git submodule update --init --recursive
-# Please execute these commands at the root of the source tree (DON'T FOLLOW the commands below if you intend to build airmapd in Ubuntu/Docker)
+# Please execute these commands at the root of the source tree (DON'T FOLLOW the commands below if you intend to build the AirMap Platform SDK in Ubuntu/Docker)
 mkdir build
 cd build && cmake .. && make
 # Do some changes, iterate, be happy, get ready to issue a PR
@@ -79,7 +83,7 @@ make format
 ## Setup & Dependencies:
 
 ### Ubuntu
-Run the following commands from the top-level `airmapd` folder:
+Run the following commands from the top-level the `AirMap Platform SDK` folder:
 
 ```
 tools/ubuntu/setup.dev.sh
@@ -90,7 +94,7 @@ make
 ```
 
 ### Docker with Ubuntu
-Make sure that you start with a clean environment (fresh clone of airmapd and no attempts to build outside of docker)
+Make sure that you start with a clean environment (fresh clone of the AirMap Platform SDK and no attempts to build outside of docker)
 Run the following commands from the top-level `airmapd` folder:
 
 ```
@@ -103,7 +107,7 @@ make
 ```
 
 ### Raspberry Pi
-We provide `airmapd` as a docker image to the Raspberry Pi. Building the docker container requires a linux host as we rely on `qemu` to cross-build on x86 machines. Run the following commands from the top-level `airmapd` folder:
+We provide the `AirMap Platform SDK` as a docker image to the Raspberry Pi. Building the docker container requires a linux host as we rely on `qemu` to cross-build on x86 machines. Run the following commands from the top-level `AirMap Platform SDK` folder:
 ```
 tools/rpi/build-docker-image.sh
 ```
@@ -111,7 +115,7 @@ tools/rpi/build-docker-image.sh
 ### macOS - homebrew
 Run the following commands:
 ```
-brew tap airmap/airmapd https://github.com/airmap/airmapd.git
+brew tap airmap/airmapd https://github.com/airmap/platform-sdk.git
 brew install airmapd
 ```
 Please note that the recent updates to macOS and XCode (in 9.2017) break the cmake brew formula in version 3.9.3 (see https://gitlab.kitware.com/cmake/cmake/issues/17101 for the details). Please downgrade your brew cmake installation to 3.9.2 or 3.9.1 (whichever is available). This can be accomplished with `brew switch`.
@@ -121,7 +125,7 @@ brew switch cmake 3.9.1
 ```
 
 ### macOS - Build Manually
-Run the following commands from the top-level `airmapd` folder:
+Run the following commands from the top-level the `AirMap Platform SDK` folder:
 ```
 tools/osx/setup.sh
 mkdir build
@@ -176,8 +180,3 @@ If you have a proper AirMap account and authenticated previously, you can renew 
 ```
 airmap login --renew=true
 ```
-
-## Running `airmapd` on Intel Aero
-Please refer to
- * https://airmap.atlassian.net/wiki/spaces/AIRMAP/pages/69992501/Intel+Aero for Intel Aero setup instructions.
- * https://github.com/airmap/intel-aero for scripts and identities that help in provisioning Intel.

@@ -1,3 +1,10 @@
+//
+//  scenario_simulator.h
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #ifndef AIRMAP_UTIL_SCENARIO_SIMULATOR_H_
 #define AIRMAP_UTIL_SCENARIO_SIMULATOR_H_
 
@@ -49,6 +56,7 @@ struct Scenario {
   std::string name;
   std::string description;
   Participants participants;
+  Optional<Seconds> duration;
 };
 
 class ScenarioSimulator {

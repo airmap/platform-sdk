@@ -1,3 +1,10 @@
+//
+//  mission.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/mavlink/mission.h>
 
 bool airmap::mavlink::Mission::update(const mavlink_message_t& msg) {

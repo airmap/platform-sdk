@@ -1,3 +1,10 @@
+//
+//  scenario_simulator.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/util/scenario_simulator.h>
 
 #include <airmap/codec.h>
@@ -67,6 +74,7 @@ void airmap::util::from_json(const nlohmann::json& j, Scenario& s) {
   codec::json::get(s.name, j, "name");
   codec::json::get(s.description, j, "description");
   codec::json::get(s.participants, j, "participants");
+  codec::json::get(s.duration, j, "duration");
 }
 
 void airmap::util::from_json(const nlohmann::json& j, Scenario::Participant& p) {

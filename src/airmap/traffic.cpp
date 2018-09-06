@@ -1,3 +1,10 @@
+//
+//  traffic.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/traffic.h>
 
 #include <airmap/util/formatting_logger.h>

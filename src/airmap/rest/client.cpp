@@ -1,3 +1,10 @@
+//
+//  client.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/rest/client.h>
 
 airmap::rest::Client::Client(const Configuration& configuration, const std::shared_ptr<Context>& parent,

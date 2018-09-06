@@ -1,3 +1,10 @@
+//
+//  monitor_mids.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/cmds/airmap/cmd/monitor_mids.h>
 
 #include <airmap/client.h>

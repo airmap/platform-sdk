@@ -1,3 +1,10 @@
+//
+//  date_time.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/codec/grpc/date_time.h>
 
 void airmap::codec::grpc::decode(const ::google::protobuf::Timestamp& from, DateTime& to) {

@@ -1,3 +1,10 @@
+//
+//  date_time.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/date_time.h>
 
 #include <boost/date_time.hpp>
@@ -229,4 +236,9 @@ std::string airmap::iso8601::generate(const DateTime& dt) {
   oss << boost_dt;
 
   return oss.str();
+}
+
+std::ostream& airmap::operator<<(std::ostream& to, const airmap::detail::Duration& from) {
+  to << from.total_seconds();
+  return to;
 }

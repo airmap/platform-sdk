@@ -1,3 +1,10 @@
+//
+//  requester.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #include <airmap/net/http/boost/request.h>
 
 #include <airmap/net/http/boost/requester.h>
@@ -127,15 +134,17 @@ void airmap::net::http::boost::Requester::delete_(const std::string& path,
     request.set(pair.first, pair.second);
   request.prepare_payload();
 
-  resolver_.async_resolve(tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive), [
-    this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)
-  ](const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
-    if (ec) {
-      cb(Result(wrap_error_code(ec)));
-    } else {
-      request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})->start();
-    }
-  });
+  resolver_.async_resolve(
+      tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive),
+      [this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)](
+          const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
+        if (ec) {
+          cb(Result(wrap_error_code(ec)));
+        } else {
+          request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})
+              ->start();
+        }
+      });
 }
 
 void airmap::net::http::boost::Requester::get(const std::string& path,
@@ -151,15 +160,17 @@ void airmap::net::http::boost::Requester::get(const std::string& path,
     request.set(pair.first, pair.second);
   request.prepare_payload();
 
-  resolver_.async_resolve(tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive), [
-    this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)
-  ](const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
-    if (ec) {
-      cb(Result(wrap_error_code(ec)));
-    } else {
-      request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})->start();
-    }
-  });
+  resolver_.async_resolve(
+      tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive),
+      [this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)](
+          const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
+        if (ec) {
+          cb(Result(wrap_error_code(ec)));
+        } else {
+          request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})
+              ->start();
+        }
+      });
 }
 
 void airmap::net::http::boost::Requester::patch(const std::string& path,
@@ -177,15 +188,17 @@ void airmap::net::http::boost::Requester::patch(const std::string& path,
   request.body() = std::move(body);
   request.prepare_payload();
 
-  resolver_.async_resolve(tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive), [
-    this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)
-  ](const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
-    if (ec) {
-      cb(Result(wrap_error_code(ec)));
-    } else {
-      request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})->start();
-    }
-  });
+  resolver_.async_resolve(
+      tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive),
+      [this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)](
+          const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
+        if (ec) {
+          cb(Result(wrap_error_code(ec)));
+        } else {
+          request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})
+              ->start();
+        }
+      });
 }
 
 void airmap::net::http::boost::Requester::post(const std::string& path,
@@ -203,13 +216,15 @@ void airmap::net::http::boost::Requester::post(const std::string& path,
   request.body() = std::move(body);
   request.prepare_payload();
 
-  resolver_.async_resolve(tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive), [
-    this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)
-  ](const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
-    if (ec) {
-      cb(Result(wrap_error_code(ec)));
-    } else {
-      request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})->start();
-    }
-  });
+  resolver_.async_resolve(
+      tcp::resolver::query(host_, std::to_string(port_), tcp::resolver::query::passive),
+      [this, sp = shared_from_this(), request = std::move(request), cb = std::move(cb)](
+          const ::boost::system::error_code& ec, tcp::resolver::iterator iterator) {
+        if (ec) {
+          cb(Result(wrap_error_code(ec)));
+        } else {
+          request_factory_(Request::Configuration{log_.logger(), io_service_, *iterator, request, std::move(cb)})
+              ->start();
+        }
+      });
 }

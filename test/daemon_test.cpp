@@ -1,3 +1,10 @@
+//
+//  daemon_test.cpp
+//  AirMap Platform SDK
+//
+//  Copyright © 2018 AirMap, Inc. All rights reserved.
+//
+
 #define BOOST_TEST_MODULE daemon
 
 #include <airmap/boost/context.h>
