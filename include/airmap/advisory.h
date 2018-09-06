@@ -8,6 +8,7 @@
 #ifndef AIRMAP_ADVISORY_H_
 #define AIRMAP_ADVISORY_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/airspace.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
@@ -29,7 +30,7 @@ namespace airmap {
 
 /// Advisory provides functionality to query airspace and weather information about
 /// a geographic area.
-class Advisory : DoNotCopyOrMove {
+class AIRMAP_EXPORT Advisory : DoNotCopyOrMove {
  public:
   /// Advisory bundles together airspace information and its evaluation in terms
   /// good to fly/needs information or feedback/conflict.

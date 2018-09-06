@@ -8,6 +8,7 @@
 #ifndef AIRMAP_QT_CLIENT_H_
 #define AIRMAP_QT_CLIENT_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/client.h>
 #include <airmap/context.h>
 #include <airmap/error.h>
@@ -26,7 +27,7 @@ namespace qt {
 ///
 /// All callback invocations that might happen in the context of a Client instance
 /// are dispatched to the Qt applications' main thread.
-class Client : public QObject, public airmap::Client {
+class AIRMAP_EXPORT Client : public QObject, public airmap::Client {
  public:
   using CreateResult   = Outcome<Client*, Error>;
   using CreateCallback = std::function<void(const CreateResult&)>;

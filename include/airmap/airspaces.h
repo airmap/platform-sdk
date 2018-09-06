@@ -8,6 +8,7 @@
 #ifndef AIRMAP_AIRSPACES_H_
 #define AIRMAP_AIRSPACES_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/airspace.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
@@ -20,7 +21,7 @@
 namespace airmap {
 
 /// Airspaces provides functionality to query the airspace database.
-class Airspaces : DoNotCopyOrMove {
+class AIRMAP_EXPORT Airspaces : DoNotCopyOrMove {
  public:
   /// ForIds groups together types to ease interaction with
   /// Airspaces::ForIds.

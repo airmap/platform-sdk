@@ -8,6 +8,7 @@
 #ifndef AIRMAP_TRAFFIC_H_
 #define AIRMAP_TRAFFIC_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
@@ -24,7 +25,7 @@ namespace airmap {
 
 /// Traffic provides access to the AirMap situational awareness
 /// and traffic alerts.
-class Traffic : DoNotCopyOrMove {
+class AIRMAP_EXPORT Traffic : DoNotCopyOrMove {
  public:
   /// Update bundles together information about aerial traffic
   /// relevant to a UAV flight.
@@ -128,7 +129,7 @@ class Traffic : DoNotCopyOrMove {
 };
 
 /// operator<< inserts a textual representation of type into out.
-std::ostream& operator<<(std::ostream& out, Traffic::Update::Type type);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Traffic::Update::Type type);
 
 }  // namespace airmap
 

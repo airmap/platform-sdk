@@ -1,3 +1,5 @@
+include(GenerateExportHeader)
+
 set(
   AIRMAP_PLATFORM_SRCS
   platform/null/interface.h
@@ -44,13 +46,13 @@ set(
 add_custom_command(
   OUTPUT ${AIRMAP_TELEMETRY_PROTOBUF_SOURCES}
 
-  COMMAND $<TARGET_FILE:protobuf::protoc>
+  COMMAND /tmp/macos/airmapd/build/external/protobuf/bin/protoc
     --cpp_out ${CMAKE_CURRENT_BINARY_DIR}
     --proto_path ${CMAKE_SOURCE_DIR}/vendor/airmap/am-protos/protos/telemetry/
     --proto_path ${CMAKE_CURRENT_SOURCE_DIR}/rest/
     ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
 
-  DEPENDS $<TARGET_FILE:protobuf::protoc> ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
+  DEPENDS ${AIRMAP_TELEMETRY_PROTOBUF_PROTOS}
   COMMENT "Generating C++ code for AirMap telemetry interfaces"
   VERBATIM)
 
@@ -65,7 +67,7 @@ include_directories(
 )
 
 add_library(
-  airmap-mavlink
+  airmap-mavlink STATIC
 
   mavlink/channel.h
   mavlink/channel.cpp
@@ -282,7 +284,7 @@ add_library(
 )
 
 add_library(
-  airmap-grpc
+  airmap-grpc STATIC
 
   grpc/init.h
   grpc/init.cpp
@@ -298,7 +300,7 @@ add_library(
 )
 
 add_library(
-  airmap-monitor
+  airmap-monitor STATIC
 
   monitor/daemon.h
   monitor/daemon.cpp
@@ -355,6 +357,8 @@ add_library(
   qt/traffic.cpp
   qt/types.cpp
 )
+
+generate_export_header(airmap-qt BASE_NAME airmap)
 
 add_executable(
   airmap
@@ -422,7 +426,7 @@ add_executable(
 
 target_include_directories(
   airmap-client
-  PRIVATE $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>)
+  SYSTEM PRIVATE $<TARGET_PROPERTY:gRPC::grpc++,INTERFACE_INCLUDE_DIRECTORIES>)
 
 set_property(
   TARGET airmap-client
@@ -451,12 +455,15 @@ set_target_properties(
   VERSION           "${AIRMAPD_VERSION_MAJOR}"
 )
 
+  set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG 1)
 set_target_properties(
   airmap-qt PROPERTIES
 
   CXX_STANDARD      14
   SOVERSION         "${AIRMAPD_VERSION_MAJOR}.${AIRMAPD_VERSION_MINOR}.${AIRMAPD_VERSION_PATCH}"
   VERSION           "${AIRMAPD_VERSION_MAJOR}"
+  BUILD_WITH_INSTALL_RPATH TRUE
+  INSTALL_NAME_DIR @rpath
 )
 
 set_property(
@@ -538,4 +545,9 @@ install(
 install(
   DIRECTORY ${CMAKE_SOURCE_DIR}/include/airmap
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+  FILES
+  ${PROJECT_BINARY_DIR}/airmap_export.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

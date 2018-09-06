@@ -8,6 +8,7 @@
 #ifndef AIRMAP_AIRCRAFTS_H_
 #define AIRMAP_AIRCRAFTS_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/aircraft.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
@@ -22,7 +23,7 @@ namespace airmap {
 
 /// Aircrafts models access to a database of aircraft models (specifically drones)
 /// and manufacturers.
-class Aircrafts : DoNotCopyOrMove {
+class AIRMAP_EXPORT Aircrafts : DoNotCopyOrMove {
  public:
   /// Manufacturers groups together types to ease interaction with
   /// Aircrafts::manufacturers.

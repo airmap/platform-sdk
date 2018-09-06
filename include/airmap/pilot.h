@@ -8,6 +8,7 @@
 #ifndef AIRMAP_PILOT_H_
 #define AIRMAP_PILOT_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/aircraft.h>
 #include <airmap/date_time.h>
 #include <airmap/optional.h>
@@ -20,7 +21,7 @@
 namespace airmap {
 
 /// Pilot bundles up all properties describing a pilot on the AirMap services.
-struct Pilot {
+struct AIRMAP_EXPORT Pilot {
   /// Aircraft describes a vehicle owned by a Pilot.
   struct Aircraft {
     std::string id;          ///< The unique id of the vehicle in the context of AirMap.

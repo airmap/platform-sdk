@@ -8,6 +8,7 @@
 #ifndef AIRMAP_FLIGHT_H_
 #define AIRMAP_FLIGHT_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/date_time.h>
 #include <airmap/flight_plan.h>
 #include <airmap/geometry.h>
@@ -18,7 +19,7 @@
 namespace airmap {
 
 /// Flight bundles together properties describing an individual flight.
-struct Flight {
+struct AIRMAP_EXPORT Flight {
   using Id = std::string;
 
   Id id;                                    ///< The unique identifier of a flight in the context of AirMap.

@@ -58,6 +58,8 @@ Q_DECLARE_METATYPE(airmap::Traffic::Update::Type)
 Q_DECLARE_METATYPE(airmap::Traffic::Update)
 Q_DECLARE_METATYPE(airmap::Version)
 
+#include "airmap/airmap_export.h"
+
 namespace airmap {
 namespace qt {
 
@@ -65,7 +67,7 @@ namespace qt {
 ///
 /// This function has to be called at least once to be able to use airmap::*
 /// types in queued signal-slot connections.
-void register_types();
+void AIRMAP_EXPORT register_types();
 
 }  // namespace qt
 }  // namespace airmap

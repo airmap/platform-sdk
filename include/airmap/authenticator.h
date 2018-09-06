@@ -8,6 +8,7 @@
 #ifndef AIRMAP_AUTHENTICATOR_H_
 #define AIRMAP_AUTHENTICATOR_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/credentials.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
@@ -22,7 +23,7 @@
 namespace airmap {
 
 /// Authenticator provides functionality to authenticate with the AirMap services.
-class Authenticator : DoNotCopyOrMove {
+class AIRMAP_EXPORT Authenticator : DoNotCopyOrMove {
  public:
   /// Scope enumerates all known authentication scopes.
   enum class Scope { access_token = 0, open_id = 1, open_id_offline_access = 2 };

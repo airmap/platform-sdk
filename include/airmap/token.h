@@ -8,6 +8,7 @@
 #ifndef AIRMAP_TOKEN_H_
 #define AIRMAP_TOKEN_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/optional.h>
 
 #include <chrono>
@@ -17,7 +18,7 @@
 namespace airmap {
 
 /// Token models an authentication token required to access the AirMap services.
-class Token {
+class AIRMAP_EXPORT Token {
  public:
   /// Type enumerates all known token types.
   enum class Type {
@@ -109,15 +110,15 @@ class Token {
 };
 
 /// operator<< inserts type into out.
-std::ostream& operator<<(std::ostream& out, Token::Type type);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Token::Type type);
 /// operator>> extracts type from in.
-std::istream& operator>>(std::istream& in, Token::Type& type);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, Token::Type& type);
 /// operator== returns true iff lhs equals rhs.
-bool operator==(const Token::OAuth& lhs, const Token::OAuth& rhs);
+bool AIRMAP_EXPORT operator==(const Token::OAuth& lhs, const Token::OAuth& rhs);
 /// operator== returns true iff lhs equals rhs.
-bool operator==(Token::OAuth::Type lhs, Token::OAuth::Type rhs);
+bool AIRMAP_EXPORT operator==(Token::OAuth::Type lhs, Token::OAuth::Type rhs);
 /// operator== returns true iff lhs equals rhs.
-bool operator==(const Token::Refreshed& lhs, const Token::Refreshed& rhs);
+bool AIRMAP_EXPORT operator==(const Token::Refreshed& lhs, const Token::Refreshed& rhs);
 
 }  // namespace airmap
 

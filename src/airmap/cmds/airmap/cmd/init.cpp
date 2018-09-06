@@ -83,7 +83,8 @@ cmd::Init::Init()
         editor = le;
       }
 
-      std::system(fmt::sprintf("%s %s", editor, config_file_.get()).c_str());
+      // TODO: This does not compile on iOS, need to find a solution here.
+      // std::system(fmt::sprintf("%s %s", editor, config_file_.get()).c_str());
     }
 
     return 0;

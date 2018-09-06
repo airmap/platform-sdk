@@ -8,6 +8,7 @@
 #ifndef AIRMAP_FLIGHTS_H_
 #define AIRMAP_FLIGHTS_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
@@ -23,7 +24,7 @@
 namespace airmap {
 
 /// Flights provides functionality for managing flights.
-class Flights : DoNotCopyOrMove {
+class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
  public:
   /// ForId bundles up types to ease interaction with
   /// Flights::for_id.

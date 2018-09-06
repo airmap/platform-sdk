@@ -8,6 +8,7 @@
 #ifndef AIRMAP_CONTEXT_H_
 #define AIRMAP_CONTEXT_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/client.h>
 #include <airmap/date_time.h>
 #include <airmap/do_not_copy_or_move.h>
@@ -23,7 +24,7 @@ namespace airmap {
 
 /// Context consitutes the point-of-entry for interaction with the classes and interfaces
 /// in airmap::*.
-class Context : DoNotCopyOrMove {
+class AIRMAP_EXPORT Context : DoNotCopyOrMove {
  public:
   /// ReturnCode enumerates all known return values for a call to run or exec.
   enum class ReturnCode {

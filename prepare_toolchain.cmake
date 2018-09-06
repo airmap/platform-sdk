@@ -1,0 +1,40 @@
+set(AIRMAPD_TARGET_PLATFORM "default" CACHE STRING "Platform to build for")
+set_property(CACHE AIRMAPD_TARGET_PLATFORM PROPERTY STRINGS android_x86 android_x86_64 android_armeabi-v7a android_arm64-v8a ios ios_simulator)
+
+if (AIRMAPD_TARGET_PLATFORM MATCHES "android_*")
+    message(STATUS "Building for Android (${AIRMAPD_TARGET_PLATFORM})")
+
+    if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+        message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE must be defined!")
+    else()
+        message(STATUS "    CMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+    endif()
+
+    set(ANDROID_STL "c++_static")
+    message(STATUS "    Setting ANDROID_STL=${ANDROID_STL}")
+
+    string(REGEX REPLACE "android_(.*$)" "\\1" ANDROID_ABI ${AIRMAPD_TARGET_PLATFORM})
+    message(STATUS "    Setting ANDROID_ABI=${ANDROID_ABI}")
+
+    if (ANDROID_ABI STREQUAL "armeabi-v7a")
+        set(ANDROID_PLATFORM "android-16")
+        message(STATUS "    Setting ANDROID_PLATFORM=${ANDROID_PLATFORM}")
+    endif()
+elseif(AIRMAPD_TARGET_PLATFORM MATCHES "ios*")
+    message(STATUS "Building for iOS (${AIRMAPD_TARGET_PLATFORM})")
+
+    if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+        message(STATUS "    CMAKE_TOOLCHAIN_FILE is not defined; it will be set automatically")
+        set(CMAKE_TOOLCHAIN_FILE "iOS.cmake")
+    endif()
+    message(STATUS "    Setting CMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+
+    if (AIRMAPD_TARGET_PLATFORM STREQUAL "ios_simulator")
+        set(IOS_PLATFORM "SIMULATOR")
+    else()
+        set(IOS_PLATFORM "OS")
+    endif()
+    message(STATUS "    Setting IOS_PLATFORM=${IOS_PLATFORM}")
+else()
+    message(STATUS "Building for host platform")
+endif()

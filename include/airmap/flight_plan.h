@@ -8,6 +8,7 @@
 #ifndef AIRMAP_FLIGHT_PLAN_H_
 #define AIRMAP_FLIGHT_PLAN_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/date_time.h>
 #include <airmap/evaluation.h>
 #include <airmap/geometry.h>
@@ -25,7 +26,7 @@
 namespace airmap {
 
 /// FlightPlan bundles together properties describing a plan for a flight.
-struct FlightPlan {
+struct AIRMAP_EXPORT FlightPlan {
   /// Id models a unique identifier for a flight plan in the context of AirMap.
   using Id = std::string;
 

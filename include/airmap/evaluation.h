@@ -8,6 +8,7 @@
 #ifndef AIRMAP_EVALUATION_H_
 #define AIRMAP_EVALUATION_H_
 
+#include <airmap/airmap_export.h>
 #include <airmap/optional.h>
 #include <airmap/ruleset.h>
 #include <airmap/status.h>
@@ -21,7 +22,7 @@
 namespace airmap {
 
 /// Evaluation bundles together information regarding an airspace ruleset evaluation.
-struct Evaluation {
+struct AIRMAP_EXPORT Evaluation {
   /// Authority models an authority capable of authorizing flight plans.
   struct Authority {
     std::string id;    ///< The id of the authority.
@@ -81,14 +82,14 @@ struct Evaluation {
 };
 
 /// @cond
-std::ostream& operator<<(std::ostream& out, Evaluation::Authorization::Status status);
-std::istream& operator>>(std::istream& in, Evaluation::Authorization::Status& status);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Evaluation::Authorization::Status status);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, Evaluation::Authorization::Status& status);
 
-std::ostream& operator<<(std::ostream& out, Evaluation::Validation::Status status);
-std::istream& operator>>(std::istream& in, Evaluation::Validation::Status& status);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Evaluation::Validation::Status status);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, Evaluation::Validation::Status& status);
 
-std::ostream& operator<<(std::ostream& out, Evaluation::Failure failure);
-std::istream& operator>>(std::istream& in, Evaluation::Failure& failure);
+std::ostream& AIRMAP_EXPORT operator<<(std::ostream& out, Evaluation::Failure failure);
+std::istream& AIRMAP_EXPORT operator>>(std::istream& in, Evaluation::Failure& failure);
 /// @endcond
 
 }  // namespace airmap

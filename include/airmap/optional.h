@@ -8,6 +8,7 @@
 #ifndef AIRMAP_OPTIONAL_H_
 #define AIRMAP_OPTIONAL_H_
 
+#include <airmap/airmap_export.h>
 #include <iostream>
 #include <type_traits>
 
@@ -15,7 +16,7 @@ namespace airmap {
 
 /// Optional manages an optional contained value of type T.
 template <typename T>
-class Optional {
+class AIRMAP_EXPORT Optional {
  public:
   /// Optional initializes a new instance with no contained value.
   Optional() : has_value{false} {
@@ -127,7 +128,7 @@ class Optional {
 
 /// operator<< inserts value into out.
 template <typename T>
-inline std::ostream& operator<<(std::ostream& out, const Optional<T>& value) {
+inline AIRMAP_EXPORT std::ostream& operator<<(std::ostream& out, const Optional<T>& value) {
   if (value)
     out << value.get();
   else

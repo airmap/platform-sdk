@@ -8,25 +8,26 @@
 #ifndef AIRMAP_DATE_TIME_H_
 #define AIRMAP_DATE_TIME_H_
 
+#include <airmap/airmap_export.h>
 #include <memory>
 #include <string>
 
 namespace airmap {
-class DateTime;
+class AIRMAP_EXPORT DateTime;
 template <typename Tag>
-class Duration;
+class AIRMAP_EXPORT Duration;
 
 namespace detail {
-class Duration;
+class AIRMAP_EXPORT Duration;
 }  // namespace detail
 
 namespace tag {
 
-struct Hours {};
-struct Minutes {};
-struct Seconds {};
-struct Milliseconds {};
-struct Microseconds {};
+struct AIRMAP_EXPORT Hours {};
+struct AIRMAP_EXPORT Minutes {};
+struct AIRMAP_EXPORT Seconds {};
+struct AIRMAP_EXPORT Milliseconds {};
+struct AIRMAP_EXPORT Microseconds {};
 
 }  // namespace tag
 
@@ -37,7 +38,7 @@ using Milliseconds = Duration<tag::Milliseconds>;
 using Microseconds = Duration<tag::Microseconds>;
 
 /// Clock marks the reference for time measurements.
-class Clock {
+class AIRMAP_EXPORT Clock {
  public:
   static DateTime universal_time();
   static DateTime local_time();
@@ -45,13 +46,13 @@ class Clock {
 
 namespace boost_iso {
 
-DateTime datetime(const std::string &iso_time);
-std::string to_iso_string(const DateTime &);
+DateTime AIRMAP_EXPORT datetime(const std::string &iso_time);
+std::string AIRMAP_EXPORT to_iso_string(const DateTime &);
 
 }  // namespace boost_iso
 
 /// DateTime marks a specific point in time, in reference to Clock.
-class DateTime {
+class AIRMAP_EXPORT DateTime {
  public:
   DateTime();
   ~DateTime();
@@ -82,15 +83,15 @@ class DateTime {
   friend std::string boost_iso::to_iso_string(const DateTime &datetime);
 };
 
-Hours hours(int64_t raw);
-Minutes minutes(int64_t raw);
-Seconds seconds(int64_t raw);
-Milliseconds milliseconds(int64_t raw);
-Microseconds microseconds(int64_t raw);
+Hours AIRMAP_EXPORT hours(int64_t raw);
+Minutes AIRMAP_EXPORT minutes(int64_t raw);
+Seconds AIRMAP_EXPORT seconds(int64_t raw);
+Milliseconds AIRMAP_EXPORT milliseconds(int64_t raw);
+Microseconds AIRMAP_EXPORT microseconds(int64_t raw);
 
 namespace detail {
 
-class Duration {
+class AIRMAP_EXPORT Duration {
  public:
   Duration();
   ~Duration();
@@ -121,28 +122,28 @@ class Duration {
 }  // namespace detail
 
 template <typename Tag>
-class Duration : public detail::Duration {};
+class AIRMAP_EXPORT Duration : public detail::Duration {};
 
 /// milliseconds_since_epoch returns the milliseconds that elapsed since the UNIX epoch.
-uint64_t milliseconds_since_epoch(const DateTime &dt);
+uint64_t AIRMAP_EXPORT milliseconds_since_epoch(const DateTime &dt);
 /// microseconds_since_epoch returns the microseconds that elapsed since the UNIX epoch.
-uint64_t microseconds_since_epoch(const DateTime &dt);
+uint64_t AIRMAP_EXPORT microseconds_since_epoch(const DateTime &dt);
 /// from_seconds_since_epoch returns a DateTime.
-DateTime from_seconds_since_epoch(const Seconds &s);
+DateTime AIRMAP_EXPORT from_seconds_since_epoch(const Seconds &s);
 /// from_milliseconds_since_epoch returns a DateTime.
-DateTime from_milliseconds_since_epoch(const Milliseconds &ms);
+DateTime AIRMAP_EXPORT from_milliseconds_since_epoch(const Milliseconds &ms);
 /// from_microseconds_since_epoch returns a DateTime.
-DateTime from_microseconds_since_epoch(const Microseconds &us);
+DateTime AIRMAP_EXPORT from_microseconds_since_epoch(const Microseconds &us);
 
 // moves the datetime forward to the specified hour
-DateTime move_to_hour(const DateTime &dt, uint64_t hour);
+DateTime AIRMAP_EXPORT move_to_hour(const DateTime &dt, uint64_t hour);
 
 namespace iso8601 {
 
 /// parse parses a DateTime instance from the string s in iso8601 format.
-DateTime parse(const std::string &s);
+DateTime AIRMAP_EXPORT parse(const std::string &s);
 /// generate returns a string in iso8601 corresponding to 'dt'.
-std::string generate(const DateTime &dt);
+std::string AIRMAP_EXPORT generate(const DateTime &dt);
 
 }  // namespace iso8601
 

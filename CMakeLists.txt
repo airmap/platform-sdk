@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-
+include(prepare_toolchain.cmake)
 project(airmap C CXX)
 
 set(AIRMAPD_VERSION_MAJOR 0)
