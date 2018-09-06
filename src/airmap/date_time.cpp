@@ -146,37 +146,37 @@ Microseconds DateTime::time_of_day() const {
   return time_duration;
 }
 
-Hours hours(int64_t raw) {
+Hours hours(std::int32_t raw) {
   Hours hours;
-  hours.impl->time_duration = boost::posix_time::hours{static_cast<long>(raw)};
+  hours.impl->time_duration = boost::posix_time::hours{raw};
 
   return hours;
 }
 
-Minutes minutes(int64_t raw) {
+Minutes minutes(std::int32_t raw) {
   Minutes minutes;
-  minutes.impl->time_duration = boost::posix_time::minutes{static_cast<long>(raw)};
+  minutes.impl->time_duration = boost::posix_time::minutes{raw};
 
   return minutes;
 }
 
-Seconds seconds(int64_t raw) {
+Seconds seconds(std::int32_t raw) {
   Seconds seconds;
-  seconds.impl->time_duration = boost::posix_time::seconds{static_cast<long>(raw)};
+  seconds.impl->time_duration = boost::posix_time::seconds{raw};
 
   return seconds;
 }
 
-Milliseconds milliseconds(int64_t raw) {
+Milliseconds milliseconds(std::int32_t raw) {
   Milliseconds milliseconds;
-  milliseconds.impl->time_duration = boost::posix_time::milliseconds{static_cast<long>(raw)};
+  milliseconds.impl->time_duration = boost::posix_time::milliseconds{raw};
 
   return milliseconds;
 }
 
-Microseconds microseconds(int64_t raw) {
+Microseconds microseconds(std::int32_t raw) {
   Microseconds microseconds;
-  microseconds.impl->time_duration = boost::posix_time::microseconds{static_cast<long>(raw)};
+  microseconds.impl->time_duration = boost::posix_time::microseconds{raw};
 
   return microseconds;
 }

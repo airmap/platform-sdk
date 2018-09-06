@@ -8,6 +8,8 @@
 #ifndef AIRMAP_DATE_TIME_H_
 #define AIRMAP_DATE_TIME_H_
 
+#include <cstdint>
+
 #include <memory>
 #include <string>
 
@@ -82,11 +84,11 @@ class DateTime {
   friend std::string boost_iso::to_iso_string(const DateTime &datetime);
 };
 
-Hours hours(int64_t raw);
-Minutes minutes(int64_t raw);
-Seconds seconds(int64_t raw);
-Milliseconds milliseconds(int64_t raw);
-Microseconds microseconds(int64_t raw);
+Hours hours(std::int32_t raw);
+Minutes minutes(std::int32_t raw);
+Seconds seconds(std::int32_t raw);
+Milliseconds milliseconds(std::int32_t raw);
+Microseconds microseconds(std::int32_t raw);
 
 namespace detail {
 
@@ -111,11 +113,11 @@ class Duration {
   friend Microseconds DateTime::operator-(const DateTime &) const;
   friend Microseconds DateTime::time_of_day() const;
 
-  friend Hours airmap::hours(int64_t raw);
-  friend Minutes airmap::minutes(int64_t raw);
-  friend Seconds airmap::seconds(int64_t raw);
-  friend Milliseconds airmap::milliseconds(int64_t raw);
-  friend Microseconds airmap::microseconds(int64_t raw);
+  friend Hours airmap::hours(std::int32_t raw);
+  friend Minutes airmap::minutes(std::int32_t raw);
+  friend Seconds airmap::seconds(std::int32_t raw);
+  friend Milliseconds airmap::milliseconds(std::int32_t raw);
+  friend Microseconds airmap::microseconds(std::int32_t raw);
 };
 
 }  // namespace detail
