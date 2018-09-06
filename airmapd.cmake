@@ -12,7 +12,7 @@ if (AIRMAP_ENABLE_GRPC)
 endif ()
 
 if (AIRMAP_ENABLE_QT)
-  find_package(Qt5Core QUIET)
+  find_package(Qt5 COMPONENTS Core REQUIRED)
 endif()
 
 # vendor-specific setup goes here

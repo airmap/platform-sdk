@@ -24,13 +24,13 @@ QLoggingCategory& airmap::qt::Logger::logging_category() {
 void airmap::qt::Logger::log(Severity severity, const char* message, const char*) {
   switch (severity) {
     case Severity::debug:
-      qCDebug(logging_category(), message);
+      qCDebug(logging_category(), "%s", message);
       break;
     case Severity::info:
-      qCInfo(logging_category(), message);
+      qCInfo(logging_category(), "%s", message);
       break;
     case Severity::error:
-      qCWarning(logging_category(), message);
+      qCWarning(logging_category(), "%s", message);
       break;
     default:
       break;
