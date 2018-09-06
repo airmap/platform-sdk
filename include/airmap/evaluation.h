@@ -11,6 +11,7 @@
 #include <airmap/optional.h>
 #include <airmap/ruleset.h>
 #include <airmap/status.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 #include <iosfwd>
@@ -21,15 +22,15 @@
 namespace airmap {
 
 /// Evaluation bundles together information regarding an airspace ruleset evaluation.
-struct Evaluation {
+struct AIRMAP_EXPORT Evaluation {
   /// Authority models an authority capable of authorizing flight plans.
-  struct Authority {
+  struct AIRMAP_EXPORT Authority {
     std::string id;    ///< The id of the authority.
     std::string name;  ///< The name of the authority.
   };
 
   /// Authorization bundles up the authorization status of a flight plan.
-  struct Authorization {
+  struct AIRMAP_EXPORT Authorization {
     /// Status enumerates all known states of an Authorization.
     enum class Status {
       accepted,                  ///< The flight plan is accepted.
@@ -45,7 +46,7 @@ struct Evaluation {
   };
 
   /// Validation bundles up the validation status of a flight plan.
-  struct Validation {
+  struct AIRMAP_EXPORT Validation {
     /// Status enumerates all known states of a Validation.
     enum class Status {
       valid,    ///< The validation succeeded.
@@ -54,7 +55,7 @@ struct Evaluation {
     };
 
     /// Feature describes a specific feature that requires validation.
-    struct Feature {
+    struct AIRMAP_EXPORT Feature {
       std::string code;         ///< The code of the feature.
       std::string description;  ///< The description of the feature.
     };
@@ -81,14 +82,14 @@ struct Evaluation {
 };
 
 /// @cond
-std::ostream& operator<<(std::ostream& out, Evaluation::Authorization::Status status);
-std::istream& operator>>(std::istream& in, Evaluation::Authorization::Status& status);
+AIRMAP_EXPORT std::ostream& operator<<(std::ostream& out, Evaluation::Authorization::Status status);
+AIRMAP_EXPORT std::istream& operator>>(std::istream& in, Evaluation::Authorization::Status& status);
 
-std::ostream& operator<<(std::ostream& out, Evaluation::Validation::Status status);
-std::istream& operator>>(std::istream& in, Evaluation::Validation::Status& status);
+AIRMAP_EXPORT std::ostream& operator<<(std::ostream& out, Evaluation::Validation::Status status);
+AIRMAP_EXPORT std::istream& operator>>(std::istream& in, Evaluation::Validation::Status& status);
 
-std::ostream& operator<<(std::ostream& out, Evaluation::Failure failure);
-std::istream& operator>>(std::istream& in, Evaluation::Failure& failure);
+AIRMAP_EXPORT std::ostream& operator<<(std::ostream& out, Evaluation::Failure failure);
+AIRMAP_EXPORT std::istream& operator>>(std::istream& in, Evaluation::Failure& failure);
 /// @endcond
 
 }  // namespace airmap

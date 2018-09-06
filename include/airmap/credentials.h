@@ -9,6 +9,7 @@
 #define AIRMAP_CREDENTIALS_H_
 
 #include <airmap/optional.h>
+#include <airmap/visibility.h>
 
 #include <iosfwd>
 #include <string>
@@ -17,7 +18,7 @@ namespace airmap {
 
 /// Credentials bundles up all credentials required
 /// to use the AirMap SDK and APIs.
-struct Credentials {
+struct AIRMAP_EXPORT Credentials {
   enum class Type { anonymous, oauth };
 
   /// Anonymous bundles up all attributes needed to
@@ -41,9 +42,9 @@ struct Credentials {
 };
 
 /// operator>> extracts type from in.
-std::istream& operator>>(std::istream& in, Credentials::Type& type);
+AIRMAP_EXPORT std::istream& operator>>(std::istream& in, Credentials::Type& type);
 /// operator<< inserts type into out.
-std::ostream& operator<<(std::ostream& out, Credentials::Type type);
+AIRMAP_EXPORT std::ostream& operator<<(std::ostream& out, Credentials::Type type);
 
 }  // namespace airmap
 

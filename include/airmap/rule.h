@@ -8,9 +8,11 @@
 #ifndef AIRMAP_RULE_H_
 #define AIRMAP_RULE_H_
 
+#include <airmap/visibility.h>
+
 #include <string>
 
-namespace airmap {
+namespace AIRMAP_EXPORT airmap {
 
 struct Rule {
   // TODO(tvoss): Fill in values once schema is known.

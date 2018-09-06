@@ -25,6 +25,7 @@
 #include <airmap/token.h>
 #include <airmap/traffic.h>
 #include <airmap/version.h>
+#include <airmap/visibility.h>
 
 #include <QMetaType>
 
@@ -65,7 +66,7 @@ namespace qt {
 ///
 /// This function has to be called at least once to be able to use airmap::*
 /// types in queued signal-slot connections.
-void register_types();
+AIRMAP_EXPORT void register_types();
 
 }  // namespace qt
 }  // namespace airmap

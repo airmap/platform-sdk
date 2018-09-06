@@ -13,6 +13,7 @@
 #include <airmap/error.h>
 #include <airmap/optional.h>
 #include <airmap/outcome.h>
+#include <airmap/visibility.h>
 
 #include <functional>
 #include <string>
@@ -22,13 +23,13 @@ namespace airmap {
 
 /// Aircrafts models access to a database of aircraft models (specifically drones)
 /// and manufacturers.
-class Aircrafts : DoNotCopyOrMove {
+class AIRMAP_EXPORT Aircrafts : DoNotCopyOrMove {
  public:
   /// Manufacturers groups together types to ease interaction with
   /// Aircrafts::manufacturers.
-  struct Manufacturers {
+  struct AIRMAP_EXPORT Manufacturers {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> manufacturer_name;  ///< Search for the specific manufacturer with this name.
     };
 
@@ -41,9 +42,9 @@ class Aircrafts : DoNotCopyOrMove {
 
   /// Models groups together types to ease interaction with
   /// Aircrafts::models.
-  struct Models {
+  struct AIRMAP_EXPORT Models {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<Aircraft::Manufacturer> manufacturer;  ///< Only list models by this manufacturer.
       Optional<std::string> model_name;               ///< Search for the specific model with this name.
     };
@@ -57,7 +58,7 @@ class Aircrafts : DoNotCopyOrMove {
 
   /// ModelForId groups together types to ease interaction with
   /// Aircrafts::model_for_id.
-  struct ModelForId {
+  struct AIRMAP_EXPORT ModelForId {
     /// Parameters bundles up input parameters.
     struct Parameters {
       std::string id;  ///< Search for the model with this id.

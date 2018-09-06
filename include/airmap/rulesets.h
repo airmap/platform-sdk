@@ -14,6 +14,7 @@
 #include <airmap/geometry.h>
 #include <airmap/outcome.h>
 #include <airmap/ruleset.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 #include <functional>
@@ -22,12 +23,12 @@
 namespace airmap {
 
 /// RuleSets provides functionality for managing contextual airspace.
-class RuleSets : DoNotCopyOrMove {
+class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
  public:
   /// Search bundles up types to ease interaction with
   /// RuleSets::search.
-  struct Search {
-    struct Parameters {
+  struct AIRMAP_EXPORT Search {
+    struct AIRMAP_EXPORT Parameters {
       Required<Geometry> geometry;  ///< Search for rulesets intersecting this geometry.
     };
 
@@ -40,8 +41,8 @@ class RuleSets : DoNotCopyOrMove {
 
   /// ForId bundles up types to ease interaction with
   /// RuleSets::for_id.
-  struct ForId {
-    struct Parameters {
+  struct AIRMAP_EXPORT ForId {
+    struct AIRMAP_EXPORT Parameters {
       RuleSet::Id id;  ///< Search for the ruleset with this id.
     };
 
@@ -54,8 +55,8 @@ class RuleSets : DoNotCopyOrMove {
 
   /// FetchRules bundles up types to ease interaction with
   /// RuleSets::fetch_rules.
-  struct FetchRules {
-    struct Parameters {
+  struct AIRMAP_EXPORT FetchRules {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> rulesets;  ///< Fetch rules which apply to these rulesets.
     };
 
@@ -68,8 +69,8 @@ class RuleSets : DoNotCopyOrMove {
 
   /// EvaluateRules bundles up types to ease interaction with
   /// RuleSets::evaluate_rulesets.
-  struct EvaluateRules {
-    struct Parameters {
+  struct AIRMAP_EXPORT EvaluateRules {
+    struct AIRMAP_EXPORT Parameters {
       Required<Geometry> geometry;  ///< Evaluate rulesets intersecting this geometry.
       std::unordered_map<std::string, RuleSet::Feature::Value>
           features;                    ///< Additional properties of the planned flight.

@@ -15,6 +15,7 @@
 #include <airmap/logger.h>
 #include <airmap/monitor/client.h>
 #include <airmap/outcome.h>
+#include <airmap/visibility.h>
 
 #include <functional>
 #include <unordered_set>
@@ -23,7 +24,7 @@ namespace airmap {
 
 /// Context consitutes the point-of-entry for interaction with the classes and interfaces
 /// in airmap::*.
-class Context : DoNotCopyOrMove {
+class AIRMAP_EXPORT Context : DoNotCopyOrMove {
  public:
   /// ReturnCode enumerates all known return values for a call to run or exec.
   enum class ReturnCode {
