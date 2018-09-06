@@ -6,6 +6,8 @@ brew update
 
 brew install \
   cmake \
+  go \
+  perl \
   pkgconfig \
   openssl \
   qt \
