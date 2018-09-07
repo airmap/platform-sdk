@@ -2,7 +2,17 @@ cmake_minimum_required(VERSION 3.5)
 
 project(external-boringssl)
 
+include(CheckCXXCompilerFlag)
 include(ExternalProject)
+
+check_cxx_compiler_flag(
+  "-Wno-tautological-constant-compare"
+  COMPILER_SUPPORTS_NO_TAUTOLOGICAL_CONSTANT_COMPARE
+)
+
+if (COMPILER_SUPPORTS_NO_TAUTOLOGICAL_CONSTANT_COMPARE)
+  set(AIRMAP_BORINGSSL_CXX_FLAGS "-Wno-tautological-constant-compare")
+endif ()
 
 ExternalProject_add(
     boringssl
@@ -16,7 +26,7 @@ ExternalProject_add(
         -DANDROID_CPP_FEATURES=${ANDROID_CPP_FEATURES}
         -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-        -DCMAKE_CXX_FLAGS=-Wno-tautological-constant-compare
+        -DCMAKE_CXX_FLAGS=${AIRMAP_BORINGSSL_CXX_FLAGS}
         -DOPENSSL_NO_ASM=ON # Note: https://github.com/grpc/grpc/issues/9440
     CMAKE_GENERATOR ${CMAKE_GENERATOR}
     UPDATE_COMMAND ""
