@@ -6,6 +6,7 @@ apt update
 
 apt install -y \
   build-essential \
+  curl \
   git \
   golang \
   cmake \
@@ -14,4 +15,5 @@ apt install -y \
   perl \
   pkg-config \
   qtbase5-dev \
+  unzip \
   zlib1g-dev
