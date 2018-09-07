@@ -40,7 +40,7 @@ jobs:
             cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DANDROID_ABI=armeabi-v7a -DANDROID_PLATFORM=android-21 -DANDROID_STL=c++_shared -DANDROID_CPP_FEATURES="rtti exceptions" -DCMAKE_TOOLCHAIN_FILE=/tmp/android-ndk-r17c/build/cmake/android.toolchain.cmake  ..
             cmake -DCMAKE_INSTALL_PREFIX=/usr ..
       - run: cd build && make -j4
-      - run: make install
+      - run: cd build && make install
 workflows:
   version: 2
   build_and_test:
