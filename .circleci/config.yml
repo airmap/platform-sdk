@@ -1,5 +1,17 @@
 version: 2
 jobs:
+  build-and-test-macos-xcode-10.0.0:
+    macos:
+      - xcode-10.0.0: ubuntu:18.04
+    steps:
+      - checkout
+      - run: tools/osx/setup.sh
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+      - run: cd build && make -j4
+      - run: cd build && ctest -V
+      - run: cd build && make install
   build-and-test-ubuntu-18.04-gcc:
     docker:
       - image: ubuntu:18.04
@@ -45,6 +57,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
+      - build-and-test-macos-xcode-10.0.0
       - build-and-test-ubuntu-18.04-gcc
       - build-and-test-ubuntu-18.04-clang
       - build-android-ndk-r17c-api-level-21
