@@ -25,7 +25,7 @@ if (AIRMAP_ENABLE_QT)
 endif()
 
 # vendor-specific setup goes here
-add_definitions(-DFMT_HEADER_ONLY)
+add_definitions(-DFMT_HEADER_ONLY -DBOOST_ERROR_CODE_HEADER_ONLY)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra -fPIC")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing -pedantic -Wextra -Wno-implicit-fallthrough -fPIC")

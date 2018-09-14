@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 
 project(airmap C CXX)
 
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
-
 set(AIRMAPD_VERSION_MAJOR 0)
 set(AIRMAPD_VERSION_MINOR 0)
 set(AIRMAPD_VERSION_PATCH 1)
+
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access"       ON)
 option(AIRMAP_ENABLE_GRPC          "Enable libraries/executables requiring gRPC" OFF)

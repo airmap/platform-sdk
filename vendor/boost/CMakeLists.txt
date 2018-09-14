@@ -16,7 +16,7 @@ include(ExternalProject)
 
 set(
   AIRMAP_BOOST_COMPONENTS
-  "--with-date_time --with-filesystem --with-log --with-program_options --with-system --with-test --with-thread"
+  "--with-date_time --with-filesystem --with-log --with-program_options --with-test --with-system --with-thread"
 )
 
 if (${ANDROID})
@@ -83,12 +83,11 @@ else()
 endif()
 
 ExternalProject_Add(boost
-  URL https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.bz2
-  URL_HASH SHA256=5721818253e6a0989583192f96782c4a98eb6204965316df9f5ad75819225ca9
+  URL https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2
+  URL_HASH SHA256=7f6130bc3cf65f56a618888ce9d5ea704fa10b462be126ad053e80e553d6d8b7
   BUILD_IN_SOURCE 1
   UPDATE_COMMAND ""
-  PATCH_COMMAND
-    patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/patches/libressl.patch
+  PATCH_COMMAND ""
   CONFIGURE_COMMAND ${AIRMAP_BOOST_BOOTSTRAP_COMMAND}
   BUILD_COMMAND
     ${AIRMAP_BOOST_B2_COMMAND}
@@ -104,6 +103,8 @@ ExternalProject_Add(boost
       --disable-icu 
       --prefix=$ENV{AIRMAP_BOOST_OUTPUT_PATH}
       define=BOOST_LOG_WITHOUT_IPC
+      cxxflags=-fvisibility=hidden
+      cxxflags=-fvisibility-inlines-hidden
       ${AIRMAP_BOOST_CXX_FLAGS} 
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_TOOLSET} 
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE} 
@@ -121,7 +122,9 @@ ExternalProject_Add(boost
       --with-thread
       --disable-icu 
       --prefix=$ENV{AIRMAP_BOOST_OUTPUT_PATH}
-      define=BOOST_LOG_WITHOUT_IPC 
+      define=BOOST_LOG_WITHOUT_IPC
+      cxxflags=-fvisibility=hidden
+      cxxflags=-fvisibility-inlines-hidden
       ${AIRMAP_BOOST_CXX_FLAGS} 
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_TOOLSET} 
       ${AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE} 
