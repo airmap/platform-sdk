@@ -11,6 +11,7 @@
 #include <airmap/aircraft.h>
 #include <airmap/date_time.h>
 #include <airmap/optional.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 
@@ -20,9 +21,9 @@
 namespace airmap {
 
 /// Pilot bundles up all properties describing a pilot on the AirMap services.
-struct Pilot {
+struct AIRMAP_EXPORT Pilot {
   /// Aircraft describes a vehicle owned by a Pilot.
-  struct Aircraft {
+  struct AIRMAP_EXPORT Aircraft {
     std::string id;          ///< The unique id of the vehicle in the context of AirMap.
     std::string nick_name;   ///< The human-readable nickname of the vehicle.
     airmap::Aircraft model;  ///< The model of the aircraft.
@@ -37,7 +38,7 @@ struct Pilot {
 
   /// VerificationStatus summarizes the
   /// status of contact detail verification.
-  struct VerificationStatus {
+  struct AIRMAP_EXPORT VerificationStatus {
     bool email;  ///< true iff the email address of the pilot has been verified
     bool phone;  ///< true iff the phone number of the pilot has been verified
   } verification_status;
@@ -45,18 +46,18 @@ struct Pilot {
   /// Statistics about the pilot and her
   /// flight experience as recorded by the
   /// AirMap services.
-  struct Statistics {
-    struct Flight {
+  struct AIRMAP_EXPORT Statistics {
+    struct AIRMAP_EXPORT Flight {
       std::uint64_t total;        ///< The total number of flights
       DateTime last_flight_time;  ///< Date and time of the last flight
     } flight;                     ///< Statistical details about flights conducted by a pilot.
-    struct Aircraft {
+    struct AIRMAP_EXPORT Aircraft {
       std::uint64_t total;  ///< The total number of aircrafts
     } aircraft;             ///< Statistical details about aircrafts owned by a pilot
   } statistics;
 
   /// App- and user-specific metadata.
-  struct Metadata {
+  struct AIRMAP_EXPORT Metadata {
     std::map<std::string, std::string> app;   ///< App-specific meta-data.
     std::map<std::string, std::string> user;  ///< User-specific meta-data.
   } metadata;                                 ///< Metadata associated with a pilot.

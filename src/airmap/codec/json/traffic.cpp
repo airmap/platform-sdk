@@ -29,13 +29,13 @@ void airmap::codec::json::decode(const nlohmann::json& j, Traffic::Update& updat
     update.longitude = boost::lexical_cast<double>(numeric_value_as_string);
 
     get(numeric_value_as_string, j, "altitude");
-    update.altitude = boost::lexical_cast<double>(numeric_value_as_string);
+    boost::conversion::try_lexical_convert(numeric_value_as_string, update.altitude);
 
     get(numeric_value_as_string, j, "ground_speed_kts");
-    update.ground_speed = boost::lexical_cast<double>(numeric_value_as_string);
+    boost::conversion::try_lexical_convert(numeric_value_as_string, update.ground_speed);
 
     get(numeric_value_as_string, j, "true_heading");
-    update.heading = boost::lexical_cast<double>(numeric_value_as_string);
+    boost::conversion::try_lexical_convert(numeric_value_as_string, update.heading);
   }
 
   std::string tss;

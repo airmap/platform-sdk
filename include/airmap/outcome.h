@@ -8,6 +8,8 @@
 #ifndef AIRMAP_OUTCOME_H_
 #define AIRMAP_OUTCOME_H_
 
+#include <airmap/visibility.h>
+
 #include <type_traits>
 
 namespace airmap {
@@ -15,7 +17,7 @@ namespace airmap {
 /// Outcome models a return value from a function XOR an error object
 /// describing the error condition if no value can be returned.
 template <typename Value, typename Error>
-class Outcome {
+class AIRMAP_EXPORT Outcome {
  public:
   /// @cond
   static_assert(not std::is_same<Value, Error>::value, "Value and Error must not be the same type");
@@ -160,7 +162,7 @@ class Outcome {
   enum class Type { value, error };
 
   Type type;
-  union Data {
+  union AIRMAP_EXPORT Data {
     Data() : value{} {
     }
 

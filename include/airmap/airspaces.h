@@ -13,6 +13,7 @@
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 #include <airmap/outcome.h>
+#include <airmap/visibility.h>
 
 #include <functional>
 #include <vector>
@@ -20,13 +21,13 @@
 namespace airmap {
 
 /// Airspaces provides functionality to query the airspace database.
-class Airspaces : DoNotCopyOrMove {
+class AIRMAP_EXPORT Airspaces : DoNotCopyOrMove {
  public:
   /// ForIds groups together types to ease interaction with
   /// Airspaces::ForIds.
-  struct ForIds {
+  struct AIRMAP_EXPORT ForIds {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Airspace::Id id;  ///< Search for the airspace with this id.
     };
 
@@ -39,9 +40,9 @@ class Airspaces : DoNotCopyOrMove {
 
   /// Search groups together types to ease interaction with
   /// Airspaces::Search.
-  struct Search {
+  struct AIRMAP_EXPORT Search {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<Airspace::Type> types;          ///< Search for airspaces with either one of these types.
       Optional<Airspace::Type> ignored_types;  ///< Ignore airspaces with either one of these types.
       Optional<bool> full;  ///< If true, the complete description of airspaces in the result set is requested.

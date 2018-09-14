@@ -10,7 +10,7 @@
 #include <airmap/flight.h>
 #include <airmap/util/fmt.h>
 
-#include "telemetry.pb.h"
+#include <airmap/pregenerated/telemetry.pb.h>
 
 #include <boost/beast/core/detail/base64.hpp>
 
@@ -37,11 +37,7 @@ bool init_once() {
   ERR_load_crypto_strings();
   OpenSSL_add_all_algorithms();
   OPENSSL_config(NULL);
-#if ((OPENSSL_VERSION_NUMBER < 0x10100000L) || defined(LIBRESSL_VERSION_NUMBER))
   CRYPTO_malloc_init();
-#else
-  OPENSSL_malloc_init();
-#endif
   // A word on seeding the PRNG used by SSL. On all the platforms we
   // care about, the PRNG is transparently seeded by using underlying
   // platform facilities, e.g., /dev/urandom on Posix-like platforms.

@@ -8,11 +8,13 @@
 #ifndef AIRMAP_RULE_H_
 #define AIRMAP_RULE_H_
 
+#include <airmap/visibility.h>
+
 #include <string>
 
 namespace airmap {
 
-struct Rule {
+struct AIRMAP_EXPORT Rule {
   // TODO(tvoss): Fill in values once schema is known.
   enum class Type {};
   Type type;
@@ -23,7 +25,7 @@ struct Rule {
   // TODO(tvoss): Add requirements here.
 };
 
-bool operator==(const Rule& lhs, const Rule& rhs);
+AIRMAP_EXPORT bool operator==(const Rule& lhs, const Rule& rhs);
 
 }  // namespace airmap
 

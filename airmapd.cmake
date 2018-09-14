@@ -3,14 +3,29 @@ include(CTest)
 # Cmake find modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access" ON)
-
 find_package(Boost 1.65.1 QUIET REQUIRED date_time filesystem log program_options system thread)
-find_package(OpenSSL QUIET REQUIRED)
-find_package(Qt5Core QUIET)
+find_package(OpenSSL REQUIRED)
+find_package(protobuf CONFIG REQUIRED)
+
+find_library(
+  WE_NEED_BORINGSSLS_LIB_DECREPIT libdecrepit.a
+  PATHS ${AIRMAP_EXTERNAL_DEPENDENCIES_OUTPUT_PATH}
+)
+
+if (NOT WE_NEED_BORINGSSLS_LIB_DECREPIT)
+  message(FATAL_ERROR "Failed to find libdecrepit.a")
+endif ()
+
+if (AIRMAP_ENABLE_GRPC)
+  find_package(gRPC CONFIG REQUIRED)
+endif ()
+
+if (AIRMAP_ENABLE_QT)
+  find_package(Qt5 COMPONENTS Core REQUIRED)
+endif()
 
 # vendor-specific setup goes here
-add_definitions(-DFMT_HEADER_ONLY)
+add_definitions(-DFMT_HEADER_ONLY -DBOOST_ERROR_CODE_HEADER_ONLY)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra -fPIC")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing -pedantic -Wextra -Wno-implicit-fallthrough -fPIC")
@@ -22,7 +37,6 @@ include_directories(
 
   vendor/
   vendor/mavlink
-  vendor/uri/include
   vendor/mqtt_client_cpp/include
   vendor/cpp-jwt/include/
 
@@ -62,7 +76,3 @@ if (CLANG_FORMAT_EXECUTABLE)
 else()
   message(STATUS "Enabling format target")
 endif()
-
-set(CPACK_PACKAGE_NAME "airmap")
-set(CPACK_PACKAGE_FILE_NAME "airmap-installer")
-include (CPack)

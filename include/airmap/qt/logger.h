@@ -9,6 +9,7 @@
 #define AIRMAP_QT_LOGGER_H_
 
 #include <airmap/logger.h>
+#include <airmap/visibility.h>
 
 #include <QLoggingCategory>
 
@@ -19,7 +20,7 @@ namespace qt {
 
 /// Logger is an airmap::Logger implementation that uses to
 /// Qt's logging facilities.
-class Logger : public airmap::Logger {
+class AIRMAP_EXPORT Logger : public airmap::Logger {
  public:
   /// logging_category returns a QLoggingCategory instance
   /// that enables calling code to fine-tune logging behavior of a Logger instance.
@@ -41,7 +42,7 @@ class Logger : public airmap::Logger {
 
 /// DispatchingLogger is an airmap::Logger implementation that dispatches to Qt's main
 /// event loop for logger invocation
-class DispatchingLogger : public airmap::Logger {
+class AIRMAP_EXPORT DispatchingLogger : public airmap::Logger {
  public:
   /// DispatchingLogger initializes a new instance with 'next'.
   DispatchingLogger(const std::shared_ptr<airmap::Logger>& next);

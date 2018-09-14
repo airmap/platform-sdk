@@ -1,16 +1,63 @@
 version: 2
 jobs:
-   build:
-     docker:
-       - image: ubuntu:17.04
-     steps:
-       - checkout
-       - run:
-         command: |
-           git submodule update --init --recursive
-           tools/ubuntu/setup.dev.sh
-           mkdir build
-           cd build
-           cmake ..
-           make
-       - setup_remote_docker
+  build-and-test-macos-xcode-10.0.0:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run: tools/osx/setup.sh
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=staging ..
+      - run: cd build && make -j4
+      - run: cd build && ctest -V
+      - run: cd build && make install
+  build-and-test-ubuntu-18.04-gcc:
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - checkout
+      - run: tools/ubuntu/setup.dev.sh
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+      - run: cd build && make -j4
+      - run: cd build && ctest -V
+      - run: cd build && make install
+  build-and-test-ubuntu-18.04-clang:
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - checkout
+      - run: tools/ubuntu/setup.dev.sh
+      - run: apt-get install -y clang
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run: mkdir build && cd build && CC=$(which clang) CXX=$(which clang++) cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+      - run: cd build && make -j4
+      - run: cd build && ctest -V
+      - run: cd build && make install
+  build-android-ndk-r17c-api-level-21:
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - checkout
+      - run: tools/ubuntu/setup.dev.sh
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run:
+          command: |
+            ndk=$(tools/android/download-ndk.sh android-ndk-r17c /tmp)
+            mkdir build && cd build
+            cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DANDROID_ABI=armeabi-v7a -DANDROID_PLATFORM=android-21 -DANDROID_STL=c++_shared -DANDROID_CPP_FEATURES="rtti exceptions" -DCMAKE_TOOLCHAIN_FILE=/tmp/android-ndk-r17c/build/cmake/android.toolchain.cmake  ..
+            cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+      - run: cd build && make -j4
+      - run: cd build && make install
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build-and-test-macos-xcode-10.0.0
+      - build-and-test-ubuntu-18.04-gcc
+      - build-and-test-ubuntu-18.04-clang
+      - build-android-ndk-r17c-api-level-21

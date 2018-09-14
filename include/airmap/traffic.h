@@ -13,6 +13,7 @@
 #include <airmap/error.h>
 #include <airmap/logger.h>
 #include <airmap/outcome.h>
+#include <airmap/visibility.h>
 
 #include <functional>
 #include <iosfwd>
@@ -24,11 +25,11 @@ namespace airmap {
 
 /// Traffic provides access to the AirMap situational awareness
 /// and traffic alerts.
-class Traffic : DoNotCopyOrMove {
+class AIRMAP_EXPORT Traffic : DoNotCopyOrMove {
  public:
   /// Update bundles together information about aerial traffic
   /// relevant to a UAV flight.
-  struct Update {
+  struct AIRMAP_EXPORT Update {
     /// Type enumerates all known types of Traffic::Update.
     enum class Type {
       unknown,                ///< Marks the unknown type.
@@ -50,10 +51,10 @@ class Traffic : DoNotCopyOrMove {
 
   /// Monitor models handling of individual subscribers
   /// to per-flight alerts and awareness notices.
-  class Monitor : DoNotCopyOrMove {
+  class AIRMAP_EXPORT Monitor : DoNotCopyOrMove {
    public:
     /// Parameters bundles up input parameters.
-    struct Params {
+    struct AIRMAP_EXPORT Params {
       std::string flight_id;      ///< The id of the flight for which traffic udpates should be started.
       std::string authorization;  ///< The authorization token.
     };
@@ -65,7 +66,7 @@ class Traffic : DoNotCopyOrMove {
     using Callback = std::function<void(const Result&)>;
 
     /// Subscriber abstracts handling of batches of Update instances.
-    class Subscriber {
+    class AIRMAP_EXPORT Subscriber {
      public:
       /// handle_update is invoked when a new batch of Update instances
       /// is available.
@@ -77,7 +78,7 @@ class Traffic : DoNotCopyOrMove {
 
     /// FunctionalSubscriber is a convenience class that dispatches
     /// to a function 'f' for handling batches of Update instances.
-    class FunctionalSubscriber : public Subscriber {
+    class AIRMAP_EXPORT FunctionalSubscriber : public Subscriber {
      public:
       /// FunctionalSubscriber initializes a new instance with 'f'.
       explicit FunctionalSubscriber(const std::function<void(Update::Type, const std::vector<Update>&)>& f);
@@ -90,7 +91,7 @@ class Traffic : DoNotCopyOrMove {
 
     /// LoggingSubscriber is a convenience class that logs incoming batches
     /// of Update instances.
-    class LoggingSubscriber : public Subscriber {
+    class AIRMAP_EXPORT LoggingSubscriber : public Subscriber {
      public:
       /// LoggingSubscriber initializes an instance with 'component', feeding
       /// log entries to 'logger'. Please note that no change of ownership takes
@@ -128,7 +129,7 @@ class Traffic : DoNotCopyOrMove {
 };
 
 /// operator<< inserts a textual representation of type into out.
-std::ostream& operator<<(std::ostream& out, Traffic::Update::Type type);
+AIRMAP_EXPORT std::ostream& operator<<(std::ostream& out, Traffic::Update::Type type);
 
 }  // namespace airmap
 

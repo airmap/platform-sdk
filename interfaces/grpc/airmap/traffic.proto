@@ -2,10 +2,10 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
-import "grpc/airmap/geometry.proto";
-import "grpc/airmap/ids.proto";
-import "grpc/airmap/units.proto";
-import "grpc/airmap/wgs84.proto";
+import "airmap/geometry.proto";
+import "airmap/ids.proto";
+import "airmap/units.proto";
+import "airmap/wgs84.proto";
 
 package grpc.airmap;
 

@@ -1,0 +1,14 @@
+diff --git a/cmake/libprotobuf.cmake b/cmake/libprotobuf.cmake
+index 65d05c19..9e033825 100644
+--- a/cmake/libprotobuf.cmake
++++ b/cmake/libprotobuf.cmake
+@@ -115,6 +115,9 @@ set(libprotobuf_includes
+ add_library(libprotobuf ${protobuf_SHARED_OR_STATIC}
+   ${libprotobuf_lite_files} ${libprotobuf_files} ${libprotobuf_includes})
+ target_link_libraries(libprotobuf ${CMAKE_THREAD_LIBS_INIT})
++if(${ANDROID})
++    target_link_libraries(libprotobuf log)
++endif()
+ if(protobuf_WITH_ZLIB)
+     target_link_libraries(libprotobuf ${ZLIB_LIBRARIES})
+ endif()

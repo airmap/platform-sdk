@@ -9,13 +9,14 @@
 #define AIRMAP_GEOMETRY_H_
 
 #include <airmap/optional.h>
+#include <airmap/visibility.h>
 
 #include <vector>
 
 namespace airmap {
 
 /// Geometry bundles up different types of geometries.
-class Geometry {
+class AIRMAP_EXPORT Geometry {
  public:
   /// Type enumerates all known geometry types.
   enum class Type {
@@ -30,7 +31,7 @@ class Geometry {
   };
 
   /// Coordinate marks a point in 3-dimensional space.
-  struct Coordinate {
+  struct AIRMAP_EXPORT Coordinate {
     double latitude;            /// The latitude component of this coordinate in [°].
     double longitude;           /// The longitude component of this coordinate in [°].
     Optional<double> altitude;  /// The altitude component of this coordinate in [m].
@@ -39,7 +40,7 @@ class Geometry {
 
   /// CoordinateVector is a collection of points in 3-dimensional space.
   template <Type tag>
-  struct CoordinateVector {
+  struct AIRMAP_EXPORT CoordinateVector {
     std::vector<Coordinate> coordinates;  ///< The individual coordinates.
   };
 
@@ -54,7 +55,7 @@ class Geometry {
   ///     the exterior ring, and any others MUST be interior rings.  The
   ///     exterior ring bounds the surface, and the interior rings (if
   ///     present) bound holes within the surface.
-  struct Polygon {
+  struct AIRMAP_EXPORT Polygon {
     CoordinateVector<Type::polygon> outer_ring;
     std::vector<CoordinateVector<Type::polygon>> inner_rings;
   };
@@ -107,9 +108,9 @@ class Geometry {
   const GeometryCollection details_for_geometry_collection() const;
 
  private:
-  struct Invalid {};
+  struct AIRMAP_EXPORT Invalid {};
 
-  union Data {
+  union AIRMAP_EXPORT Data {
     Data();
     ~Data();
 
@@ -138,12 +139,12 @@ class Geometry {
 };
 
 /// @cond
-bool operator==(const Geometry::Coordinate& lhs, const Geometry::Coordinate& rhs);
+AIRMAP_EXPORT bool operator==(const Geometry::Coordinate& lhs, const Geometry::Coordinate& rhs);
 
-bool operator==(const Geometry::Polygon& lhs, const Geometry::Polygon& rhs);
+AIRMAP_EXPORT bool operator==(const Geometry::Polygon& lhs, const Geometry::Polygon& rhs);
 
 template <Geometry::Type tag>
-bool operator==(const Geometry::CoordinateVector<tag>& lhs, const Geometry::CoordinateVector<tag>& rhs) {
+AIRMAP_EXPORT inline bool operator==(const Geometry::CoordinateVector<tag>& lhs, const Geometry::CoordinateVector<tag>& rhs) {
   return lhs.coordinates == rhs.coordinates;
 }
 /// @endcond

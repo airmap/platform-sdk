@@ -12,7 +12,7 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-#include "grpc/airmap/monitor/monitor.grpc.pb.h"
+#include <grpc/airmap/monitor/monitor.grpc.pb.h>
 #pragma GCC diagnostic push
 
 namespace airmap {

@@ -10,6 +10,7 @@
 
 #include <airmap/date_time.h>
 #include <airmap/optional.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 
@@ -17,7 +18,7 @@ namespace airmap {
 
 /// Version bundles up information describing a specific version of the AirMap
 /// client library. We follow semantic versioning guidelines (see https://semver.org).
-struct Version {
+struct AIRMAP_EXPORT Version {
   /// current returns an immutable reference to the version of the client library.
   static const Version& current();
 

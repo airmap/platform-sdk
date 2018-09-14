@@ -13,6 +13,7 @@
 #include <airmap/error.h>
 #include <airmap/outcome.h>
 #include <airmap/token.h>
+#include <airmap/visibility.h>
 
 #include <chrono>
 #include <functional>
@@ -22,7 +23,7 @@
 namespace airmap {
 
 /// Authenticator provides functionality to authenticate with the AirMap services.
-class Authenticator : DoNotCopyOrMove {
+class AIRMAP_EXPORT Authenticator : DoNotCopyOrMove {
  public:
   /// Scope enumerates all known authentication scopes.
   enum class Scope { access_token = 0, open_id = 1, open_id_offline_access = 2 };
@@ -38,9 +39,9 @@ class Authenticator : DoNotCopyOrMove {
 
   /// AuthenticateWithPassword groups together types to ease interaction with
   /// Authenticator::authenticate_with_password.
-  struct AuthenticateWithPassword {
+  struct AIRMAP_EXPORT AuthenticateWithPassword {
     /// Parameters bundles up input parameters.
-    struct Params {
+    struct AIRMAP_EXPORT Params {
       Credentials::OAuth oauth;                    ///< OAuth-specific credentials for this authentication request.
       GrantType grant_type{GrantType::password};   ///< The grant type of this authentication request.
       Scope scope{Scope::open_id_offline_access};  ///< The scope of this authentication request.
@@ -57,7 +58,7 @@ class Authenticator : DoNotCopyOrMove {
 
   /// AuthenticateAnonymously groups together types to ease interaction with
   /// Authenticator::authenticate_anonymously.
-  struct AuthenticateAnonymously {
+  struct AIRMAP_EXPORT AuthenticateAnonymously {
     /// The input parameters.
     using Params = Credentials::Anonymous;
     /// Result models the outcome of calling Authenticator::authenticate_anonymously.
@@ -69,9 +70,9 @@ class Authenticator : DoNotCopyOrMove {
 
   /// RenewAuthentication groups together types to ease interaction with
   /// Authenticator::renew_authentication.
-  struct RenewAuthentication {
+  struct AIRMAP_EXPORT RenewAuthentication {
     /// The input parameters.
-    struct Params {
+    struct AIRMAP_EXPORT Params {
       std::string client_id;                    ///< The app id for which authentication renewal is requested.
       std::string refresh_token;                ///< The refresh token for the authentication renewal request.
       GrantType grant_type{GrantType::bearer};  ///< The grant type of the authentication renewal request.

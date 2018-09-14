@@ -8,7 +8,6 @@
 #include <airmap/cmds/airmap/cmd/add_aircraft.h>
 #include <airmap/cmds/airmap/cmd/aircraft_models.h>
 #include <airmap/cmds/airmap/cmd/create_flight.h>
-#include <airmap/cmds/airmap/cmd/daemon.h>
 #include <airmap/cmds/airmap/cmd/end_flight.h>
 #include <airmap/cmds/airmap/cmd/evaluate_rulesets.h>
 #include <airmap/cmds/airmap/cmd/fetch_rules.h>
@@ -47,7 +46,6 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::AddAircraft>());
     cmd_.command(std::make_shared<cmd::AircraftModels>());
     cmd_.command(std::make_shared<cmd::CreateFlight>());
-    cmd_.command(std::make_shared<cmd::Daemon>());
     cmd_.command(std::make_shared<cmd::EndFlight>());
     cmd_.command(std::make_shared<cmd::FetchRules>());
     cmd_.command(std::make_shared<cmd::GetAdvisories>());
@@ -69,6 +67,8 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::SubmitFlight>());
     cmd_.command(std::make_shared<cmd::Test>());
     cmd_.command(std::make_shared<cmd::Version>());
+
+    add_conditional_subcommands();
   }
 
   int run(const std::vector<std::string>& args) {
@@ -76,10 +76,24 @@ class Airmap : airmap::DoNotCopyOrMove {
   }
 
  private:
+  // add_conditional_subcommands adds subcommands that depend on
+  // compile-time parameters.
+  void add_conditional_subcommands();
+
   cli::CommandWithSubcommands cmd_;
 };
 
 }  // namespace
+
+#if defined (AIRMAP_ENABLE_GRPC)
+#include <airmap/cmds/airmap/cmd/daemon.h>
+
+void Airmap::add_conditional_subcommands() {
+  cmd_.command(std::make_shared<cmd::Daemon>());
+}
+#else   // AIRMAP_ENABLE_GRPC
+void Airmap::add_conditional_subcommands() {}
+#endif  // AIRMAP_ENABLE_GRPC
 
 int main(int argc, char** argv) {
   Airmap airmap;

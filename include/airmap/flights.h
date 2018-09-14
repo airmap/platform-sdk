@@ -15,6 +15,7 @@
 #include <airmap/geometry.h>
 #include <airmap/optional.h>
 #include <airmap/outcome.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 #include <functional>
@@ -23,13 +24,13 @@
 namespace airmap {
 
 /// Flights provides functionality for managing flights.
-class Flights : DoNotCopyOrMove {
+class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
  public:
   /// ForId bundles up types to ease interaction with
   /// Flights::for_id.
-  struct ForId {
+  struct AIRMAP_EXPORT ForId {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;                        ///< Search for the flight with this id.
       Optional<bool> enhance;               ///< If true, provides extended information per flight in the result set.
@@ -44,9 +45,9 @@ class Flights : DoNotCopyOrMove {
 
   /// Search bundles up types to ease interaction with
   /// Flights::search.
-  struct Search {
+  struct AIRMAP_EXPORT Search {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Optional<std::uint32_t> limit;        ///< Limit the number of results to 'limit'.
       Optional<Geometry> geometry;          ///< Search for flights intersecting this geometry.
@@ -62,8 +63,8 @@ class Flights : DoNotCopyOrMove {
     };
 
     /// Response bundles up pagination and actual results for a call to Flights::search.
-    struct Response {
-      struct Paging {
+    struct AIRMAP_EXPORT Response {
+      struct AIRMAP_EXPORT Paging {
         std::uint32_t limit;        ///< The maximum number of results per page.
         std::uint32_t total;        ///< The total number of results.
       } paging;                     ///< Bundles up pagination information.
@@ -80,9 +81,9 @@ class Flights : DoNotCopyOrMove {
   /// CreateFlight bundles up types to ease interaction with
   /// Flights::create_flight_by_point, Flights::create_flight_by_path and
   /// Flights::create_flight_by_polygon.
-  struct CreateFlight {
+  struct AIRMAP_EXPORT CreateFlight {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       std::string authorization;        ///< Authorization token obtained by logging in to the AirMap services.
       Required<float> latitude;         ///< Latitude of take-off point in [°].
       Required<float> longitude;        ///< Longitude of take-off point in [°].
@@ -104,15 +105,15 @@ class Flights : DoNotCopyOrMove {
 
   /// DeleteFlight bundles up types to ease interaction with
   /// Flights::delete_flight.
-  struct DeleteFlight {
+  struct AIRMAP_EXPORT DeleteFlight {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight that should be deleted.
     };
 
     /// Response models the response from the AirMap services.
-    struct Response {
+    struct AIRMAP_EXPORT Response {
       Flight::Id id;  ///< Id of the flight that was deleted.
     };
 
@@ -125,15 +126,15 @@ class Flights : DoNotCopyOrMove {
 
   /// EndFlight bundles up types to ease interaction with
   /// Flights::end_flight.
-  struct EndFlight {
+  struct AIRMAP_EXPORT EndFlight {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight that should be ended.
     };
 
     /// Response models the response from the AirMap services.
-    struct Response {
+    struct AIRMAP_EXPORT Response {
       DateTime end_time;  ///< Point in time when the flight was ended.
     };
 
@@ -146,15 +147,15 @@ class Flights : DoNotCopyOrMove {
 
   /// StartFlightCommunications bundles up types to ease interaction with
   /// Flights::start_flight_communications.
-  struct StartFlightCommunications {
+  struct AIRMAP_EXPORT StartFlightCommunications {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight for which flight comms should be started.
     };
 
     /// Response models the response from the AirMap services.
-    struct Response {
+    struct AIRMAP_EXPORT Response {
       std::string key;  ///< The encryption key that should be used to encrypt individual telemetry updates.
     };
 
@@ -167,15 +168,15 @@ class Flights : DoNotCopyOrMove {
 
   /// EndFlightCommunications bundles up types to ease interaction with
   /// Flights::end_flight_communications.
-  struct EndFlightCommunications {
+  struct AIRMAP_EXPORT EndFlightCommunications {
     /// Parameters bundles up input parameters.
-    struct Parameters {
+    struct AIRMAP_EXPORT Parameters {
       std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight for which flight comms should be ended.
     };
 
     /// Response models the response from the AirMap services.
-    struct Response {};
+    struct AIRMAP_EXPORT Response {};
 
     /// Result models the outcome of calling Flights::end_flight_communications.
     using Result = Outcome<Response, Error>;

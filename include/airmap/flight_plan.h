@@ -15,6 +15,7 @@
 #include <airmap/pilot.h>
 #include <airmap/ruleset.h>
 #include <airmap/status.h>
+#include <airmap/visibility.h>
 
 #include <cstdint>
 #include <iosfwd>
@@ -25,16 +26,16 @@
 namespace airmap {
 
 /// FlightPlan bundles together properties describing a plan for a flight.
-struct FlightPlan {
+struct AIRMAP_EXPORT FlightPlan {
   /// Id models a unique identifier for a flight plan in the context of AirMap.
   using Id = std::string;
 
   /// Briefing bundles together information and data for a flight plan.
   /// The target audience is a hypothetical pilot or operator conducting
   /// the flight described in the flight plan.
-  struct Briefing {
+  struct AIRMAP_EXPORT Briefing {
     /// AdvisoryStatus summarizes the status of all advisories applying to a specific flight plan.
-    struct AdvisoryStatus {
+    struct AIRMAP_EXPORT AdvisoryStatus {
       Status::Color color;                       ///< The overall color of the status.
       std::vector<Status::Advisory> advisories;  ///< The collection of relevant advisories.
     };
