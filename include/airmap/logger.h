@@ -74,7 +74,8 @@ AIRMAP_EXPORT std::shared_ptr<Logger> create_default_logger(std::ostream& out = 
 
 /// create_filtering_logger returns a logger that filters out log entries
 /// with a severity smaller than the configurated severity.
-AIRMAP_EXPORT std::shared_ptr<Logger> create_filtering_logger(Logger::Severity severity, const std::shared_ptr<Logger>& logger);
+AIRMAP_EXPORT std::shared_ptr<Logger> create_filtering_logger(Logger::Severity severity,
+                                                              const std::shared_ptr<Logger>& logger);
 
 /// create_null_logger returns a logger that does the equivalent of
 /// > /dev/null.

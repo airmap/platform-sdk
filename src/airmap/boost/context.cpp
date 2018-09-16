@@ -298,7 +298,7 @@ void airmap::boost::Context::create_monitor_client_with_configuration(
   dispatch([cb, client]() { cb(MonitorClientCreateResult{client}); });
 }
 
-#else    // AIRMAP_ENABLE_GRPC
+#else  // AIRMAP_ENABLE_GRPC
 
 void airmap::boost::Context::create_monitor_client_with_configuration(
     const monitor::Client::Configuration& configuration, const MonitorClientCreateCallback& cb) {

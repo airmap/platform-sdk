@@ -99,14 +99,15 @@ class Airmap : airmap::DoNotCopyOrMove {
 
 }  // namespace
 
-#if defined (AIRMAP_ENABLE_GRPC)
+#if defined(AIRMAP_ENABLE_GRPC)
 #include <airmap/cmds/airmap/cmd/daemon.h>
 
 void Airmap::add_conditional_subcommands() {
   cmd_.command(std::make_shared<cmd::Daemon>());
 }
 #else   // AIRMAP_ENABLE_GRPC
-void Airmap::add_conditional_subcommands() {}
+void Airmap::add_conditional_subcommands() {
+}
 #endif  // AIRMAP_ENABLE_GRPC
 
 int main(int argc, char** argv) {

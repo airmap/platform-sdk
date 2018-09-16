@@ -158,7 +158,8 @@ AIRMAP_EXPORT bool operator==(const Geometry::Coordinate& lhs, const Geometry::C
 AIRMAP_EXPORT bool operator==(const Geometry::Polygon& lhs, const Geometry::Polygon& rhs);
 
 template <Geometry::Type tag>
-AIRMAP_EXPORT inline bool operator==(const Geometry::CoordinateVector<tag>& lhs, const Geometry::CoordinateVector<tag>& rhs) {
+AIRMAP_EXPORT inline bool operator==(const Geometry::CoordinateVector<tag>& lhs,
+                                     const Geometry::CoordinateVector<tag>& rhs) {
   return lhs.coordinates == rhs.coordinates;
 }
 /// @endcond
