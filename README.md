@@ -72,8 +72,7 @@ The `AirMap Platform SDK` uses CMake for building and testing. We envision the f
 ```# Clone airmapd and all its dependencies
 git clone --recursive https://github.com/airmap/platform-sdk.git
 # Update Submodules
-cd platform-sdk
-git submodule update --init --recursive
+cd platform-sdk && git submodule update --init --recursive
 # Please execute these commands at the root of the source tree (DON'T FOLLOW the commands below if you intend to build the AirMap Platform SDK in Ubuntu/Docker)
 mkdir build
 cd build && cmake .. && make
