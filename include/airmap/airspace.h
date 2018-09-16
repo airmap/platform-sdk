@@ -1,3 +1,17 @@
+/* Copyright 2018 AirMap, Inc.
+
+Licensed under the Apache License, Version 2.0 (the License);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an AS IS BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
+
 //
 //  airspace.h
 //  AirMap Platform SDK
@@ -369,7 +383,8 @@ AIRMAP_EXPORT bool operator==(const Airspace::Airport &lhs, const Airspace::Airp
 AIRMAP_EXPORT bool operator==(const Airspace::Airport::Runway &lhs, const Airspace::Airport::Runway &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::ControlledAirspace &lhs, const Airspace::ControlledAirspace &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::SpecialUseAirspace &lhs, const Airspace::SpecialUseAirspace &rhs);
-AIRMAP_EXPORT bool operator==(const Airspace::TemporaryFlightRestriction &lhs, const Airspace::TemporaryFlightRestriction &rhs);
+AIRMAP_EXPORT bool operator==(const Airspace::TemporaryFlightRestriction &lhs,
+                              const Airspace::TemporaryFlightRestriction &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::Wildfire &lhs, const Airspace::Wildfire &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::Park &lhs, const Airspace::Park &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::Prison &lhs, const Airspace::Prison &rhs);
