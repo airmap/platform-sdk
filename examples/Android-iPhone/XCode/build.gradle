@@ -1,0 +1,35 @@
+import org.openbakery.xcode.Type
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.gpxblog:xcode-plugin:0.0.201"
+    }
+}
+
+apply plugin: "com.gpxblog.xcode-plugin"
+
+cmakeXCode {
+    cmakeBinary = "/usr/local/bin/cmake"
+    cmakeFile = "CMakeLists.txt"
+    arguments = "-DMyLongVerStr=longVerStr-0.0 -DMyShortVerStr=0.0"
+    buildDir = "XCodeProj"
+}
+
+xcodebuild {
+    type = Type.iOS
+    simulator = false
+    scheme = 'airmap'
+    target = 'airmap'
+//    appstore {
+//        username = username
+//        password = password
+//    }
+//    signing {
+//        certificateURI = "File:$projectDir/Certificates.p12"
+//        certificatePassword = "<CleverPassHere>"
+//        mobileProvisionURI = "File:$projectDir/distributionProvision.mobileprovision"
+//    }
+}
