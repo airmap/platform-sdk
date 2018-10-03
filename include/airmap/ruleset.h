@@ -142,6 +142,7 @@ struct AIRMAP_EXPORT RuleSet {
     Type type{Type::unknown};
     Measurement measurement{Measurement::unknown};
     Unit unit{Unit::unknown};
+    bool is_calculated;
   };
 };
 

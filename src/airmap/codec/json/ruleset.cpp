@@ -53,6 +53,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature& f) {
   get(f.type, j, "input_type");
   get(f.measurement, j, "measurement_type");
   get(f.unit, j, "measurement_unit");
+  get(f.is_calculated, j, "is_calculated");
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Type& f) {
