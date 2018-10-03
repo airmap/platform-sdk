@@ -10,8 +10,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_RULESETS_H_
-#define AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_RULESETS_H_
+#ifndef AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_H_
+#define AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_H_
 
 #include <airmap/cmds/airmap/cmd/flags.h>
 
@@ -29,19 +29,20 @@ namespace cmds {
 namespace airmap {
 namespace cmd {
 
-class EvaluateRuleSets : public util::cli::CommandWithFlagsAndAction {
+class Evaluate : public util::cli::CommandWithFlagsAndAction {
  public:
-  EvaluateRuleSets();
+  Evaluate();
 
  private:
   using EvaluationFile = util::TaggedString<util::tags::MustNotBeEmpty>;
+  using FlightPlanId   = util::TaggedString<util::tags::MustNotBeEmpty>;
 
   util::FormattingLogger log_{create_null_logger()};
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
-  Required<EvaluationFile> evaluation_file_;
-  RuleSets::EvaluateRules::Parameters params_;
+  Optional<EvaluationFile> evaluation_file_;
+  Optional<FlightPlanId> flight_plan_id_;
 };
 
 }  // namespace cmd
@@ -49,4 +50,4 @@ class EvaluateRuleSets : public util::cli::CommandWithFlagsAndAction {
 }  // namespace cmds
 }  // namespace airmap
 
-#endif  // AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_RULESETS_H_
+#endif  // AIRMAP_CMDS_AIRMAP_CMD_EVALUATE_H_

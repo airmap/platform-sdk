@@ -54,3 +54,12 @@ void airmap::qt::RuleSets::evaluate_rulesets(const EvaluateRules::Parameters& pa
     });
   });
 }
+
+void airmap::qt::RuleSets::evaluate_flight_plan(const EvaluatePlan::Parameters& parameters,
+                                                const EvaluatePlan::Callback& cb) {
+  dispatcher_->dispatch_to_native([this, sp = shared_from_this(), parameters, cb]() {
+    sp->client_->rulesets().evaluate_flight_plan(parameters, [this, sp, cb](const auto& result) {
+      sp->dispatcher_->dispatch_to_qt([sp, result, cb]() { cb(result); });
+    });
+  });
+}

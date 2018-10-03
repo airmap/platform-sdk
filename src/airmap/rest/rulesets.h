@@ -31,6 +31,7 @@ class RuleSets : public airmap::RuleSets {
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
   void fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) override;
   void evaluate_rulesets(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) override;
+  void evaluate_flight_plan(const EvaluatePlan::Parameters& parameters, const EvaluatePlan::Callback& cb) override;
 
  private:
   std::shared_ptr<net::http::Requester> requester_;

@@ -16,6 +16,7 @@
 #include <airmap/do_not_copy_or_move.h>
 #include <airmap/error.h>
 #include <airmap/evaluation.h>
+#include <airmap/flight_plan.h>
 #include <airmap/geometry.h>
 #include <airmap/outcome.h>
 #include <airmap/ruleset.h>
@@ -89,6 +90,20 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
     using Callback = std::function<void(const Result&)>;
   };
 
+  /// EvaluatePlan bundles up types to ease interaction with
+  /// RuleSets::evaluate_flight_plan.
+  struct AIRMAP_EXPORT EvaluatePlan {
+    struct AIRMAP_EXPORT Parameters {
+      FlightPlan::Id id;  ///< Id of the flight plan that should be submitted.
+    };
+
+    /// Result models the outcome of calling RuleSets::evaluate_flight_plan.
+    using Result = Outcome<Evaluation, Error>;
+    /// Callback describes the function signature of the callback that is invoked
+    /// when a call to RuleSets::evaluate_rulesets finishes.
+    using Callback = std::function<void(const Result&)>;
+  };
+
   /// search queries the AirMap services for detailed information about
   /// rulesets identified by geometry and reports back results to 'cb'.
   virtual void search(const Search::Parameters& parameters, const Search::Callback& cb) = 0;
@@ -104,6 +119,10 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
   /// evaluate_rulesets evaluates rulesets and geometry identified by 'parameters' and
   /// reports back results to 'cb'.
   virtual void evaluate_rulesets(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) = 0;
+
+  /// evaluate_flight_plan evaluates a flight plan identified by 'parameters' and
+  /// reports back results to 'cb'.
+  virtual void evaluate_flight_plan(const EvaluatePlan::Parameters& parameters, const EvaluatePlan::Callback& cb) = 0;
 
  protected:
   /// @cond

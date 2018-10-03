@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include <airmap/cmds/airmap/cmd/evaluate_rulesets.h>
+#include <airmap/cmds/airmap/cmd/evaluate.h>
 
 #include <airmap/client.h>
 #include <airmap/codec.h>
@@ -27,7 +27,7 @@ using json = nlohmann::json;
 
 namespace {
 
-constexpr const char* component{"evaluate-rulesets"};
+constexpr const char* component{"evaluate"};
 
 void print_evaluation(std::ostream& out, const airmap::Evaluation& e) {
   cli::TabWriter tw;
@@ -43,14 +43,15 @@ void print_evaluation(std::ostream& out, const airmap::Evaluation& e) {
 
 }  // namespace
 
-cmd::EvaluateRuleSets::EvaluateRuleSets()
-    : cli::CommandWithFlagsAndAction{"evaluate-rulesets",
-                                     "evalutes rulesets and return a list of rules matching results",
-                                     "evalutes rulesets and return a list of rules matching results"} {
+cmd::Evaluate::Evaluate()
+    : cli::CommandWithFlagsAndAction{"evaluate",
+                                     "evalutes rulesets or flight plan and return a list of rules matching results",
+                                     "evalutes rulesets or flight plan and return a list of rules matching results"} {
   flag(flags::version(version_));
   flag(flags::log_level(log_level_));
   flag(flags::config_file(config_file_));
   flag(cli::make_flag("evaluation-file", "evaluation-file", evaluation_file_));
+  flag(cli::make_flag("flight-plan-id", "flight-plan-id", flight_plan_id_));
 
   action([this](const cli::Command::Context& ctxt) {
     log_ = util::FormattingLogger{create_filtering_logger(log_level_, create_default_logger(ctxt.cerr))};
@@ -65,17 +66,10 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
       return 1;
     }
 
-    if (!evaluation_file_ || !evaluation_file_.get().validate()) {
-      log_.errorf(component, "missing parameter 'evaluation-file'");
+    if (!flight_plan_id_ && (!evaluation_file_ || !evaluation_file_.get().validate())) {
+      log_.errorf(component, "missing parameter 'evaluation-file' or 'flight-plan-id'");
       return 1;
     }
-
-    std::ifstream evaluation_in{evaluation_file_.get()};
-    if (!evaluation_in) {
-      log_.errorf(component, "failed to open %s for reading", evaluation_file_.get());
-      return 1;
-    }
-    params_ = json::parse(evaluation_in);
 
     auto result = ::airmap::Context::create(log_.logger());
 
@@ -118,7 +112,19 @@ cmd::EvaluateRuleSets::EvaluateRuleSets()
             }
           };
 
-          client->rulesets().evaluate_rulesets(params_, handler);
+          if (flight_plan_id_) {
+            RuleSets::EvaluatePlan::Parameters params_;
+            params_.id = flight_plan_id_.get();
+            client->rulesets().evaluate_flight_plan(params_, handler);
+          } else if (evaluation_file_) {
+            std::ifstream evaluation_in{evaluation_file_.get()};
+            if (!evaluation_in) {
+              log_.errorf(component, "failed to open %s for reading", evaluation_file_.get());
+              return;
+            }
+            RuleSets::EvaluateRules::Parameters params_ = json::parse(evaluation_in);
+            client->rulesets().evaluate_rulesets(params_, handler);
+          }
         });
 
     return context->exec({SIGINT, SIGQUIT},

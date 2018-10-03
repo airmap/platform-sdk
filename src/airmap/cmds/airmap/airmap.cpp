@@ -14,7 +14,7 @@
 #include <airmap/cmds/airmap/cmd/aircraft_models.h>
 #include <airmap/cmds/airmap/cmd/create_flight.h>
 #include <airmap/cmds/airmap/cmd/end_flight.h>
-#include <airmap/cmds/airmap/cmd/evaluate_rulesets.h>
+#include <airmap/cmds/airmap/cmd/evaluate.h>
 #include <airmap/cmds/airmap/cmd/fetch_rules.h>
 #include <airmap/cmds/airmap/cmd/get_advisories.h>
 #include <airmap/cmds/airmap/cmd/get_status.h>
@@ -55,7 +55,7 @@ class Airmap : airmap::DoNotCopyOrMove {
     cmd_.command(std::make_shared<cmd::FetchRules>());
     cmd_.command(std::make_shared<cmd::GetAdvisories>());
     cmd_.command(std::make_shared<cmd::GetStatus>());
-    cmd_.command(std::make_shared<cmd::EvaluateRuleSets>());
+    cmd_.command(std::make_shared<cmd::Evaluate>());
     cmd_.command(std::make_shared<cmd::Init>());
     cmd_.command(std::make_shared<cmd::Login>());
     cmd_.command(std::make_shared<cmd::MonitorMids>());
@@ -90,14 +90,15 @@ class Airmap : airmap::DoNotCopyOrMove {
 
 }  // namespace
 
-#if defined (AIRMAP_ENABLE_GRPC)
+#if defined(AIRMAP_ENABLE_GRPC)
 #include <airmap/cmds/airmap/cmd/daemon.h>
 
 void Airmap::add_conditional_subcommands() {
   cmd_.command(std::make_shared<cmd::Daemon>());
 }
 #else   // AIRMAP_ENABLE_GRPC
-void Airmap::add_conditional_subcommands() {}
+void Airmap::add_conditional_subcommands() {
+}
 #endif  // AIRMAP_ENABLE_GRPC
 
 int main(int argc, char** argv) {

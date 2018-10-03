@@ -23,8 +23,8 @@ add_executable(
   cmd/end_flight.cpp
   cmd/end_flight_comms.h
   cmd/end_flight_comms.cpp
-  cmd/evaluate_rulesets.h
-  cmd/evaluate_rulesets.cpp
+  cmd/evaluate.h
+  cmd/evaluate.cpp
   cmd/fetch_rules.h
   cmd/fetch_rules.cpp
   cmd/flags.h

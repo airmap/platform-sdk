@@ -13,8 +13,8 @@
 #ifndef AIRMAP_DATE_TIME_H_
 #define AIRMAP_DATE_TIME_H_
 
-#include <cstdint>
 #include <airmap/visibility.h>
+#include <cstdint>
 
 #include <memory>
 #include <string>

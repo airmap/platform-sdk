@@ -374,7 +374,8 @@ AIRMAP_EXPORT bool operator==(const Airspace::Airport &lhs, const Airspace::Airp
 AIRMAP_EXPORT bool operator==(const Airspace::Airport::Runway &lhs, const Airspace::Airport::Runway &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::ControlledAirspace &lhs, const Airspace::ControlledAirspace &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::SpecialUseAirspace &lhs, const Airspace::SpecialUseAirspace &rhs);
-AIRMAP_EXPORT bool operator==(const Airspace::TemporaryFlightRestriction &lhs, const Airspace::TemporaryFlightRestriction &rhs);
+AIRMAP_EXPORT bool operator==(const Airspace::TemporaryFlightRestriction &lhs,
+                              const Airspace::TemporaryFlightRestriction &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::Wildfire &lhs, const Airspace::Wildfire &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::Park &lhs, const Airspace::Park &rhs);
 AIRMAP_EXPORT bool operator==(const Airspace::Prison &lhs, const Airspace::Prison &rhs);
