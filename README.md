@@ -28,7 +28,7 @@ Please note that our primary development and deployment targets are Linux and Ma
 
 The following steps provide you with a set of libraries and headers ready for consumption in your project:
  * Install build dependencies following the guidelines in section 'Setup & Dependencies'
- * Clone the `airmap-platform-sdk` repo: `git clone https://github.com/airmap/platform-sdk.git`
+ * Clone the `platform-sdk` repo: `git clone https://github.com/airmap/platform-sdk.git`
  * Build & install the `AirMap Platform SDK`: `mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/choose/the/install/path .. && make && make doc && make install`
  * Find the API documentation in `build/doc/html/index.html`
 
