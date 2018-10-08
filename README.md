@@ -1,6 +1,6 @@
 # AirMap Platform SDK
 
-<!-- [ ![CircleCI](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd.svg?style=svg&circle-token=14a0fc3307775671f97988bd781b674977671dd8) ](https://cici-us-west-2a.airmap.io/gh/airmap/airmapd)-->
+[![CircleCI](https://circleci.com/gh/airmap/platform-sdk.svg?style=svg)](https://circleci.com/gh/airmap/platform-sdk)
 
 
 The `AirMap Platform SDK` is the representation of AirMap's services on the client side, ranging from desktop machines running a ground-control station to drones featuring a companion computer. From a high-level point of view, The `AirMap Platform SDK`
@@ -28,7 +28,7 @@ Please note that our primary development and deployment targets are Linux and Ma
 
 The following steps provide you with a set of libraries and headers ready for consumption in your project:
  * Install build dependencies following the guidelines in section 'Setup & Dependencies'
- * Clone the `airmap-platform-sdk` repo: `git clone https://github.com/airmap/platform-sdk.git`
+ * Clone the `platform-sdk` repo: `git clone https://github.com/airmap/platform-sdk.git`
  * Build & install the `AirMap Platform SDK`: `mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/choose/the/install/path .. && make && make doc && make install`
  * Find the API documentation in `build/doc/html/index.html`
 
@@ -49,13 +49,13 @@ Pull in `airmap` services and functionality following the examples given in:
 
 ## Source Code Layout
 
-The public facing API of the `AirMap Platform SDK` can be found in `${AIRMAPD_ROOT}/include/airmap`. At this point in time, the interface
+The public facing API of the `AirMap Platform SDK` can be found in `${PLATFORM_SDK_ROOT}/include/airmap`. At this point in time, the interface
 structure closely resembles the current ReST API exposed by AirMap. Going forward, the client-facing API will change, though,
 and expose higher-level concepts.
 
 The implementation is structured as followed:
  - `src/airmap`: General implementation, most importantly:
-   - `${AIRMAPD_ROOT}/src/airmap/daemon.h` and `${AIRMAPD_ROOT}/src/airmap/daemon.cpp` implementing the `AirMap Platform SDK`
+   - `${PLATFORM_SDK_ROOT}/src/airmap/daemon.h` and `${PLATFORM_SDK_ROOT}/src/airmap/daemon.cpp` implementing the `AirMap Platform SDK`
  - `src/airmap/boost`: Point-of-entry to the boost-based implementation of core platform components
  - `src/airmap/cmds`: Command-line executables
  - `src/airmap/codec`: Encoding and decoding of core data types and structures into different formats
@@ -69,7 +69,7 @@ The implementation is structured as followed:
 
 The `AirMap Platform SDK` uses CMake for building and testing. We envision the following development workflow:
 
-```# Clone airmapd and all its dependencies
+```# Clone platform-sdk and all its dependencies
 git clone --recursive https://github.com/airmap/platform-sdk.git
 # Update Submodules
 cd platform-sdk && git submodule update --init --recursive
@@ -95,10 +95,10 @@ make
 
 ### Docker with Ubuntu
 Make sure that you start with a clean environment (fresh clone of the AirMap Platform SDK and no attempts to build outside of docker)
-Run the following commands from the top-level `airmapd` folder:
+Run the following commands from the top-level `platform-sdk` folder:
 
 ```
-docker run -v $(pwd):/airmapd -w /airmapd -it ubuntu:18.04 bash
+docker run -v $(pwd):/platform-sdk -w /platform-sdk -it ubuntu:18.04 bash
 tools/ubuntu/setup.dev.sh
 mkdir build
 cd build
@@ -115,8 +115,8 @@ tools/rpi/build-docker-image.sh
 ### macOS - homebrew
 Run the following commands:
 ```
-brew tap airmap/airmapd https://github.com/airmap/platform-sdk.git
-brew install airmapd
+brew tap airmap/platform-sdk https://github.com/airmap/platform-sdk.git
+brew install platform-sdk
 ```
 Please note that the recent updates to macOS and XCode (in 9.2017) break the cmake brew formula in version 3.9.3 (see https://gitlab.kitware.com/cmake/cmake/issues/17101 for the details). Please downgrade your brew cmake installation to 3.9.2 or 3.9.1 (whichever is available). This can be accomplished with `brew switch`.
 ```
