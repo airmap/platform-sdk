@@ -18,5 +18,5 @@ run_all_test_suites() {
 
 fixture_set_up
 
-# run_all_test_suites production
-run_all_test_suites staging
+run_all_test_suites production
+# run_all_test_suites staging
