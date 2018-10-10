@@ -90,9 +90,9 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
     using Callback = std::function<void(const Result&)>;
   };
 
-  /// EvaluatePlan bundles up types to ease interaction with
+  /// EvaluateFlightPlan bundles up types to ease interaction with
   /// RuleSets::evaluate_flight_plan.
-  struct AIRMAP_EXPORT EvaluatePlan {
+  struct AIRMAP_EXPORT EvaluateFlightPlan {
     struct AIRMAP_EXPORT Parameters {
       FlightPlan::Id id;  ///< Id of the flight plan that should be submitted.
     };
@@ -122,7 +122,7 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
 
   /// evaluate_flight_plan evaluates a flight plan identified by 'parameters' and
   /// reports back results to 'cb'.
-  virtual void evaluate_flight_plan(const EvaluatePlan::Parameters& parameters, const EvaluatePlan::Callback& cb) = 0;
+  virtual void evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters, const EvaluateFlightPlan::Callback& cb) = 0;
 
  protected:
   /// @cond

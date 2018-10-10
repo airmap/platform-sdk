@@ -72,8 +72,8 @@ void airmap::rest::RuleSets::evaluate_rulesets(const EvaluateRules::Parameters& 
                    net::http::jsend_parsing_request_callback<Evaluation>(cb));
 }
 
-void airmap::rest::RuleSets::evaluate_flight_plan(const EvaluatePlan::Parameters& parameters,
-                                                  const EvaluatePlan::Callback& cb) {
+void airmap::rest::RuleSets::evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters,
+                                                  const EvaluateFlightPlan::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
 
   requester_->get(fmt::sprintf("/%s/evaluation", parameters.id), std::move(query), std::move(headers),

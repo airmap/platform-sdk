@@ -113,7 +113,7 @@ cmd::Evaluate::Evaluate()
           };
 
           if (flight_plan_id_) {
-            RuleSets::EvaluatePlan::Parameters params_;
+            RuleSets::EvaluateFlightPlan::Parameters params_;
             params_.id = flight_plan_id_.get();
             client->rulesets().evaluate_flight_plan(params_, handler);
           } else if (evaluation_file_) {
