@@ -37,4 +37,5 @@ target_link_libraries(
   airmap-grpc
   airmap-codec-grpc
   airmap-mavlink
+  crypto
 )
