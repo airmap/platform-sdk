@@ -15,7 +15,7 @@ yum install -y \
   patch \
   perl \
   pkg-config \
-  qtbase5-dev \
+  qt5-qtbase-devel \
   unzip \
   zlib1g-dev
 

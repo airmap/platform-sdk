@@ -4,4 +4,4 @@ set -ex
 
 build_opts="--force-rm=true $@"
 
-sudo docker build ${build_opts} -t airmapd:latest -f docker/centos .
+sudo docker build ${build_opts} -t centos/airmapd:latest -f docker/centos .
