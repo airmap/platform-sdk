@@ -21,9 +21,10 @@ RUN mkdir build
 WORKDIR build
 RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_QT=ON ..
 RUN make
-#RUN ctest -V 	# TODO: The following tests FAILED:
-	 			# 1 - examples-qt-client-test (Failed)
-	 			# 14 - acceptance.rule_sets (Failed)
+# TODO: The following tests FAILED:
+# 1 - examples-qt-client-test (Failed)
+# 14 - acceptance.rule_sets (Failed)
+# RUN ctest -V
 
 RUN make install
 WORKDIR /usr/src/app
