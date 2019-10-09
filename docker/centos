@@ -15,11 +15,11 @@ SHELL ["/bin/bash", "-c"]
 
 RUN tools/centos/setup.dev.sh
 ENV PATH="/usr/local/go/bin:/usr/local/cmake-3.14.4-Linux-x86_64/bin:${PATH}"
-SHELL [ "/usr/bin/scl", "enable", "devtoolset-7"]
+SHELL ["/usr/bin/scl", "enable", "devtoolset-7"]
 
 RUN mkdir build
 WORKDIR build
-RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_QT=ON ..
+RUN cmake -DCMAKE_INSTALL_PREFIX=/usr/airmap -DAIRMAP_ENABLE_QT=ON ..
 RUN make
 # TODO: The following tests FAILED:
 # 1 - examples-qt-client-test (Failed)
@@ -32,4 +32,4 @@ RUN tools/centos/cleanup.dev.sh
 WORKDIR /tmp
 RUN rm -rf /usr/src/app
 
-ENTRYPOINT ["/usr/bin/airmap", "daemon"]
+ENTRYPOINT ["/usr/airmap/bin/airmap", "daemon"]
