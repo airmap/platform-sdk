@@ -15,8 +15,9 @@
 #include <algorithm>
 #include <iostream>
 
-airmap::util::TelemetrySimulator::TelemetrySimulator(const airmap::Geometry::Polygon& polygon)
-    : polygon_{polygon},
+airmap::util::TelemetrySimulator::TelemetrySimulator(const airmap::Geometry::Polygon& polygon, double velocity)
+    : velocity_{velocity},
+      polygon_{polygon},
       segment_begin_{polygon_.outer_ring.coordinates.begin()},
       segment_end_{polygon_.outer_ring.coordinates.begin() + 1},
       segment_ruler_{segment_begin_->latitude},
@@ -74,7 +75,7 @@ airmap::Geometry::Coordinate airmap::util::TelemetrySimulator::update(const Date
   }
 
   auto dt       = now - current_time_;
-  current_data_ = segment_ruler_.destination(current_data_, dt.total_milliseconds() / 1E3 * 2., segment_bearing_);
+  current_data_ = segment_ruler_.destination(current_data_, dt.total_milliseconds() / 1E3 * velocity_, segment_bearing_);
   current_time_ = now;
 
   return current_data_;

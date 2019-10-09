@@ -51,7 +51,7 @@ void airmap::util::ScenarioSimulator::Runner::stop() {
 airmap::util::ScenarioSimulator::ScenarioSimulator(const Scenario& scenario, const std::shared_ptr<Logger>& logger)
     : scenario_{scenario}, log_{logger} {
   for (const auto& participant : scenario_.participants) {
-    state_.emplace_back(participant.geometry.details_for_polygon());
+    state_.emplace_back(participant.geometry.details_for_polygon(), participant.velocity);
   }
 }
 
