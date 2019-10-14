@@ -1,0 +1,22 @@
+name: "build-n-test"
+trigger:
+  branches:
+    include:
+      - "feature/rewrite"
+jobs:
+  - job: "docker"
+    strategy:
+      parallel: 2
+    pool:
+      vmImage: "ubuntu-16.04"
+    steps:
+      - checkout: self
+        clean: true
+        lfs: true
+        submodules: recursive
+        persistCredentials: true
+      - task: Docker@2
+        inputs:
+          command: build
+          Dockerfile: docker/ubuntu
+          buildContext: "."

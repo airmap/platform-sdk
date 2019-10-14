@@ -14,7 +14,7 @@ COPY . /usr/src/app
 RUN tools/rpi/setup.dev.sh
 RUN mkdir build
 WORKDIR build
-RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_NETWORK_TESTS=OFF -G Ninja ..
 RUN ninja
 RUN ctest -V
 RUN ninja install

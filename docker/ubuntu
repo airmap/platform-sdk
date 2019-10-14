@@ -14,7 +14,7 @@ COPY . /usr/src/app
 RUN tools/ubuntu/setup.dev.sh
 RUN mkdir build
 WORKDIR build
-RUN cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_NETWORK_TESTS=OFF..
 RUN make
 RUN ctest -V
 RUN make install
