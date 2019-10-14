@@ -1,6 +1,6 @@
 # AirMap Platform SDK
 
-[![CircleCI](https://circleci.com/gh/airmap/platform-sdk.svg?style=svg)](https://circleci.com/gh/airmap/platform-sdk)
+[![Build Status](https://dev.azure.com/airmap-platform-ci/airmap-platform-ci/_apis/build/status/airmap.platform-sdk?branchName=master)](https://dev.azure.com/airmap-platform-ci/airmap-platform-ci/_build/latest?definitionId=45&branchName=master)
 
 
 The `AirMap Platform SDK` is the representation of AirMap's services on the client side, ranging from desktop machines running a ground-control station to drones featuring a companion computer. From a high-level point of view, The `AirMap Platform SDK`
