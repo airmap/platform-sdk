@@ -20,3 +20,8 @@ jobs:
           command: build
           Dockerfile: docker/ubuntu
           buildContext: "."
+      - task: Docker@2
+        inputs:
+          command: build
+          Dockerfile: docker/centos
+          buildContext: "."
