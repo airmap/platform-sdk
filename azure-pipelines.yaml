@@ -7,8 +7,6 @@ jobs:
   - job: "image"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
-    strategy:
-      parallel: 2
     pool:
       vmImage: "ubuntu-16.04"
     steps:
@@ -18,6 +16,7 @@ jobs:
         submodules: recursive
         persistCredentials: true
       - task: Docker@2
+        displayName: ubuntu
         inputs:
           command: buildAndPush
           Dockerfile: docker/ubuntu
@@ -27,6 +26,7 @@ jobs:
           tags: |
             $(Build.SourceVersion)
       - task: Docker@2
+        displayName: centos
         inputs:
           command: build
           Dockerfile: docker/centos
@@ -49,11 +49,13 @@ jobs:
         submodules: recursive
         persistCredentials: true
       - task: Docker@2
+        displayName: ubuntu
         inputs:
           command: build
           Dockerfile: docker/ubuntu
           buildContext: "."
       - task: Docker@2
+        displayName: centos
         inputs:
           command: build
           Dockerfile: docker/centos
