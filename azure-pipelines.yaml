@@ -4,7 +4,40 @@ trigger:
     include:
       - "master"
 jobs:
-  - job: "docker"
+  - job: "image"
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    timeoutInMinutes: 0
+    strategy:
+      parallel: 2
+    pool:
+      vmImage: "ubuntu-16.04"
+    steps:
+      - checkout: self
+        clean: true
+        lfs: true
+        submodules: recursive
+        persistCredentials: true
+      - task: Docker@2
+        inputs:
+          command: buildAndPush
+          Dockerfile: docker/ubuntu
+          buildContext: "."
+          containerRegistry: airmapreg
+          repository: platform-sdk.ubuntu
+          tags: |
+            $(Build.SourceVersion)
+      - task: Docker@2
+        inputs:
+          command: build
+          Dockerfile: docker/centos
+          buildContext: "."
+          containerRegistry: airmapreg
+          repository: platform-sdk.centos
+          tags: |
+            $(Build.SourceVersion)
+  - job: "pr"
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    timeoutInMinutes: 0
     strategy:
       parallel: 2
     pool:
