@@ -38,8 +38,6 @@ jobs:
   - job: "pr"
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
-    strategy:
-      parallel: 2
     pool:
       vmImage: "ubuntu-16.04"
     steps:
