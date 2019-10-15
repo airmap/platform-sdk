@@ -21,7 +21,7 @@ jobs:
           command: buildAndPush
           Dockerfile: docker/ubuntu
           buildContext: "."
-          containerRegistry: airmapreg
+          containerRegistry: airmapreg.acr
           repository: platform-sdk.ubuntu
           tags: |
             $(Build.SourceVersion)
@@ -31,7 +31,7 @@ jobs:
           command: build
           Dockerfile: docker/centos
           buildContext: "."
-          containerRegistry: airmapreg
+          containerRegistry: airmapreg.acr
           repository: platform-sdk.centos
           tags: |
             $(Build.SourceVersion)
