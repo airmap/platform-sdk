@@ -450,8 +450,8 @@ void cmd::SimulateScenario::handle_start_flight_comms_result_for(
               position.timestamp           = milliseconds_since_epoch(now);
               position.latitude            = c.latitude;
               position.longitude           = c.longitude;
-              position.altitude_msl        = ::mavlink::altitude_msl;
-              position.altitude_gl         = ::mavlink::altitude_gl;
+              position.altitude_msl        = p.altitude_msl ? p.altitude_msl.get() : ::mavlink::altitude_msl;
+              position.altitude_gl         = p.altitude_agl ? p.altitude_agl.get() : ::mavlink::altitude_gl;
               position.horizontal_accuracy = 2.;
 
               Telemetry::Update update{position};

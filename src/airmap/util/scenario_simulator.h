@@ -49,6 +49,8 @@ struct Scenario {
     Optional<User> user;
     Geometry geometry;
     double velocity;
+    Optional<double> altitude_agl;
+    Optional<double> altitude_msl;
 
     Optional<std::string> authentication;
     Optional<Flight> flight;

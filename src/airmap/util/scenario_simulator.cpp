@@ -89,6 +89,8 @@ void airmap::util::from_json(const nlohmann::json& j, Scenario::Participant& p) 
   codec::json::get(p.user, j, "user");
   codec::json::get(p.geometry, j, "geometry");
   codec::json::get(p.velocity, j, "velocity");
+  codec::json::get(p.altitude_agl, j, "altitude_agl");
+  codec::json::get(p.altitude_msl, j, "altitude_msl");
 }
 
 void airmap::util::from_json(const nlohmann::json& j, Scenario::User& u) {
