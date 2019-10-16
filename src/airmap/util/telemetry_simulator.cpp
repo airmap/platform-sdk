@@ -29,7 +29,8 @@ airmap::util::TelemetrySimulator::TelemetrySimulator(const airmap::Geometry::Pol
 }
 
 airmap::util::TelemetrySimulator::TelemetrySimulator(const TelemetrySimulator& other)
-    : polygon_{other.polygon_},
+    : velocity_{other.velocity_},
+      polygon_{other.polygon_},
       segment_begin_{polygon_.outer_ring.coordinates.begin() +
                      std::distance(other.polygon_.outer_ring.coordinates.begin(), other.segment_begin_)},
       segment_end_{polygon_.outer_ring.coordinates.begin() +
@@ -43,6 +44,7 @@ airmap::util::TelemetrySimulator::TelemetrySimulator(const TelemetrySimulator& o
 }
 
 airmap::util::TelemetrySimulator& airmap::util::TelemetrySimulator::operator=(const TelemetrySimulator& other) {
+  velocity_      = other.velocity_;
   polygon_       = other.polygon_;
   segment_begin_ = polygon_.outer_ring.coordinates.begin() +
                    std::distance(other.polygon_.outer_ring.coordinates.begin(), other.segment_begin_);
