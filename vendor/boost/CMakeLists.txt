@@ -82,12 +82,14 @@ else()
   endif()
 endif()
 
-ExternalProject_Add(boost
+ExternalProject_Add(
+  boost
   URL https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2
   URL_HASH SHA256=430ae8354789de4fd19ee52f3b1f739e1fba576f0aded0897c3c2bc00fb38778
   BUILD_IN_SOURCE 1
   UPDATE_COMMAND ""
-  PATCH_COMMAND ""
+  PATCH_COMMAND
+    patch -p0 < ${CMAKE_CURRENT_SOURCE_DIR}/patches/fix_xcompile_android_patch.diff
   CONFIGURE_COMMAND ${AIRMAP_BOOST_BOOTSTRAP_COMMAND}
   BUILD_COMMAND
     ${AIRMAP_BOOST_B2_COMMAND}

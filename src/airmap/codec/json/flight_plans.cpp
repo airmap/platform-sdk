@@ -34,7 +34,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, FlightPlans::Create::P
   get(p.pilot.id, j, "pilot_id");
   if (j.count("aircraft_id") > 0) {
     Pilot::Aircraft aircraft;
-    aircraft.id = j["aircraft_id"];
+    get(aircraft.id, j, "aircraft_id");
     p.aircraft.set(aircraft);
   }
   get(p.buffer, j, "buffer");
