@@ -1,0 +1,23 @@
+FROM ubuntu:18.04
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+RUN tools/ubuntu/setup.dev.sh
+RUN tools/android/download-ndk.sh android-ndk-r21d /tmp
+RUN mkdir build
+WORKDIR build
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+	-DANDROID_ABI=armeabi-v7a \
+	-DANDROID_PLATFORM=android-21 \
+	-DANDROID_STL=c++_shared \
+	-DANDROID_CPP_FEATURES="rtti exceptions" \
+	-DCMAKE_TOOLCHAIN_FILE=/tmp/android-ndk-r21d/build/cmake/android.toolchain.cmake \
+	..
+RUN make
+RUN make install
+WORKDIR /usr/src/app
+RUN tools/ubuntu/cleanup.dev.sh
+WORKDIR /usr
+RUN rm -rf /usr/src/app

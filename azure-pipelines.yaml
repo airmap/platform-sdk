@@ -58,3 +58,9 @@ jobs:
           command: build
           Dockerfile: docker/centos
           buildContext: "."
+      - task: Docker@2
+        displayName: android
+        inputs:
+          command: build
+          Dockerfile: docker/android
+          buildContext: "."
