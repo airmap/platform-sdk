@@ -3,7 +3,7 @@ include(CTest)
 # Cmake find modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-find_package(Boost 1.70.0 QUIET REQUIRED date_time filesystem log program_options system thread)
+find_package(Boost 1.72.0 QUIET REQUIRED date_time filesystem log program_options system thread)
 find_package(OpenSSL REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 
@@ -22,6 +22,7 @@ endif ()
 
 if (AIRMAP_ENABLE_QT)
   find_package(Qt5 COMPONENTS Core REQUIRED)
+  message(STATUS "enable airmap qt build")
 endif()
 
 # vendor-specific setup goes here
