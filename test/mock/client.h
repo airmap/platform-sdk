@@ -80,6 +80,7 @@ struct Client : public airmap::Client {
   MAKE_MOCK0(authenticator, airmap::Authenticator&(), override);
   MAKE_MOCK0(aircrafts, airmap::Aircrafts&(), override);
   MAKE_MOCK0(airspaces, airmap::Airspaces&(), override);
+  MAKE_MOCK0(elevation, airmap::Elevation&(), override);
   MAKE_MOCK0(flight_plans, airmap::FlightPlans&(), override);
   MAKE_MOCK0(flights, airmap::Flights&(), override);
   MAKE_MOCK0(pilots, airmap::Pilots&(), override);

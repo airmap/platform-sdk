@@ -29,7 +29,8 @@ class RuleSets : public airmap::RuleSets, public std::enable_shared_from_this<Ru
   void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
   void fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) override;
   void evaluate_rulesets(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) override;
-  void evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters, const EvaluateFlightPlan::Callback& cb) override;
+  void evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters,
+                            const EvaluateFlightPlan::Callback& cb) override;
 
  private:
   explicit RuleSets(const std::shared_ptr<Dispatcher>& dispatcher, const std::shared_ptr<airmap::Client>& client);

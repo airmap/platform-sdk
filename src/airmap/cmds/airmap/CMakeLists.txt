@@ -27,6 +27,8 @@ add_executable(
   cmd/evaluate.cpp
   cmd/fetch_rules.h
   cmd/fetch_rules.cpp
+  cmd/find_elevation.h
+  cmd/find_elevation.cpp
   cmd/flags.h
   cmd/flags.cpp
   cmd/get_advisories.h

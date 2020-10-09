@@ -16,6 +16,7 @@
 #include <airmap/codec/http/query/advisories.h>
 #include <airmap/codec/http/query/aircrafts.h>
 #include <airmap/codec/http/query/airspaces.h>
+#include <airmap/codec/http/query/elevation.h>
 #include <airmap/codec/http/query/flights.h>
 #include <airmap/codec/http/query/pilots.h>
 #include <airmap/codec/http/query/rulesets.h>
@@ -35,6 +36,7 @@
 #include <airmap/codec/json/client.h>
 #include <airmap/codec/json/credentials.h>
 #include <airmap/codec/json/date_time.h>
+#include <airmap/codec/json/elevation.h>
 #include <airmap/codec/json/evaluation.h>
 #include <airmap/codec/json/flight.h>
 #include <airmap/codec/json/flight_plan.h>

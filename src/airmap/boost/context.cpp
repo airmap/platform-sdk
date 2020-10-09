@@ -68,6 +68,7 @@ void airmap::boost::Context::create_client_with_configuration(const Client::Conf
   requesters.aircrafts     = aircrafts(configuration);
   requesters.airspaces     = airspaces(configuration);
   requesters.authenticator = authenticator(configuration);
+  requesters.elevation     = elevation(configuration);
   requesters.flight_plans  = flight_plans(configuration);
   requesters.flights       = flights(configuration);
   requesters.pilots        = pilots(configuration);
@@ -193,6 +194,19 @@ std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::authentica
   auto port     = env::get("AIRMAP_PORT_AUTHENTICATOR", ::boost::lexical_cast<std::string>(443));
   auto route =
       env::get("AIRMAP_ROUTE_AUTHENTICATOR", rest::Authenticator::default_route_for_version(configuration.version));
+  return std::make_shared<net::http::RoutingRequester>(
+      route, std::make_shared<net::http::LoggingRequester>(
+                 log_.logger(), net::http::boost::Requester::create(
+                                    host, ::boost::lexical_cast<std::uint16_t>(port), log_.logger(), io_service_,
+                                    net::http::boost::Requester::request_factory_for_protocol(protocol))));
+}
+
+std::shared_ptr<airmap::net::http::Requester> airmap::boost::Context::elevation(
+    const airmap::Client::Configuration& configuration) {
+  auto protocol = env::get("AIRMAP_PROTOCOL_ELEVATION", "https");
+  auto host     = env::get("AIRMAP_HOST_ELEVATION", configuration.host);
+  auto port     = env::get("AIRMAP_PORT_ELEVATION", ::boost::lexical_cast<std::string>(443));
+  auto route    = env::get("AIRMAP_ROUTE_ELEVATION", rest::Elevation::default_route_for_version(configuration.version));
   return std::make_shared<net::http::RoutingRequester>(
       route, std::make_shared<net::http::LoggingRequester>(
                  log_.logger(), net::http::boost::Requester::create(

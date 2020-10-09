@@ -91,15 +91,15 @@ class AIRMAP_EXPORT Status : DoNotCopyOrMove {
     using Callback = std::function<void(const Result&)>;
   };
 
-  /// get_status searches flight advisories for 'parameters' and reports
+  /// get_status_by_point searches flight advisories for 'parameters' and reports
   /// results back to 'cb'.
   virtual void get_status_by_point(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) = 0;
 
-  /// get_status searches flight advisories for 'parameters' and reports
+  /// get_status_by_path searches flight advisories for 'parameters' and reports
   /// results back to 'cb'.
   virtual void get_status_by_path(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) = 0;
 
-  /// get_status searches flight advisories for 'parameters' and reports
+  /// get_status_by_polygon searches flight advisories for 'parameters' and reports
   /// results back to 'cb'.
   virtual void get_status_by_polygon(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) = 0;
 

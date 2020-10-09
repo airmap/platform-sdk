@@ -10,29 +10,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef AIRMAP_REST_RULESETS_H_
-#define AIRMAP_REST_RULESETS_H_
+#ifndef AIRMAP_REST_ELEVATION_H_
+#define AIRMAP_REST_ELEVATION_H_
 
 #include <airmap/client.h>
-#include <airmap/evaluation.h>
+#include <airmap/elevation.h>
 #include <airmap/net/http/requester.h>
-#include <airmap/rulesets.h>
 
 namespace airmap {
 namespace rest {
 
-class RuleSets : public airmap::RuleSets {
+class Elevation : public airmap::Elevation {
  public:
   static std::string default_route_for_version(Client::Version version);
 
-  explicit RuleSets(const std::shared_ptr<net::http::Requester>& requester);
+  explicit Elevation(const std::shared_ptr<net::http::Requester>& requester);
 
-  void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
-  void for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) override;
-  void fetch_rules(const FetchRules::Parameters& parameters, const FetchRules::Callback& cb) override;
-  void evaluate_rulesets(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) override;
-  void evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters,
-                            const EvaluateFlightPlan::Callback& cb) override;
+  void get_elevation_points(const GetElevationPoints::Parameters& parameters,
+                            const GetElevationPoints::Callback& cb) override;
+  void get_elevation_carpet(const GetElevationCarpet::Parameters& parameters,
+                            const GetElevationCarpet::Callback& cb) override;
+  void get_elevation_path(const GetElevationPath::Parameters& parameters,
+                          const GetElevationPath::Callback& cb) override;
 
  private:
   std::shared_ptr<net::http::Requester> requester_;
@@ -41,4 +40,4 @@ class RuleSets : public airmap::RuleSets {
 }  // namespace rest
 }  // namespace airmap
 
-#endif  // AIRMAP_REST_RULESETS_H_
+#endif  // AIRMAP_REST_ELEVATION_H_

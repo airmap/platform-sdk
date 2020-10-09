@@ -52,6 +52,7 @@ class AIRMAP_EXPORT Client : public QObject, public airmap::Client {
   Advisory& advisory() override;
   Aircrafts& aircrafts() override;
   Airspaces& airspaces() override;
+  Elevation& elevation() override;
   FlightPlans& flight_plans() override;
   Flights& flights() override;
   Pilots& pilots() override;

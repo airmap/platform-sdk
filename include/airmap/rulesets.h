@@ -122,7 +122,8 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
 
   /// evaluate_flight_plan evaluates a flight plan identified by 'parameters' and
   /// reports back results to 'cb'.
-  virtual void evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters, const EvaluateFlightPlan::Callback& cb) = 0;
+  virtual void evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters,
+                                    const EvaluateFlightPlan::Callback& cb) = 0;
 
  protected:
   /// @cond

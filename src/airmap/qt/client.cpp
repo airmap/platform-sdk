@@ -18,6 +18,7 @@
 #include <airmap/qt/aircrafts.h>
 #include <airmap/qt/airspaces.h>
 #include <airmap/qt/authenticator.h>
+#include <airmap/qt/elevation.h>
 #include <airmap/qt/flight_plans.h>
 #include <airmap/qt/flights.h>
 #include <airmap/qt/pilots.h>
@@ -69,6 +70,7 @@ struct airmap::qt::Client::Private {
         aircrafts_{airmap::qt::Aircrafts::create(dispatcher_, client_)},
         airspaces_{airmap::qt::Airspaces::create(dispatcher_, client_)},
         authenticator_{airmap::qt::Authenticator::create(dispatcher_, client_)},
+        elevation_{airmap::qt::Elevation::create(dispatcher_, client_)},
         flight_plans_{airmap::qt::FlightPlans::create(dispatcher_, client_)},
         flights_{airmap::qt::Flights::create(dispatcher_, client_)},
         pilots_{airmap::qt::Pilots::create(dispatcher_, client_)},
@@ -90,6 +92,7 @@ struct airmap::qt::Client::Private {
   std::shared_ptr<airmap::qt::Aircrafts> aircrafts_;
   std::shared_ptr<airmap::qt::Airspaces> airspaces_;
   std::shared_ptr<airmap::qt::Authenticator> authenticator_;
+  std::shared_ptr<airmap::qt::Elevation> elevation_;
   std::shared_ptr<airmap::qt::FlightPlans> flight_plans_;
   std::shared_ptr<airmap::qt::Flights> flights_;
   std::shared_ptr<airmap::qt::Pilots> pilots_;
@@ -147,6 +150,10 @@ airmap::Aircrafts& airmap::qt::Client::aircrafts() {
 
 airmap::Airspaces& airmap::qt::Client::airspaces() {
   return *d_->airspaces_;
+}
+
+airmap::Elevation& airmap::qt::Client::elevation() {
+  return *d_->elevation_;
 }
 
 airmap::FlightPlans& airmap::qt::Client::flight_plans() {

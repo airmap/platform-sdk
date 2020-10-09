@@ -28,6 +28,8 @@ airmap::rest::Client::Client(const Configuration& configuration, const std::shar
       authenticator_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
                                                                               requesters.authenticator),
                      requesters.sso},
+      elevation_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
+                                                                          requesters.elevation)},
       flight_plans_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
                                                                              requesters.flight_plans)},
       flights_{std::make_shared<airmap::net::http::RequesterWithApiKey>(configuration_.credentials.api_key,
@@ -56,6 +58,10 @@ airmap::Airspaces& airmap::rest::Client::airspaces() {
 
 airmap::Authenticator& airmap::rest::Client::authenticator() {
   return authenticator_;
+}
+
+airmap::Elevation& airmap::rest::Client::elevation() {
+  return elevation_;
 }
 
 airmap::FlightPlans& airmap::rest::Client::flight_plans() {

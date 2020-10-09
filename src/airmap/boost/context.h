@@ -58,6 +58,7 @@ class Context : public airmap::Context, public std::enable_shared_from_this<Cont
   std::shared_ptr<net::http::Requester> aircrafts(const airmap::Client::Configuration& configuration);
   std::shared_ptr<net::http::Requester> airspaces(const airmap::Client::Configuration& configuration);
   std::shared_ptr<net::http::Requester> authenticator(const airmap::Client::Configuration& configuration);
+  std::shared_ptr<net::http::Requester> elevation(const airmap::Client::Configuration& configuration);
   std::shared_ptr<net::http::Requester> flights(const airmap::Client::Configuration& configuration);
   std::shared_ptr<net::http::Requester> flight_plans(const airmap::Client::Configuration& configuration);
   std::shared_ptr<net::http::Requester> pilots(const airmap::Client::Configuration& configuration);
