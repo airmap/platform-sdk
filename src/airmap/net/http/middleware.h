@@ -37,7 +37,7 @@ Requester::Callback jsend_parsing_request_callback(const std::function<void(cons
         case Response::Classification::success:
         case Response::Classification::client_error:
         case Response::Classification::server_error:
-          next(jsend::parse_to_outcome<T>(result.value().body));
+          next(jsend::parse_to_outcome<T>(response.body));
           break;
         default:
           next(Outcome<T, Error>{Error{"networking error"}

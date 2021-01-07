@@ -35,7 +35,8 @@ void print_pilot_and_aircrafts(std::ostream& out, const airmap::Pilot& pilot,
   tw << "id"
      << "first-name"
      << "last-name"
-     << "user-name"
+     << "email"
+     << "username"
      << "picture-url"
      << "email-verified"
      << "phone-verified"
@@ -44,7 +45,7 @@ void print_pilot_and_aircrafts(std::ostream& out, const airmap::Pilot& pilot,
      << "aircrafts-count"
      << "created-at";
   tw << cli::TabWriter::NewLine{};
-  tw << pilot.id << pilot.first_name << pilot.last_name << pilot.user_name << pilot.picture_url
+  tw << pilot.id << pilot.first_name << pilot.last_name << pilot.email << pilot.user_name << pilot.picture_url
      << pilot.verification_status.email << pilot.verification_status.phone << pilot.statistics.flight.total
      << airmap::iso8601::generate(pilot.statistics.flight.last_flight_time) << pilot.statistics.aircraft.total
      << airmap::iso8601::generate(pilot.created_at);

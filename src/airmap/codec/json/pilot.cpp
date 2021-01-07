@@ -18,6 +18,7 @@
 
 void airmap::codec::json::decode(const nlohmann::json& j, Pilot& p) {
   get(p.id, j, "id");
+  get(p.email, j, "email");
   get(p.first_name, j, "first_name");
   get(p.last_name, j, "last_name");
   get(p.user_name, j, "username");
@@ -32,6 +33,23 @@ void airmap::codec::json::decode(const nlohmann::json& j, Pilot& p) {
 void airmap::codec::json::decode(const nlohmann::json& j, Pilot::VerificationStatus& s) {
   get(s.email, j, "email");
   get(s.phone, j, "phone");
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, Pilot::Metadata::App& am) {
+  get(am.legal, j, "legal");
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, Pilot::Metadata::App::Legal& l) {
+  get(l.privacy_policy, j, "privacy_policy");
+  get(l.terms_of_service, j, "terms_of_service");
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, Pilot::Metadata::App::Legal::PrivacyPolicy& pp) {
+  get(pp.update_required, j, "updateRequired");
+}
+
+void airmap::codec::json::decode(const nlohmann::json& j, Pilot::Metadata::App::Legal::TermsOfService& tos) {
+  get(tos.update_required, j, "updateRequired");
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, Pilot::Statistics& s) {

@@ -146,11 +146,11 @@ The main configuration of the `airmap` executable lives in the file `~/.config/a
     "port": 443
   },
   "telemetry": {
-    "host": "api-udp-telemetry.airmap.com",
+    "host": "telemetry.airmap.com",
     "port": 16060
   },
   "traffic": {
-    "host": "mqtt-prod.airmap.io",
+    "host": "mqtt.airmap.com",
     "port": 8883
   },
   "credentials": {

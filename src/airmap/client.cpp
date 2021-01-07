@@ -22,8 +22,8 @@ airmap::Client::Configuration airmap::Client::default_production_configuration(c
   return Configuration{"api.airmap.com",
                        Version::production,
                        {"sso.airmap.io", 443},
-                       {"api.k8s.stage.airmap.com", 32003},
-                       {"mqtt-prod.airmap.io", 8883},
+                       {"telemetry.airmap.com", 16060},
+                       {"mqtt.airmap.com", 8883},
                        credentials};
 }
 
@@ -32,7 +32,7 @@ airmap::Client::Configuration airmap::Client::default_staging_configuration(cons
                        Version::staging,
                        {"sso.airmap.io", 443},
                        {"api.k8s.stage.airmap.com", 32003},
-                       {"mqtt-stage.airmap.io", 8883},
+                       {"mqtt-stage.airmap.com", 8883},
                        credentials};
 }
 

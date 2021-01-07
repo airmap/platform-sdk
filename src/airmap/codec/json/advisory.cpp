@@ -35,6 +35,7 @@ void airmap::codec::json::decode(const nlohmann::json& j, std::vector<Advisory::
 
 void airmap::codec::json::decode(const nlohmann::json& j, Advisory::Weather& weather) {
   auto jw = j["weather"][0];
+  if (!jw) { return; }
   get(weather.condition, jw, "condition");
   get(weather.icon, jw, "icon");
   get(weather.wind, jw, "wind");
