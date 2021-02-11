@@ -50,3 +50,4 @@ message(STATUS "Enabling platform ${AIRMAP_PLATFORM}")
 
 include(external.cmake)
 include(airmapd.cmake)
+include(pack.cmake)
