@@ -1,10 +1,8 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.12)
 
-project(airmap C CXX)
-
-set(AIRMAPD_VERSION_MAJOR 0)
-set(AIRMAPD_VERSION_MINOR 0)
-set(AIRMAPD_VERSION_PATCH 1)
+project(airmap
+  VERSION "1.1.0"
+  LANGUAGES C CXX)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
