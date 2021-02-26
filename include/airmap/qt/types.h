@@ -49,7 +49,7 @@ Q_DECLARE_METATYPE(airmap::Version)
 namespace airmap {
 namespace qt {
 
-void register_types() {
+inline void register_types() {
   qRegisterMetaType<airmap::Aircraft>("Aircraft");
   qRegisterMetaType<airmap::Airspace>("Airspace");
   qRegisterMetaType<airmap::Credentials>("Credentials");
