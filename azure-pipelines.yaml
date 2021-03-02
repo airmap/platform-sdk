@@ -68,6 +68,13 @@ jobs:
           Dockerfile: docker/ubuntu
           buildContext: "."
           arguments: --build-arg produceArtifacts=$(produceArtifacts)
+      - bash: |
+          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion)
+        displayName: "Extract Artifacts"
+      - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: $(System.DefaultWorkingDirectory)/artifact_dir
+            artifactName: airmap-platform-sdk_debs
       - task: Docker@2
         displayName: centos
         inputs:
