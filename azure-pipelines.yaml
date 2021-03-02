@@ -3,6 +3,10 @@ trigger:
   branches:
     include:
       - "master"
+
+variables:
+  produceArtifacts: false 
+
 jobs:
   - job: "image"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
@@ -16,9 +20,20 @@ jobs:
         submodules: recursive
         persistCredentials: true
       - task: Docker@2
-        displayName: ubuntu
+        displayName: ubuntu build
         inputs:
-          command: buildAndPush
+          command: build
+          Dockerfile: docker/ubuntu
+          buildContext: "."
+          containerRegistry: airmapreg.acr
+          repository: platform-sdk.ubuntu
+          tags: |
+            $(Build.SourceVersion)
+          arguments: --build-arg produceArtifacts=$(produceArtifacts)
+      - task: Docker@2
+        displayName: ubuntu push
+        inputs:
+          command: push
           Dockerfile: docker/ubuntu
           buildContext: "."
           containerRegistry: airmapreg.acr

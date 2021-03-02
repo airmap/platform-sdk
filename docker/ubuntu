@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+ARG produceArtifacts
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
@@ -11,6 +13,7 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_NETWORK_TESTS=OFF -DCMAKE_
 RUN make
 RUN ctest -V
 RUN make install
+RUN if [ "$produceArtifacts" = "true" ]; then make package && tools/ubuntu/test-packaging.sh; fi
 WORKDIR /usr/src/app
 RUN tools/ubuntu/cleanup.dev.sh
 WORKDIR /tmp
