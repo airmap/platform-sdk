@@ -2,9 +2,9 @@
 
 const airmap::Version& airmap::Version::current() {
     static Version version{
-        @AIRMAPD_VERSION_MAJOR@,
-        @AIRMAPD_VERSION_MINOR@,
-        @AIRMAPD_VERSION_PATCH@,
+        @PROJECT_VERSION_MAJOR@,
+        @PROJECT_VERSION_MINOR@,
+        @PROJECT_VERSION_PATCH@,
         std::string{"@AIRMAPD_VERSION_GIT_REVISION@"},
         iso8601::parse("@AIRMAPD_VERSION_BUILD_TIMESTAMP@")};
     return version;
