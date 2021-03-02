@@ -69,6 +69,7 @@ jobs:
           buildContext: "."
           arguments: --build-arg produceArtifacts=$(produceArtifacts)
       - bash: |
+          chmod +x ./docker/extract_artifacts.sh
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion)
         displayName: "Extract Artifacts"
       - task: PublishPipelineArtifact@1
