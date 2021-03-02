@@ -68,7 +68,9 @@ jobs:
           Dockerfile: docker/ubuntu
           buildContext: "."
           #arguments: --build-arg produceArtifacts=$(produceArtifacts)
+          tags: $(Build.SourceVersion)
       - bash: |
+          set -euxo pipefail
           chmod +x ./docker/extract_artifacts.sh
           docker image ls -a
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion)

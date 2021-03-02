@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 IMAGE=${1:-platform-sdk.ubuntu}
 ARTIFACT_DIR="artifact_dir"
 
