@@ -16,7 +16,7 @@ RUN ctest -V
 RUN make install
 #RUN if [ "$produceArtifacts" = "true" ]; then make package && tools/ubuntu/test-packaging.sh; fi
 RUN make package
-RUN tools/ubuntu/test-packaging.sh
+#RUN tools/ubuntu/test-packaging.sh
 WORKDIR /usr/src/app
 RUN tools/ubuntu/cleanup.dev.sh
 WORKDIR /tmp
