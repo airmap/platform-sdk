@@ -78,8 +78,8 @@ jobs:
         displayName: "Extract Artifacts"
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: $(System.DefaultWorkingDirectory)/artifact_dir
-          artifactName: airmap-platform-sdk_debs
+          targetPath: /usr/src/app/artifacts
+          artifactName: airmap-platform-sdk-deb
       - task: Docker@2
         displayName: centos
         inputs:

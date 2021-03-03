@@ -19,5 +19,5 @@ RUN make package
 #WORKDIR /usr/src/app
 #RUN tools/ubuntu/test-packaging.sh
 #RUN tools/ubuntu/cleanup.dev.sh
-WORKDIR /tmp
+#WORKDIR /tmp
 #RUN rm -rf /usr/src/app
