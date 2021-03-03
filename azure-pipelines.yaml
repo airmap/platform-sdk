@@ -67,7 +67,8 @@ jobs:
           command: build
           Dockerfile: docker/ubuntu
           buildContext: "."
-          #arguments: --build-arg produceArtifacts=$(produceArtifacts)
+          containerRegistry: airmapreg.acr
+          repository: platform-sdk.ubuntu
           tags: $(Build.SourceVersion)
       - bash: |
           set -euxo pipefail
