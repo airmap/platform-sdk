@@ -5,7 +5,7 @@ trigger:
       - "master"
 
 variables:
-  produceArtifacts: false 
+  artifactDir: $(System.DefaultWorkingDirectory)/artifacts
 
 jobs:
   - job: "image"
@@ -29,7 +29,7 @@ jobs:
           repository: platform-sdk.ubuntu
           tags: |
             $(Build.SourceVersion)
-          arguments: --build-arg produceArtifacts=$(produceArtifacts)
+          arguments: --build-arg artifactDir=$(artifactDir)
       - task: Docker@2
         displayName: ubuntu push
         inputs:
@@ -70,15 +70,10 @@ jobs:
           containerRegistry: airmapreg.acr
           repository: platform-sdk.ubuntu
           tags: $(Build.SourceVersion)
-      - bash: |
-          set -euxo pipefail
-          chmod +x ./docker/extract_artifacts.sh
-          docker image ls -a
-          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion)
-        displayName: "Extract Artifacts"
+          arguments: --build-arg artifactDir=$(artifactDir)
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: /usr/src/app/artifacts
+          targetPath: $(artifactDir)
           artifactName: airmap-platform-sdk-deb
       - task: Docker@2
         displayName: centos
