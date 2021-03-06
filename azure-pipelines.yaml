@@ -71,7 +71,7 @@ jobs:
           repository: platform-sdk.ubuntu
           tags: $(Build.SourceVersion)
           arguments: '--build-arg artifactDir=$(artifactDir)'
-      -bash: |
+      - bash: |
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)
       - task: PublishPipelineArtifact@1
         inputs:
