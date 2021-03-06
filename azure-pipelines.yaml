@@ -8,7 +8,7 @@ variables:
   artifactDir: $(System.DefaultWorkingDirectory)/artifacts
 
 jobs:
-  - job: "image"
+  - job: "release-from-master"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
@@ -70,7 +70,9 @@ jobs:
           containerRegistry: airmapreg.acr
           repository: platform-sdk.ubuntu
           tags: $(Build.SourceVersion)
-          arguments: --build-arg artifactDir=$(artifactDir)
+          arguments: '--build-arg artifactDir=$(artifactDir)'
+      -bash: |
+          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: $(artifactDir)
