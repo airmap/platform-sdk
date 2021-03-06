@@ -8,7 +8,7 @@ variables:
   artifactDir: $(System.DefaultWorkingDirectory)/artifacts
 
 jobs:
-  - job: "release-from-master"
+  - job: "release_from_master"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
