@@ -9,7 +9,7 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access"       ON)
 option(AIRMAP_ENABLE_GRPC          "Enable libraries/executables requiring gRPC" OFF)
-option(AIRMAP_ENABLE_QT            "Enable libraries/executables requiring Qt5"  OFF)
+option(AIRMAP_ENABLE_QT            "Enable libraries/executables requiring Qt5"  ON)
 
 if (AIRMAP_ENABLE_GRPC)
   add_definitions(-DAIRMAP_ENABLE_GRPC)
