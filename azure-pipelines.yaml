@@ -20,20 +20,9 @@ jobs:
         submodules: recursive
         persistCredentials: true
       - task: Docker@2
-        displayName: ubuntu build
+        displayName: ubuntu
         inputs:
-          command: build
-          Dockerfile: docker/ubuntu
-          buildContext: "."
-          containerRegistry: airmapreg.acr
-          repository: platform-sdk.ubuntu
-          tags: |
-            $(Build.SourceVersion)
-          arguments: --build-arg artifactDir=$(artifactDir)
-      - task: Docker@2
-        displayName: ubuntu push
-        inputs:
-          command: push
+          command: buildAndPush
           Dockerfile: docker/ubuntu
           buildContext: "."
           containerRegistry: airmapreg.acr
@@ -70,7 +59,6 @@ jobs:
           containerRegistry: airmapreg.acr
           repository: platform-sdk.ubuntu
           tags: $(Build.SourceVersion)
-          arguments: '--build-arg artifactDir=$(artifactDir)'
       - bash: |
           chmod +x ./docker/extract_artifacts.sh
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)

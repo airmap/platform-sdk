@@ -1,10 +1,6 @@
 FROM ubuntu:18.04
 
-ARG artifactDir
-RUN echo $artifactDir
-
 RUN mkdir -p /usr/src/app
-RUN mkdir -p $artifactDir
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
@@ -17,8 +13,8 @@ RUN ctest -V
 RUN make install
 #RUN if [ "$produceArtifacts" = "true" ]; then make package && tools/ubuntu/test-packaging.sh; fi
 RUN make package
-#WORKDIR /usr/src/app
+WORKDIR /usr/src/app
 #RUN tools/ubuntu/test-packaging.sh
-#RUN tools/ubuntu/cleanup.dev.sh
-#WORKDIR /tmp
-#RUN rm -rf /usr/src/app
+RUN tools/ubuntu/cleanup.dev.sh
+WORKDIR /tmp
+RUN rm -rf /usr/src/app
