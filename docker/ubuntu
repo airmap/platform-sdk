@@ -11,11 +11,10 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_NETWORK_TESTS=OFF -DCMAKE_
 RUN make
 RUN ctest -V
 RUN make install
-#RUN if [ "$produceArtifacts" = "true" ]; then make package && tools/ubuntu/test-packaging.sh; fi
 RUN make package
 RUN mv *.deb /tmp
 WORKDIR /usr/src/app
-#RUN tools/ubuntu/test-packaging.sh
+RUN tools/ubuntu/test-packaging.sh
 RUN tools/ubuntu/cleanup.dev.sh
 WORKDIR /tmp
 RUN rm -rf /usr/src/app
