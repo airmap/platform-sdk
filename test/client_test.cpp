@@ -27,9 +27,9 @@ BOOST_AUTO_TEST_CASE(configuration_can_be_parsed_from_valid_json) {
   BOOST_CHECK(config.version == airmap::Client::Version::production);
   BOOST_CHECK(config.sso.host == "sso.airmap.io");
   BOOST_CHECK(config.sso.port == 443);
-  BOOST_CHECK(config.telemetry.host == "api-udp-telemetry.airmap.com");
+  BOOST_CHECK(config.telemetry.host == "telemetry.airmap.com");
   BOOST_CHECK(config.telemetry.port == 16060);
-  BOOST_CHECK(config.traffic.host == "mqtt-prod.airmap.io");
+  BOOST_CHECK(config.traffic.host == "mqtt.airmap.com");
   BOOST_CHECK(config.traffic.port == 8883);
   BOOST_CHECK(config.credentials.api_key == "lalelu");
 }

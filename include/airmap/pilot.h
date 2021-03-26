@@ -38,7 +38,8 @@ struct AIRMAP_EXPORT Pilot {
   std::string id;                     ///< The unique id of the pilot in the context of AirMap.
   std::string first_name;             ///< The first name of the pilot.
   std::string last_name;              ///< The last name of the pilot.
-  std::string user_name;              ///< The AirMap username of this pilot.
+  std::string email;                  ///< The email AirMap recorded for this pilot.
+  Optional<std::string> user_name;    ///< The pilot's username used to connect to AirMap services.
   Optional<std::string> picture_url;  ///< The URL of a picture showing the pilot.
 
   /// VerificationStatus summarizes the
@@ -63,7 +64,18 @@ struct AIRMAP_EXPORT Pilot {
 
   /// App- and user-specific metadata.
   struct AIRMAP_EXPORT Metadata {
-    std::map<std::string, std::string> app;   ///< App-specific meta-data.
+    struct AIRMAP_EXPORT App {
+      struct AIRMAP_EXPORT Legal {
+        struct AIRMAP_EXPORT PrivacyPolicy {
+          bool update_required;   ///< True iff user needs to accept updated privacy policy
+        } privacy_policy;
+        struct AIRMAP_EXPORT TermsOfService {
+          bool update_required;   ///< True iff user needs to accept updated terms of service
+        } terms_of_service;
+      } legal;
+      std::uint64_t total;        ///< The total number of flights
+      DateTime last_flight_time;  ///< Date and time of the last flight
+    } app;                        ///< App-specific metadata
     std::map<std::string, std::string> user;  ///< User-specific meta-data.
   } metadata;                                 ///< Metadata associated with a pilot.
   DateTime created_at;                        ///< Timestamp of the creation of this pilot in the AirMap system.

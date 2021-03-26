@@ -56,16 +56,28 @@ void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature& f) {
   get(f.is_calculated, j, "is_calculated");
 }
 
-void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Type& f) {
-  f = boost::lexical_cast<RuleSet::Feature::Type>(j.get<std::string>());
+void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Type& t) {
+  try {
+    t = boost::lexical_cast<RuleSet::Feature::Type>(j.get<std::string>());
+  } catch(boost::bad_lexical_cast const& e) {
+      t = RuleSet::Feature::Type::unknown;
+  }
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Measurement& m) {
-  m = boost::lexical_cast<RuleSet::Feature::Measurement>(j.get<std::string>());
+    try {
+        m = boost::lexical_cast<RuleSet::Feature::Measurement>(j.get<std::string>());
+    } catch(boost::bad_lexical_cast const& e) {
+        m = RuleSet::Feature::Measurement::unknown;
+    }
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Unit& u) {
-  u = boost::lexical_cast<RuleSet::Feature::Unit>(j.get<std::string>());
+  try {
+    u = boost::lexical_cast<RuleSet::Feature::Unit>(j.get<std::string>());
+  } catch(boost::bad_lexical_cast const& e) {
+        u = RuleSet::Feature::Unit::unknown;
+  }
 }
 
 void airmap::codec::json::decode(const nlohmann::json& j, RuleSet::Feature::Value& v) {
