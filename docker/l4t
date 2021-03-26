@@ -1,0 +1,20 @@
+#-- see https://ngc.nvidia.com/catalog/containers/nvidia:l4t-base for versions
+FROM nvcr.io/nvidia/l4t-base:r32.5.0
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+RUN tools/l4t/setup.dev.sh
+RUN mkdir build
+WORKDIR build
+RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_NETWORK_TESTS=OFF --trace-source=CMakeLists.txt --trace-expand ..
+RUN make -j $(nproc)
+RUN ctest -V
+RUN make install
+WORKDIR /usr/src/app
+RUN tools/l4t/cleanup.dev.sh
+WORKDIR /tmp
+RUN rm -rf /usr/src/app
+ 
+#ENTRYPOINT ["/usr/bin/airmap", "daemon"]
