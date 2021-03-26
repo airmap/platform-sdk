@@ -10,13 +10,13 @@ check_cxx_compiler_flag(
   COMPILER_SUPPORTS_NO_TAUTOLOGICAL_CONSTANT_COMPARE
 )
 
-if (COMPILER_SUPPORTS_NO_TAUTOLOGICAL_CONSTANT_COMPARE)
-  set(AIRMAP_BORINGSSL_CXX_FLAGS "-Wno-tautological-constant-compare")
-endif ()
+#if (COMPILER_SUPPORTS_NO_TAUTOLOGICAL_CONSTANT_COMPARE)
+#  set(AIRMAP_BORINGSSL_CXX_FLAGS "-Wno-tautological-constant-compare")
+#endif ()
 
 ExternalProject_add(
     boringssl
-    URL file://${CMAKE_CURRENT_SOURCE_DIR}/boringssl-fips-20180730.tar.gz
+    GIT_REPOSITORY https://github.com/google/boringssl.git
     PREFIX boringssl
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
@@ -26,7 +26,6 @@ ExternalProject_add(
         -DANDROID_CPP_FEATURES=${ANDROID_CPP_FEATURES}
         -DCMAKE_TOOLCHAIN_FILE:PATH=${CMAKE_TOOLCHAIN_FILE}
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-        -DCMAKE_CXX_FLAGS=${AIRMAP_BORINGSSL_CXX_FLAGS}
         -DOPENSSL_NO_ASM=ON # Note: https://github.com/grpc/grpc/issues/9440
     CMAKE_GENERATOR ${CMAKE_GENERATOR}
     UPDATE_COMMAND ""
