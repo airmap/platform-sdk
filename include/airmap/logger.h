@@ -17,6 +17,7 @@
 #include <airmap/visibility.h>
 
 #include <iostream>
+#include <sstream>
 #include <memory>
 
 namespace airmap {
@@ -71,6 +72,38 @@ AIRMAP_EXPORT std::shared_ptr<Logger> create_filtering_logger(Logger::Severity s
 /// create_null_logger returns a logger that does the equivalent of
 /// > /dev/null.
 AIRMAP_EXPORT std::shared_ptr<Logger> create_null_logger();
+
+
+///
+/// @brief The StreamLogger class wraps the undelying/optional Logger and allows using it as a stream
+/// i.e.: define macro like this:
+///
+/// #define LOG(level) StreamLogger(_logger, Logger::Severity::level, "some category")
+///
+/// and then use within a class that has a _logger member like so:
+///
+/// LOG(info) << "foo" << 1;
+///
+class AIRMAP_EXPORT StreamLogger : public std::stringstream {
+    public:
+        StreamLogger(std::shared_ptr<Logger> underlying, Logger::Severity severity, const char* component)
+        :_underlying(underlying),
+         _severity(severity),
+         _component(component)
+        {}
+
+        ~StreamLogger() {
+            if (_underlying) {
+                _underlying->log(_severity, str().c_str(), _component);
+            }
+        }
+
+    private:
+        std::shared_ptr<Logger> _underlying;
+        Logger::Severity        _severity;
+        const char*             _component;
+};
+
 
 }  // namespace airmap
 

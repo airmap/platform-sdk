@@ -20,11 +20,11 @@ cat << EOF > /etc/airmap/aero/config.json
         "port": 443
     },
     "telemetry": {
-        "host": "api.k8s.stage.airmap.com",
-        "port": 32003
+        "host": "telemetry.airmap.com",
+        "port": 16060
     },
     "traffic": {
-        "host": "mqtt-prod.airmap.io",
+        "host": "mqtt.airmap.com",
         "port": 8883
     },
     "credentials": {

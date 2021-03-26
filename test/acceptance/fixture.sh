@@ -18,11 +18,11 @@ config_pattern_staging="{
     \"port\": 443
   },
   \"telemetry\": {
-    \"host\": \"api-udp-telemetry.stage.airmap.com\",
+    \"host\": \"telemetry.stage.airmap.com\",
     \"port\": 16060
   },
   \"traffic\": {
-    \"host\": \"mqtt-stage.airmap.io\",
+    \"host\": \"mqtt-stage.airmap.com\",
     \"port\": 8883
   },
   \"version\": \"staging\"
@@ -45,11 +45,11 @@ config_pattern_production="{
     \"port\": 443
   },
   \"telemetry\": {
-    \"host\": \"api.k8s.stage.airmap.com\",
-    \"port\": 32020
+    \"host\": \"telemetry.stage.airmap.com\",
+    \"port\": 16060
   },
   \"traffic\": {
-    \"host\": \"mqtt-prod.airmap.io\",
+    \"host\": \"mqtt.airmap.com\",
     \"port\": 8883
   },
   \"version\": \"production\"

@@ -25,6 +25,10 @@ namespace json {
 
 void decode(const nlohmann::json& j, Pilot& p);
 void decode(const nlohmann::json& j, Pilot::VerificationStatus& s);
+void decode(const nlohmann::json& j, Pilot::Metadata::App& am);
+void decode(const nlohmann::json& j, Pilot::Metadata::App::Legal& l);
+void decode(const nlohmann::json& j, Pilot::Metadata::App::Legal::PrivacyPolicy& pp);
+void decode(const nlohmann::json& j, Pilot::Metadata::App::Legal::TermsOfService& tos);
 void decode(const nlohmann::json& j, Pilot::Statistics& s);
 void decode(const nlohmann::json& j, Pilot::Statistics::Flight& f);
 void decode(const nlohmann::json& j, Pilot::Statistics::Aircraft& a);

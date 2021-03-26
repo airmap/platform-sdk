@@ -3,8 +3,12 @@ trigger:
   branches:
     include:
       - "master"
+
+variables:
+  artifactDir: $(System.DefaultWorkingDirectory)/artifacts
+
 jobs:
-  - job: "image"
+  - job: "release_from_master"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
@@ -52,6 +56,16 @@ jobs:
           command: build
           Dockerfile: docker/ubuntu
           buildContext: "."
+          containerRegistry: airmapreg.acr
+          repository: platform-sdk.ubuntu
+          tags: $(Build.SourceVersion)
+      - bash: |
+          chmod +x ./docker/extract_artifacts.sh
+          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(artifactDir)
+          artifactName: airmap-platform-sdk-deb
       - task: Docker@2
         displayName: centos
         inputs:
