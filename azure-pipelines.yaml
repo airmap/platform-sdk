@@ -51,7 +51,7 @@ jobs:
         submodules: recursive
         persistCredentials: true
       - bash:  |
-          chmod + x ./tools/l4t/build-docker-image.sh
+          chmod +x ./tools/l4t/build-docker-image.sh
           ./tools/l4t/build-docker-image.sh
           chmod +x ./docker/extract_artifacts.sh
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.l4t:$(Build.SourceVersion) $(artifactDir)
