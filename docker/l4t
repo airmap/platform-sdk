@@ -12,6 +12,8 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_NETWORK_TESTS=OFF --trace-
 RUN make -j $(nproc)
 RUN ctest -V
 RUN make install
+RUN make package
+RUN mv *.deb /tmp
 WORKDIR /usr/src/app
 RUN tools/l4t/cleanup.dev.sh
 WORKDIR /tmp
