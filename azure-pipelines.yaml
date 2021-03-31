@@ -39,7 +39,7 @@ jobs:
           repository: platform-sdk.centos
           tags: |
             $(Build.SourceVersion)
-  - job: "pr-l4t"
+  - job: "pr_4t"
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
