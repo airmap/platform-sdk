@@ -53,8 +53,8 @@ jobs:
       - bash:  |
           chmod +x ./tools/l4t/build-docker-image.sh
           ./tools/l4t/build-docker-image.sh
-          chmod +x ./docker/extract_artifacts.sh
-          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.l4t:$(Build.SourceVersion) $(artifactDir)
+          #chmod +x ./docker/extract_artifacts.sh
+          #./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.l4t:$(Build.SourceVersion) $(artifactDir)
   - job: "pr"
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
