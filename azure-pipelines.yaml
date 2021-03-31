@@ -39,11 +39,11 @@ jobs:
           repository: platform-sdk.centos
           tags: |
             $(Build.SourceVersion)
-  - job: "pr"
+  - job: "pr-l4t"
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
-      vmImage: "ubuntu-16.04"
+      vmImage: "ubuntu-20.04"
     steps:
       - checkout: self
         clean: true
@@ -55,6 +55,17 @@ jobs:
           ./tools/l4t/build-docker-image.sh
           chmod +x ./docker/extract_artifacts.sh
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.l4t:$(Build.SourceVersion) $(artifactDir)
+  - job: "pr"
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    timeoutInMinutes: 0
+    pool:
+      vmImage: "ubuntu-16.04"
+    steps:
+      - checkout: self
+        clean: true
+        lfs: true
+        submodules: recursive
+        persistCredentials: true
       - task: Docker@2
         displayName: ubuntu
         inputs:
