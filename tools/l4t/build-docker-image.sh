@@ -4,6 +4,7 @@ set -eux
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 uname -r
+sudo apt-get install qemu
 
 build_opts="--force-rm=true $@"
 sudo docker run --platform=linux/amd64 --rm --privileged multiarch/qemu-user-static:register || true
