@@ -8,7 +8,7 @@ sudo apt-get install qemu binfmt-support qemu-user-static
 
 build_opts="--force-rm=true $@"
 #docker run --platform=linux/amd64 --rm --privileged multiarch/qemu-user-static:register || true
-docker run --platform=linux/amd64 --rm --privileged multiarch/qemu-user-static:register --debian --reset -p yes
+docker run --platform=linux/amd64 --rm --privileged multiarch/qemu-user-static --reset -p yes
 git clone https://github.com/computermouth/qemu-static-conf.git
 sudo mkdir -p /usr/lib/binfmt.d
 sudo cp qemu-static-conf/*.conf /usr/lib/binfmt.d/
