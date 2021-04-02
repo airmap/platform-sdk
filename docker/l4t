@@ -5,6 +5,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
+RUN chmod +x tools/l4t/*.sh
 RUN tools/l4t/setup.dev.sh
 RUN mkdir build
 WORKDIR build
