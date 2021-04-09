@@ -9,7 +9,4 @@ set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "AirMap, Inc.")
 
-#-- do not change the following line without updating QGC's build system (QGCExternalLibs.pri)
-set(CPACK_PACKAGING_INSTALL_PREFIX "airmap-platform-sdk")
-
 include(CPack)
