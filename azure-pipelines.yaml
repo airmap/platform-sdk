@@ -39,8 +39,16 @@ jobs:
           repository: platform-sdk.centos
           tags: |
             $(Build.SourceVersion)
+      - bash: |
+          chmod +x ./docker/extract_artifacts.sh
+          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(artifactDir)
+          artifactName: airmap-platform-sdk-releases
   - job: "l4t_release"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    dependsOn: []
     timeoutInMinutes: 0
     pool:
       vmImage: "ubuntu-20.04"
@@ -55,6 +63,35 @@ jobs:
           ./tools/l4t/build-docker-image.sh
           chmod +x ./docker/extract_artifacts.sh
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.l4t:$(Build.SourceVersion) $(artifactDir)
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(artifactDir)
+          artifactName: airmap-platform-sdk-releases
+  - job: "github_release"
+    pool:
+      vmImage: "ubuntu-20.04"
+    dependsOn:
+      #- l4t_release
+      - release_from_master
+    steps:
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Gather Build Artifacts'
+        inputs:
+          artifact: 'airmap-platform-sdk-releases'
+          path: $(Build.ArtifactStagingDirectory)
+      - bash: |
+          set -eo pipefail
+          curl -fsL https://github.com/airmap/github-cli/releases/download/v0.0.3/github-cli_0.0.3_linux_amd64.tar.gz | tar -xzf - github-cli
+          chmod a+x github-cli
+          VERSION=$(git describe HEAD --tags)
+          #mv airmap-platform-sdk-*-arm64.deb airmap-platform-sdk-${VERSION}-arm64.deb
+          mv airmap-platform-sdk-*-amd64.deb airmap-platform-sdk-${VERSION}-amd64.deb
+          ./github-cli repository create-release --owner=airmap --repo=AirBoss --tag-name=${VERSION} AirBossMissionPlanner-${VERSION}.AppImage airbossmissionplanner_${VERSION}-1.deb airbossmissionplanner-arm64-v8a-debug-${VERSION}.apk
+        condition: startsWith(variables['build.sourceBranch'], 'refs/tags/')
+        displayName: "Create GitHub release"
+        env:
+          GITHUB_TOKEN: $(GITHUB_TOKEN)
+
   - job: "pr"
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
