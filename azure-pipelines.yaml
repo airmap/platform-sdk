@@ -9,7 +9,7 @@ variables:
 
 jobs:
   - job: "release_from_master"
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
       vmImage: "ubuntu-16.04"
@@ -68,6 +68,7 @@ jobs:
           targetPath: $(artifactDir)
           artifactName: airmap-platform-sdk-releases
   - job: "github_release"
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     pool:
       vmImage: "ubuntu-20.04"
     dependsOn:
@@ -93,7 +94,7 @@ jobs:
           GITHUB_TOKEN: $(GITHUB_TOKEN)
 
   - job: "pr"
-    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
       vmImage: "ubuntu-16.04"
@@ -112,13 +113,6 @@ jobs:
           containerRegistry: airmapreg.acr
           repository: platform-sdk.ubuntu
           tags: $(Build.SourceVersion)
-      - bash: |
-          chmod +x ./docker/extract_artifacts.sh
-          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: $(artifactDir)
-          artifactName: airmap-platform-sdk-deb
       - task: Docker@2
         displayName: centos
         inputs:
