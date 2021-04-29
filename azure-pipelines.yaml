@@ -29,16 +29,6 @@ jobs:
           repository: platform-sdk.ubuntu
           tags: |
             $(Build.SourceVersion)
-      - task: Docker@2
-        displayName: centos
-        inputs:
-          command: buildAndPush
-          Dockerfile: docker/centos
-          buildContext: "."
-          containerRegistry: airmapreg.acr
-          repository: platform-sdk.centos
-          tags: |
-            $(Build.SourceVersion)
       - bash: |
           chmod +x ./docker/extract_artifacts.sh
           ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)
@@ -84,10 +74,9 @@ jobs:
           set -eo pipefail
           curl -fsL https://github.com/airmap/github-cli/releases/download/v0.0.3/github-cli_0.0.3_linux_amd64.tar.gz | tar -xzf - github-cli
           chmod a+x github-cli
-          VERSION=$(git describe HEAD --tags)
-          #mv airmap-platform-sdk-*-arm64.deb airmap-platform-sdk-${VERSION}-arm64.deb
-          mv airmap-platform-sdk-*-amd64.deb airmap-platform-sdk-${VERSION}-amd64.deb
-          ./github-cli repository create-release --owner=airmap --repo=AirBoss --tag-name=${VERSION} AirBossMissionPlanner-${VERSION}.AppImage airbossmissionplanner_${VERSION}-1.deb airbossmissionplanner-arm64-v8a-debug-${VERSION}.apk
+            # assume release version is latest tag in repo
+          VERSION=$(git describe --abbrev=0 --tags)
+          ./github-cli release upload --owner=airmap --repo=AirBoss airmap-platform-sdk-*.deb
         condition: startsWith(variables['build.sourceBranch'], 'refs/tags/')
         displayName: "Create GitHub release"
         env:

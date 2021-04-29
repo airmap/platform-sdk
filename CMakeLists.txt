@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(airmap
-  VERSION "1.1.0"
+  VERSION "2.0.0"
   LANGUAGES C CXX)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
@@ -24,7 +24,15 @@ if (GIT_FOUND)
     OUTPUT_VARIABLE AIRMAPD_VERSION_GIT_REVISION
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-  message(STATUS "Building in git revision ${AIRMAPD_VERSION_GIT_REVISION}")
+  execute_process(
+    COMMAND ${GIT_EXECUTABLE} describe --abbrev=0 --tags  #get latest tag (we tag releases)
+    OUTPUT_VARIABLE AIRMAPD_VERSION_GIT_TAG
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  
+  set(CMAKE_PROJECT_VERSION ${AIRMAPD_VERSION_GIT_TAG})
+
+  message(STATUS "Building platform-sdk version ${AIRMAPD_VERSION_GIT_TAG} at git revision ${AIRMAPD_VERSION_GIT_REVISION}")
 else()
   set(AIRMAPD_VERSION_GIT_REVISION "n/a")
   message(STATUS "Executable git is missing, choosing default value for git revision")
