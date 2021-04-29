@@ -74,7 +74,7 @@ jobs:
           set -eo pipefail
           curl -fsL https://github.com/airmap/github-cli/releases/download/v0.0.3/github-cli_0.0.3_linux_amd64.tar.gz | tar -xzf - github-cli
           chmod a+x github-cli
-            # assume release version is latest tag in repo
+            # assume release version is most recent existing tag in repo
           VERSION=$(git describe --abbrev=0 --tags)
           ./github-cli release upload --owner=airmap --repo=AirBoss airmap-platform-sdk-*.deb
         condition: startsWith(variables['build.sourceBranch'], 'refs/tags/')
@@ -83,7 +83,7 @@ jobs:
           GITHUB_TOKEN: $(GITHUB_TOKEN)
 
   - job: "pr"
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
     pool:
       vmImage: "ubuntu-16.04"
