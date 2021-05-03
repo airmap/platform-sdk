@@ -75,7 +75,8 @@ jobs:
           curl -fsL https://github.com/cli/cli/releases/download/v1.9.2/gh_1.9.2_linux_amd64.tar.gz | tar -xzf - --no-anchored gh --strip-components 2
           chmod a+x gh
           gh config set prompt disabled
-          gh auth login --with-token $(GITHUB_TOKEN)
+            # auth token automatically retrieved via ENV
+          gh auth login
             # assume release version is most recent existing tag in repo
           VERSION=$(git describe --abbrev=0 --tags)
           ./gh release upload --repo=airmap/platform-sdk $(VERSION) airmap-platform-sdk-*.deb
