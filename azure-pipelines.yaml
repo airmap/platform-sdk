@@ -76,15 +76,13 @@ jobs:
           chmod a+x gh
           ./gh config set prompt disabled
             # auth token automatically retrieved via ENV
-          ./gh auth login --with-token
+          echo $(GITHUB_TOKEN) | ./gh auth login --with-token
             # assume release version is most recent existing tag in repo
           VERSION=$(git describe --abbrev=0 --tags)
           echo $(VERSION)
           ./gh release upload --repo=airmap/platform-sdk $(VERSION) airmap-platform-sdk-*.deb
         condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
         displayName: "Create GitHub release"
-        env:
-          GITHUB_TOKEN: $(GITHUB_TOKEN)
 
   - job: "pr"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
