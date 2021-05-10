@@ -62,5 +62,5 @@ void airmap::rest::Advisory::report_weather(const ReportWeather::Parameters& par
   codec::http::query::encode(query, parameters);
 
   requester_->get("/weather", std::move(query), std::move(headers),
-                  net::http::jsend_parsing_request_callback<Weather>(cb));
+                  net::http::jsend_parsing_request_callback<WeatherData>(cb));
 }

@@ -68,6 +68,14 @@ class AIRMAP_EXPORT Advisory : DoNotCopyOrMove {
     float mslp      = 0.0;      ///< The Median Sea Level Pressure in [mbar].
   };
 
+  /// WeatherData contains Weather along with attribution data
+  struct AIRMAP_EXPORT WeatherData {
+    std::string attribution;      ///< Text description of the weather source.
+    std::string attribution_uri;  ///< The URI describing the weather source in more detail.
+    Weather weather;              ///< The actual weather report
+  };
+
+
   /// ForId bundles up types to ease interaction
   /// with Advisory::for_id.
   struct AIRMAP_EXPORT ForId {
