@@ -80,7 +80,8 @@ jobs:
             # assume release version is most recent existing tag in repo
           VERSION=$(git describe --abbrev=0 --tags)
           echo $VERSION
-          ./gh release upload --repo=airmap/platform-sdk $VERSION 'airmap-platform-sdk-*.deb'
+          ls $(Build.ArtifactStagingDirectory)/*
+          ./gh release upload --repo=airmap/platform-sdk $VERSION $(Build.ArtifactStagingDirectory)/airmap-platform-sdk-*.deb
         condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
         displayName: "Create GitHub release"
 
