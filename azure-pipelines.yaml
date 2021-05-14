@@ -72,13 +72,13 @@ jobs:
           path: $(Build.ArtifactStagingDirectory)
       - bash: |
           set -eox pipefail
-          curl -fsL https://github.com/cli/cli/releases/download/v1.9.2/gh_1.9.2_linux_amd64.tar.gz | tar -xzf - --no-anchored gh --strip-components 2
+          curl -fsSL https://github.com/cli/cli/releases/download/v1.9.2/gh_1.9.2_linux_amd64.tar.gz | tar -xzf - --no-anchored gh --strip-components 2
           chmod a+x gh
           ./gh config set prompt disabled
             # auth token supplied via ENV configured in pipeline variables setup
           echo $(GITHUB_TOKEN) | ./gh auth login --with-token
             # assume release version is most recent existing tag in repo
-          VERSION=$(git describe --abbrev=0 --tags)
+          VERSION=$("git describe --abbrev=0 --tags")
           ./gh release upload --repo=airmap/platform-sdk $VERSION $(Build.ArtifactStagingDirectory)/airmap-platform-sdk-*.deb
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
         displayName: "Create GitHub release"
