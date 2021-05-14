@@ -29,18 +29,16 @@ jobs:
           repository: platform-sdk.ubuntu
           tags: |
             $(Build.SourceVersion)
-      - task: Docker@2
-        displayName: centos
+      - bash: |
+          chmod +x ./docker/extract_artifacts.sh
+          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:"$(Build.SourceVersion)" "$(artifactDir)"
+      - task: PublishPipelineArtifact@1
         inputs:
-          command: buildAndPush
-          Dockerfile: docker/centos
-          buildContext: "."
-          containerRegistry: airmapreg.acr
-          repository: platform-sdk.centos
-          tags: |
-            $(Build.SourceVersion)
+          targetPath: $(artifactDir)
+          artifactName: airmap-platform-sdk-releases
   - job: "l4t_release"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    dependsOn: []
     timeoutInMinutes: 0
     pool:
       vmImage: "ubuntu-20.04"
@@ -54,7 +52,37 @@ jobs:
           chmod +x ./tools/l4t/build-docker-image.sh
           ./tools/l4t/build-docker-image.sh
           chmod +x ./docker/extract_artifacts.sh
-          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.l4t:$(Build.SourceVersion) $(artifactDir)
+          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.l4t:"$(Build.SourceVersion)" "$(artifactDir)"
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(artifactDir)
+          artifactName: airmap-platform-sdk-releases
+  - job: "github_release"
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    pool:
+      vmImage: "ubuntu-20.04"
+    dependsOn:
+      - l4t_release
+      - release_from_master
+    steps:
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Gather Build Artifacts'
+        inputs:
+          artifact: 'airmap-platform-sdk-releases'
+          path: $(Build.ArtifactStagingDirectory)
+      - bash: |
+          set -eox pipefail
+          curl -fsSL https://github.com/cli/cli/releases/download/v1.9.2/gh_1.9.2_linux_amd64.tar.gz | tar -xzf - --no-anchored gh --strip-components 2
+          chmod a+x gh
+          ./gh config set prompt disabled
+            # auth token supplied via ENV configured in pipeline variables setup
+          echo $(GITHUB_TOKEN) | ./gh auth login --with-token
+            # assume release version is most recent existing tag in repo
+          VERSION="$(git describe --abbrev=0 --tags)"
+          ./gh release upload --repo=airmap/platform-sdk $VERSION "$(Build.ArtifactStagingDirectory)"/airmap-platform-sdk-*.deb
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        displayName: "Create GitHub release"
+
   - job: "pr"
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     timeoutInMinutes: 0
@@ -75,13 +103,6 @@ jobs:
           containerRegistry: airmapreg.acr
           repository: platform-sdk.ubuntu
           tags: $(Build.SourceVersion)
-      - bash: |
-          chmod +x ./docker/extract_artifacts.sh
-          ./docker/extract_artifacts.sh airmapreg.azurecr.io/platform-sdk.ubuntu:$(Build.SourceVersion) $(artifactDir)
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: $(artifactDir)
-          artifactName: airmap-platform-sdk-deb
       - task: Docker@2
         displayName: centos
         inputs:

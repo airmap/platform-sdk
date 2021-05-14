@@ -21,18 +21,18 @@ using json = nlohmann::json;
 airmap::Client::Configuration airmap::Client::default_production_configuration(const Credentials& credentials) {
   return Configuration{"api.airmap.com",
                        Version::production,
-                       {"sso.airmap.io", 443},
+                       {"sso.airmap.com", 443},
                        {"telemetry.airmap.com", 16060},
                        {"mqtt.airmap.com", 8883},
                        credentials};
 }
 
 airmap::Client::Configuration airmap::Client::default_staging_configuration(const Credentials& credentials) {
-  return Configuration{"api.airmap.com",
+  return Configuration{"stage1.api.airmap.com",
                        Version::staging,
-                       {"sso.airmap.io", 443},
-                       {"api.k8s.stage.airmap.com", 32003},
-                       {"mqtt-stage.airmap.com", 8883},
+                       {"stage1.sso.airmap.com", 443},
+                       {"stage1.telemetry.airmap.com", 16060},
+                       {"stage1.mqtt.airmap.com", 8883},
                        credentials};
 }
 
