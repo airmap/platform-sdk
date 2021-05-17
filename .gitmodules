@@ -8,4 +8,4 @@
 [submodule "vendor/cpp-jwt"]
 	path = vendor/cpp-jwt
 	url = https://github.com/arun11299/cpp-jwt.git
-	branch = 8272256dd0105e2e66838dc081e30e638966ca12
+	branch = v1.4
