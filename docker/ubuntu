@@ -9,7 +9,7 @@ RUN tools/ubuntu/setup.dev.sh
 RUN mkdir build
 WORKDIR build
 RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DAIRMAP_ENABLE_NETWORK_TESTS=OFF -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ..
-RUN make
+RUN make -j $(nproc)
 RUN ctest -V
 RUN make install
 RUN make package
