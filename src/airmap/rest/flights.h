@@ -38,6 +38,8 @@ class Flights : public airmap::Flights {
   virtual void end_flight_communications(const EndFlightCommunications::Parameters& parameters,
                                          const EndFlightCommunications::Callback& cb) override;
 
+  void set_auth_token(std::string token);
+
  private:
   std::shared_ptr<net::http::Requester> requester_;
 };

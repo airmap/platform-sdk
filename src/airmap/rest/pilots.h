@@ -39,6 +39,8 @@ class Pilots : public airmap::Pilots {
   void delete_aircraft(const DeleteAircraft::Parameters& parameters, const DeleteAircraft::Callback& cb) override;
   void update_aircraft(const UpdateAircraft::Parameters& parameters, const UpdateAircraft::Callback& cb) override;
 
+  void set_auth_token(std::string token);
+
  private:
   std::shared_ptr<net::http::Requester> requester_;
 };

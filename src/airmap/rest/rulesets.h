@@ -33,6 +33,8 @@ class RuleSets : public airmap::RuleSets {
   void evaluate_rulesets(const EvaluateRules::Parameters& parameters, const EvaluateRules::Callback& cb) override;
   void evaluate_flight_plan(const EvaluateFlightPlan::Parameters& parameters, const EvaluateFlightPlan::Callback& cb) override;
 
+  void set_auth_token(std::string token);
+
  private:
   std::shared_ptr<net::http::Requester> requester_;
 };

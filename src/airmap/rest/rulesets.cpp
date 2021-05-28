@@ -15,6 +15,7 @@
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
 #include <airmap/net/http/middleware.h>
+#include <airmap/net/http/authorized_requester.h>
 #include <airmap/util/fmt.h>
 
 #include <nlohmann/json.hpp>
@@ -40,7 +41,6 @@ airmap::rest::RuleSets::RuleSets(const std::shared_ptr<net::http::Requester>& re
 
 void airmap::rest::RuleSets::search(const Search::Parameters& parameters, const Search::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
-
   json j = parameters;
 
   requester_->post("/", std::move(headers), j.dump(),
@@ -65,7 +65,6 @@ void airmap::rest::RuleSets::fetch_rules(const FetchRules::Parameters& parameter
 void airmap::rest::RuleSets::evaluate_rulesets(const EvaluateRules::Parameters& parameters,
                                                const EvaluateRules::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
-
   json j = parameters;
 
   requester_->post("/evaluation", std::move(headers), j.dump(),
@@ -78,4 +77,11 @@ void airmap::rest::RuleSets::evaluate_flight_plan(const EvaluateFlightPlan::Para
 
   requester_->get(fmt::sprintf("/%s/evaluation", parameters.id), std::move(query), std::move(headers),
                   net::http::jsend_parsing_request_callback<Evaluation>(cb));
+}
+
+void airmap::rest::RuleSets::set_auth_token(std::string token) {
+  airmap::net::http::AuthorizedRequester *auth_requester = dynamic_cast<airmap::net::http::AuthorizedRequester*>(requester_.get());
+  if (auth_requester) {
+    auth_requester->set_auth_token(token);
+  }
 }

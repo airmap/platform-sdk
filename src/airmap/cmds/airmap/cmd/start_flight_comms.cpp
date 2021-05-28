@@ -16,6 +16,7 @@
 #include <airmap/codec.h>
 #include <airmap/context.h>
 #include <airmap/paths.h>
+#include <airmap/rest/client.h>
 #include <airmap/util/telemetry_simulator.h>
 
 #include <signal.h>
@@ -105,9 +106,13 @@ cmd::StartFlightComms::StartFlightComms()
           }
 
           auto client = result.value();
+          auto c = dynamic_cast<::airmap::rest::Client*>(client.get());
+          if (c) {
+            c->handle_auth_update(token.id());
+          }
 
           client->flights().start_flight_communications(
-              Flights::StartFlightCommunications::Parameters{token.id(), params_.flight_id.get()},
+              Flights::StartFlightCommunications::Parameters{params_.flight_id.get()},
               [this, &ctxt, context, client](const Flights::StartFlightCommunications::Result& result) {
                 if (!result) {
                   log_.errorf(component, "failed to start flight communications: %s", result.error());

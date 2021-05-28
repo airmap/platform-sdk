@@ -29,6 +29,8 @@ class Airspaces : public airmap::Airspaces {
   void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
   void for_ids(const ForIds::Parameters& parameters, const ForIds::Callback& cb) override;
 
+  void set_auth_token(std::string token);
+
  private:
   std::shared_ptr<net::http::Requester> requester_;
 };

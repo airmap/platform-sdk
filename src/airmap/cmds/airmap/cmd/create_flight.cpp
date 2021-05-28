@@ -17,6 +17,7 @@
 #include <airmap/context.h>
 #include <airmap/date_time.h>
 #include <airmap/paths.h>
+#include <airmap/rest/client.h>
 
 #include <signal.h>
 
@@ -91,7 +92,7 @@ cmd::CreateFlight::CreateFlight()
       return 1;
     }
 
-    params_.authorization = Token::load_from_json(in_token).id();
+    token_ = Token::load_from_json(in_token);
 
     if (geometry_file_) {
       std::ifstream in{geometry_file_.get()};
@@ -140,6 +141,10 @@ cmd::CreateFlight::CreateFlight()
           }
 
           auto client = result.value();
+          auto c = dynamic_cast<::airmap::rest::Client*>(client.get());
+          if (c && token_) {
+            c->handle_auth_update(token_.get().id());
+          }
 
           auto handler = [this, &ctxt, context, client](const Flights::CreateFlight::Result& result) {
             if (result) {

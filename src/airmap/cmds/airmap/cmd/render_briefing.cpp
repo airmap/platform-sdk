@@ -17,6 +17,7 @@
 #include <airmap/context.h>
 #include <airmap/date_time.h>
 #include <airmap/paths.h>
+#include <airmap/rest/client.h>
 
 #include <signal.h>
 
@@ -59,10 +60,6 @@ cmd::RenderBriefing::RenderBriefing()
       config_file_ = ConfigFile{paths::config_file(version_).string()};
     }
 
-    if (!token_file_) {
-      token_file_ = TokenFile{paths::token_file(version_).string()};
-    }
-
     std::ifstream in_config{config_file_.get()};
     if (!in_config) {
       log_.errorf(component, "failed to open configuration file %s for reading", config_file_);
@@ -71,18 +68,23 @@ cmd::RenderBriefing::RenderBriefing()
 
     auto config = Client::load_configuration_from_json(in_config);
 
+    if (!token_file_) {
+      token_file_ = TokenFile{paths::token_file(version_).string()};
+    }
+
     std::ifstream in_token{token_file_.get()};
     if (!in_token) {
       log_.errorf(component, "failed to open token file %s for reading", token_file_);
       return 1;
     }
 
+    Optional<Token> token = Token::load_from_json(in_token);
+
     if (!flight_plan_id_ || !flight_plan_id_.get().validate()) {
       log_.errorf(component, "missing parameter 'id'");
       return 1;
     }
 
-    parameters_.authorization = Token::load_from_json(in_token).id();
     parameters_.id            = flight_plan_id_.get();
     auto result               = ::airmap::Context::create(log_.logger());
 
@@ -103,7 +105,7 @@ cmd::RenderBriefing::RenderBriefing()
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
     context->create_client_with_configuration(
-        config, [this, &ctxt, config, context](const ::airmap::Context::ClientCreateResult& result) {
+        config, [this, &ctxt, config, context, token](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
             log_.errorf(component, "failed to create client: %s", result.error());
             context->stop(::airmap::Context::ReturnCode::error);
@@ -111,6 +113,10 @@ cmd::RenderBriefing::RenderBriefing()
           }
 
           auto client = result.value();
+          auto c = dynamic_cast<::airmap::rest::Client*>(client.get());
+          if (c && token) {
+            c->handle_auth_update(token.get().id());
+          }
 
           auto handler = [this, &ctxt, context, client](const auto& result) {
             if (result) {

@@ -10,10 +10,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef AIRMAP_NET_HTTP_REQUESTER_WITH_API_KEY_H_
-#define AIRMAP_NET_HTTP_REQUESTER_WITH_API_KEY_H_
+#ifndef AIRMAP_NET_HTTP_AUTHORIZED_REQUESTER_H_
+#define AIRMAP_NET_HTTP_AUTHORIZED_REQUESTER_H_
 
 #include <airmap/net/http/requester.h>
+#include <airmap/util/formatting_logger.h>
 
 #include <memory>
 #include <string>
@@ -22,9 +23,9 @@ namespace airmap {
 namespace net {
 namespace http {
 
-class RequesterWithApiKey : public http::Requester {
+class AuthorizedRequester : public http::Requester {
  public:
-  explicit RequesterWithApiKey(const std::string& api_key, const std::shared_ptr<Requester>& next);
+  explicit AuthorizedRequester(const std::string& api_key, const std::shared_ptr<Requester>& next);
 
   void delete_(const std::string& path, std::unordered_map<std::string, std::string>&& query,
                std::unordered_map<std::string, std::string>&& headers, Callback cb) override;
@@ -34,14 +35,17 @@ class RequesterWithApiKey : public http::Requester {
              Callback cb) override;
   void post(const std::string& path, std::unordered_map<std::string, std::string>&& headers, const std::string& body,
             Callback cb) override;
+  void set_auth_token(std::string token);
 
  private:
   std::string api_key_;
+  Optional<std::string> auth_token_;
   std::shared_ptr<Requester> next_;
+  util::FormattingLogger log_{create_null_logger()};
 };
 
 }  // namespace http
 }  // namespace net
 }  // namespace airmap
 
-#endif  // AIRMAP_NET_HTTP_REQUESTER_WITH_API_KEY_H_
+#endif  // AIRMAP_NET_HTTP_AUTHORIZED_REQUESTER_H_

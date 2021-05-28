@@ -40,10 +40,10 @@ class AIRMAP_EXPORT Advisory : DoNotCopyOrMove {
   /// Advisory bundles together airspace information and its evaluation in terms
   /// good to fly/needs information or feedback/conflict.
   struct AIRMAP_EXPORT AirspaceAdvisory {
-    Status::Advisory advisory;  /// Airspace information.
-    Status::Color color;        /// The evaluation of the airspace.
-    std::uint32_t rule_id;      /// The id of the ruleset.
-    std::string ruleset_id;     /// The id of the rule.
+    Status::Advisory advisory;    /// Airspace information.
+    Status::Color color;          /// The evaluation of the airspace.
+    std::uint32_t rule_id;        /// The id of the ruleset.
+    std::string ruleset_id;       /// The id of the rule.
   };
 
   /// Wind bundles up attributes describing a wind conditions.
@@ -73,9 +73,9 @@ class AIRMAP_EXPORT Advisory : DoNotCopyOrMove {
   struct AIRMAP_EXPORT ForId {
     /// Parameters bundles up input parameters.
     struct Parameters {
-      Optional<DateTime> start;  ///< Search for advisories before this time.
-      Optional<DateTime> end;    ///< Search for advisories after this time.
-      FlightPlan::Id id;         ///< Search for advisories relating to this flight plan.
+      Optional<DateTime> start;             ///< Search for advisories before this time.
+      Optional<DateTime> end;               ///< Search for advisories after this time.
+      FlightPlan::Id id;                    ///< Search for advisories relating to this flight plan.
     };
     /// Result models the outcome of calling Advisory::for_id.
     using Result = Outcome<std::vector<AirspaceAdvisory>, Error>;
@@ -89,10 +89,10 @@ class AIRMAP_EXPORT Advisory : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Search {
     /// Parameters bundles up input parameters.
     struct Parameters {
-      Required<Geometry> geometry;     ///< Evaluate rulesets intersecting this geometry.
-      Required<std::string> rulesets;  ///< Evaluate these rulesets.
-      Optional<DateTime> start;        ///< Search for advisories after this time.
-      Optional<DateTime> end;          ///< Search for advisories before this time.
+      Required<Geometry> geometry;          ///< Evaluate rulesets intersecting this geometry.
+      Required<std::string> rulesets;       ///< Evaluate these rulesets.
+      Optional<DateTime> start;             ///< Search for advisories after this time.
+      Optional<DateTime> end;               ///< Search for advisories before this time.
     };
     /// Result models the outcome of calling Advisory::search.
     using Result = Outcome<std::vector<AirspaceAdvisory>, Error>;

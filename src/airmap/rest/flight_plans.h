@@ -34,6 +34,8 @@ class FlightPlans : public airmap::FlightPlans {
   void render_briefing(const RenderBriefing::Parameters& parameters, const RenderBriefing::Callback& cb) override;
   void submit(const Submit::Parameters& parameters, const Submit::Callback& cb) override;
 
+  void set_auth_token(std::string token);
+
  private:
   std::shared_ptr<net::http::Requester> requester_;
 };

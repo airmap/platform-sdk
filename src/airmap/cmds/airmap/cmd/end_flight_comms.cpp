@@ -16,6 +16,7 @@
 #include <airmap/codec.h>
 #include <airmap/context.h>
 #include <airmap/paths.h>
+#include <airmap/rest/client.h>
 #include <airmap/util/telemetry_simulator.h>
 
 #include <signal.h>
@@ -105,9 +106,13 @@ cmd::EndFlightComms::EndFlightComms()
           }
 
           auto client = result.value();
+          auto c = dynamic_cast<::airmap::rest::Client*>(client.get());
+          if (c) {
+            c->handle_auth_update(token.id());
+          }
 
           client->flights().end_flight_communications(
-              Flights::EndFlightCommunications::Parameters{token.id(), params_.flight_id.get()},
+              Flights::EndFlightCommunications::Parameters{params_.flight_id.get()},
               [this, &ctxt, context, client](const Flights::EndFlightCommunications::Result& result) {
                 if (!result) {
                   log_.errorf(component, "failed to end flight communications: %s", result.error());

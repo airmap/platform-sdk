@@ -15,6 +15,7 @@
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
 #include <airmap/net/http/middleware.h>
+#include <airmap/net/http/authorized_requester.h>
 #include <airmap/util/fmt.h>
 
 #include <boost/format.hpp>
@@ -41,6 +42,7 @@ airmap::rest::Advisory::Advisory(const std::shared_ptr<net::http::Requester>& re
 
 void airmap::rest::Advisory::for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
+
   codec::http::query::encode(query, parameters);
 
   requester_->get(fmt::sprintf("/airspace/%s", parameters.id), std::move(query), std::move(headers),
@@ -63,4 +65,11 @@ void airmap::rest::Advisory::report_weather(const ReportWeather::Parameters& par
 
   requester_->get("/weather", std::move(query), std::move(headers),
                   net::http::jsend_parsing_request_callback<Weather>(cb));
+}
+
+void airmap::rest::Advisory::set_auth_token(std::string token) {
+  airmap::net::http::AuthorizedRequester *auth_requester = dynamic_cast<airmap::net::http::AuthorizedRequester*>(requester_.get());
+  if (auth_requester) {
+    auth_requester->set_auth_token(token);
+  }
 }

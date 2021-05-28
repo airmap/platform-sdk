@@ -35,7 +35,7 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
   /// RuleSets::search.
   struct AIRMAP_EXPORT Search {
     struct AIRMAP_EXPORT Parameters {
-      Required<Geometry> geometry;  ///< Search for rulesets intersecting this geometry.
+      Required<Geometry> geometry;          ///< Search for rulesets intersecting this geometry.
     };
 
     /// Result models the outcome of calling RuleSets::search.
@@ -49,7 +49,7 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
   /// RuleSets::for_id.
   struct AIRMAP_EXPORT ForId {
     struct AIRMAP_EXPORT Parameters {
-      RuleSet::Id id;  ///< Search for the ruleset with this id.
+      RuleSet::Id id;                       ///< Search for the ruleset with this id.
     };
 
     /// Result models the outcome of calling RuleSets::for_id.
@@ -63,7 +63,7 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
   /// RuleSets::fetch_rules.
   struct AIRMAP_EXPORT FetchRules {
     struct AIRMAP_EXPORT Parameters {
-      Optional<std::string> rulesets;  ///< Fetch rules which apply to these rulesets.
+      Optional<std::string> rulesets;       ///< Fetch rules which apply to these rulesets.
     };
 
     /// Result models the outcome of calling RuleSets::fetch_rules.
@@ -77,10 +77,10 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
   /// RuleSets::evaluate_rulesets.
   struct AIRMAP_EXPORT EvaluateRules {
     struct AIRMAP_EXPORT Parameters {
-      Required<Geometry> geometry;  ///< Evaluate rulesets intersecting this geometry.
+      Required<Geometry> geometry;          ///< Evaluate rulesets intersecting this geometry.
       std::unordered_map<std::string, RuleSet::Feature::Value>
-          features;                    ///< Additional properties of the planned flight.
-      Required<std::string> rulesets;  ///< Evaluate these rulesets.
+          features;                         ///< Additional properties of the planned flight.
+      Required<std::string> rulesets;       ///< Evaluate these rulesets.
     };
 
     /// Result models the outcome of calling RuleSets::evaluate_rulesets.
@@ -94,7 +94,7 @@ class AIRMAP_EXPORT RuleSets : DoNotCopyOrMove {
   /// RuleSets::evaluate_flight_plan.
   struct AIRMAP_EXPORT EvaluateFlightPlan {
     struct AIRMAP_EXPORT Parameters {
-      FlightPlan::Id id;  ///< Id of the flight plan that should be submitted.
+      FlightPlan::Id id;                    ///< Id of the flight plan that should be submitted.
     };
 
     /// Result models the outcome of calling RuleSets::evaluate_flight_plan.

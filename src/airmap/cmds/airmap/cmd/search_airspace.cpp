@@ -17,6 +17,7 @@
 #include <airmap/context.h>
 #include <airmap/date_time.h>
 #include <airmap/paths.h>
+#include <airmap/rest/client.h>
 
 #include <signal.h>
 
@@ -82,6 +83,18 @@ cmd::SearchAirspace::SearchAirspace()
       return 1;
     }
 
+    if (!token_file_) {
+      token_file_ = TokenFile{paths::token_file(version_).string()};
+    }
+
+    std::ifstream in_token{token_file_.get()};
+    if (!in_token) {
+      log_.errorf(component, "failed to open token file %s for reading", token_file_);
+      return 1;
+    }
+
+    Optional<Token> token = Token::load_from_json(in_token);
+
     if (!geometry_file_ && !airspace_id_) {
       log_.errorf(component, "missing parameter 'geometry-file' or 'id'");
       return 1;
@@ -107,7 +120,7 @@ cmd::SearchAirspace::SearchAirspace()
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
     context_->create_client_with_configuration(
-        config, [this, &ctxt](const ::airmap::Context::ClientCreateResult& result) {
+        config, [this, &ctxt, token](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
             log_.errorf(component, "failed to create client: %s", result.error());
             context_->stop(::airmap::Context::ReturnCode::error);
@@ -115,6 +128,10 @@ cmd::SearchAirspace::SearchAirspace()
           }
 
           client_ = result.value();
+          auto c = dynamic_cast<::airmap::rest::Client*>(client_.get());
+          if (c && token) {
+            c->handle_auth_update(token.get().id());
+          }
 
           if (airspace_id_) {
             Airspaces::ForIds::Parameters params;

@@ -138,8 +138,8 @@ add_library(
 
   net/http/requester.h
   net/http/requester.cpp
-  net/http/requester_with_api_key.h
-  net/http/requester_with_api_key.cpp
+  net/http/authorized_requester.h
+  net/http/authorized_requester.cpp
   net/http/response.h
   net/http/response.cpp
   net/http/user_agent.h

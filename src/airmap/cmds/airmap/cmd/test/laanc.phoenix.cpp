@@ -80,7 +80,6 @@ laanc::Suite::EvaluationResult laanc::Suite::evaluate_final_briefing(const Fligh
 
 void laanc::Suite::query_pilot() {
   Pilots::Authenticated::Parameters parameters;
-  parameters.authorization = token_.id();
 
   client_->pilots().authenticated(parameters, std::bind(&Suite::handle_query_pilot_finished, this, ph::_1));
 }
@@ -98,7 +97,6 @@ void laanc::Suite::handle_query_pilot_finished(const Pilots::Authenticated::Resu
 
 void laanc::Suite::query_aircrafts() {
   Pilots::Aircrafts::Parameters parameters;
-  parameters.authorization = token_.id();
   parameters.id            = pilot_.get().id;
 
   client_->pilots().aircrafts(parameters, std::bind(&Suite::handle_query_aircrafts_finished, this, ph::_1));
@@ -138,7 +136,6 @@ void laanc::Suite::handle_plan_flight_finished(const FlightPlans::Create::Result
 void laanc::Suite::render_briefing() {
   FlightPlans::RenderBriefing::Parameters parameters;
   parameters.id            = flight_plan_.get().id;
-  parameters.authorization = token_.id();
 
   client_->flight_plans().render_briefing(parameters, std::bind(&Suite::handle_render_briefing_finished, this, ph::_1));
 }
@@ -161,7 +158,6 @@ void laanc::Suite::handle_render_briefing_finished(const FlightPlans::RenderBrie
 void laanc::Suite::submit_flight_plan() {
   FlightPlans::Submit::Parameters parameters;
   parameters.id            = flight_plan_.get().id;
-  parameters.authorization = token_.id();
 
   client_->flight_plans().submit(parameters, std::bind(&Suite::handle_submit_flight_plan_finished, this, ph::_1));
 }
@@ -187,7 +183,6 @@ void laanc::Suite::handle_submit_flight_plan_finished(const FlightPlans::Submit:
 void laanc::Suite::rerender_briefing() {
   FlightPlans::RenderBriefing::Parameters parameters;
   parameters.id            = flight_plan_.get().id;
-  parameters.authorization = token_.id();
 
   client_->flight_plans().render_briefing(parameters,
                                           std::bind(&Suite::handle_rerender_briefing_finished, this, ph::_1));
@@ -215,7 +210,6 @@ void laanc::Suite::handle_rerender_briefing_finished(const FlightPlans::RenderBr
 void laanc::Suite::render_final_briefing() {
   FlightPlans::RenderBriefing::Parameters parameters;
   parameters.id            = flight_plan_.get().id;
-  parameters.authorization = token_.id();
 
   client_->flight_plans().render_briefing(parameters,
                                           std::bind(&Suite::handle_render_final_briefing_finished, this, ph::_1));
@@ -243,7 +237,6 @@ void laanc::Suite::handle_render_final_briefing_finished(const FlightPlans::Rend
 void laanc::Suite::delete_flight_plan() {
   FlightPlans::Delete::Parameters parameters;
   parameters.id            = flight_plan_.get().id;
-  parameters.authorization = token_.id();
 
   client_->flight_plans().delete_(parameters, std::bind(&Suite::handle_delete_flight_plan_finished, this, ph::_1));
 }
@@ -261,7 +254,6 @@ void laanc::Suite::handle_delete_flight_plan_finished(const FlightPlans::Delete:
 void laanc::Suite::end_flight() {
   Flights::EndFlight::Parameters parameters;
   parameters.id            = flight_id_.get();
-  parameters.authorization = token_.id();
 
   client_->flights().end_flight(parameters, std::bind(&Suite::handle_end_flight_finished, this, ph::_1));
 }
@@ -279,7 +271,6 @@ void laanc::Suite::handle_end_flight_finished(const Flights::EndFlight::Result& 
 void laanc::Suite::delete_flight() {
   Flights::DeleteFlight::Parameters parameters;
   parameters.id            = flight_id_.get();
-  parameters.authorization = token_.id();
 
   client_->flights().delete_flight(parameters, std::bind(&Suite::handle_delete_flight_finished, this, ph::_1));
 }
@@ -349,7 +340,6 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixManual::parameters() {
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(40);
@@ -444,7 +434,6 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixZoo::parameters() {
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
@@ -507,7 +496,6 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixSchwegg::parameters() {
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);
@@ -626,7 +614,6 @@ airmap::FlightPlans::Create::Parameters laanc::PhoenixUniversity::parameters() {
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
@@ -709,7 +696,6 @@ airmap::FlightPlans::Create::Parameters laanc::KentuckyFlorence::parameters() {
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
@@ -786,7 +772,6 @@ airmap::FlightPlans::Create::Parameters laanc::NevadaReno::parameters() {
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
@@ -849,7 +834,6 @@ airmap::FlightPlans::Create::Parameters laanc::ArkansasPineBluff::parameters() {
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = DateTime(Clock::universal_time().date()) + hours(16);
@@ -916,7 +900,6 @@ airmap::FlightPlans::Create::Parameters laanc::WyomingTetonVillage::parameters()
     }
   )_";
   FlightPlans::Create::Parameters parameters = nlohmann::json::parse(json);
-  parameters.authorization                   = token_.id();
   parameters.pilot                           = pilot_.get();
   parameters.aircraft                        = aircraft_.get();
   parameters.start_time                      = move_to_hour(Clock::universal_time(), 16);

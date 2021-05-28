@@ -53,7 +53,6 @@ class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Search {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Optional<std::uint32_t> limit;        ///< Limit the number of results to 'limit'.
       Optional<Geometry> geometry;          ///< Search for flights intersecting this geometry.
       Optional<std::string> country;        ///< Search for flights in this country.
@@ -89,7 +88,6 @@ class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
   struct AIRMAP_EXPORT CreateFlight {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;        ///< Authorization token obtained by logging in to the AirMap services.
       Required<float> latitude;         ///< Latitude of take-off point in [°].
       Required<float> longitude;        ///< Longitude of take-off point in [°].
       float max_altitude = 121.;        ///< Maximum altitude of the entire flight in [m].
@@ -113,7 +111,6 @@ class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
   struct AIRMAP_EXPORT DeleteFlight {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight that should be deleted.
     };
 
@@ -134,7 +131,6 @@ class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
   struct AIRMAP_EXPORT EndFlight {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight that should be ended.
     };
 
@@ -155,7 +151,6 @@ class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
   struct AIRMAP_EXPORT StartFlightCommunications {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight for which flight comms should be started.
     };
 
@@ -176,7 +171,6 @@ class AIRMAP_EXPORT Flights : DoNotCopyOrMove {
   struct AIRMAP_EXPORT EndFlightCommunications {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       Flight::Id id;              ///< Id of the flight for which flight comms should be ended.
     };
 

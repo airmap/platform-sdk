@@ -377,7 +377,6 @@ void cmd::SimulateScenario::handle_flight_status_result_for(util::Scenario::Part
 void cmd::SimulateScenario::request_create_flight_for(util::Scenario::Participants::iterator participant) {
   Flights::CreateFlight::Parameters params;
   const auto& polygon  = participant->geometry.details_for_polygon();
-  params.authorization = participant->authentication.get();
   params.start_time    = Clock::universal_time();
   params.end_time      = Clock::universal_time() + collector_->scenario().duration.get();
   params.aircraft_id   = participant->aircraft.id;
@@ -399,7 +398,7 @@ void cmd::SimulateScenario::handle_create_flight_result_for(util::Scenario::Part
 
     context_->schedule_in([this, participant]() {
         client_->flights().end_flight_communications(
-          {participant->authentication.get(), participant->flight.get().id},
+          {participant->flight.get().id},
           std::bind(&SimulateScenario::handle_end_flight_comms, this, participant, ph::_1));
       },
       microseconds(collector_->scenario().duration.get().total_microseconds())
@@ -433,7 +432,7 @@ void cmd::SimulateScenario::handle_traffic_monitoring_result_for(util::Scenario:
 
 void cmd::SimulateScenario::request_start_flight_comms_for(util::Scenario::Participants::iterator participant) {
   client_->flights().start_flight_communications(
-      {participant->authentication.get(), participant->flight.get().id},
+      {participant->flight.get().id},
       std::bind(&SimulateScenario::handle_start_flight_comms_result_for, this, participant, ph::_1));
 }
 
@@ -478,7 +477,7 @@ void cmd::SimulateScenario::handle_end_flight_comms(util::Scenario::Participants
                                                     const Flights::EndFlightCommunications::Result& result) {
   if (result) {
     log_.infof(component, "successfully ended flight comms");
-    client_->flights().end_flight({participant->authentication.get(), participant->flight.get().id},
+    client_->flights().end_flight({participant->flight.get().id},
                                   std::bind(&SimulateScenario::handle_end_flight, this, participant, ph::_1));
   } else {
     log_.errorf(component, "failed to end flight comms: %s", result.error());

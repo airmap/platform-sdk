@@ -33,7 +33,6 @@ class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
   struct AIRMAP_EXPORT ForId {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Search for the flight with this id.
     };
 
@@ -49,7 +48,6 @@ class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Create {
     /// Parameters bundles up input parameters.
     struct Parameters {
-      std::string authorization;           ///< Authorization token obtained by logging in to the AirMap services.
       Pilot pilot;                         ///< The pilot responsible for the flight.
       Optional<Pilot::Aircraft> aircraft;  ///< The aircraft conducting the flight.
       float latitude;                      ///< The latitude component of the takeoff point in [°].
@@ -77,7 +75,6 @@ class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Update {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan flight_plan;  ///< The details of the plan that should be created with the AirMap services.
     };
     /// Result models the outcome of calling FlightPlans::update.
@@ -92,7 +89,6 @@ class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Delete {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Id of the flight plan that should be deleted.
     };
 
@@ -113,7 +109,6 @@ class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
   struct AIRMAP_EXPORT RenderBriefing {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Id of the flight plan that should be rendered as a briefing.
     };
     /// Result models the outcome of calling FlightPlans::submit.
@@ -128,7 +123,6 @@ class AIRMAP_EXPORT FlightPlans : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Submit {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      Optional<std::string> authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       FlightPlan::Id id;                    ///< Id of the flight plan that should be submitted.
     };
     /// Result models the outcome of calling FlightPlans::submit.

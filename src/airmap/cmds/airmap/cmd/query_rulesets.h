@@ -47,6 +47,7 @@ class QueryRuleSets : public util::cli::CommandWithFlagsAndAction {
   std::shared_ptr<::airmap::Context> context_;
   std::shared_ptr<::airmap::Client> client_;
   Required<ConfigFile> config_file_;
+  Optional<TokenFile> token_file_;
   Optional<GeometryFile> geometry_file_;
   Optional<RuleSetId> ruleset_id_;
 };

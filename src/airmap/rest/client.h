@@ -16,7 +16,7 @@
 #include <airmap/client.h>
 #include <airmap/context.h>
 
-#include <airmap/net/http/requester_with_api_key.h>
+#include <airmap/net/http/authorized_requester.h>
 #include <airmap/net/mqtt/broker.h>
 
 #include <airmap/rest/advisory.h>
@@ -54,6 +54,7 @@ class Client : public airmap::Client {
   explicit Client(const Configuration& configuration, const std::shared_ptr<Context>& parent,
                   const std::shared_ptr<net::udp::Sender>& sender, const Requesters& requesters,
                   const std::shared_ptr<net::mqtt::Broker>& broker);
+  ~Client();
 
   // From airmap::Client
   airmap::Advisory& advisory() override;
@@ -67,10 +68,13 @@ class Client : public airmap::Client {
   airmap::Status& status() override;
   airmap::Telemetry& telemetry() override;
   airmap::Traffic& traffic() override;
+  void handle_auth_update(std::string token);
 
  private:
   Configuration configuration_;
   std::shared_ptr<Context> parent_;
+  Optional<std::string> auth_token_;
+  boost::signals2::connection auth_connection_;
   std::shared_ptr<net::udp::Sender> udp_sender_;
   struct {
     std::shared_ptr<net::http::Requester> airmap_requester;

@@ -39,6 +39,7 @@ class GetStatus : public util::cli::CommandWithFlagsAndAction {
   Client::Version version_{Client::Version::production};
   Logger::Severity log_level_{Logger::Severity::info};
   Required<ConfigFile> config_file_;
+  Required<TokenFile> token_file_;
   Optional<GeometryFile> geometry_file_;
   Status::GetStatus::Parameters params_;
 };

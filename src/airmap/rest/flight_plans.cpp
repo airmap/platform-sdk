@@ -15,6 +15,7 @@
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
 #include <airmap/net/http/middleware.h>
+#include <airmap/net/http/authorized_requester.h>
 #include <airmap/util/fmt.h>
 
 #include <nlohmann/json.hpp>
@@ -41,16 +42,12 @@ airmap::rest::FlightPlans::FlightPlans(const std::shared_ptr<net::http::Requeste
 void airmap::rest::FlightPlans::for_id(const ForId::Parameters& parameters, const ForId::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
 
-  if (parameters.authorization)
-    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
-
   requester_->get(fmt::sprintf("/plan/%s", parameters.id), std::move(query), std::move(headers),
                   net::http::jsend_parsing_request_callback<FlightPlan>(cb));
 }
 
 void airmap::rest::FlightPlans::create_by_polygon(const Create::Parameters& parameters, const Create::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
-  headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization);
 
   json j = parameters;
 
@@ -59,9 +56,6 @@ void airmap::rest::FlightPlans::create_by_polygon(const Create::Parameters& para
 
 void airmap::rest::FlightPlans::update(const Update::Parameters& parameters, const Update::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
-  if (parameters.authorization) {
-    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
-  };
 
   json j;
   j = parameters.flight_plan;
@@ -73,9 +67,6 @@ void airmap::rest::FlightPlans::update(const Update::Parameters& parameters, con
 void airmap::rest::FlightPlans::delete_(const Delete::Parameters& parameters, const Delete::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
 
-  if (parameters.authorization)
-    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
-
   requester_->delete_(fmt::sprintf("/plan/%s", parameters.id), std::move(query), std::move(headers),
                       net::http::jsend_parsing_request_callback<Delete::Response>(cb));
 }
@@ -84,19 +75,20 @@ void airmap::rest::FlightPlans::render_briefing(const RenderBriefing::Parameters
                                                 const RenderBriefing::Callback& cb) {
   std::unordered_map<std::string, std::string> query, headers;
 
-  if (parameters.authorization)
-    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
-
   requester_->get(fmt::sprintf("/plan/%s/briefing", parameters.id), std::move(query), std::move(headers),
                   net::http::jsend_parsing_request_callback<FlightPlan::Briefing>(cb));
 }
 
 void airmap::rest::FlightPlans::submit(const Submit::Parameters& parameters, const Submit::Callback& cb) {
   std::unordered_map<std::string, std::string> headers;
-  if (parameters.authorization) {
-    headers["Authorization"] = fmt::sprintf("Bearer %s", parameters.authorization.get());
-  };
 
   requester_->post(fmt::sprintf("/plan/%s/submit", parameters.id), std::move(headers), std::string{},
                    net::http::jsend_parsing_request_callback<FlightPlan>(cb));
+}
+
+void airmap::rest::FlightPlans::set_auth_token(std::string token) {
+  airmap::net::http::AuthorizedRequester *auth_requester = dynamic_cast<airmap::net::http::AuthorizedRequester*>(requester_.get());
+  if (auth_requester) {
+    auth_requester->set_auth_token(token);
+  }
 }

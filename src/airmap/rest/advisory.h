@@ -30,6 +30,8 @@ class Advisory : public airmap::Advisory {
   void search(const Search::Parameters& parameters, const Search::Callback& cb) override;
   void report_weather(const ReportWeather::Parameters& parameters, const ReportWeather::Callback& cb) override;
 
+  void set_auth_token(std::string token);
+
  private:
   std::shared_ptr<net::http::Requester> requester_;
 };

@@ -44,7 +44,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Authenticated {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;        ///< Authorization token obtained by logging in to the AirMap services.
       Optional<Exclude> exclude{};      ///< Exclude these fields from results.
       bool retrieve_statistics{false};  ///< If true, statistics about flights and aircrafts are requested.
     };
@@ -61,7 +60,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT ForId {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;        ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;                   ///< Searches for the specific pilot with this id.
       Optional<Exclude> exclude{};      ///< Exclude these fields from results.
       bool retrieve_statistics{false};  ///< If true, statistics about flights and aircrafts are requested.
@@ -79,7 +77,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT UpdateForId {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;             ///< Updates the specific pilot with this id.
       std::string first_name;     ///< The first name of the pilot.
       std::string last_name;      ///< The last name of the pilot.
@@ -101,7 +98,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT StartVerifyPilotPhoneForId {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;             ///< Verifies the phone number for the pilot with this id.
     };
 
@@ -119,7 +115,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT FinishVerifyPilotPhoneForId {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;             ///< Verifies the phone number for the pilot with this id.
       std::uint32_t token;        ///< The token that was received on the pilot's phone.
     };
@@ -138,7 +133,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT Aircrafts {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;             ///< Lists all aircrafts owned by the pilot with this id.
     };
 
@@ -154,7 +148,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT AddAircraft {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;             ///< Adds an aircraft for the pilot with this id.
       std::string model_id;       ///< The id of the model of the aircraft.
       std::string nick_name;      ///< The nickname of the aircraft.
@@ -172,7 +165,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT DeleteAircraft {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;             ///< Deletes an aircraft for the pilot with this id.
       std::string aircraft_id;    ///< Deletes the specific aircraft with this id.
     };
@@ -191,7 +183,6 @@ class AIRMAP_EXPORT Pilots : DoNotCopyOrMove {
   struct AIRMAP_EXPORT UpdateAircraft {
     /// Parameters bundles up input parameters.
     struct AIRMAP_EXPORT Parameters {
-      std::string authorization;  ///< Authorization token obtained by logging in to the AirMap services.
       std::string id;             ///< Updates an aircraft for the pilot with this id.
       std::string aircraft_id;    ///< Update the specific aircraft with this id.
       std::string nick_name;      ///< The new nick name for the aircraft.

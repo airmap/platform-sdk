@@ -50,6 +50,7 @@ class GetAdvisories : public util::cli::CommandWithFlagsAndAction {
   std::shared_ptr<::airmap::Context> context_;
   std::shared_ptr<::airmap::Client> client_;
   Required<ConfigFile> config_file_;
+  Optional<TokenFile> token_file_;
   Optional<GeometryFile> geometry_file_;
   Optional<RuleSets> rulesets_;
   Optional<FlightPlanId> flight_plan_id_;

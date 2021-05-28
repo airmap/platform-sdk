@@ -47,7 +47,7 @@ void airmap::rest::Authenticator::authenticate_with_password(const AuthenticateW
   json j;
   j = params;
 
-  sso_requester_->post("/oauth/ro", std::move(headers), j.dump(), [cb](const auto& result) {
+  sso_requester_->post("/oauth/ro", std::move(headers), j.dump(), [cb, this](const auto& result) {
     if (result) {
       const auto& response = result.value();
 
@@ -57,8 +57,13 @@ void airmap::rest::Authenticator::authenticate_with_password(const AuthenticateW
           break;
         case net::http::Response::Classification::success:
         case net::http::Response::Classification::server_error:
-          cb(jsend::parse_to_outcome<Token::OAuth>(result.value().body));
+        {
+          auto outcome = jsend::parse_to_outcome<Token::OAuth>(result.value().body);
+          auto token_string = outcome.value().id;
+          this->notify_auth_token_updated(token_string);
+          cb(outcome);
           break;
+        }
         case net::http::Response::Classification::client_error:
           try {
             auto j = nlohmann::json::parse(result.value().body);

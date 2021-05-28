@@ -13,6 +13,7 @@
 #include <airmap/cmds/airmap/cmd/submit_flight.h>
 
 #include <airmap/client.h>
+#include <airmap/rest/client.h>
 #include <airmap/codec.h>
 #include <airmap/context.h>
 #include <airmap/date_time.h>
@@ -90,7 +91,7 @@ cmd::SubmitFlight::SubmitFlight()
       return 1;
     }
 
-    parameters_.authorization = Token::load_from_json(in_token).id();
+    auto token_str            = Token::load_from_json(in_token).id();
     parameters_.id            = flight_plan_id_.get();
     auto result               = ::airmap::Context::create(log_.logger());
 
@@ -111,7 +112,7 @@ cmd::SubmitFlight::SubmitFlight()
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
     context->create_client_with_configuration(
-        config, [this, &ctxt, config, context](const ::airmap::Context::ClientCreateResult& result) {
+        config, [this, &ctxt, config, context, token_str](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
             log_.errorf(component, "failed to create client: %s", result.error());
             context->stop(::airmap::Context::ReturnCode::error);
@@ -119,6 +120,10 @@ cmd::SubmitFlight::SubmitFlight()
           }
 
           auto client = result.value();
+          auto c = dynamic_cast<::airmap::rest::Client*>(client.get());
+          if (c) {
+            c->handle_auth_update(token_str);
+          }
 
           auto handler = [this, &ctxt, context, client](const auto& result) {
             if (result) {

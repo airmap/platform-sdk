@@ -130,7 +130,6 @@ class TelemetrySubmitter : public std::enable_shared_from_this<TelemetrySubmitte
   Optional<std::vector<Flight>> active_flights_;
   Optional<FlightPlan> flight_plan_;
   Optional<Flight> flight_;
-  Optional<std::string> authorization_;
   Optional<std::shared_ptr<Traffic::Monitor>> traffic_monitor_;
   Optional<std::string> encryption_key_;
   Optional<Geometry> mission_geometry_;

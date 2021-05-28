@@ -17,6 +17,7 @@
 #include <airmap/context.h>
 #include <airmap/date_time.h>
 #include <airmap/paths.h>
+#include <airmap/rest/client.h>
 
 #include <signal.h>
 
@@ -68,10 +69,6 @@ cmd::PlanFlight::PlanFlight()
       config_file_ = ConfigFile{paths::config_file(version_).string()};
     }
 
-    if (!token_file_) {
-      token_file_ = TokenFile{paths::token_file(version_).string()};
-    }
-
     std::ifstream in_config{config_file_.get()};
     if (!in_config) {
       log_.errorf(component, "failed to open configuration file %s for reading", config_file_);
@@ -79,6 +76,18 @@ cmd::PlanFlight::PlanFlight()
     }
 
     auto config = Client::load_configuration_from_json(in_config);
+
+    if (!token_file_) {
+      token_file_ = TokenFile{paths::token_file(version_).string()};
+    }
+
+    std::ifstream in_token{token_file_.get()};
+    if (!in_token) {
+      log_.errorf(component, "failed to open token file %s for reading", token_file_);
+      return 1;
+    }
+
+    Optional<Token> token = Token::load_from_json(in_token);
 
     if (!plan_file_ || !plan_file_.get().validate()) {
       log_.errorf(component, "missing parameter 'plan'");
@@ -104,7 +113,7 @@ cmd::PlanFlight::PlanFlight()
                config.host, config.version, config.telemetry.host, config.telemetry.port, config.credentials.api_key);
 
     context_->create_client_with_configuration(
-        config, [this, &ctxt, config](const ::airmap::Context::ClientCreateResult& result) {
+        config, [this, &ctxt, config, token](const ::airmap::Context::ClientCreateResult& result) {
           if (not result) {
             log_.errorf(component, "failed to create client: %s", result.error());
             context_->stop(::airmap::Context::ReturnCode::error);
@@ -112,11 +121,9 @@ cmd::PlanFlight::PlanFlight()
           }
 
           client_ = result.value();
-
-          std::ifstream in_token{token_file_.get()};
-          if (!in_token) {
-            log_.errorf(component, "failed to open token file %s for reading", token_file_);
-            return;
+          auto c = dynamic_cast<::airmap::rest::Client*>(client_.get());
+          if (c && token) {
+            c->handle_auth_update(token.get().id());
           }
 
           std::ifstream plan_in{plan_file_.get()};
@@ -128,13 +135,11 @@ cmd::PlanFlight::PlanFlight()
           if (update_) {
             FlightPlans::Update::Parameters params;
             params.flight_plan   = json::parse(plan_in);
-            params.authorization = Token::load_from_json(in_token).id();
             client_->flight_plans().update(params, std::bind(&PlanFlight::handle_flight_plan_update_result, this,
                                                              std::placeholders::_1, std::ref(ctxt)));
           } else {
             FlightPlans::Create::Parameters params;
             params               = json::parse(plan_in);
-            params.authorization = Token::load_from_json(in_token).id();
             params.start_time    = Clock::universal_time();
             params.end_time      = Clock::universal_time() + minutes(5);
             client_->flight_plans().create_by_polygon(params, std::bind(&PlanFlight::handle_flight_plan_create_result,

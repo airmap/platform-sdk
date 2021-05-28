@@ -51,6 +51,7 @@ class SearchAirspace : public util::cli::CommandWithFlagsAndAction {
   std::shared_ptr<::airmap::Client> client_;
   Required<ConfigFile> config_file_;
   Optional<GeometryFile> geometry_file_;
+  Required<TokenFile> token_file_;
   Optional<AirspaceId> airspace_id_;
   Optional<Date_Time> date_time_;
   Optional<bool> full_;

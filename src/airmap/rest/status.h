@@ -30,6 +30,8 @@ class Status : public airmap::Status {
   void get_status_by_path(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) override;
   void get_status_by_polygon(const GetStatus::Parameters& parameters, const GetStatus::Callback& cb) override;
 
+  void set_auth_token(std::string token);
+
  private:
   std::shared_ptr<net::http::Requester> requester_;
 };

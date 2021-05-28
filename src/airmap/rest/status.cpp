@@ -15,6 +15,7 @@
 #include <airmap/codec.h>
 #include <airmap/jsend.h>
 #include <airmap/net/http/middleware.h>
+#include <airmap/net/http/authorized_requester.h>
 #include <airmap/util/fmt.h>
 
 #include <nlohmann/json.hpp>
@@ -60,4 +61,11 @@ void airmap::rest::Status::get_status_by_polygon(const GetStatus::Parameters& pa
 
   requester_->get("/polygon", std::move(query), std::move(headers),
                   net::http::jsend_parsing_request_callback<Report>(cb));
+}
+
+void airmap::rest::Status::set_auth_token(std::string token) {
+  airmap::net::http::AuthorizedRequester *auth_requester = dynamic_cast<airmap::net::http::AuthorizedRequester*>(requester_.get());
+  if (auth_requester) {
+    auth_requester->set_auth_token(token);
+  }
 }

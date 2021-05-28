@@ -58,7 +58,6 @@ void airmap::monitor::TelemetrySubmitter::deactivate() {
 
   if (authorization_ && flight_) {
     Flights::EndFlight::Parameters parameters;
-    parameters.authorization = authorization_.get();
     parameters.id            = flight_.get().id;
 
     client_->flights().end_flight(parameters, [sp = shared_from_this()](const auto& result) {
