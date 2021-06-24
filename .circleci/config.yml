@@ -12,6 +12,18 @@ jobs:
       - run: cd build && make -j4
       - run: cd build && ctest -V
       - run: cd build && make install
+  build-and-test-ios-xcode-10.0.0:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run: tools/osx/setup.sh
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+      - run: mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=staging -DCMAKE_TOOLCHAIN_FILE=$(pwd)/../cmake/ios.cmake -DIOS_PLATFORM=OS ..
+      - run: cd build && make -j4
+      - run: cd build && ctest -V
+      - run: cd build && make install
   build-and-test-ubuntu-18.04-gcc:
     docker:
       - image: ubuntu:18.04

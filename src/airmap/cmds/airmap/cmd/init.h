@@ -36,7 +36,6 @@ class Init : public util::cli::CommandWithFlagsAndAction {
   Client::Version version_{Client::Version::production};
   Credentials::Type credentials_type_{Credentials::Type::oauth};
   Optional<ConfigFile> config_file_;
-  bool interactive_{true};
 };
 
 }  // namespace cmd

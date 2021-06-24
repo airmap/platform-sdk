@@ -51,7 +51,38 @@ if (${ANDROID})
     set(AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE architecture=ia64)
   endif ()
 else ()
-  set(AIRMAP_BOOST_CXX_FLAGS "cxxflags=-fPIC")
+  if (IOS_PLATFORM)
+    message(STATUS "Enabling iOS build for Boost - ${IOS_PLATFORM}")
+
+    string(REPLACE " " " <cflags>"                   AIRMAP_BOOST_IOS_STANDARD_C_FLAGS       "<cflags>${CMAKE_C_FLAGS}"             )
+    string(REPLACE " " " <cxxflags>"                 AIRMAP_BOOST_IOS_STANDARD_CXX_FLAGS     "<cxxflags>${CMAKE_CXX_FLAGS}"         )
+
+    configure_file(
+      ${CMAKE_CURRENT_SOURCE_DIR}/ios/user-config.jam.in
+      ${CMAKE_CURRENT_BINARY_DIR}/ios/user-config.jam
+    )
+
+    set(AIRMAP_BOOST_B2_COMMAND_FLAGS_USER_CONFIG --user-config=${CMAKE_CURRENT_BINARY_DIR}/ios/user-config.jam)
+    set(AIRMAP_BOOST_B2_COMMAND_FLAGS_TARGET_OS target-os=iphone)
+
+    if (${IOS_PLATFORM} STREQUAL "OS")
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_TOOLSET toolset=clang-ios.os)
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE architecture=arm)
+    elseif (${IOS_PLATFORM} STREQUAL "OS64")
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_TOOLSET toolset=clang-ios.os64)
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE architecture=arm)
+    elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR")
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_TOOLSET toolset=clang-ios.simulator)
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE architecture=x86)
+    elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR64")
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_TOOLSET toolset=clang-ios.simulator64)
+      set(AIRMAP_BOOST_B2_COMMAND_FLAGS_ARCHITECTURE architecture=ia64)
+    else ()
+      message(FATAL_ERROR "Found unsupported iOS platform ${IOS_PLATFORM}")
+    endif ()
+  else ()
+    set(AIRMAP_BOOST_CXX_FLAGS "cxxflags=-fPIC")
+  endif ()
 endif ()
 
 if (AIRMAP_BOOST_B2_COMMAND_FLAGS_USER_CONFIG)

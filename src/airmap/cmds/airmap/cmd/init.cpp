@@ -40,7 +40,6 @@ cmd::Init::Init()
   flag(flags::config_file(config_file_));
   flag(flags::version(version_));
   flag(cli::make_flag("credentials-type", "type of credentials in {anonymous, oauth}", credentials_type_));
-  flag(cli::make_flag("interactive", "enable interactive editing of the final configuration file", interactive_));
 
   action([this](const cli::Command::Context& ctxt) {
     util::FormattingLogger log{create_default_logger(ctxt.cerr)};
@@ -76,19 +75,7 @@ cmd::Init::Init()
       json j = Client::default_configuration(version_, credentials);
       config_file << j.dump(2);
 
-      log.infof(component, "successfully persisted configuration to %s", config_file_.get());
-    }
-
-    if (interactive_) {
-      std::string editor{"editor"};
-
-      if (auto ve = std::getenv("VISUAL")) {
-        editor = ve;
-      } else if (auto le = std::getenv("EDITOR")) {
-        editor = le;
-      }
-
-      std::system(fmt::sprintf("%s %s", editor, config_file_.get()).c_str());
+      log.infof(component, "successfully persisted configuration to %s, please fill in values marked with %s", config_file_.get(), replace_marker);
     }
 
     return 0;

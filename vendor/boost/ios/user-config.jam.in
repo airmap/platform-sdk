@@ -1,0 +1,54 @@
+import os ;
+import toolset ;
+
+using clang : ios.os : @CMAKE_CXX_COMPILER@ :
+    <cflags>-target <cflags>@CMAKE_C_COMPILER_TARGET@
+    <cflags>-arch <cflags>armv7
+    <cflags>-arch <cflags>armv7s
+    <cflags>-arch <cflags>arm64
+    <cflags>-isysroot <cflags>@CMAKE_OSX_SYSROOT@
+    <cflags>-fPIC
+    @AIRMAP_BOOST_IOS_STANDARD_C_FLAGS@ 
+    @AIRMAP_BOOST_IOS_STANDARD_CXX_FLAGS@
+    <cxxflags>-arch <cxxflags>armv7
+    <cxxflags>-arch <cxxflags>armv7s
+    <cxxflags>-arch <cxxflags>arm64
+    <cxxflags>-isysroot <cxxflags>@CMAKE_OSX_SYSROOT@
+    <cxxflags>-std=c++14 
+    <cxxflags>-fPIC ;
+
+using clang : ios.os64 : @CMAKE_CXX_COMPILER@ :
+    <cflags>-target <cflags>@CMAKE_C_COMPILER_TARGET@
+    <cflags>-arch <cflags>arm64
+    <cflags>-isysroot <cflags>@CMAKE_OSX_SYSROOT@
+    <cflags>-fPIC
+    @AIRMAP_BOOST_IOS_STANDARD_C_FLAGS@ 
+    @AIRMAP_BOOST_IOS_STANDARD_CXX_FLAGS@
+    <cxxflags>-arch <cxxflags>arm64
+    <cxxflags>-isysroot <cxxflags>@CMAKE_OSX_SYSROOT@
+    <cxxflags>-std=c++14 
+    <cxxflags>-fPIC ;
+
+using clang : ios.simulator : @CMAKE_CXX_COMPILER@ :
+    <cflags>-target <cflags>@CMAKE_C_COMPILER_TARGET@
+    <cflags>-arch <cflags>i386
+    <cflags>-isysroot <cflags>@CMAKE_OSX_SYSROOT@
+    <cflags>-fPIC
+    @AIRMAP_BOOST_IOS_STANDARD_C_FLAGS@ 
+    @AIRMAP_BOOST_IOS_STANDARD_CXX_FLAGS@
+    <cxxflags>-arch <cxxflags>i386
+    <cxxflags>-isysroot <cxxflags>@CMAKE_OSX_SYSROOT@
+    <cxxflags>-std=c++14 
+    <cxxflags>-fPIC ;
+
+using clang : ios.simulator64 : @CMAKE_CXX_COMPILER@ :
+    <cflags>-target <cflags>@CMAKE_C_COMPILER_TARGET@
+    <cflags>-arch <cflags>x86_64
+    <cflags>-isysroot <cflags>@CMAKE_OSX_SYSROOT@
+    <cflags>-fPIC
+    @AIRMAP_BOOST_IOS_STANDARD_C_FLAGS@ 
+    @AIRMAP_BOOST_IOS_STANDARD_CXX_FLAGS@
+    <cxxflags>-arch <cxxflags>i386
+    <cxxflags>-isysroot <cxxflags>@CMAKE_OSX_SYSROOT@
+    <cxxflags>-std=c++14 
+    <cxxflags>-fPIC ;
