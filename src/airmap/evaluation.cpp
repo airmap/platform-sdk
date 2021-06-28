@@ -23,6 +23,8 @@ std::ostream& airmap::operator<<(std::ostream& out, Evaluation::Authorization::S
       return out << "rejected";
     case Evaluation::Authorization::Status::pending:
       return out << "pending";
+    case Evaluation::Authorization::Status::manual_authorization:
+      return out << "manual_authorization";
     case Evaluation::Authorization::Status::accepted_upon_submission:
       return out << "accepted_upon_submission";
     case Evaluation::Authorization::Status::rejected_upon_submission:
@@ -42,6 +44,8 @@ std::istream& airmap::operator>>(std::istream& in, Evaluation::Authorization::St
     status = Evaluation::Authorization::Status::rejected;
   } else if (s == "pending") {
     status = Evaluation::Authorization::Status::pending;
+  } else if (s == "manual_authorization") {
+    status = Evaluation::Authorization::Status::manual_authorization;
   } else if (s == "accepted_upon_submission") {
     status = Evaluation::Authorization::Status::accepted_upon_submission;
   } else if (s == "rejected_upon_submission") {

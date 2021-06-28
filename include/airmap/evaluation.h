@@ -41,6 +41,7 @@ struct AIRMAP_EXPORT Evaluation {
       accepted,                  ///< The flight plan is accepted.
       rejected,                  ///< The flight plan is rejected.
       pending,                   ///< The request for authorization is pending a response.
+      manual_authorization,      ///< The request will be manually reviewed upon submission.
       accepted_upon_submission,  ///< The request will be accepted on submission.
       rejected_upon_submission   ///< The request will be rejected on submission.
     };
